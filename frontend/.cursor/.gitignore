@@ -1,0 +1,11 @@
+# Ignore cache and temporary files
+.dccache/
+*.cache
+*.tmp
+temp/
+*.log
+
+# Keep documentation and rules
+!docs/
+!rules/
+!commands/

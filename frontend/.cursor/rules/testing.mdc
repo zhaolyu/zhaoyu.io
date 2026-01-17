@@ -1,0 +1,127 @@
+---
+globs: **/*.test.ts,**/*.test.tsx,**/*.test.js,**/*.spec.ts,**/*.spec.tsx
+---
+
+# Testing Standards
+
+When writing tests, always reference [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for comprehensive testing guidelines.
+
+## Test File Conventions
+
+- **Naming**: Use `*.test.ts`, `*.test.tsx`, `*.test.js`, or `*.spec.ts` extension
+- **Location**: Co-locate tests with source files (e.g., `Component.test.tsx` next to `Component.tsx`)
+- **Structure**: Organize with `describe` blocks for related tests
+
+## Testing Framework
+
+- **Vitest**: Test runner (configured in `package.json` or `vitest.config.ts`)
+- **React Testing Library**: For React component testing
+- **@testing-library/astro**: For Astro component testing (if available)
+
+## Testing Patterns
+
+### Astro Components
+
+Test Astro components by rendering them and checking the output:
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { render } from '@astrojs/testing-library';
+import Welcome from '../components/Welcome.astro';
+
+describe('Welcome', () => {
+  it('should render correctly', async () => {
+    const result = await render(Welcome, {
+      props: { title: 'Test' },
+    });
+    expect(result.html()).toContain('Test');
+  });
+});
+```
+
+### React Components
+
+Use React Testing Library for React components:
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Button from '../components/Button';
+
+describe('Button', () => {
+  it('should render correctly', () => {
+    render(<Button>Click me</Button>);
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
+});
+```
+
+### Utilities
+
+Test pure functions with various inputs and edge cases:
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { formatDate } from '../utils/date';
+
+describe('formatDate', () => {
+  it('should handle normal input', () => {
+    expect(formatDate(new Date('2024-01-01'))).toBe('01/01/2024');
+  });
+});
+```
+
+### Custom Hooks
+
+Test custom hooks using React Testing Library hooks utilities:
+
+```typescript
+import { describe, it, expect } from 'vitest';
+import { renderHook, act } from '@testing-library/react';
+import { useCounter } from '../hooks/useCounter';
+
+describe('useCounter', () => {
+  it('should increment count', () => {
+    const { result } = renderHook(() => useCounter());
+    act(() => {
+      result.current.increment();
+    });
+    expect(result.current.count).toBe(1);
+  });
+});
+```
+
+## Mocking Strategies
+
+- **Module mocking**: Use `vi.mock()` for entire modules or specific exports
+- **API mocking**: Use MSW (Mock Service Worker) for HTTP requests
+- **localStorage**: Mock with custom implementation in `beforeEach`
+- **Window objects**: Mock `window.confirm`, `window.navigator`, etc.
+- **Contexts**: Mock React Contexts when needed
+
+## Best Practices
+
+1. **Test organization**: Group related tests with `describe` blocks
+2. **Use `data-testid`**: For stable element selection when semantic queries aren't practical
+3. **Async testing**: Use `waitFor` for async operations
+4. **Cleanup**: Always clean up mocks in `afterEach`
+5. **Test behavior, not implementation**: Focus on what the code does, not how
+
+## Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm test -- --coverage
+
+# Run specific test file
+npm test -- path/to/test/file.test.ts
+```
+
+See [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for complete testing documentation.
