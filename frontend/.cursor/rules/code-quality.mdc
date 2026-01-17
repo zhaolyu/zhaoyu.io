@@ -1,0 +1,134 @@
+---
+alwaysApply: true
+---
+
+# Code Quality Verification
+
+This rule ensures that all final code changes are verified with tests and lint checks before being considered complete.
+
+## MANDATORY: Final Verification Before Keeping Code
+
+**CRITICAL**: Before marking any code changes as complete or final, you MUST verify:
+
+1. **Tests pass** - All relevant tests must pass
+2. **Lint passes** - Zero ESLint/TypeScript errors or warnings
+3. **Coverage meets standards** - Minimum 90% coverage for new/changed code (when applicable)
+
+## When This Rule Applies
+
+This rule applies to **ALL code changes** that you intend to keep, including:
+
+- ✅ New features or functionality
+- ✅ Bug fixes
+- ✅ Refactoring (see also [.cursor/rules/refactoring.mdc](mdc:.cursor/rules/refactoring.mdc))
+- ✅ Component modifications
+- ✅ Utility function additions/changes
+- ✅ Context provider changes
+- ✅ Hook implementations
+- ✅ Any code that will be committed or saved
+
+## Verification Workflow
+
+### Step 1: Run Tests
+
+**Always run tests for the specific files you've changed:**
+
+```bash
+# For a specific test file
+npm test -- path/to/test/file.test.ts
+
+# Run all tests
+npm test
+```
+
+**IMPORTANT**:
+- ✅ **DO**: Run tests for specific files you've modified
+- ✅ **DO**: Fix any failing tests before proceeding
+
+### Step 2: Check Test Coverage
+
+**For new code or significant changes, verify coverage meets the 90% threshold:**
+
+```bash
+# Check coverage
+npm test -- --coverage
+```
+
+**Coverage Requirements**:
+- **Minimum 90%** for statements, branches, functions, and lines
+- If coverage is below 90%, add more test cases until threshold is met
+- See [.cursor/rules/testing.mdc](mdc:.cursor/rules/testing.mdc) for testing guidelines
+
+### Step 3: Run Lint Check
+
+**Always run lint on the specific files you've changed:**
+
+```bash
+# Run lint check
+npm run lint
+
+# Auto-fix linting issues
+npm run lint:fix
+```
+
+**IMPORTANT**:
+- ✅ **DO**: Run lint on specific files you've modified
+- ✅ **DO**: Run auto-fix first, then manually fix any remaining issues
+
+**Lint Requirements**:
+- **Zero errors**: All ESLint/TypeScript errors must be resolved
+- **Zero warnings**: All ESLint/TypeScript warnings must be resolved
+- **Proper formatting**: Code must pass Prettier checks
+- See [.cursor/rules/coding-conventions.mdc](mdc:.cursor/rules/coding-conventions.mdc) for style guidelines
+
+### Step 4: Final Verification
+
+Before marking code as complete, verify:
+
+- [ ] All tests pass for modified files
+- [ ] Test coverage ≥90% (for new/significantly changed code)
+- [ ] Lint checks on changed files show zero errors and warnings
+- [ ] Auto-fix has been run on changed files
+- [ ] Code follows project conventions
+- [ ] No console errors or warnings in browser (if applicable)
+
+## Quick Reference Commands
+
+```bash
+# 1. Run tests
+npm test
+
+# 2. Check coverage
+npm test -- --coverage
+
+# 3. Run lint check
+npm run lint
+
+# 4. Auto-fix lint issues
+npm run lint:fix
+```
+
+## Enforcement
+
+**This verification is MANDATORY** before:
+- Marking a task as complete
+- Suggesting code is ready to commit
+- Indicating code changes are final
+- Moving on to the next task
+
+**Failure to verify tests and lint is a blocking issue** - code is not complete until verification passes.
+
+## Exceptions
+
+This rule may be relaxed only when:
+- The user explicitly requests to skip verification (rare)
+- Code is in an experimental/exploratory phase and explicitly marked as such
+- The change is purely cosmetic (formatting only) and lint-fix has been run
+
+**Default assumption**: Always verify tests and lint unless explicitly told otherwise.
+
+## Related Rules
+
+- [Testing Standards](.cursor/rules/testing.mdc) - Comprehensive testing guidelines
+- [Refactoring Standards](.cursor/rules/refactoring.mdc) - Additional requirements for refactoring
+- [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style and ESLint rules

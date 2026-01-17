@@ -1,0 +1,125 @@
+---
+alwaysApply: true
+---
+
+# Utilities Check Rule
+
+## MANDATORY: Check Utilities Before Writing New Code
+
+**CRITICAL RULE**: Before writing ANY utility function, helper function, or shared code, you MUST first check if similar functionality already exists in `src/utils/` or `src/utilities/`.
+
+## Why This Matters
+
+- Prevents code duplication
+- Ensures consistency across the codebase
+- Leverages tested, proven solutions
+- Reduces maintenance burden
+- Follows DRY (Don't Repeat Yourself) principles
+
+## Search Strategies
+
+When you need a utility function, use these strategies in order:
+
+### 1. Search by Function Name
+Use IDE search (`Cmd+Shift+F` / `Ctrl+Shift+F`) to search for:
+- The function name you're thinking of (e.g., "formatDate", "truncateString")
+- Similar function names (e.g., "format", "truncate")
+- Related keywords (e.g., "time", "date", "string", "number")
+
+### 2. Browse the Directory
+Explore `src/utils/` or `src/utilities/` to see what's available:
+```bash
+ls src/utils/
+```
+
+### 3. Use Semantic Search
+Use codebase search tools to find similar functionality:
+- Search for the problem you're solving (e.g., "how to format dates")
+- Search for related concepts (e.g., "validation", "parsing", "formatting")
+
+## When to Use Existing Utilities
+
+**ALWAYS use existing utilities when:**
+- The functionality matches your needs (even if not 100% identical)
+- You can extend the existing utility with minimal changes
+- The existing utility is well-tested and documented
+
+**Example:**
+```typescript
+// ❌ DON'T write new code
+const formatDate = (date: Date) => {
+  // custom formatting logic
+};
+
+// ✅ DO check and use existing utility
+import { formatDate } from '../utils/date';
+```
+
+## When to Extend Existing Utilities
+
+If an existing utility is close but not quite right:
+1. Check if it can be extended with parameters
+2. Consider adding optional parameters to the existing utility
+3. If extending, maintain backward compatibility
+4. Update tests and documentation
+
+## When to Create New Utilities
+
+Create a new utility ONLY when:
+- No similar functionality exists in `src/utils/` or `src/utilities/`
+- The functionality is reusable across multiple components
+- The functionality is pure (no side effects) or has well-defined side effects
+- The functionality is testable in isolation
+
+**Before creating, verify:**
+1. ✅ Searched `src/utils/` and `src/utilities/` thoroughly
+2. ✅ Used semantic search to find similar code
+3. ✅ Confirmed no existing utility can be extended
+
+## Documentation Requirements
+
+When creating a new utility:
+1. Include JSDoc/TSDoc comments
+2. Add a test file (`*.test.ts`)
+3. Follow existing utility patterns and conventions
+4. Use TypeScript for type safety
+
+## Examples
+
+### Example 1: Date Formatting
+```typescript
+// ❌ DON'T write new code
+const formatDate = (date: Date) => {
+  const d = new Date(date);
+  return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+};
+
+// ✅ DO check and use existing
+import { formatDate } from '../utils/date';
+const formatted = formatDate(new Date());
+```
+
+### Example 2: String Truncation
+```typescript
+// ❌ DON'T write new code
+const truncate = (str: string, maxLength: number) => {
+  return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
+};
+
+// ✅ DO check and use existing
+import { truncateString } from '../utils/string';
+const truncated = truncateString(longString, 100);
+```
+
+## Enforcement
+
+This rule is **always applied** and should be followed for:
+- New utility functions
+- Helper functions that might be reusable
+- Shared code that could be extracted
+- Any code that solves a common problem
+
+## Related Documentation
+
+- [Coding Conventions](.cursor/docs/CODING_CONVENTIONS.md) - Code style for utilities
+- [File Organization](.cursor/docs/FILE_ORGANIZATION.md) - Directory structure

@@ -1,0 +1,126 @@
+---
+globs: *.js,*.jsx,*.ts,*.tsx,*.astro
+---
+
+# Coding Conventions
+
+## ESLint Configuration
+
+- Base: Airbnb config with Prettier (or project-specific config)
+- Parser: TypeScript for `.ts`/`.tsx` files
+- Key rules: no-console (error), semicolons required
+
+## Prettier
+
+- Print width: 100 characters
+- Single quotes for JavaScript/TypeScript
+- Trailing commas: all
+- Configuration: [.prettierrc](mdc:.prettierrc) or project config
+
+## Naming Conventions
+
+- **Components**: PascalCase (`Welcome`, `Layout`, `ProjectCard`)
+- **Functions/Variables**: camelCase (`fetchData`, `userName`)
+- **Constants**: UPPER_SNAKE_CASE (`API_BASE_URL`)
+- **Files**: 
+  - Astro components: PascalCase (e.g., `Welcome.astro`)
+  - React components: PascalCase (e.g., `Button.tsx`)
+  - Utilities: camelCase (e.g., `formatDate.ts`)
+
+## Imports
+
+Use relative imports or path aliases as configured:
+
+```typescript
+// Relative imports
+import Component from '../components/Component';
+import { formatDate } from '../../utils/date';
+
+// Path aliases (if configured)
+import Component from '@/components/Component';
+```
+
+## Component Structure
+
+### Astro Components
+
+```astro
+---
+// Component script (TypeScript/JavaScript)
+interface Props {
+  title: string;
+  count?: number;
+}
+
+const { title, count = 0 } = Astro.props;
+---
+
+<div class="component">
+  <h1>{title}</h1>
+  {count > 0 && <p>Count: {count}</p>}
+</div>
+
+<style>
+  .component {
+    padding: 1rem;
+  }
+</style>
+```
+
+### React Components (for client-side interactivity)
+
+```typescript
+import React from 'react';
+import './styles.css';
+
+interface Props {
+  title: string;
+  count?: number;
+}
+
+const Component: React.FC<Props> = ({ title, count = 0 }) => (
+  <div className="component">
+    <h1>{title}</h1>
+    {count > 0 && <p>Count: {count}</p>}
+  </div>
+);
+
+export default Component;
+```
+
+## Code Style
+
+- 2 spaces indentation
+- Single quotes for strings
+- Always use semicolons
+- Always use braces for if/for/while
+
+## Comments and Documentation
+
+**Minimize inline comments** - Write self-documenting code through clear naming and structure. Only add inline comments when the code's intent is genuinely unclear.
+
+**Use JSDoc/TSDoc for function/component documentation** - Document public APIs, complex logic, and non-obvious behavior:
+
+```typescript
+/**
+ * Formats a date string according to the specified format pattern.
+ * @param date - The date to format
+ * @param format - Format pattern (e.g., 'MM/DD/YYYY')
+ * @returns Formatted date string
+ */
+const formatDate = (date: Date | string, format: string): string => {
+  // Implementation
+};
+```
+
+**Avoid:**
+- Redundant comments that restate what the code does
+- Commented-out code (remove it instead)
+- Excessive inline explanations for straightforward code
+
+**Prefer:**
+- Clear variable and function names
+- JSDoc/TSDoc for exported functions and components
+- Brief comments only for complex business logic or non-obvious behavior
+
+See [.cursor/docs/CODING_CONVENTIONS.md](mdc:.cursor/docs/CODING_CONVENTIONS.md) for complete coding conventions.
