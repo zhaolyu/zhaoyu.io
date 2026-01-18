@@ -11,7 +11,7 @@ Get up and running with the SvelteKit frontend in minutes.
 
 ```bash
 # Navigate to the project directory
-cd frontend-svelte
+cd frontend
 
 # Install dependencies
 npm install

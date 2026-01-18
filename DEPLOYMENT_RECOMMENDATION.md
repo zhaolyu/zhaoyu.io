@@ -2,13 +2,13 @@
 
 ## Executive Summary
 
-After reviewing both frontend implementations, **SvelteKit (`frontend-svelte/`)** is the recommended choice for deployment to Cloudflare Pages.
+After reviewing both frontend implementations, **SvelteKit (`frontend/`)** is the recommended choice for deployment to Cloudflare Pages.
 
-## Recommendation: Use SvelteKit (`frontend-svelte/`)
+## Recommendation: Use SvelteKit (`frontend/`)
 
 ### Why SvelteKit?
 
-Based on the detailed comparison in `frontend-svelte/docs/COMPARISON.md`, SvelteKit aligns better with your priorities:
+Based on the detailed comparison in `frontend/docs/COMPARISON.md`, SvelteKit aligns better with your priorities:
 
 1. **Built-in SPA Mode** - True client-side routing with no extra configuration required
 2. **Backend/DevOps Learning** - Better backend features, form actions, and server endpoints for learning
@@ -18,7 +18,7 @@ Based on the detailed comparison in `frontend-svelte/docs/COMPARISON.md`, Svelte
 
 ### Comparison Summary
 
-| Aspect | Astro (`frontend/`) | SvelteKit (`frontend-svelte/`) |
+| Aspect | Astro (removed) | SvelteKit (`frontend/`) |
 |--------|---------------------|--------------------------------|
 | SPA Experience | Requires View Transitions setup | Built-in, no configuration |
 | Backend Features | Basic API routes | Rich server endpoints & form actions |
@@ -48,27 +48,18 @@ The deployment setup includes:
 ### Key Configuration Details
 
 - **Build Command**: `npm run build`
-- **Build Output**: `frontend-svelte/build/`
+- **Build Output**: `frontend/build/`
 - **Node Version**: 24.13.0
 - **SPA Fallback**: `index.html` (configured in `svelte.config.js`)
 - **Custom Domain**: `zhaoyu.io`
 
 ## Next Steps
 
-1. Review the comprehensive deployment guide: `frontend-svelte/docs/DEPLOYMENT.md`
+1. Review the comprehensive deployment guide: `frontend/docs/DEPLOYMENT.md`
 2. Configure GitHub secrets for Cloudflare Pages authentication
 3. Push to `main` branch to trigger first deployment
 4. Configure custom domain in Cloudflare Pages dashboard
 
-## Alternative: Astro Frontend
-
-If you prefer the Astro implementation (`frontend/`), it can also be deployed to Cloudflare Pages with similar configuration. However, it would require:
-- View Transitions setup for SPA-like experience
-- Less backend learning opportunities
-- More content-focused approach
-
-For your stated priorities (backend learning, SPA experience, modern stack), **SvelteKit remains the recommended choice**.
-
 ---
 
-For detailed deployment instructions, see: [frontend-svelte/docs/DEPLOYMENT.md](frontend-svelte/docs/DEPLOYMENT.md)
+For detailed deployment instructions, see: [frontend/docs/DEPLOYMENT.md](frontend/docs/DEPLOYMENT.md)

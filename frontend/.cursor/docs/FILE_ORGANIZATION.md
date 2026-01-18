@@ -4,7 +4,7 @@
 
 ```
 zhaoyu.io/
-├── frontend-svelte/
+├── frontend/
 │   ├── .cursor/              # Cursor AI documentation and rules
 │   ├── static/               # Static assets (images, fonts, etc.)
 │   ├── src/
