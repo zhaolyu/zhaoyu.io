@@ -33,14 +33,19 @@ jobs:
         run: |
           echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
           echo ""
-          echo "Please use a pull request workflow instead:"
+          echo "This push bypassed the local pre-push hook. Please use a pull request workflow instead:"
           echo "  1. Create a feature branch: git checkout -b feature/your-feature"
           echo "  2. Push your changes: git push origin feature/your-feature"
           echo "  3. Create a pull request to merge into main"
           echo ""
           echo "This ensures code review and CI checks before merging."
           echo ""
-          echo "If you need to push directly (e.g., for hotfixes), use workflow_dispatch instead."
+          echo "⚠️  This workflow will fail, preventing deployment."
+          echo "⚠️  The commit is already in the repository but should be reverted manually."
+          echo ""
+          echo "To revert this commit:"
+          echo "  git revert ${{ github.sha }}"
+          echo "  git push origin main"
           exit 1
 
   # Parallel quality checks for faster feedback
