@@ -1,15 +1,28 @@
-name: Deploy to Cloudflare Pages
+# GitHub Actions workflow for CI checks on commits and pull requests
+# 
+# This workflow:
+# - Triggers on push to main/develop branches and pull requests
+# - Runs type checking and build verification
+# - Ensures code quality before merging
+# - Does NOT deploy (deployment is handled by cloudflare-pages.yml)
+
+name: CI - Build and Type Check
 
 on:
   push:
     branches:
       - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-check:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Pages
+    name: Build and Type Check
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,10 +41,12 @@ jobs:
       - name: Type check
         working-directory: frontend
         run: npm run check
+        continue-on-error: false
 
       - name: Build
         working-directory: frontend
         run: npm run build
+        continue-on-error: false
 
       - name: Verify build output
         working-directory: frontend
@@ -45,14 +60,8 @@ jobs:
             exit 1
           fi
           echo "✅ Build output verified successfully"
-          echo "Build size:"
-          du -sh build/
-
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: zhaoyu-io
-          directory: frontend/build
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          echo ""
+          echo "Build statistics:"
+          echo "  Total size: $(du -sh build/ | cut -f1)"
+          echo "  Files: $(find build/ -type f | wc -l)"
+          echo "  Directories: $(find build/ -type d | wc -l)"
