@@ -21,18 +21,12 @@
 
 <style>
 	.nav {
-		background: rgba(255, 255, 255, 0.8);
-		backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		background: var(--bg-primary);
+		border-bottom: 1px solid var(--border-color);
 		position: sticky;
 		top: 0;
 		z-index: 100;
 		transition: background 0.2s, border-color 0.2s;
-	}
-
-	:global(.dark) .nav {
-		background: rgba(17, 24, 39, 0.8);
-		border-bottom-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.nav-container {
