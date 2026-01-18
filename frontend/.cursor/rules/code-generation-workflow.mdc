@@ -8,9 +8,9 @@ globs: **/*.ts,**/*.js,**/*.svelte
 
 1. ✅ Review design principles
 2. ✅ Write tests (if applicable)
-3. ✅ Run tests and verify they pass
-4. ✅ Run lint and fix all issues
-5. ✅ Verify everything passes
+3. ✅ **Run tests and verify they pass** - `npm run test`
+4. ✅ **Run lint and fix all issues** - `npm run lint` (must pass with zero errors)
+5. ✅ **Final verification** - Both test and lint must pass before completion
 
 ## Step 0: Review Design Principles
 
@@ -48,44 +48,59 @@ Review code against the principles above. Refactor if needed.
 ### Step 3: Run Tests
 
 ```bash
-npm test                          # Run all tests
-npm test -- path/to/file.test.ts  # Specific file
-npm test -- --coverage            # With coverage (≥90% required)
+npm run test                      # Run all tests (MANDATORY)
+npm run test -- path/to/file.test.ts  # Specific file
+npm run test -- --coverage      # With coverage (≥90% required)
 ```
 
 **Requirements**:
-- ✅ All tests pass
+- ✅ **All tests MUST pass** - CI will fail if tests fail
 - ✅ Coverage ≥90% (if tests written)
+- ✅ **No test failures allowed** - Fix any failing tests before proceeding
 
 ### Step 4: Run Lint
 
 ```bash
-npm run lint      # Check for issues
+npm run lint      # Check for issues (MANDATORY)
 npm run lint:fix  # Auto-fix issues
 ```
 
 **Requirements**:
-- ✅ Zero errors and warnings
+- ✅ **Zero errors and warnings** - CI will fail if lint fails
 - ✅ All code formatted correctly
+- ✅ **Lint MUST pass** - Fix all linting issues before proceeding
 
 ### Step 5: Final Verification
 
-Before marking complete, verify:
-- ✅ Design principles applied
-- ✅ No code duplication (checked utilities first)
-- ✅ Theme support implemented (light & dark modes using CSS variables)
-- ✅ All tests pass (if applicable)
-- ✅ Coverage ≥90% (if tests written)
-- ✅ Lint passes with zero errors/warnings
+**CRITICAL**: Before marking complete, you MUST verify:
+
+1. ✅ **Run both commands and confirm they pass:**
+   ```bash
+   npm run test  # Must pass
+   npm run lint  # Must pass with zero errors
+   ```
+
+2. ✅ Design principles applied
+3. ✅ No code duplication (checked utilities first)
+4. ✅ Theme support implemented (light & dark modes using CSS variables)
+5. ✅ **All tests pass** (if applicable) - CI will fail otherwise
+6. ✅ Coverage ≥90% (if tests written)
+7. ✅ **Lint passes with zero errors/warnings** - CI will fail otherwise
+
+**DO NOT mark code as complete until both `npm run test` and `npm run lint` pass successfully.**
 
 ## Quick Reference
 
+**MANDATORY FINAL CHECKS** (run these before completing any task):
+
 ```bash
-npm test              # Run tests
-npm test -- --coverage # Check coverage
-npm run lint           # Run lint
-npm run lint:fix       # Auto-fix lint issues
+npm run test          # Run tests (MUST pass)
+npm run lint          # Run lint (MUST pass with zero errors)
+npm run test -- --coverage  # Check coverage (≥90% required)
+npm run lint:fix      # Auto-fix lint issues
 ```
+
+**Remember**: Both `npm run test` and `npm run lint` must pass before marking any code task as complete.
 
 ## Related Rules
 
