@@ -55,4 +55,3 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: zhaoyu-io
           directory: frontend/build
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

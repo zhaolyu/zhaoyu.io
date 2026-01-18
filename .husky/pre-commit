@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd "$(git rev-parse --show-toplevel)/frontend" || exit 1
-npm run check
+npx lint-staged
