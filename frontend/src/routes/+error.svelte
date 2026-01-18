@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
 
-	let error: Error | null = $page.error;
-	let status: number = $page.status;
+	const error: App.Error | null = $page.error;
+	const status: number = $page.status;
 </script>
 
 <svelte:head>
