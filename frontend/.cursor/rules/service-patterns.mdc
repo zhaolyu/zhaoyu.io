@@ -1,0 +1,88 @@
+---
+globs: **/services/**/*.ts
+---
+
+# Service Patterns
+
+Services handle API clients and external service integrations. This rule defines patterns for service files in `src/lib/services/`.
+
+## Service Organization
+
+Services are organized in `src/lib/services/`:
+
+```
+src/lib/services/
+├── api/
+│   ├── client.ts          # Base API client
+│   └── endpoints.ts       # API endpoint definitions
+└── index.ts               # Barrel exports
+```
+
+## Key Patterns
+
+### API Client
+
+- Create a reusable `ApiClient` class with methods: `get<T>()`, `post<T>()`, `put<T>()`, `delete<T>()`
+- Use TypeScript generics for type-safe responses
+- Handle errors consistently
+- Support query parameters via `RequestOptions`
+- Set default headers (Content-Type: application/json)
+- Export a default instance: `export const apiClient = new ApiClient()`
+
+### API Endpoints
+
+- Define endpoints as constants in `endpoints.ts`:
+  ```typescript
+  export const API_ENDPOINTS = {
+    blog: {
+      list: '/api/blog',
+      detail: (slug: string) => `/api/blog/${slug}`
+    }
+  } as const;
+  ```
+- Use `as const` for type safety
+- Group related endpoints
+- Use functions for dynamic endpoints
+
+### Service Functions
+
+- Create service functions that use the API client:
+  ```typescript
+  export async function fetchBlogPosts(): Promise<BlogPost[]> {
+    return apiClient.get<BlogPost[]>(API_ENDPOINTS.blog.list);
+  }
+  ```
+- Use TypeScript types from `$lib/types/api`
+- Add JSDoc comments for documentation
+- Implement consistent error handling
+
+### Error Handling
+
+- Create custom error types (e.g., `ServiceError`) for better error handling
+- Wrap API calls in try-catch blocks
+- Provide meaningful error messages
+
+### Type Safety
+
+- Define types in `src/lib/types/api.ts` for requests and responses
+- Use TypeScript generics in service functions
+- Type all function parameters and return values
+
+## Best Practices
+
+1. **Type Safety**: Always define TypeScript types for requests and responses
+2. **Error Handling**: Implement consistent error handling across all services
+3. **Centralized Endpoints**: Define all API endpoints in `endpoints.ts`
+4. **Reusable Client**: Use the base API client class for consistency
+5. **Documentation**: Add JSDoc comments for service functions
+6. **Separation of Concerns**: Keep service logic separate from components
+7. **Barrel Exports**: Use barrel exports in `index.ts` for clean imports
+
+## Related Documentation
+
+- [File Organization](.cursor/docs/FILE_ORGANIZATION.md) - Service structure and organization
+- [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style standards
+- [API Route Patterns](.cursor/rules/api-route-patterns.mdc) - API route handler patterns
+- [Utilities Check Rule](.cursor/rules/utilities.mdc) - Check utilities before writing new code
+
+For complete service examples and detailed patterns, see [Patterns](.cursor/docs/PATTERNS.md).

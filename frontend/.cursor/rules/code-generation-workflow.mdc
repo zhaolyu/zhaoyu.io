@@ -4,170 +4,97 @@ globs: **/*.ts,**/*.js,**/*.svelte
 
 # Code Generation Workflow
 
-**MANDATORY FINAL STEPS**: When generating new code, you MUST complete these steps before marking the task as done:
+**MANDATORY FINAL STEPS**: Complete these steps before marking any code task as done:
 
-1. **Review design principles** - Ensure code follows best design practices
-2. **Write tests** (if applicable)
-3. **Run tests** to verify they pass
-4. **Run lint** to ensure code quality
-5. **Fix any issues** found by design review, tests, or lint
+1. ✅ Review design principles
+2. ✅ Write tests (if applicable)
+3. ✅ Run tests and verify they pass
+4. ✅ Run lint and fix all issues
+5. ✅ Verify everything passes
 
 ## Step 0: Review Design Principles
 
-**CRITICAL**: Before finalizing any code, review it against software design principles to ensure maintainability, testability, and extensibility.
+**CRITICAL**: Review code against design principles before finalizing.
 
-### Core Design Principles Checklist
+### Core Design Principles
 
-Apply these principles when writing or refactoring code:
-
-#### 1. Single Responsibility Principle (SRP)
-- ✅ **Each function/component does ONE thing well**
-- ✅ **Functions are focused and cohesive**
-- ✅ **Components have a clear, single purpose**
-- ❌ **Avoid**: Functions that validate, format, fetch, and transform all in one
-- ❌ **Avoid**: Components that handle data fetching, state management, and rendering
-
-#### 2. Don't Repeat Yourself (DRY)
-- ✅ **Check for existing utilities** before writing new code
-- ✅ **Reuse existing functions and components**
-- ✅ **Extract common patterns into utilities**
-- ❌ **Avoid**: Duplicating code that already exists
-- ❌ **Avoid**: Copy-pasting similar logic in multiple places
-
-**MANDATORY**: Before writing ANY utility function, check `src/lib/utils/` or `src/lib/utilities/` first. See [.cursor/rules/utilities.mdc](mdc:.cursor/rules/utilities.mdc) for details.
-
-#### 3. Keep It Simple (KISS)
-- ✅ **Simple, straightforward solutions over complex ones**
-- ✅ **Clear, readable code that's easy to understand**
-- ✅ **Avoid premature optimization**
-- ❌ **Avoid**: Over-engineering simple problems
-- ❌ **Avoid**: Complex abstractions when simple code works
-
-#### 4. You Aren't Gonna Need It (YAGNI)
-- ✅ **Build only what's needed now**
-- ✅ **Add features when actually required**
-- ❌ **Avoid**: Adding "just in case" functionality
-- ❌ **Avoid**: Over-abstracting for hypothetical future needs
-
-#### 5. Separation of Concerns
-- ✅ **Separate data fetching from rendering**
-- ✅ **Separate business logic from UI**
-- ✅ **Use Svelte stores for shared state, components for UI**
-- ❌ **Avoid**: Mixing concerns in a single component/function
+- **Single Responsibility**: Each function/component does ONE thing well
+- **DRY**: Check `src/lib/utils/` before writing new utilities - see [utilities.mdc](mdc:.cursor/rules/utilities.mdc)
+- **KISS**: Simple solutions over complex ones
+- **YAGNI**: Build only what's needed now
+- **Separation of Concerns**: Separate data fetching, business logic, and UI
+- **Theme Support**: All components MUST support both light and dark modes using CSS variables
 
 ## When to Write Tests
 
 Write tests for:
-- ✅ **New components** - Svelte components need test files
-- ✅ **New utilities** - Utility functions need test files
-- ✅ **New stores** - Svelte stores need test files
-- ❌ **Style files (CSS)** - No tests needed (but lint is required)
-- ❌ **Configuration files** - No tests needed (but lint is required)
+- ✅ New components, utilities, stores
+- ❌ Style files (CSS) - lint only
+- ❌ Configuration files - lint only
 
 ## Final Steps Workflow
 
 ### Step 1: Review Design Principles
 
-**MANDATORY**: Review your code against the design principles checklist above before proceeding. Refactor if needed to follow best practices.
+Review code against the principles above. Refactor if needed.
 
 ### Step 2: Write Tests (If Applicable)
 
-After writing new code, determine if tests are needed. If tests are needed:
-
-1. Create a test file co-located with the source file (e.g., `Component.test.ts` for `Component.svelte`)
-2. Write comprehensive tests following [.cursor/rules/testing.mdc](mdc:.cursor/rules/testing.mdc)
-3. Aim for **at least 90% coverage** (statements, branches, functions, lines) for the source file
-
-**Reference**: See [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for testing patterns and examples.
+1. Create test file co-located with source (e.g., `Component.test.ts`)
+2. Follow [testing.mdc](mdc:.cursor/rules/testing.mdc) guidelines
+3. Aim for **≥90% coverage** (statements, branches, functions, lines)
+4. See [TESTING.md](mdc:.cursor/docs/TESTING.md) for patterns
 
 ### Step 3: Run Tests
 
-**CRITICAL**: Always run tests for the specific file(s) you created or modified:
-
 ```bash
-# Run all tests
-npm test
-
-# Run specific test file
-npm test -- path/to/test/file.test.ts
+npm test                          # Run all tests
+npm test -- path/to/file.test.ts  # Specific file
+npm test -- --coverage            # With coverage (≥90% required)
 ```
 
-**IMPORTANT RULES**:
-- ✅ **DO**: Run tests for the specific file(s) you're working on
-- ✅ **DO**: Verify all tests pass before proceeding
-- ✅ **DO**: Fix any failing tests before moving to the next step
-
-**Coverage Check** (if tests were written):
-```bash
-# Check coverage
-npm test -- --coverage
-```
-
-**Coverage Requirement**: If tests were written, the source file must have **at least 90% coverage**. If coverage is below 90%, add more test cases until the threshold is met.
+**Requirements**:
+- ✅ All tests pass
+- ✅ Coverage ≥90% (if tests written)
 
 ### Step 4: Run Lint
 
-**MANDATORY**: After tests pass (or if no tests were needed), run lint to ensure code quality:
-
 ```bash
-# Run lint
-npm run lint
-
-# Auto-fix linting issues
-npm run lint:fix
+npm run lint      # Check for issues
+npm run lint:fix  # Auto-fix issues
 ```
 
-**IMPORTANT RULES**:
-- ✅ **DO**: Run lint for ALL new code (TypeScript, JavaScript, Svelte, and CSS)
-- ✅ **DO**: Fix all linting errors before completing the task
-- ✅ **DO**: Use `npm run lint:fix` to auto-fix issues when possible
-- ❌ **NEVER**: Skip linting, even if tests pass
-- ❌ **NEVER**: Leave linting errors unfixed
+**Requirements**:
+- ✅ Zero errors and warnings
+- ✅ All code formatted correctly
 
-### Step 5: Verify Everything Passes
+### Step 5: Final Verification
 
-Before marking the task as complete, verify:
-- ✅ Design principles reviewed and applied
-- ✅ Code follows SOLID principles and best practices
+Before marking complete, verify:
+- ✅ Design principles applied
 - ✅ No code duplication (checked utilities first)
-- ✅ All tests pass (if tests were written)
-- ✅ Coverage meets 90% threshold (if tests were written)
-- ✅ Lint passes with no errors
-- ✅ All linting errors are fixed
+- ✅ Theme support implemented (light & dark modes using CSS variables)
+- ✅ All tests pass (if applicable)
+- ✅ Coverage ≥90% (if tests written)
+- ✅ Lint passes with zero errors/warnings
 
-## Quick Reference Commands
+## Quick Reference
 
 ```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm test -- --coverage
-
-# Run lint
-npm run lint
-
-# Auto-fix linting issues
-npm run lint:fix
+npm test              # Run tests
+npm test -- --coverage # Check coverage
+npm run lint           # Run lint
+npm run lint:fix       # Auto-fix lint issues
 ```
 
 ## Related Rules
 
-- [Testing Standards](.cursor/rules/testing.mdc) - Detailed testing requirements
-- [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style standards
-- [Utilities Check Rule](.cursor/rules/utilities.mdc) - DRY principles and utility guidelines
-- [Component Patterns](.cursor/rules/component-patterns.mdc) - Component design patterns
-- [Testing Guide](.cursor/docs/TESTING.md) - Testing patterns and examples
-
-## Enforcement
-
-This rule is **always applied** when generating new code. The final steps (design review + tests + lint) are **mandatory** and must be completed before marking any code generation task as done.
+- [Testing Standards](.cursor/rules/testing.mdc) - Testing requirements
+- [Code Quality](.cursor/rules/code-quality.mdc) - Quality verification
+- [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style
+- [Utilities Check](.cursor/rules/utilities.mdc) - DRY principles
+- [Testing Guide](.cursor/docs/TESTING.md) - Testing patterns
 
 ---
 
-**Remember**: 
-- **Design principles** ensure maintainable, testable, and extensible code
-- **Tests** verify functionality and prevent regressions
-- **Lint** ensures code quality and consistency
-
-All three are essential for maintaining a healthy, professional codebase.
+**Enforcement**: This rule is **always applied**. Design review + tests + lint are **mandatory** before completing any code task.

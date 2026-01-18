@@ -70,16 +70,7 @@ Routes are organized by feature, with feature-specific components co-located:
 - `api-demo/` - API demo feature with its own components
 - `comparison/` - Comparison feature with its own components
 
-**Example**:
-```svelte
-<!-- src/routes/+page.svelte -->
-<script lang="ts">
-	import '../app.css';
-</script>
-
-<h1>Welcome</h1>
-```
-
+See [Patterns](PATTERNS.md) for complete route examples.
 ### `src/lib/components/`
 
 Reusable Svelte components organized by purpose.
@@ -354,3 +345,32 @@ import { formatDate } from '../../lib/utils/date';
 8. **Error handling** - Use `+error.svelte` for error boundaries at route level
 9. **Type safety** - Define types in `lib/types/` and use them throughout the app
 10. **API organization** - Group API routes by feature in `routes/api/[feature]/`
+
+## Locating Code
+
+Quick reference for finding code in the codebase. Use IDE search (`Cmd+Shift+F` / `Ctrl+Shift+F`) to find files and usage.
+
+### Quick Reference Table
+
+| What | Where | Notes |
+|------|-------|-------|
+| Pages | `src/routes/*/+page.svelte` | File-based routing (dynamic: `[param]`) |
+| Components | `src/lib/components/` | UI: `ui/`, Layout: `layout/`, Features: `features/` or `routes/[feature]/components/` |
+| Layouts | `src/routes/+layout.svelte` | Root or feature-specific |
+| Utilities | `src/lib/utils/` | **Check here first before writing new utilities** |
+| Stores | `src/lib/stores/` | Svelte stores for shared state |
+| Services | `src/lib/services/` | API clients and endpoints |
+| Types | `src/lib/types/` | TypeScript type definitions |
+| Constants | `src/lib/constants/` | Routes, config, etc. |
+| Styles | `src/app.css` | Global styles (component styles in `.svelte` files) |
+| Assets | `static/` | Images, fonts, etc. (reference with `/` path) |
+
+### Common Locations
+
+- **Components**: `src/lib/components/` (reusable) or `src/routes/[feature]/components/` (page-specific)
+- **Pages**: `src/routes/[route]/+page.svelte` (dynamic routes use `[param]` syntax)
+- **API Routes**: `src/routes/api/[feature]/+server.ts`
+- **Utilities**: `src/lib/utils/` - Always check here first to avoid duplication
+- **Stores**: `src/lib/stores/` - Search for `writable`, `readable`, or `derived` usage
+
+For detailed examples and patterns, see [Patterns](PATTERNS.md).

@@ -1,0 +1,99 @@
+---
+globs: **/+page.svelte,**/+page.ts,**/+layout.svelte,**/+layout.ts,**/+error.svelte
+---
+
+# Route Patterns
+
+SvelteKit uses file-based routing. This rule defines patterns for route files in `src/routes/`.
+
+## Route File Types
+
+### Page Components (`+page.svelte`)
+
+Page components render UI for routes. They receive data from `+page.ts` load functions.
+
+**Key patterns:**
+- Use `$props()` to access page data (Svelte 5 syntax)
+- Define TypeScript interfaces for page data
+- Include `<svelte:head>` for SEO metadata
+- Import components from `$lib/components/`
+
+```svelte
+<script lang="ts">
+	interface PageData {
+		title: string;
+		items: Item[];
+	}
+	let { data }: { data: PageData } = $props();
+</script>
+```
+
+### Page Load Functions (`+page.ts`)
+
+Load functions fetch data for page components. They run on server and client.
+
+**Key patterns:**
+- Use `PageLoad` type from `./$types` for type safety
+- Handle errors with SvelteKit's `error()` function
+- Use the `fetch` parameter for API calls (works in SSR)
+- Return data matching the page component's interface
+
+```typescript
+import type { PageLoad } from './$types';
+export const load: PageLoad = async ({ params, fetch }) => {
+	const response = await fetch(`/api/data/${params.slug}`);
+	return { data: await response.json() };
+};
+```
+
+### Layout Components (`+layout.svelte`)
+
+Layout components wrap child routes and provide shared UI structure.
+
+**Key patterns:**
+- Import global styles (`app.css`) in root layout
+- Use `<slot />` to render child route content
+- Include shared layout components (Navbar, Footer, etc.)
+
+### Layout Load Functions (`+layout.ts`)
+
+Layout load functions fetch data shared across all child routes.
+
+**Configuration:**
+```typescript
+export const prerender = true;  // Enable static site generation
+export const ssr = true;        // Configure SSR behavior
+```
+
+### Error Pages (`+error.svelte`)
+
+Error pages handle errors during route loading or rendering.
+
+**Key patterns:**
+- Access error and status from `$page` store
+- Provide helpful error messages
+- Include navigation options (go home, reload)
+
+## Route Organization
+
+Organize routes by feature with co-located components:
+```
+src/routes/
+├── blog/
+│   ├── +layout.svelte
+│   ├── +page.svelte
+│   ├── [slug]/
+│   │   ├── +page.svelte
+│   │   └── +page.ts
+│   └── components/
+```
+
+## Best Practices
+
+1. **Type Safety**: Always define TypeScript interfaces for page data
+2. **Error Handling**: Use SvelteKit's `error()` function for errors
+3. **SEO**: Include `<svelte:head>` with title and meta tags
+4. **Data Loading**: Prefer server-side loading in `+page.ts` for better performance
+5. **Layout Composition**: Use nested layouts for feature-specific layouts
+
+See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for complete route patterns and examples.

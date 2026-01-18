@@ -4,187 +4,87 @@ alwaysApply: true
 
 # Refactoring Standards
 
-This rule defines the mandatory requirements and best practices for all refactoring work.
+This rule defines mandatory requirements for all refactoring work.
 
 ## MANDATORY Requirements
 
 ### 1. Test Coverage: Minimum 90%
 
-**CRITICAL**: All refactored code MUST maintain or achieve **at least 90% test coverage** (statements, branches, functions, and lines).
+**CRITICAL**: All refactored code MUST maintain or achieve **≥90% test coverage** (statements, branches, functions, lines).
 
-#### Coverage Requirements
+**Workflow**:
+- **Before**: Check existing coverage with `npm test -- --coverage`
+- **During**: Maintain existing tests, update for changes, add tests for new code
+- **After**: Verify ≥90% coverage on all metrics, add tests if below threshold
 
-- **Minimum Threshold**: 90% for all metrics:
-  - Statements: ≥90%
-  - Branches: ≥90%
-  - Functions: ≥90%
-  - Lines: ≥90%
-
-#### Before Refactoring
-
-1. **Check existing coverage**: Run coverage report on the code being refactored
-   ```bash
-   npm test -- --coverage
-   ```
-
-2. **Document baseline**: Note current coverage levels
-3. **Identify gaps**: Find untested code paths, edge cases, and error handling
-
-#### During Refactoring
-
-1. **Maintain existing tests**: Ensure all existing tests continue to pass
-2. **Update tests for changes**: Modify tests to reflect refactored behavior
-3. **Add tests for new code**: Write tests for any new functions, components, or logic
-4. **Test edge cases**: Ensure edge cases and error paths are covered
-
-#### After Refactoring
-
-1. **Verify coverage**: Run coverage report and ensure ≥90% on all metrics
-   ```bash
-   npm test -- --coverage
-   ```
-
-2. **Fix coverage gaps**: Add tests until all metrics reach 90%
-3. **Document changes**: Update test documentation if test strategy changed
-
-**Failure to meet 90% coverage is a blocking issue** - refactoring is not complete until coverage requirements are met.
+**Failure to meet 90% coverage is a blocking issue** - refactoring is incomplete until coverage requirements are met.
 
 ### 2. No Lint Issues: Zero Tolerance
 
 **CRITICAL**: All refactored code MUST have **zero ESLint/TypeScript errors or warnings**.
 
-#### Lint Requirements
+**Workflow**:
+- **Before**: Check current lint status with `npm run lint`
+- **During**: Follow lint rules, use `npm run lint:fix` for auto-fix
+- **After**: Verify zero errors/warnings with `npm run lint` and `npm run lint:fix`
 
-- **Zero errors**: All ESLint/TypeScript errors must be resolved
-- **Zero warnings**: All ESLint/TypeScript warnings must be resolved
-- **Code formatting**: Code must pass Prettier formatting checks
-
-#### Before Refactoring
-
-1. **Check current lint status**: Run lint on the code being refactored
-   ```bash
-   npm run lint
-   ```
-
-2. **Document existing issues**: Note any pre-existing lint issues (these should be fixed as part of refactoring)
-
-#### During Refactoring
-
-1. **Follow lint rules**: Write code that complies with ESLint/TypeScript rules from the start
-2. **Auto-fix when possible**: Use auto-fix for formatting and simple issues
-   ```bash
-   npm run lint:fix
-   ```
-
-3. **Fix manually when needed**: Address complex lint issues manually
-
-#### After Refactoring
-
-1. **Run lint check**: Verify zero lint issues
-   ```bash
-   npm run lint
-   ```
-
-2. **Fix all issues**: Resolve any errors or warnings before completing refactoring
-3. **Verify auto-fix**: Run lint-fix to ensure formatting is correct
-   ```bash
-   npm run lint:fix
-   ```
-
-**Any lint errors or warnings are blocking issues** - refactoring is not complete until all lint issues are resolved.
+**Any lint errors or warnings are blocking issues** - refactoring is incomplete until all lint issues are resolved.
 
 ## Refactoring Process
 
 ### Step-by-Step Workflow
 
-1. **Plan the refactoring**
-   - Identify what needs to be refactored
-   - Understand current behavior and dependencies
-   - Check existing test coverage
-   - Check existing lint status
+1. **Plan** - Identify scope, check existing coverage/lint status
+2. **Run existing tests** - Ensure all pass before starting
+3. **Refactor** - Make incremental changes, keep tests passing, check utilities first (see [utilities.mdc](mdc:.cursor/rules/utilities.mdc))
+4. **Update tests** - Modify for changes, add for new code, cover edge cases
+5. **Verify coverage** - Run `npm test -- --coverage`, ensure ≥90% on all metrics
+6. **Run lint** - Run `npm run lint` and `npm run lint:fix`, fix all issues
+7. **Final verification** - All tests pass, coverage ≥90%, zero lint issues
 
-2. **Run existing tests**
-   - Ensure all existing tests pass before starting
-   - Document baseline test results
-   - Note any flaky or failing tests
+### Best Practices
 
-3. **Perform the refactoring**
-   - Make incremental changes
-   - Keep tests passing throughout
-   - Follow coding conventions
-   - Check utilities before writing new code (see [.cursor/rules/utilities.mdc](mdc:.cursor/rules/utilities.mdc))
+**Code Quality**:
+- Maintain functionality (don't change behavior unless required)
+- Improve readability and reduce complexity
+- Follow SOLID principles
+- Check `src/lib/utils/` before writing new helpers
 
-4. **Update tests**
-   - Modify existing tests for changed behavior
-   - Add tests for new code paths
-   - Ensure edge cases are covered
+**Testing**:
+- Test behavior, not implementation
+- Maintain test quality (meaningful tests, not just coverage)
+- Cover edge cases and error paths
 
-5. **Verify test coverage**
-   - Run coverage report
-   - Ensure ≥90% coverage on all metrics
-   - Add tests if coverage is below threshold
-
-6. **Run lint check**
-   - Run `npm run lint` to check for issues
-   - Run `npm run lint:fix` to auto-fix formatting
-   - Fix any remaining errors or warnings
-
-7. **Final verification**
-   - All tests pass
-   - Coverage ≥90% on all metrics
-   - Zero lint errors or warnings
-   - Code follows project conventions
-
-### Refactoring Best Practices
-
-#### Code Quality
-
-- **Maintain functionality**: Refactoring should not change behavior (unless explicitly required)
-- **Improve readability**: Make code easier to understand
-- **Reduce complexity**: Break down complex functions/components
-- **Follow SOLID principles**: Apply Single Responsibility, Open/Closed, etc.
-- **Use existing utilities**: Check `src/lib/utils/` or `src/lib/utilities/` before writing new helper functions
-
-#### Testing Strategy
-
-- **Test behavior, not implementation**: Focus on what the code does, not how
-- **Maintain test quality**: Don't just add tests to meet coverage - ensure they're meaningful
-- **Test edge cases**: Cover error paths, boundary conditions, and unusual inputs
-
-#### Incremental Changes
-
-- **Small, focused changes**: Refactor in small increments
-- **Keep tests passing**: Don't break existing functionality
-- **Commit frequently**: Save progress with meaningful commit messages
-- **Review as you go**: Check coverage and lint status regularly
+**Incremental Changes**:
+- Small, focused changes
+- Keep tests passing throughout
+- Review coverage and lint regularly
 
 ## Verification Checklist
 
-Before marking refactoring as complete, verify:
+Before marking refactoring as complete:
 
 - [ ] All existing tests pass
 - [ ] New tests added for new/changed code
 - [ ] Test coverage ≥90% (statements, branches, functions, lines)
-- [ ] Coverage report reviewed and gaps addressed
 - [ ] `npm run lint` shows zero errors and warnings
 - [ ] `npm run lint:fix` has been run
-- [ ] Code follows project conventions (see [.cursor/rules/coding-conventions.mdc](mdc:.cursor/rules/coding-conventions.mdc))
+- [ ] Code follows [coding conventions](.cursor/rules/coding-conventions.mdc)
 - [ ] Existing utilities checked before writing new code
-- [ ] Documentation updated if needed
 
 ## Related Documentation
 
-- [Testing Standards](.cursor/rules/testing.mdc) - Comprehensive testing guidelines
-- [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style and ESLint rules
-- [Testing Guide](.cursor/docs/TESTING.md) - Detailed testing documentation
-- [Utilities Check Rule](.cursor/rules/utilities.mdc) - Check utilities before writing new code
+- [Testing Standards](.cursor/rules/testing.mdc) - Testing guidelines
+- [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style
+- [Code Quality](.cursor/rules/code-quality.mdc) - Quality verification
+- [Testing Guide](.cursor/docs/TESTING.md) - Testing patterns
+- [Utilities Check](.cursor/rules/utilities.mdc) - Check utilities first
 
 ## Enforcement
 
-These requirements are **mandatory** for all refactoring work:
+These requirements are **mandatory**:
+- **90% test coverage is non-negotiable**
+- **Zero lint issues is non-negotiable**
+- **Both must be met** before refactoring is complete
 
-- **90% test coverage is non-negotiable** - refactoring is incomplete without it
-- **Zero lint issues is non-negotiable** - refactoring is incomplete with any lint errors/warnings
-- **Both requirements must be met** before refactoring is considered complete
-
-Failure to meet these requirements should block completion of the refactoring task.
+Failure to meet these requirements blocks completion of the refactoring task.
