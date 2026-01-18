@@ -2,11 +2,12 @@
 # 
 # This workflow:
 # - Triggers on push to main/develop branches and pull requests
-# - Runs type checking and build verification
+# - Runs type checking, linting, testing, and build verification in parallel
 # - Ensures code quality before merging
+# - Uploads build artifacts for deployment workflow
 # - Does NOT deploy (deployment is handled by cloudflare-pages.yml)
 
-name: CI - Build and Type Check
+name: CI - Quality Checks and Build
 
 on:
   push:
@@ -20,9 +21,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-check:
+  # Parallel quality checks for faster feedback
+  type-check:
     runs-on: ubuntu-latest
-    name: Build and Type Check
+    name: Type Check
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,6 +44,70 @@ jobs:
         working-directory: frontend
         run: npm run check
         continue-on-error: false
+
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.13.0'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+        continue-on-error: false
+
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.13.0'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run tests
+        working-directory: frontend
+        run: npm run test
+        continue-on-error: false
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.13.0'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
 
       - name: Build
         working-directory: frontend
@@ -65,3 +131,29 @@ jobs:
           echo "  Total size: $(du -sh build/ | cut -f1)"
           echo "  Files: $(find build/ -type f | wc -l)"
           echo "  Directories: $(find build/ -type d | wc -l)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: frontend/build
+          retention-days: 1
+          compression-level: 6
+
+  # Summary job that depends on all checks passing
+  ci-success:
+    runs-on: ubuntu-latest
+    name: CI Success
+    needs: [type-check, lint, test, build]
+    if: always()
+    steps:
+      - name: Check all jobs status
+        run: |
+          if [ "${{ needs.type-check.result }}" != "success" ] || \
+             [ "${{ needs.lint.result }}" != "success" ] || \
+             [ "${{ needs.test.result }}" != "success" ] || \
+             [ "${{ needs.build.result }}" != "success" ]; then
+            echo "❌ One or more CI checks failed"
+            exit 1
+          fi
+          echo "✅ All CI checks passed"

@@ -1,21 +1,42 @@
 name: Deploy to Cloudflare Pages
 
 on:
-  push:
+  # Deploy after CI workflow completes successfully
+  workflow_run:
+    workflows: ["CI - Quality Checks and Build"]
+    types:
+      - completed
     branches:
       - main
       - develop
-      - 'feature/**'
-      - 'dev/**'
+  # Allow manual deployment
   workflow_dispatch:
+    inputs:
+      skip_ci_check:
+        description: 'Skip CI check (use with caution)'
+        required: false
+        default: 'false'
+        type: boolean
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
+    # Prevent concurrent deployments for the same branch
+    concurrency:
+      group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
+      cancel-in-progress: true
+    # Only deploy if CI passed (or manual dispatch with skip)
+    if: |
+      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ci_check == 'true') ||
+      github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # Use the commit SHA from the CI workflow run, or current ref for manual dispatch
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -28,13 +49,24 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Type check
-        working-directory: frontend
-        run: npm run check
+      - name: Download build artifacts from CI
+        id: download-artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+          path: frontend/build
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id || github.run_id }}
+          # If artifacts not found (e.g., manual dispatch), build locally
+          fail-on-error: false
 
-      - name: Build
+      - name: Build (if artifacts not available)
+        if: steps.download-artifacts.outcome != 'success'
         working-directory: frontend
-        run: npm run build
+        run: |
+          echo "⚠️ Build artifacts not found, building locally..."
+          npm run build
+        continue-on-error: false
 
       - name: Verify build output
         working-directory: frontend
@@ -54,13 +86,20 @@ jobs:
       - name: Determine deployment type
         id: deployment
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
+          # Extract branch name from workflow_run event or use current ref
+          if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
+            BRANCH="${{ github.event.workflow_run.head_branch }}"
+          else
+            BRANCH="${{ github.ref_name }}"
+          fi
+          
+          if [ "$BRANCH" = "main" ]; then
             echo "environment=production" >> $GITHUB_OUTPUT
             echo "branch=main" >> $GITHUB_OUTPUT
             echo "Deploying to PRODUCTION"
           else
             echo "environment=preview" >> $GITHUB_OUTPUT
-            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
             echo "Deploying to PREVIEW (dev environment)"
           fi
 

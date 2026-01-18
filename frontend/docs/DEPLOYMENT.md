@@ -110,16 +110,33 @@ For `www` subdomain:
 
 ## How the CI/CD Pipeline Works
 
-The GitHub Actions workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
+> 📖 **For detailed CI/CD documentation, see:** [`.github/workflows/README.md`](../../.github/workflows/README.md)
 
-1. **Triggers** on push to configured branches (`main`, `develop`, `feature/**`, `dev/**`)
-2. **Checks out** your code
-3. **Sets up** Node.js 24.13.0
-4. **Installs** dependencies with `npm ci`
-5. **Runs type checking** with `npm run check`
-6. **Builds** the project with `npm run build`
-7. **Verifies** build output exists
-8. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
+The project uses a two-stage CI/CD pipeline:
+
+### Stage 1: CI - Quality Checks and Build
+
+The CI workflow (`.github/workflows/ci.yml`) runs automatically on:
+- Push to `main` or `develop` branches
+- Pull requests targeting `main` or `develop`
+
+**Quality Checks (run in parallel):**
+1. **Type Check** - Validates TypeScript types
+2. **Lint** - Checks code style with ESLint
+3. **Test** - Runs unit/integration tests
+4. **Build** - Creates production build and uploads artifacts
+
+### Stage 2: Deploy to Cloudflare Pages
+
+The deploy workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
+1. **Waits** for CI workflow to complete successfully
+2. **Downloads** build artifacts from CI (or builds locally if unavailable)
+3. **Verifies** build output exists
+4. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
+
+**Triggers:**
+- Automatically after successful CI on `main` or `develop`
+- Manual workflow dispatch (with optional CI check skip)
 
 ### Workflow Details
 
@@ -128,7 +145,8 @@ The GitHub Actions workflow (`.github/workflows/cloudflare-pages.yml`) automatic
 - Build output: frontend/build/
 - Node version: 24.13.0 (from .nvmrc)
 - Deployment: Automatic via cloudflare/pages-action
-- Triggers: main, develop, feature/**, dev/** branches
+- Triggers: main, develop branches (automatic)
+- Artifact reuse: Build artifacts from CI are reused for faster deployment
 ```
 
 ## Deployment Environments
@@ -152,25 +170,16 @@ This project is configured with **two deployment environments**:
 
 ### Dev/Preview Environment
 
-**Trigger:** Push to any branch except `main` (e.g., `develop`, `feature/xyz`, `dev/abc`)
+**Trigger:** Push to `develop` branch (or manual deployment)
 
 **Deployment:**
 - Deploys as **Preview** deployment
-- Each branch gets its own unique preview URL
-- Branch-based URLs: `{branch-name}.zhaoyu-io.pages.dev`
+- Available at: `develop.zhaoyu-io.pages.dev`
 - Hash-based URLs: `{hash}.zhaoyu-io.pages.dev`
-
-**Supported Branches:**
-- `develop` → `develop.zhaoyu-io.pages.dev`
-- `feature/xyz` → `feature-xyz.zhaoyu-io.pages.dev`
-- `dev/abc` → `dev-abc.zhaoyu-io.pages.dev`
-- Any other branch → `{branch-name}.zhaoyu-io.pages.dev`
-
-**Features:**
-- Automatic preview deployments
-- Branch-specific URLs for easy testing
 - Isolated from production
 - Perfect for testing before merging to `main`
+
+**Note:** Feature branches no longer trigger automatic deployments. Use pull requests to test changes, which will run CI checks. Deploy manually if needed.
 
 ### How Branch Detection Works
 
@@ -379,14 +388,16 @@ You can set different environment variables for production and preview:
 
 - Set up environment variables for production and preview
 - Configure custom domain for production (`zhaoyu.io`)
-- Test preview deployments on feature branches
+- Test preview deployments on `develop` branch
 - Test all routes to ensure SPA routing works
 - Set up monitoring and analytics
 - Review [Architecture Guide](ARCHITECTURE.md) for project structure
 - Check [Setup Guide](SETUP.md) for development setup
+- Read [CI/CD Workflows Documentation](../../.github/workflows/README.md) for detailed workflow information
 
 ## Additional Resources
 
+- [CI/CD Workflows Documentation](../../.github/workflows/README.md) - Comprehensive guide to CI/CD setup and optimizations
 - [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [SvelteKit Deployment Guide](https://kit.svelte.dev/docs/adapter-static)
