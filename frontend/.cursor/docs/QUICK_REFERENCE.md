@@ -39,17 +39,20 @@ npm run preview      # Preview production build
 ### Code Quality
 ```bash
 npm run check        # Run type check
-npm run lint         # Run lint
+npm run lint         # Run lint (MANDATORY - must pass before completing code)
 npm run lint:fix     # Fix linting issues
 npm run format       # Format code
 ```
 
 ### Testing
 ```bash
-npm test             # Run tests
+npm run test         # Run tests (MANDATORY - must pass before completing code)
 npm run test:watch   # Run tests in watch mode
-npm test -- --coverage  # Run tests with coverage
+npm run test:ui       # Run tests in UI mode
+npm run test -- --coverage  # Run tests with coverage
 ```
+
+**⚠️ IMPORTANT**: Both `npm run test` and `npm run lint` MUST pass before marking any code task as complete. CI will fail otherwise.
 
 See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for detailed setup and workflow information.
 
@@ -107,7 +110,15 @@ npm run dev -- --port 3000
 
 ### Build Errors
 1. Check TypeScript: `npm run check`
-2. Check lint: `npm run lint`
-3. Review error messages
+2. Check lint: `npm run lint` (must pass)
+3. Check tests: `npm run test` (must pass)
+4. Review error messages
+
+### Before Completing Code
+**MANDATORY**: Run these commands and ensure both pass:
+```bash
+npm run test  # Must pass
+npm run lint  # Must pass with zero errors
+```
 
 See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for more troubleshooting tips.

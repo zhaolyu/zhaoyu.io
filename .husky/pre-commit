@@ -2,4 +2,30 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 cd "$(git rev-parse --show-toplevel)/frontend" || exit 1
-npx lint-staged
+
+# Run lint-staged (lint on staged files)
+echo "🔍 Linting staged files..."
+npx lint-staged || exit 1
+
+# Run type check (on all files)
+echo "🔍 Running type check..."
+npm run check || {
+  echo "❌ Type check failed. Please fix type errors before committing."
+  exit 1
+}
+
+# Run lint (on all files)
+echo "🔍 Running lint check..."
+npm run lint || {
+  echo "❌ Lint failed. Please fix linting errors before committing."
+  exit 1
+}
+
+# Run tests (all tests to ensure nothing broke)
+echo "🧪 Running tests..."
+npm run test || {
+  echo "❌ Tests failed. Please fix failing tests before committing."
+  exit 1
+}
+
+echo "✅ All checks passed!"

@@ -25,11 +25,10 @@ jobs:
   branch-protection:
     runs-on: ubuntu-latest
     name: Branch Protection Check
-    # Only run this check on direct pushes to main (not PRs or workflow_dispatch)
-    # PRs have event_name == 'pull_request', workflow_dispatch has event_name == 'workflow_dispatch'
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Always run, but only fail on direct pushes to main
     steps:
       - name: Check for direct push to main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
           echo ""
@@ -47,11 +46,15 @@ jobs:
           echo "  git revert ${{ github.sha }}"
           echo "  git push origin main"
           exit 1
+      - name: Branch protection passed
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        run: |
+          echo "✅ Branch protection check passed (not a direct push to main)"
 
   # Parallel quality checks for faster feedback
   type-check:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Type Check
     steps:
@@ -76,7 +79,7 @@ jobs:
 
   lint:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -101,7 +104,7 @@ jobs:
 
   test:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Test
     steps:
@@ -126,7 +129,7 @@ jobs:
 
   build:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Build
     steps:
