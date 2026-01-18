@@ -10,13 +10,7 @@ This is your personal website repository (`zhaoyu.io`) with two frontend impleme
 
 ### Frontend Implementations
 
-1. **Astro Frontend** (`frontend/`)
-   - Framework: Astro 5.16.11
-   - React integration available
-   - Tailwind CSS v4
-   - Static site generation
-
-2. **SvelteKit Frontend** (`frontend-svelte/`) ⭐ **Primary Focus**
+1. **SvelteKit Frontend** (`frontend/`) ⭐ **Primary Focus**
    - Framework: SvelteKit 2.50.0 with Svelte 5.0.0
    - Configured as SPA (Single Page Application)
    - Tailwind CSS v4
@@ -48,10 +42,10 @@ This is your personal website repository (`zhaoyu.io`) with two frontend impleme
 - `src/routes/api/test/+server.ts` - API endpoint example
 
 **Documentation:**
-- `frontend-svelte/docs/ARCHITECTURE.md` - Detailed architecture overview
-- `frontend-svelte/docs/COMPARISON.md` - Astro vs SvelteKit comparison
-- `frontend-svelte/docs/QUICK_START.md` - Quick start guide
-- `frontend-svelte/docs/SETUP.md` - Setup instructions
+- `frontend/docs/ARCHITECTURE.md` - Detailed architecture overview
+- `frontend/docs/COMPARISON.md` - Astro vs SvelteKit comparison
+- `frontend/docs/QUICK_START.md` - Quick start guide
+- `frontend/docs/SETUP.md` - Setup instructions
 
 ## Project Goals (Inferred from Documentation)
 
@@ -115,26 +109,17 @@ The repository is configured to use a Personal Access Token (PAT) from your pers
 
 ### SvelteKit
 ```bash
-cd frontend-svelte
+cd frontend
 npm run dev      # Start dev server (http://localhost:5173)
 npm run build    # Build for production
 npm run preview  # Preview production build
 npm run check    # TypeScript/Svelte checks
 ```
 
-### Astro
-```bash
-cd frontend
-npm run dev      # Start dev server
-npm run build    # Build for production
-npm run preview  # Preview production build
-```
-
 ## Notes
 
 - This summary was generated from codebase analysis after chat history loss
-- SvelteKit appears to be the primary/focused implementation
-- Both implementations exist for comparison purposes
+- SvelteKit is the primary/focused implementation (moved from `frontend-svelte/` to `frontend/`)
 - Documentation is comprehensive and well-maintained
 
 ---

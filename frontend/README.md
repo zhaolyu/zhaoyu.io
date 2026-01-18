@@ -39,7 +39,7 @@ The development server will start at `http://localhost:5173`
 ## Project Structure
 
 ```
-frontend-svelte/
+frontend/
 ├── src/
 │   ├── routes/          # File-based routing
 │   │   ├── +layout.svelte    # Root layout with navigation
@@ -130,7 +130,7 @@ Variables prefixed with `PUBLIC_` are exposed to the client.
 
 ## Comparison with Astro
 
-This SvelteKit implementation is designed to be compared with the Astro implementation in `../frontend`. See the [comparison documentation](docs/COMPARISON.md) for detailed differences.
+This SvelteKit implementation was originally compared with an Astro implementation. See the [comparison documentation](docs/COMPARISON.md) for detailed differences.
 
 ## License
 

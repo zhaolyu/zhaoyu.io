@@ -5,7 +5,7 @@ This document explains the architecture and structure of the SvelteKit frontend.
 ## Project Structure
 
 ```
-frontend-svelte/
+frontend/
 ├── src/
 │   ├── lib/                 # Shared code
 │   │   ├── components/      # Reusable components

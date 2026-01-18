@@ -4,10 +4,10 @@ This document provides a detailed comparison between the Astro and SvelteKit imp
 
 ## Overview
 
-Both implementations serve the same purpose but use different approaches:
+This document provides a comparison between Astro and SvelteKit approaches:
 
-- **Astro** (`../frontend`): Content-first with islands architecture
-- **SvelteKit** (`frontend-svelte`): Full SPA with built-in routing
+- **Astro**: Content-first with islands architecture
+- **SvelteKit** (`frontend/`): Full SPA with built-in routing (current implementation)
 
 ## Feature Comparison
 

@@ -19,14 +19,14 @@ jobs:
         with:
           node-version: '24.13.0'
           cache: 'npm'
-          cache-dependency-path: frontend-svelte/package-lock.json
+          cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: frontend-svelte
+        working-directory: frontend
         run: npm ci
 
       - name: Build
-        working-directory: frontend-svelte
+        working-directory: frontend
         run: npm run build
 
       - name: Deploy to Cloudflare Pages
@@ -35,5 +35,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: zhaoyu-io
-          directory: frontend-svelte/build
+          directory: frontend/build
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

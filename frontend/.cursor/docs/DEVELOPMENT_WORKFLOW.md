@@ -16,7 +16,7 @@ This guide covers the setup and development process for the zhaoyu.io portfolio 
 
 ```bash
 git clone <repository-url>
-cd zhaoyu.io/frontend-svelte
+cd zhaoyu.io/frontend
 npm install
 ```
 

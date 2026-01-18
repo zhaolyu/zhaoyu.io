@@ -118,15 +118,15 @@ The GitHub Actions workflow (`.github/workflows/cloudflare-pages.yml`) automatic
 ### Workflow Details
 
 ```yaml
-- Builds from: frontend-svelte/ directory
-- Build output: frontend-svelte/build/
+- Builds from: frontend/ directory
+- Build output: frontend/build/
 - Node version: 24.13.0 (from .nvmrc)
 - Deployment: Automatic via cloudflare/pages-action
 ```
 
 ## SPA Routing Configuration
 
-The project includes a `_redirects` file in `frontend-svelte/static/` that ensures proper SPA routing:
+The project includes a `_redirects` file in `frontend/static/` that ensures proper SPA routing:
 
 ```
 /*    /index.html   200
@@ -140,7 +140,7 @@ If you prefer to deploy manually without CI/CD:
 
 1. Build the project locally:
    ```bash
-   cd frontend-svelte
+   cd frontend
    npm run build
    ```
 
@@ -156,7 +156,7 @@ If you prefer to deploy manually without CI/CD:
 
 4. Deploy:
    ```bash
-   wrangler pages deploy frontend-svelte/build --project-name=zhaoyu-io
+   wrangler pages deploy frontend/build --project-name=zhaoyu-io
    ```
 
 ## Environment Variables
@@ -200,7 +200,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
 ### SPA Routing Not Working
 
-- Verify `_redirects` file exists in `frontend-svelte/static/`
+- Verify `_redirects` file exists in `frontend/static/`
 - Check that file contains: `/*    /index.html   200`
 - Ensure file is copied to build output (it should be automatic)
 
@@ -213,8 +213,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 ### Build Output Not Found
 
 - Verify build completes successfully in GitHub Actions
-- Check that `frontend-svelte/build/` directory exists after build
-- Ensure workflow specifies correct directory: `frontend-svelte/build`
+- Check that `frontend/build/` directory exists after build
+- Ensure workflow specifies correct directory: `frontend/build`
 
 ## Verification
 
