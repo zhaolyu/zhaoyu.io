@@ -11,9 +11,8 @@ name: CI - Quality Checks and Build
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    # Run CI on all branches to enable feature branch deployments
+    branches-ignore: []
   pull_request:
     branches:
       - main

@@ -6,9 +6,7 @@ on:
     workflows: ["CI - Quality Checks and Build"]
     types:
       - completed
-    branches:
-      - main
-      - develop
+    # Deploy for all branches (feature branches will get preview URLs)
   # Allow manual deployment
   workflow_dispatch:
     inputs:
@@ -112,3 +110,24 @@ jobs:
           directory: frontend/build
           branch: ${{ steps.deployment.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Get Preview URL
+        if: steps.deployment.outputs.environment == 'preview'
+        id: preview-url
+        run: |
+          BRANCH="${{ steps.deployment.outputs.branch }}"
+          # Replace slashes with hyphens for URL-safe branch names
+          BRANCH_SLUG=$(echo "$BRANCH" | sed 's/\//-/g')
+          PREVIEW_URL="https://${BRANCH_SLUG}.zhaoyu-io.pages.dev"
+          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+      
+      - name: Output Preview URL
+        if: steps.deployment.outputs.environment == 'preview'
+        run: |
+          echo "🌐 Preview deployment created!"
+          echo "Branch: ${{ steps.preview-url.outputs.branch }}"
+          echo "Preview URL: ${{ steps.preview-url.outputs.url }}"
+          echo ""
+          echo "Note: Cloudflare Pages may also create a hash-based URL."
+          echo "Check the Cloudflare Pages dashboard for the exact deployment URL."
