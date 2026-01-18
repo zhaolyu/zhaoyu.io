@@ -21,8 +21,32 @@ on:
   workflow_dispatch:
 
 jobs:
+  # Branch protection: Prevent direct pushes to main
+  branch-protection:
+    runs-on: ubuntu-latest
+    name: Branch Protection Check
+    # Only run this check on direct pushes to main (not PRs or workflow_dispatch)
+    # PRs have event_name == 'pull_request', workflow_dispatch has event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Check for direct push to main
+        run: |
+          echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
+          echo ""
+          echo "Please use a pull request workflow instead:"
+          echo "  1. Create a feature branch: git checkout -b feature/your-feature"
+          echo "  2. Push your changes: git push origin feature/your-feature"
+          echo "  3. Create a pull request to merge into main"
+          echo ""
+          echo "This ensures code review and CI checks before merging."
+          echo ""
+          echo "If you need to push directly (e.g., for hotfixes), use workflow_dispatch instead."
+          exit 1
+
   # Parallel quality checks for faster feedback
   type-check:
+    needs: branch-protection
+    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
     runs-on: ubuntu-latest
     name: Type Check
     steps:
@@ -46,6 +70,8 @@ jobs:
         continue-on-error: false
 
   lint:
+    needs: branch-protection
+    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -69,6 +95,8 @@ jobs:
         continue-on-error: false
 
   test:
+    needs: branch-protection
+    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
     runs-on: ubuntu-latest
     name: Test
     steps:
@@ -92,6 +120,8 @@ jobs:
         continue-on-error: false
 
   build:
+    needs: branch-protection
+    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -144,11 +174,17 @@ jobs:
   ci-success:
     runs-on: ubuntu-latest
     name: CI Success
-    needs: [type-check, lint, test, build]
+    needs: [branch-protection, type-check, lint, test, build]
     if: always()
     steps:
       - name: Check all jobs status
         run: |
+          # Check branch protection first
+          if [ "${{ needs.branch-protection.result }}" == "failure" ]; then
+            echo "❌ Branch protection check failed - direct push to main blocked"
+            exit 1
+          fi
+          # Check other jobs (they may be skipped if branch-protection failed)
           if [ "${{ needs.type-check.result }}" != "success" ] || \
              [ "${{ needs.lint.result }}" != "success" ] || \
              [ "${{ needs.test.result }}" != "success" ] || \
