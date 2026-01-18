@@ -1,14 +1,14 @@
 ---
-globs: **/*.test.ts,**/*.test.js,**/*.spec.ts,**/*.spec.tsx
+globs: **/*.test.ts,**/*.test.js,**/*.spec.ts
 ---
 
 # Testing Standards
 
-When writing tests, always reference [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for comprehensive testing guidelines.
+When writing tests, always reference [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for comprehensive testing guidelines and complete examples.
 
 ## Test File Conventions
 
-- **Naming**: Use `*.test.ts`, `*.test.js`, or `*.spec.ts` extension
+- **Naming**: Use `*.test.ts`, `*.test.js`, or `*.spec.ts` extension (SvelteKit projects use `.ts`, not `.tsx`)
 - **Location**: Co-locate tests with source files (e.g., `Component.test.ts` next to `Component.svelte`)
 - **Structure**: Organize with `describe` blocks for related tests
 
@@ -21,88 +21,38 @@ When writing tests, always reference [.cursor/docs/TESTING.md](mdc:.cursor/docs/
 
 ### Svelte Components
 
-Test Svelte components using Svelte Testing Library:
+Use Svelte Testing Library with `render()` and `screen` queries:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
-import Welcome from '../components/Welcome.svelte';
-
-describe('Welcome', () => {
-	it('should render correctly', () => {
-		render(Welcome, { props: { title: 'Test' } });
-		expect(screen.getByText('Test')).toBeInTheDocument();
-	});
-});
-```
-
-### Svelte Components with Interactions
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/svelte';
-import Button from '../components/Button.svelte';
-
-describe('Button', () => {
-	it('should handle click events', async () => {
-		render(Button, { props: { label: 'Click me' } });
-		const button = screen.getByText('Click me');
-		
-		await fireEvent.click(button);
-		
-		expect(screen.getByText('Clicked 1 times')).toBeInTheDocument();
-	});
-});
+render(Component, { props: { title: 'Test' } });
+expect(screen.getByText('Test')).toBeInTheDocument();
 ```
 
 ### Utilities
 
-Test pure functions with various inputs and edge cases:
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { formatDate } from '$lib/utils/date';
-
-describe('formatDate', () => {
-	it('should handle normal input', () => {
-		expect(formatDate(new Date('2024-01-01'))).toBe('01/01/2024');
-	});
-});
-```
+Test pure functions with various inputs and edge cases. Focus on behavior, not implementation.
 
 ### Stores
 
-Test Svelte stores by subscribing and checking values:
+Test stores by subscribing and checking values using `get()` from `svelte/store`:
 
 ```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
 import { get } from 'svelte/store';
-import { count } from '$lib/stores/counter';
-
-describe('count store', () => {
-	beforeEach(() => {
-		count.set(0);
-	});
-
-	it('should increment', () => {
-		count.update((n) => n + 1);
-		expect(get(count)).toBe(1);
-	});
-});
+count.update((n) => n + 1);
+expect(get(count)).toBe(1);
 ```
 
 ## Mocking Strategies
 
-- **Module mocking**: Use `vi.mock()` for entire modules or specific exports
+- **Module mocking**: Use `vi.mock()` for entire modules
 - **API mocking**: Use MSW (Mock Service Worker) for HTTP requests
-- **localStorage**: Mock with custom implementation in `beforeEach`
-- **Window objects**: Mock `window.confirm`, `window.navigator`, etc.
-- **Stores**: Mock Svelte stores when needed
+- **localStorage/Window**: Mock with custom implementation in `beforeEach`
 
 ## Best Practices
 
 1. **Test organization**: Group related tests with `describe` blocks
-2. **Use `data-testid`**: For stable element selection when semantic queries aren't practical
+2. **Use semantic queries**: Prefer `getByRole`, `getByLabelText` over `getByTestId`
 3. **Async testing**: Use `waitFor` for async operations
 4. **Cleanup**: Always clean up mocks in `afterEach`
 5. **Test behavior, not implementation**: Focus on what the code does, not how
@@ -110,17 +60,10 @@ describe('count store', () => {
 ## Running Tests
 
 ```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm test -- --coverage
-
-# Run specific test file
-npm test -- path/to/test/file.test.ts
+npm test                    # Run all tests
+npm run test:watch          # Watch mode
+npm test -- --coverage      # With coverage
+npm test -- path/to/file.test.ts  # Specific file
 ```
 
-See [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for complete testing documentation.
+See [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for complete testing documentation and examples.

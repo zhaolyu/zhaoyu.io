@@ -4,113 +4,84 @@ globs: **/components/**/*.svelte,**/routes/**/*.svelte
 
 # Component Patterns
 
-## Component Types
+## Component Structure
 
-### Svelte Components (`.svelte`)
-
-Svelte components are the primary component type for all UI in SvelteKit:
+Svelte components use `$props()` for props (Svelte 5 syntax):
 
 ```svelte
 <script lang="ts">
-	// Component script
 	interface Props {
 		title: string;
 		description?: string;
 	}
-
 	let { title, description }: Props = $props();
 </script>
-
-<article class="card">
-	<h2>{title}</h2>
-	{#if description}
-		<p>{description}</p>
-	{/if}
-</article>
-
-<style>
-	.card {
-		padding: 1rem;
-		border: 1px solid #ccc;
-	}
-</style>
 ```
 
-### Svelte Components with Reactivity
+Use `$state()` for reactive state. Each component should be self-contained with logic in `<script>`, template in HTML, and styles in `<style>` (scoped by default).
 
-Use Svelte's reactivity for interactive components:
-
-```svelte
-<script lang="ts">
-	let count = $state(0);
-
-	function increment() {
-		count++;
-	}
-</script>
-
-<button on:click={increment}>
-	Clicked {count} times
-</button>
-```
-
-## Component Structure
-
-### Svelte Components
-
-Each Svelte component should be self-contained:
-- Component logic in `<script>` tag
-- Template in HTML-like syntax
-- Styles in `<style>` tag (scoped by default)
-
-### Component Organization
+## Component Organization
 
 - **Reusable components**: `src/lib/components/`
 - **Page components**: `src/routes/*/+page.svelte`
 - **Layout components**: `src/routes/+layout.svelte`
 - **Route-specific components**: Co-locate with routes or in `src/lib/components/`
 
+## Theme Support (Light & Dark Mode)
+
+**MANDATORY: All components MUST support both light and dark modes.**
+
+### Quick Reference
+
+- Use CSS variables from `app.css`: `--bg-primary`, `--text-primary`, `--border-color`, etc.
+- Add transitions: `transition: background-color 0.2s, color 0.2s`
+- Use `:global(.dark)` for theme-specific overrides when needed
+- Avoid hardcoded colors - prefer CSS variables
+
+### Example
+
+```svelte
+<style>
+	.card {
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+	}
+
+	:global(.dark) .card {
+		/* Theme-specific overrides if needed */
+	}
+</style>
+```
+
+See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive theme support examples and all available CSS variables.
+
 ## Best Practices
 
-1. **Use Svelte reactivity** - Leverage Svelte's reactive statements and stores
+1. **Use Svelte reactivity** - Leverage reactive statements and stores
 2. **Component composition** - Compose smaller components into larger ones
 3. **Props interface** - Always define TypeScript interfaces for component props
 4. **Scoped styles** - Use component-scoped styles by default
 5. **Reactive statements** - Use `$:` for derived state
+6. **Theme support** - Always support both light and dark modes using CSS variables
 
-## Using Stores (Shared State)
+## Using Stores
 
-For components that need shared state, use Svelte stores:
+For shared state, use Svelte stores with auto-subscription:
 
 ```svelte
 <script lang="ts">
 	import { theme } from '$lib/stores/theme';
-
-	// Auto-subscribe with $ prefix
 	$: isDark = $theme === 'dark';
 </script>
-
-<div class:dark={isDark}>
-	Content
-</div>
 ```
 
-See [.cursor/rules/store-patterns.mdc](mdc:.cursor/rules/store-patterns.mdc) for complete store patterns.
+See [.cursor/rules/store-patterns.mdc](mdc:.cursor/rules/store-patterns.mdc) for store patterns.
 
-## Component Location
+## Related Rules
 
-- **Reusable components**: `src/lib/components/`
-- **Page components**: `src/routes/*/+page.svelte`
-- **Layout components**: `src/routes/+layout.svelte`
-- **Stores**: `src/lib/stores/`
-- **Utilities**: `src/lib/utils/` or `src/lib/utilities/`
+- [Route Patterns](.cursor/rules/route-patterns.mdc) - Patterns for route components
+- [Store Patterns](.cursor/rules/store-patterns.mdc) - Using stores in components
 
-## Route Components
-
-SvelteKit uses file-based routing:
-
-- `src/routes/+page.svelte` → `/` (home page)
-- `src/routes/about/+page.svelte` → `/about`
-- `src/routes/+layout.svelte` → Root layout (wraps all pages)
-
-See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) and [.cursor/docs/FILE_ORGANIZATION.md](mdc:.cursor/docs/FILE_ORGANIZATION.md) for complete component patterns.
+See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for complete component examples.

@@ -2,6 +2,63 @@
 
 Welcome to the zhaoyu.io portfolio site documentation. This directory contains comprehensive guides to help you understand, navigate, and develop the portfolio site with confidence.
 
+> **Project**: SvelteKit portfolio site for zhaoyu.io
+
+## For New AI Chats
+
+**Quick onboarding for AI assistants working on this codebase:**
+
+### Essential Rules (Always Applied)
+
+These rules are automatically applied to all code changes:
+
+1. **[Utilities Check Rule](.cursor/rules/utilities.mdc)** - **MANDATORY**: Always check `src/lib/utils/` before writing new utility functions to avoid duplication
+2. **[Code Quality](.cursor/rules/code-quality.mdc)** - **MANDATORY**: All code must pass tests and lint before completion
+3. **[Refactoring Standards](.cursor/rules/refactoring.mdc)** - **MANDATORY**: 90% test coverage and zero lint issues for refactoring
+
+### Key Documentation
+
+- **[Quick Reference](QUICK_REFERENCE.md)** - Common paths, commands, and patterns
+- **[File Organization](FILE_ORGANIZATION.md)** - Complete directory structure and navigation
+- **[Patterns](PATTERNS.md)** - Code examples for components, stores, routes, API endpoints
+- **[Coding Conventions](CODING_CONVENTIONS.md)** - Code style, naming, and structure standards
+
+### Project Structure Overview
+
+```
+src/
+├── lib/
+│   ├── components/    # Reusable components (ui/, layout/, features/)
+│   ├── stores/        # Svelte stores (theme, etc.)
+│   ├── utils/         # Utility functions (check here first!)
+│   ├── services/      # API clients and services
+│   ├── types/         # TypeScript type definitions
+│   └── constants/ # Shared constants (routes, config)
+└── routes/            # File-based routing (SvelteKit)
+    ├── +page.svelte   # Pages
+    ├── +layout.svelte # Layouts
+    └── api/           # API routes (+server.ts)
+```
+
+### Common Tasks
+
+- **Find code**: See [File Organization](FILE_ORGANIZATION.md) → "Locating Code" section
+- **Write component**: See [Patterns](PATTERNS.md) → "Svelte Component Pattern"
+- **Add utility**: Check [Utilities Rule](.cursor/rules/utilities.mdc) first, then see [Patterns](PATTERNS.md)
+- **Create API route**: See [Patterns](PATTERNS.md) → "API Route Pattern"
+- **Write tests**: See [Testing](TESTING.md) for patterns and [.cursor/rules/testing.mdc](.cursor/rules/testing.mdc) for standards
+
+### Workflow Checklist
+
+Before completing any code task:
+1. ✅ Check utilities first (DRY principle)
+2. ✅ Write tests if applicable (90% coverage required)
+3. ✅ Run tests: `npm test`
+4. ✅ Run lint: `npm run lint` (fix all issues)
+5. ✅ Verify code follows [Coding Conventions](CODING_CONVENTIONS.md)
+6. ✅ Ensure theme support (light & dark modes) using CSS variables
+---
+
 ## Documentation Index
 
 ### [File Organization](FILE_ORGANIZATION.md)
@@ -12,6 +69,7 @@ Directory structure and organization patterns:
 - File naming conventions
 - Component structure standards
 - Import path conventions
+- **Locating code** - Navigation guide for finding components, pages, utilities, and more
 
 **Start here if**: You need to find where code lives or understand the project structure.
 
@@ -47,7 +105,8 @@ Common code patterns and practices:
 - Store pattern
 - Data fetching patterns
 - Layout pattern
-- Styling patterns
+- Styling patterns (including theme support for light & dark modes)
+- API route patterns
 
 **Start here if**: You need examples of how to implement common functionality.
 
@@ -62,24 +121,12 @@ Comprehensive testing guide:
 
 **Start here if**: You're writing tests or need to understand testing patterns.
 
-### [Navigation Rules](NAVIGATION_RULES.md)
-
-Guidelines for finding code in the codebase:
-- Finding components, pages, and layouts
-- Locating utilities and styles
-- Finding assets and stores
-- Search tips
-
-**Start here if**: You're looking for specific code or functionality.
-
 ### [Quick Reference](QUICK_REFERENCE.md)
 
 Quick lookup guide:
 - Common file paths
 - Development commands
-- Common patterns
-- File-based routing
-- Styling examples
+- Links to detailed documentation
 
 **Start here if**: You need a quick lookup for paths, commands, or patterns.
 
@@ -88,11 +135,10 @@ Quick lookup guide:
 ### For New Developers
 
 1. Read [Development Workflow](DEVELOPMENT_WORKFLOW.md) to set up your environment
-2. Read [File Organization](FILE_ORGANIZATION.md) to understand the structure
+2. Read [File Organization](FILE_ORGANIZATION.md) to understand the structure and locate code
 3. Refer to [Patterns](PATTERNS.md) for implementation examples
 4. Follow [Coding Conventions](CODING_CONVENTIONS.md) when writing code
-5. Use [Navigation Rules](NAVIGATION_RULES.md) to find code
-6. Use [Testing](TESTING.md) guide when writing tests
+5. Use [Testing](TESTING.md) guide when writing tests
 
 ### For Code Reviewers
 
@@ -103,9 +149,8 @@ Quick lookup guide:
 
 ### For Finding Code
 
-1. Use [Navigation Rules](NAVIGATION_RULES.md) for systematic searching
-2. Check [Quick Reference](QUICK_REFERENCE.md) for common paths
-3. Review [File Organization](FILE_ORGANIZATION.md) for structure
+1. Check [File Organization](FILE_ORGANIZATION.md) for directory structure and navigation guide
+2. Check [Quick Reference](QUICK_REFERENCE.md) for common paths and commands
 
 ## Documentation Principles
 
@@ -117,6 +162,17 @@ This documentation follows these principles:
 4. **Maintainable**: Organized for easy updates
 5. **Comprehensive**: Covers all major aspects of the codebase
 
+## About This Directory (`.cursor/`)
+
+This `.cursor/` directory contains:
+- **`docs/`** - Human-readable documentation (`.md` files) for developers and AI assistants
+- **`rules/`** - AI agent rules (`.mdc` files) that guide code generation and quality
+- **`commands/`** - Cursor-specific command documentation
+
+**Important**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
+- **`.md` files**: Standard Markdown format
+- **`.mdc` files**: Markdown with frontmatter metadata (see `commands/generate-cursor-rules.md`)
+
 ## Contributing to Documentation
 
 When updating documentation:
@@ -126,13 +182,14 @@ When updating documentation:
 3. Add examples where helpful
 4. Keep formatting consistent
 5. Update this README if adding new documents
+6. For `.mdc` rule files, preserve frontmatter metadata format
 
 ## Getting Help
 
 If you can't find what you're looking for:
 
 1. Check the [Quick Reference](QUICK_REFERENCE.md) for common items
-2. Use [Navigation Rules](NAVIGATION_RULES.md) to search systematically
+2. Review [File Organization](FILE_ORGANIZATION.md) for navigation guidance
 3. Review [Patterns](PATTERNS.md) for implementation examples
 4. Check the main project README
 

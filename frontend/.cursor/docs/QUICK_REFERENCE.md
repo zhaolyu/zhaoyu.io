@@ -1,10 +1,16 @@
 # Quick Reference
 
-Quick lookup guide for common paths, commands, and patterns in the zhaoyu.io portfolio site.
+Quick lookup guide for common paths, commands, and links to detailed documentation.
+
+## Documentation Links
+
+- [File Organization](FILE_ORGANIZATION.md) - Directory structure and locating code
+- [Coding Conventions](CODING_CONVENTIONS.md) - Code style and conventions
+- [Development Workflow](DEVELOPMENT_WORKFLOW.md) - Setup and development process
+- [Patterns](PATTERNS.md) - Common code patterns and examples
+- [Testing](TESTING.md) - Testing guide and patterns
 
 ## Common File Paths
-
-### Core Application
 
 | Path | Purpose |
 |------|---------|
@@ -13,124 +19,39 @@ Quick lookup guide for common paths, commands, and patterns in the zhaoyu.io por
 | `src/routes/+layout.svelte` | Root layout component |
 | `src/app.css` | Global styles |
 | `static/` | Static public assets |
-| `svelte.config.js` | SvelteKit configuration |
-| `package.json` | Dependencies and scripts |
-| `tsconfig.json` | TypeScript configuration |
-
-### Optional Directories
-
-| Path | Purpose |
-|------|---------|
 | `src/lib/utils/` | Utility functions |
 | `src/lib/stores/` | Svelte stores |
+| `src/lib/services/` | API clients and services |
+| `src/lib/types/` | TypeScript type definitions |
+| `src/lib/constants/` | Shared constants |
+
+See [File Organization](FILE_ORGANIZATION.md) for complete directory structure and navigation guide.
 
 ## Development Commands
 
 ### Development
-
 ```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
 ```
 
 ### Code Quality
-
 ```bash
-# Run type check
-npm run check
-
-# Run lint
-npm run lint
-
-# Fix linting issues
-npm run lint:fix
-
-# Format code
-npm run format
+npm run check        # Run type check
+npm run lint         # Run lint
+npm run lint:fix     # Fix linting issues
+npm run format       # Format code
 ```
 
 ### Testing
-
 ```bash
-# Run tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm test -- --coverage
+npm test             # Run tests
+npm run test:watch   # Run tests in watch mode
+npm test -- --coverage  # Run tests with coverage
 ```
 
-## Common Patterns
-
-### Svelte Component
-
-```svelte
-<script lang="ts">
-	interface Props {
-		title: string;
-	}
-
-	let { title }: Props = $props();
-</script>
-
-<div class="card">
-	<h2>{title}</h2>
-</div>
-
-<style>
-	.card {
-		padding: 1rem;
-	}
-</style>
-```
-
-### Using a Component
-
-```svelte
-<script lang="ts">
-	import Button from '$lib/components/Button.svelte';
-</script>
-
-<Button label="Click me" />
-```
-
-### Data Fetching (Load Function)
-
-```typescript
-// src/routes/projects/+page.ts
-export async function load() {
-	const data = await fetch('https://api.example.com/data')
-		.then((res) => res.json());
-	return { data };
-}
-```
-
-### Data Fetching (Client Side)
-
-```svelte
-<script lang="ts">
-	import { onMount } from 'svelte';
-
-	let data: any = null;
-
-	onMount(async () => {
-		const res = await fetch('/api/data');
-		data = await res.json();
-	});
-</script>
-
-{#if data}
-	<div>{data.title}</div>
-{/if}
-```
+See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for detailed setup and workflow information.
 
 ## File-Based Routing
 
@@ -138,107 +59,55 @@ export async function load() {
 |------|-------|
 | `src/routes/+page.svelte` | `/` |
 | `src/routes/about/+page.svelte` | `/about` |
-| `src/routes/projects/+page.svelte` | `/projects` |
-| `src/routes/projects/[slug]/+page.svelte` | `/projects/[slug]` |
+| `src/routes/blog/[slug]/+page.svelte` | `/blog/[slug]` |
 
-## Styling
+See [File Organization](FILE_ORGANIZATION.md) for complete routing information.
 
-### Tailwind CSS
+## Common Patterns
 
-```svelte
-<div class="flex items-center justify-between p-4 bg-white rounded-lg">
-	<h2 class="text-2xl font-bold">Title</h2>
-</div>
-```
+For complete code examples and patterns, see:
+- [Patterns](PATTERNS.md) - Svelte components, stores, data fetching, layouts, styling, API routes
+- [Coding Conventions](CODING_CONVENTIONS.md) - Component structure, naming, imports
 
-### Scoped Styles (Svelte)
+## Theme Support (Light & Dark Mode)
+
+**All components MUST support both light and dark modes.**
+
+### Quick Reference
 
 ```svelte
 <style>
-	.card {
-		padding: 1rem;
+	.component {
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+	}
+
+	:global(.dark) .component {
+		/* Theme-specific overrides if needed */
 	}
 </style>
 ```
 
-## TypeScript
+### Available CSS Variables
 
-### Component Props
+- `--bg-primary`, `--bg-secondary`
+- `--text-primary`, `--text-secondary`, `--text-muted`
+- `--border-color`
 
-```typescript
-interface Props {
-	title: string;
-	description?: string;
-	count: number;
-}
-```
-
-### Function Types
-
-```typescript
-const formatDate = (date: Date, format: string): string => {
-	// Implementation
-};
-```
-
-## Environment Variables
-
-```bash
-# .env
-PUBLIC_API_URL=https://api.example.com
-```
-
-Access in code:
-```typescript
-const apiUrl = import.meta.env.PUBLIC_API_URL;
-```
-
-## Common Imports
-
-### Svelte Components
-
-```svelte
-<script lang="ts">
-	import { onMount } from 'svelte';
-	import { theme } from '$lib/stores/theme';
-	import Button from '$lib/components/Button.svelte';
-	import '../app.css';
-</script>
-```
-
-## Testing
-
-### Component Test
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
-import Button from './Button.svelte';
-
-describe('Button', () => {
-	it('should render correctly', () => {
-		render(Button, { props: { label: 'Click me' } });
-		expect(screen.getByText('Click me')).toBeInTheDocument();
-	});
-});
-```
-
-## Deployment
-
-1. Build: `npm run build`
-2. Deploy `build/` directory to hosting provider
-3. Set environment variables in hosting dashboard
+See [Patterns](PATTERNS.md) for complete theme support examples.
 
 ## Troubleshooting
 
 ### Port Already in Use
-
 ```bash
 npm run dev -- --port 3000
 ```
 
 ### Build Errors
-
 1. Check TypeScript: `npm run check`
 2. Check lint: `npm run lint`
 3. Review error messages
+
+See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for more troubleshooting tips.

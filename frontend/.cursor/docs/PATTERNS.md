@@ -2,6 +2,8 @@
 
 This document outlines common code patterns and practices used throughout the zhaoyu.io portfolio site.
 
+> **Note**: For AI agent rules and directives, see [.cursor/rules/component-patterns.mdc](../rules/component-patterns.mdc). This document provides comprehensive examples and detailed patterns.
+
 ## Svelte Component Pattern
 
 ### Basic Svelte Component
@@ -67,6 +69,8 @@ export async function load() {
 
 ## Store Pattern
 
+> **Note**: For AI agent rules, see [.cursor/rules/store-patterns.mdc](../rules/store-patterns.mdc). This section provides detailed examples.
+
 ### Creating a Store
 
 ```typescript
@@ -120,6 +124,8 @@ export const theme = createTheme();
 
 ## Data Fetching Pattern
 
+> **Note**: For route-specific patterns, see [.cursor/rules/route-patterns.mdc](../rules/route-patterns.mdc). This section provides detailed examples.
+
 ### Fetching Data in Load Function (Server-Side)
 
 ```typescript
@@ -167,6 +173,8 @@ export async function load() {
 
 ## Layout Pattern
 
+> **Note**: For route layout patterns, see [.cursor/rules/route-patterns.mdc](../rules/route-patterns.mdc). This section provides detailed examples.
+
 ### Root Layout
 
 ```svelte
@@ -212,11 +220,108 @@ Layouts are automatically applied to all child routes. The root `+layout.svelte`
 
 ## Styling Patterns
 
-### Tailwind CSS
+### Theme Support (Light & Dark Mode)
+
+**All components MUST support both light and dark modes.** Use CSS variables and theme-aware styling.
+
+#### Using CSS Variables
 
 ```svelte
-<div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
-	<h2 class="text-2xl font-bold text-gray-900">Title</h2>
+<style>
+	.card {
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+		padding: 1rem;
+		border-radius: 8px;
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+	}
+
+	.card:hover {
+		background: var(--bg-secondary);
+	}
+</style>
+```
+
+#### Theme-Specific Overrides
+
+```svelte
+<style>
+	.highlight {
+		background: rgba(59, 130, 246, 0.1);
+		color: #3b82f6;
+	}
+
+	:global(.dark) .highlight {
+		background: rgba(59, 130, 246, 0.2);
+		color: #60a5fa;
+	}
+</style>
+```
+
+#### Available CSS Variables
+
+- `--bg-primary`: Main background (white in light, dark gray in dark)
+- `--bg-secondary`: Secondary background
+- `--text-primary`: Main text color (black in light, white in dark)
+- `--text-secondary`: Secondary text color
+- `--text-muted`: Muted text color
+- `--border-color`: Border color (adapts to theme)
+
+#### Complete Theme-Aware Component Example
+
+```svelte
+<script lang="ts">
+	interface Props {
+		title: string;
+		description?: string;
+	}
+
+	let { title, description }: Props = $props();
+</script>
+
+<article class="card">
+	<h2 class="card-title">{title}</h2>
+	{#if description}
+		<p class="card-description">{description}</p>
+	{/if}
+</article>
+
+<style>
+	.card {
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+		padding: 1.5rem;
+		border-radius: 0.5rem;
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+	}
+
+	.card:hover {
+		background: var(--bg-secondary);
+	}
+
+	.card-title {
+		color: var(--text-primary);
+		font-size: 1.5rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+	}
+
+	.card-description {
+		color: var(--text-secondary);
+		line-height: 1.6;
+	}
+</style>
+```
+
+### Tailwind CSS
+
+When using Tailwind, prefer theme-aware utilities or combine with CSS variables:
+
+```svelte
+<div class="flex items-center justify-between p-4 rounded-lg" style="background: var(--bg-primary); color: var(--text-primary);">
+	<h2 class="text-2xl font-bold">Title</h2>
 	<button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
 		Click me
 	</button>
@@ -229,15 +334,20 @@ Layouts are automatically applied to all child routes. The root `+layout.svelte`
 <style>
 	.card {
 		padding: 1rem;
-		border: 1px solid #ccc;
+		border: 1px solid var(--border-color);
 		border-radius: 8px;
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 	}
 
 	.card:hover {
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		background: var(--bg-secondary);
 	}
 </style>
 ```
+
+> **Note**: For AI agent rules, see [.cursor/rules/api-route-patterns.mdc](../rules/api-route-patterns.mdc). This section provides detailed examples.
 
 ## API Route Pattern
 
@@ -306,3 +416,5 @@ export const POST: RequestHandler = async ({ request }) => {
 4. **Store management** - Use stores for shared state
 5. **Error handling** - Always handle errors gracefully
 6. **Accessibility** - Use semantic HTML and ARIA attributes
+7. **Theme support** - Always support both light and dark modes using CSS variables
+8. **Smooth transitions** - Add transitions for theme switching: `transition: background-color 0.2s, color 0.2s`

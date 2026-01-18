@@ -1,5 +1,5 @@
 ---
-globs: *.js,*.ts,*.svelte
+globs: **/*.js,**/*.ts,**/*.svelte
 ---
 
 # Coding Conventions
@@ -15,7 +15,7 @@ globs: *.js,*.ts,*.svelte
 - Print width: 100 characters
 - Single quotes for JavaScript/TypeScript
 - Trailing commas: all
-- Configuration: [.prettierrc](mdc:.prettierrc) or project config
+- Configuration: Project-specific Prettier config (if present)
 
 ## Naming Conventions
 
@@ -28,62 +28,31 @@ globs: *.js,*.ts,*.svelte
 
 ## Imports
 
-Use SvelteKit's `$lib` alias for lib imports, or relative imports:
+Use SvelteKit's `$lib` alias for lib imports (recommended):
 
 ```typescript
-// Relative imports
-import Component from '../components/Component';
-import { formatDate } from '../lib/utils/date';
-
-// SvelteKit $lib alias (recommended)
 import { formatDate } from '$lib/utils/date';
 import { theme } from '$lib/stores/theme';
+import Button from '$lib/components/Button.svelte';
 ```
+
+Import order: Svelte imports → Third-party → Application imports (`$lib`) → Relative imports → Styles
 
 ## Component Structure
 
-### Svelte Components
+Svelte components use `$props()` for props (Svelte 5 syntax):
 
 ```svelte
 <script lang="ts">
-	// Component script (TypeScript)
 	interface Props {
 		title: string;
 		count?: number;
 	}
-
 	let { title, count = 0 }: Props = $props();
 </script>
-
-<div class="component">
-	<h1>{title}</h1>
-	{#if count > 0}
-		<p>Count: {count}</p>
-	{/if}
-</div>
-
-<style>
-	.component {
-		padding: 1rem;
-	}
-</style>
 ```
 
-### Svelte Components with Reactivity
-
-```svelte
-<script lang="ts">
-	let count = $state(0);
-
-	function increment() {
-		count++;
-	}
-</script>
-
-<button on:click={increment}>
-	Clicked {count} times
-</button>
-```
+Use `$state()` for reactive state. Always define TypeScript interfaces for component props.
 
 ## Code Style
 
@@ -92,32 +61,33 @@ import { theme } from '$lib/stores/theme';
 - Always use semicolons
 - Always use braces for if/for/while
 
+## Theme Support Requirement
+
+**MANDATORY: All components MUST support both light and dark modes.**
+
+- Use CSS variables from `app.css` (`--bg-primary`, `--text-primary`, `--border-color`, etc.)
+- Add transitions: `transition: background-color 0.2s, color 0.2s`
+- Use `:global(.dark)` for theme-specific overrides when needed
+- Avoid hardcoded colors - prefer CSS variables
+
+See [.cursor/rules/component-patterns.mdc](mdc:.cursor/rules/component-patterns.mdc) for quick reference and [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive examples.
+
 ## Comments and Documentation
 
-**Minimize inline comments** - Write self-documenting code through clear naming and structure. Only add inline comments when the code's intent is genuinely unclear.
+**Minimize inline comments** - Write self-documenting code. Only add comments when code intent is genuinely unclear.
 
-**Use JSDoc/TSDoc for function/component documentation** - Document public APIs, complex logic, and non-obvious behavior:
+**Use JSDoc/TSDoc** for exported functions and components:
 
 ```typescript
 /**
- * Formats a date string according to the specified format pattern.
+ * Formats a date according to the specified pattern.
  * @param date - The date to format
- * @param format - Format pattern (e.g., 'MM/DD/YYYY')
  * @returns Formatted date string
  */
-const formatDate = (date: Date | string, format: string): string => {
-	// Implementation
-};
 ```
 
-**Avoid:**
-- Redundant comments that restate what the code does
-- Commented-out code (remove it instead)
-- Excessive inline explanations for straightforward code
+**Avoid**: Redundant comments, commented-out code, excessive inline explanations.
 
-**Prefer:**
-- Clear variable and function names
-- JSDoc/TSDoc for exported functions and components
-- Brief comments only for complex business logic or non-obvious behavior
+**Prefer**: Clear naming, JSDoc/TSDoc for public APIs, brief comments only for complex logic.
 
-See [.cursor/docs/CODING_CONVENTIONS.md](mdc:.cursor/docs/CODING_CONVENTIONS.md) for complete coding conventions.
+See [.cursor/docs/CODING_CONVENTIONS.md](mdc:.cursor/docs/CODING_CONVENTIONS.md) for complete coding conventions and examples.

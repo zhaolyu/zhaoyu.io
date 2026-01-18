@@ -1,0 +1,72 @@
+---
+globs: **/api/**/+server.ts,**/routes/api/**/+server.ts
+---
+
+# API Route Patterns
+
+SvelteKit API routes are defined using `+server.ts` files. This rule defines patterns for API route handlers.
+
+## API Route Structure
+
+API routes export HTTP method handlers (GET, POST, PUT, DELETE, etc.):
+
+```typescript
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async () => {
+	return json({ message: 'Hello from API' });
+};
+```
+
+## Request Handler Patterns
+
+**Key patterns:**
+- Use `RequestHandler` type from `./$types` for type safety
+- Use `json()`, `text()`, `html()`, or `redirect()` helpers from `@sveltejs/kit`
+- Access `url.searchParams` for query parameters
+- Access `params` for route parameters (dynamic routes)
+- Use `request.json()` to parse request body
+- Handle errors with SvelteKit's `error()` function
+
+**Example handlers:**
+```typescript
+// GET - Access query params and route params
+export const GET: RequestHandler = async ({ url, params }) => {
+	const limit = url.searchParams.get('limit');
+	return json({ data: await fetchData(params.id, limit) });
+};
+
+// POST - Parse and validate request body
+export const POST: RequestHandler = async ({ request }) => {
+	const body = await request.json();
+	if (!body.title) throw error(400, 'Missing title');
+	return json({ success: true }, { status: 201 });
+};
+```
+
+## Error Handling
+
+Use SvelteKit's `error()` function for HTTP errors:
+- `400` - Bad Request (invalid input)
+- `401` - Unauthorized
+- `404` - Not Found
+- `500` - Internal Server Error
+
+## Response Helpers
+
+- `json(data, options?)` - JSON response
+- `text(data, options?)` - Plain text response
+- `html(data, options?)` - HTML response
+- `redirect(status, location)` - Redirect response
+
+## Best Practices
+
+1. **Type Safety**: Always use `RequestHandler` type from `./$types`
+2. **Error Handling**: Use SvelteKit's `error()` function for HTTP errors
+3. **Validation**: Validate request body and parameters
+4. **Response Format**: Use consistent response format (e.g., `{ success: boolean, data?: T, error?: string }`)
+5. **Status Codes**: Use appropriate HTTP status codes
+6. **Security**: Validate and sanitize all inputs
+
+See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for complete API route patterns and examples.

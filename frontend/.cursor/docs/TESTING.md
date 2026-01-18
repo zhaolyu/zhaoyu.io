@@ -4,6 +4,11 @@ This guide provides comprehensive documentation for writing tests in the zhaoyu.
 
 ## Test Framework Setup
 
+**Note**: Test dependencies (Vitest, Svelte Testing Library) need to be installed before running tests. Install with:
+```bash
+npm install -D vitest @testing-library/svelte @testing-library/jest-dom @vitest/ui jsdom
+```
+
 ### Vitest Configuration
 
 The project uses Vitest as the test runner. Configuration is typically in `vitest.config.ts` or `package.json`:
