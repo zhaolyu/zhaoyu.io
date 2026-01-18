@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+      - develop
+      - 'feature/**'
+      - 'dev/**'
   workflow_dispatch:
 
 jobs:
@@ -48,6 +51,19 @@ jobs:
           echo "Build size:"
           du -sh build/
 
+      - name: Determine deployment type
+        id: deployment
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "branch=main" >> $GITHUB_OUTPUT
+            echo "Deploying to PRODUCTION"
+          else
+            echo "environment=preview" >> $GITHUB_OUTPUT
+            echo "branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+            echo "Deploying to PREVIEW (dev environment)"
+          fi
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
@@ -55,3 +71,5 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: zhaoyu-io
           directory: frontend/build
+          branch: ${{ steps.deployment.outputs.branch }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

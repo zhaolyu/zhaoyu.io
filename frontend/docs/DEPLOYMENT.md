@@ -4,7 +4,12 @@ This guide covers deploying the SvelteKit frontend to Cloudflare Pages using Git
 
 ## Overview
 
-This project is configured for automated deployment to Cloudflare Pages via GitHub Actions. Every push to the `main` branch triggers a build and deployment.
+This project is configured for automated deployment to Cloudflare Pages via GitHub Actions with support for both **production** and **dev/preview** environments:
+
+- **Production**: Deploys on push to `main` branch → `zhaoyu.io`
+- **Dev/Preview**: Deploys on push to other branches → `{branch-name}.zhaoyu-io.pages.dev`
+
+Every push to configured branches automatically triggers a build and deployment.
 
 ## Prerequisites
 
@@ -107,12 +112,14 @@ For `www` subdomain:
 
 The GitHub Actions workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
 
-1. **Triggers** on push to `main` branch
+1. **Triggers** on push to configured branches (`main`, `develop`, `feature/**`, `dev/**`)
 2. **Checks out** your code
 3. **Sets up** Node.js 24.13.0
 4. **Installs** dependencies with `npm ci`
-5. **Builds** the project with `npm run build`
-6. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
+5. **Runs type checking** with `npm run check`
+6. **Builds** the project with `npm run build`
+7. **Verifies** build output exists
+8. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
 
 ### Workflow Details
 
@@ -121,7 +128,81 @@ The GitHub Actions workflow (`.github/workflows/cloudflare-pages.yml`) automatic
 - Build output: frontend/build/
 - Node version: 24.13.0 (from .nvmrc)
 - Deployment: Automatic via cloudflare/pages-action
+- Triggers: main, develop, feature/**, dev/** branches
 ```
+
+## Deployment Environments
+
+This project is configured with **two deployment environments**:
+
+### Production Environment
+
+**Trigger:** Push to `main` branch
+
+**Deployment:**
+- Deploys to **Production** environment
+- Available at: `https://zhaoyu-io.pages.dev`
+- Custom domain: `https://zhaoyu.io` (when configured)
+- Used for live, production-ready code
+
+**Configuration:**
+- Branch: `main`
+- Environment: Production
+- Custom domain: `zhaoyu.io`
+
+### Dev/Preview Environment
+
+**Trigger:** Push to any branch except `main` (e.g., `develop`, `feature/xyz`, `dev/abc`)
+
+**Deployment:**
+- Deploys as **Preview** deployment
+- Each branch gets its own unique preview URL
+- Branch-based URLs: `{branch-name}.zhaoyu-io.pages.dev`
+- Hash-based URLs: `{hash}.zhaoyu-io.pages.dev`
+
+**Supported Branches:**
+- `develop` → `develop.zhaoyu-io.pages.dev`
+- `feature/xyz` → `feature-xyz.zhaoyu-io.pages.dev`
+- `dev/abc` → `dev-abc.zhaoyu-io.pages.dev`
+- Any other branch → `{branch-name}.zhaoyu-io.pages.dev`
+
+**Features:**
+- Automatic preview deployments
+- Branch-specific URLs for easy testing
+- Isolated from production
+- Perfect for testing before merging to `main`
+
+### How Branch Detection Works
+
+The workflow automatically determines the deployment type:
+
+```yaml
+- main branch → Production deployment
+- All other branches → Preview/Dev deployment
+```
+
+## Custom Domain Configuration
+
+### Production Domain
+
+1. Go to Cloudflare Pages → Your project → **Custom domains**
+2. Click **Set up a custom domain**
+3. Enter: `zhaoyu.io`
+4. Cloudflare will automatically configure DNS
+
+**Result:**
+- Production deployments accessible at `https://zhaoyu.io`
+- Also available at `https://zhaoyu-io.pages.dev`
+
+### Dev Domain (Optional)
+
+If you want a dedicated dev domain (e.g., `dev.zhaoyu.io`):
+
+1. Go to Cloudflare Pages → Your project → **Custom domains**
+2. Add custom domain: `dev.zhaoyu.io`
+3. Configure branch alias to point to `develop` branch (or your preferred dev branch)
+
+**Note:** Dev domains are optional. Preview URLs work fine for testing.
 
 ## SPA Routing Configuration
 
@@ -240,12 +321,65 @@ After deployment, verify:
 
 ### Preview Deployments
 
-Cloudflare Pages creates preview deployments for pull requests automatically if configured. Check the **Deployments** tab for preview URLs.
+**Automatic Preview Deployments:**
+- Every push to non-`main` branches creates a preview deployment
+- Each branch gets a unique preview URL
+- Preview URLs are automatically generated based on branch name
+
+**Accessing Preview Deployments:**
+1. Cloudflare Pages dashboard → Your project → **Deployments** tab
+2. Find your branch deployment
+3. Click the preview URL to view the deployment
+
+**Preview URL Format:**
+- Branch alias: `{branch-name}.zhaoyu-io.pages.dev`
+- Hash-based: `{commit-hash}.zhaoyu-io.pages.dev`
+
+**Example:**
+- Push to `develop` branch → `develop.zhaoyu-io.pages.dev`
+- Push to `feature/new-feature` → `feature-new-feature.zhaoyu-io.pages.dev`
+
+## Branch Deployment Strategy
+
+### Production Branch (`main`)
+
+- **Purpose**: Live production site
+- **URL**: `https://zhaoyu.io` (custom domain)
+- **When**: Merged, tested code ready for production
+- **Deployment**: Automatic on push to `main`
+
+### Development Branches
+
+- **Purpose**: Testing and development
+- **URLs**: Branch-specific preview URLs
+- **When**: Feature development, testing, staging
+- **Deployment**: Automatic on push to any non-`main` branch
+
+**Workflow:**
+1. Create feature branch: `git checkout -b feature/new-feature`
+2. Make changes and push: `git push origin feature/new-feature`
+3. Automatic preview deployment created
+4. Test at preview URL
+5. Merge to `main` when ready → Deploys to production
+
+## Environment Variables by Environment
+
+You can set different environment variables for production and preview:
+
+1. Cloudflare Pages dashboard → Your project → **Settings** → **Environment variables**
+2. Add variables for:
+   - **Production**: Used for `main` branch deployments
+   - **Preview**: Used for all other branch deployments
+
+**Example:**
+- Production: `PUBLIC_API_URL=https://api.zhaoyu.io`
+- Preview: `PUBLIC_API_URL=https://api-dev.zhaoyu.io`
 
 ## Next Steps
 
-- Set up environment variables for production
-- Configure custom domain if not already done
+- Set up environment variables for production and preview
+- Configure custom domain for production (`zhaoyu.io`)
+- Test preview deployments on feature branches
 - Test all routes to ensure SPA routing works
 - Set up monitoring and analytics
 - Review [Architecture Guide](ARCHITECTURE.md) for project structure
