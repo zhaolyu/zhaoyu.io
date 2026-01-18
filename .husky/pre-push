@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Get the branch being pushed
+protected_branch='main'
+
+while read local_ref local_sha remote_ref remote_sha
+do
+  if [ "$remote_ref" = "refs/heads/$protected_branch" ]; then
+    echo "❌ ERROR: Direct pushes to '$protected_branch' branch are not allowed!"
+    echo ""
+    echo "Please use a pull request workflow instead:"
+    echo "  1. Create a feature branch: git checkout -b feature/your-feature"
+    echo "  2. Push your changes: git push origin feature/your-feature"
+    echo "  3. Create a pull request to merge into $protected_branch"
+    echo ""
+    echo "This ensures code review and CI checks before merging."
+    echo ""
+    echo "If you really need to push directly (e.g., for hotfixes), use:"
+    echo "  git push origin $protected_branch --no-verify"
+    echo ""
+    echo "⚠️  Note: Using --no-verify bypasses this check but will still fail CI."
+    exit 1
+  fi
+done
+
+exit 0
