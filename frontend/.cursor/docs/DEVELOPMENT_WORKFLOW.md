@@ -6,7 +6,7 @@ This guide covers the setup and development process for the zhaoyu.io portfolio 
 
 ### Required Software
 
-- **Node.js**: Version 18+ (LTS recommended)
+- **Node.js**: Version 24.13.0 (specified in `.nvmrc`)
 - **npm**: Comes with Node.js
 - **Git**: For version control
 
@@ -16,7 +16,7 @@ This guide covers the setup and development process for the zhaoyu.io portfolio 
 
 ```bash
 git clone <repository-url>
-cd zhaoyu.io/frontend
+cd zhaoyu.io/frontend-svelte
 npm install
 ```
 
@@ -37,7 +37,7 @@ PUBLIC_API_URL=https://api.example.com
 npm run dev
 ```
 
-This starts the Astro development server, typically at `http://localhost:4321`.
+This starts the SvelteKit development server, typically at `http://localhost:5173`.
 
 ### Build for Production
 
@@ -45,7 +45,7 @@ This starts the Astro development server, typically at `http://localhost:4321`.
 npm run build
 ```
 
-This creates an optimized production build in the `dist/` directory.
+This creates an optimized production build in the `build/` directory.
 
 ### Preview Production Build
 
@@ -54,6 +54,16 @@ npm run preview
 ```
 
 This serves the production build locally for testing.
+
+### Type Checking
+
+```bash
+# Run type check
+npm run check
+
+# Run type check in watch mode
+npm run check:watch
+```
 
 ### Linting
 
@@ -76,182 +86,172 @@ npm run format
 
 ### 1. Create a New Page
 
-Create a new file in `src/pages/`:
+Create a new directory in `src/routes/` with a `+page.svelte` file:
 
-```astro
----
-// src/pages/about.astro
-import Layout from '../layouts/Layout.astro';
----
+```svelte
+<!-- src/routes/about/+page.svelte -->
+<script lang="ts">
+	// Page script
+</script>
 
-<Layout title="About">
-  <h1>About Me</h1>
-  <p>Welcome to my portfolio!</p>
-</Layout>
+<h1>About Me</h1>
+<p>Welcome to my portfolio!</p>
 ```
 
 The page will be available at `/about`.
 
 ### 2. Create a New Component
 
-#### Astro Component
+#### Svelte Component
 
-```astro
----
-// src/components/Welcome.astro
-interface Props {
-  name: string;
-}
+```svelte
+<!-- src/lib/components/Welcome.svelte -->
+<script lang="ts">
+	interface Props {
+		name: string;
+	}
 
-const { name } = Astro.props;
----
+	let { name }: Props = $props();
+</script>
 
 <div class="welcome">
-  <h2>Welcome, {name}!</h2>
+	<h2>Welcome, {name}!</h2>
 </div>
 
 <style>
-  .welcome {
-    padding: 1rem;
-  }
+	.welcome {
+		padding: 1rem;
+	}
 </style>
 ```
 
-#### React Component
+Use in a page:
 
-```typescript
-// src/components/Button.tsx
-import React from 'react';
+```svelte
+<script lang="ts">
+	import Welcome from '$lib/components/Welcome.svelte';
+</script>
 
-interface ButtonProps {
-  label: string;
-  onClick?: () => void;
-}
-
-const Button: React.FC<ButtonProps> = ({ label, onClick }) => (
-  <button onClick={onClick}>{label}</button>
-);
-
-export default Button;
-```
-
-Use in Astro:
-
-```astro
----
-import Button from '../components/Button';
----
-
-<Button client:load label="Click me" />
+<Welcome name="John" />
 ```
 
 ### 3. Add Styling
 
 #### Tailwind CSS (Recommended)
 
-```astro
+```svelte
 <div class="flex items-center justify-between p-4 bg-white rounded-lg">
-  <h2 class="text-2xl font-bold">Title</h2>
+	<h2 class="text-2xl font-bold">Title</h2>
 </div>
 ```
 
-#### Scoped Styles (Astro)
+#### Scoped Styles (Svelte)
 
-```astro
+```svelte
 <style>
-  .card {
-    padding: 1rem;
-    border: 1px solid #ccc;
-  }
+	.card {
+		padding: 1rem;
+		border: 1px solid #ccc;
+	}
 </style>
 ```
 
 #### Global Styles
 
-Add to `src/styles/global.css`:
+Add to `src/app.css`:
 
 ```css
 :root {
-  --color-primary: #3b82f6;
+	--color-primary: #3b82f6;
 }
 
 body {
-  font-family: system-ui, sans-serif;
+	font-family: system-ui, sans-serif;
 }
 ```
 
 Import in layout:
 
-```astro
----
-import '../styles/global.css';
----
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script lang="ts">
+	import '../app.css';
+</script>
 ```
 
 ## File-Based Routing
 
-Astro uses file-based routing:
+SvelteKit uses file-based routing:
 
-- `src/pages/index.astro` → `/`
-- `src/pages/about.astro` → `/about`
-- `src/pages/projects/index.astro` → `/projects`
-- `src/pages/projects/[slug].astro` → `/projects/[slug]` (dynamic)
+- `src/routes/+page.svelte` → `/`
+- `src/routes/about/+page.svelte` → `/about`
+- `src/routes/projects/+page.svelte` → `/projects`
+- `src/routes/projects/[slug]/+page.svelte` → `/projects/[slug]` (dynamic)
 
 ### Dynamic Routes
 
-```astro
----
-// src/pages/projects/[slug].astro
-export async function getStaticPaths() {
-  const projects = await fetchProjects();
-  return projects.map((project) => ({
-    params: { slug: project.slug },
-    props: { project },
-  }));
+```svelte
+<!-- src/routes/projects/[slug]/+page.svelte -->
+<script lang="ts">
+	interface PageData {
+		project: Project;
+	}
+
+	let { data }: { data: PageData } = $props();
+	const { project } = data;
+</script>
+
+<article>
+	<h1>{project.title}</h1>
+	<p>{project.description}</p>
+</article>
+```
+
+```typescript
+// src/routes/projects/[slug]/+page.ts
+export async function load({ params }) {
+	const project = await fetchProject(params.slug);
+	return {
+		project
+	};
 }
-
-interface Props {
-  project: Project;
-}
-
-const { project } = Astro.props;
----
-
-<Layout title={project.title}>
-  <article>
-    <h1>{project.title}</h1>
-    <p>{project.description}</p>
-  </article>
-</Layout>
 ```
 
 ## Client-Side Interactivity
 
-### When to Use React
+### Svelte Reactivity
 
-Use React components when you need:
-- Client-side interactivity (clicks, form inputs)
-- State management
-- Browser APIs (localStorage, etc.)
+Use Svelte's built-in reactivity for interactivity:
 
-### Client Directives
+```svelte
+<script lang="ts">
+	let count = $state(0);
 
-```astro
----
-import InteractiveButton from '../components/InteractiveButton';
----
+	function increment() {
+		count++;
+	}
+</script>
 
-<!-- Load immediately -->
-<InteractiveButton client:load />
+<button on:click={increment}>
+	Clicked {count} times
+</button>
+```
 
-<!-- Load when visible -->
-<InteractiveButton client:visible />
+### Using Stores
 
-<!-- Load on idle -->
-<InteractiveButton client:idle />
+For shared state across components:
 
-<!-- Load on media query -->
-<InteractiveButton client:media="(max-width: 768px)" />
+```svelte
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+
+	// Auto-subscribe with $ prefix
+	$: isDark = $theme === 'dark';
+</script>
+
+<div class:dark={isDark}>
+	Content
+</div>
 ```
 
 ## Testing
@@ -267,16 +267,16 @@ npm test
 Create test files next to your components:
 
 ```typescript
-// src/components/Button.test.tsx
+// src/lib/components/Button.test.ts
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import Button from './Button';
+import { render, screen } from '@testing-library/svelte';
+import Button from './Button.svelte';
 
 describe('Button', () => {
-  it('should render correctly', () => {
-    render(<Button label="Click me" />);
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
+	it('should render correctly', () => {
+		render(Button, { props: { label: 'Click me' } });
+		expect(screen.getByText('Click me')).toBeInTheDocument();
+	});
 });
 ```
 
@@ -289,9 +289,9 @@ Use browser DevTools to inspect:
 - Network requests
 - Console errors
 
-### Astro DevTools
+### SvelteKit DevTools
 
-Astro provides helpful error messages in the terminal and browser console.
+SvelteKit provides helpful error messages in the terminal and browser console.
 
 ## Deployment
 
@@ -302,7 +302,7 @@ Astro provides helpful error messages in the terminal and browser console.
    npm run build
    ```
 
-2. Deploy the `dist/` directory to your hosting provider:
+2. Deploy the `build/` directory to your hosting provider:
    - Vercel
    - Netlify
    - GitHub Pages
@@ -316,14 +316,14 @@ For production, set environment variables in your hosting provider's dashboard.
 
 ### Port Already in Use
 
-If port 4321 is in use:
+If port 5173 is in use:
 ```bash
 npm run dev -- --port 3000
 ```
 
 ### Build Errors
 
-1. Check for TypeScript errors: `npm run build`
+1. Check for TypeScript errors: `npm run check`
 2. Check for linting errors: `npm run lint`
 3. Review error messages in terminal
 
@@ -335,9 +335,8 @@ npm run dev -- --port 3000
 
 ## Best Practices
 
-1. **Start with Astro** - Use Astro components for static content
-2. **Add React only when needed** - Use React for interactivity
-3. **Use TypeScript** - Enable type safety
-4. **Follow file structure** - Keep components, pages, and layouts organized
-5. **Test your code** - Write tests for components and utilities
-6. **Lint and format** - Run lint and format before committing
+1. **Use Svelte reactivity** - Leverage Svelte's reactive statements and stores
+2. **Use TypeScript** - Enable type safety
+3. **Follow file structure** - Keep components, pages, and layouts organized
+4. **Test your code** - Write tests for components and utilities
+5. **Lint and format** - Run lint and format before committing

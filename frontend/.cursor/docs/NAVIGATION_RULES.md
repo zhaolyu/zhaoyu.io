@@ -6,63 +6,62 @@ This guide helps you quickly find code in the zhaoyu.io portfolio site.
 
 ### By Component Name
 
-Components are in `src/components/`:
+Components are in `src/lib/components/`:
 
-- **Astro components**: `src/components/Welcome.astro`
-- **React components**: `src/components/Button.tsx`
-- **Shared components**: `src/components/` (all reusable components)
+- **Svelte components**: `src/lib/components/Welcome.svelte`
+- **Shared components**: `src/lib/components/` (all reusable components)
 
 ### Search Strategy
 
-1. Check `src/components/` for reusable components
+1. Check `src/lib/components/` for reusable components
 2. Use your IDE's search to find component usage
-3. Check `src/layouts/` for layout components
+3. Check `src/routes/+layout.svelte` for layout components
 
 ## Finding Pages
 
 ### File-Based Routing
 
-Pages are in `src/pages/` and use file-based routing:
+Pages are in `src/routes/` and use file-based routing:
 
-- `src/pages/index.astro` → `/`
-- `src/pages/about.astro` → `/about`
-- `src/pages/projects/index.astro` → `/projects`
-- `src/pages/projects/[slug].astro` → `/projects/[slug]` (dynamic)
+- `src/routes/+page.svelte` → `/`
+- `src/routes/about/+page.svelte` → `/about`
+- `src/routes/projects/+page.svelte` → `/projects`
+- `src/routes/projects/[slug]/+page.svelte` → `/projects/[slug]` (dynamic)
 
 ### Finding a Page
 
-1. Check `src/pages/` for the page file
-2. File name matches the route (e.g., `about.astro` → `/about`)
-3. Dynamic routes use `[param].astro` syntax
+1. Check `src/routes/` for the page directory
+2. Look for `+page.svelte` file in the directory
+3. Dynamic routes use `[param]` directory syntax
 
 ## Finding Layouts
 
 ### Layout Components
 
-Layouts are in `src/layouts/`:
+Layouts are in `src/routes/`:
 
-- `src/layouts/Layout.astro` - Base layout
-- `src/layouts/BlogLayout.astro` - Blog-specific layout
+- `src/routes/+layout.svelte` - Root layout
+- `src/routes/blog/+layout.svelte` - Blog-specific layout (if exists)
 
 ### Finding a Layout
 
-1. Check `src/layouts/` for layout files
-2. Check page files to see which layout they use
-3. Layouts wrap page content with common structure
+1. Check `src/routes/` for `+layout.svelte` files
+2. Layouts wrap page content with common structure
+3. Root layout applies to all pages
 
 ## Finding Utilities
 
 ### Utility Functions
 
-Utilities are in `src/utils/` (if used):
+Utilities are in `src/lib/utils/` (if used):
 
-- `src/utils/date.ts` - Date utilities
-- `src/utils/format.ts` - Formatting utilities
-- `src/utils/validation.ts` - Validation utilities
+- `src/lib/utils/date.ts` - Date utilities
+- `src/lib/utils/format.ts` - Formatting utilities
+- `src/lib/utils/validation.ts` - Validation utilities
 
 ### Finding a Utility
 
-1. Check `src/utils/` for utility files
+1. Check `src/lib/utils/` for utility files
 2. Use IDE search to find function usage
 3. Check imports in components that use the utility
 
@@ -70,89 +69,62 @@ Utilities are in `src/utils/` (if used):
 
 ### Global Styles
 
-Global styles are in `src/styles/`:
+Global styles are in `src/`:
 
-- `src/styles/global.css` - Global styles
-- `src/styles/variables.css` - CSS variables (if used)
+- `src/app.css` - Global styles
 
 ### Component Styles
 
-- **Astro components**: Styles in `<style>` tag (scoped by default)
-- **React components**: CSS modules or Tailwind classes
+- **Svelte components**: Styles in `<style>` tag (scoped by default)
 - **Tailwind**: Utility classes in component templates
 
 ### Finding Styles
 
-1. Check `src/styles/` for global styles
+1. Check `src/app.css` for global styles
 2. Check component files for scoped styles
-3. Check `tailwind.config.js` for Tailwind configuration
+3. Check Tailwind configuration if using custom theme
 
 ## Finding Assets
 
 ### Static Assets
 
-Assets are in `src/assets/`:
+Assets are in `static/`:
 
-- `src/assets/images/` - Images
-- `src/assets/fonts/` - Fonts
-
-### Public Assets
-
-Public assets are in `public/`:
-
-- `public/favicon.svg` - Favicon
-- `public/images/` - Public images
+- `static/favicon.svg` - Favicon
+- `static/images/` - Public images
 
 ### Finding Assets
 
-1. Check `src/assets/` for processed assets
-2. Check `public/` for static assets
-3. Assets in `src/assets/` are processed by Astro
-4. Assets in `public/` are served as-is
+1. Check `static/` for static assets
+2. Assets in `static/` are served as-is
+3. Reference with `/` path (e.g., `/images/logo.svg`)
 
-## Finding Context Providers
+## Finding Stores
 
-### React Context
+### Svelte Stores
 
-Context providers are in `src/contexts/` (if used):
+Stores are in `src/lib/stores/`:
 
-- `src/contexts/ThemeContext.tsx` - Theme context
-- `src/contexts/DataContext.tsx` - Data context
+- `src/lib/stores/theme.ts` - Theme store
+- `src/lib/stores/counter.ts` - Counter store (if exists)
 
-### Finding Context
+### Finding Stores
 
-1. Check `src/contexts/` for context files
-2. Search for `createContext` usage
-3. Check components that use `useContext`
-
-## Finding Hooks
-
-### Custom Hooks
-
-Custom hooks are in `src/hooks/` (if used):
-
-- `src/hooks/useLocalStorage.ts` - LocalStorage hook
-- `src/hooks/useCounter.ts` - Counter hook
-
-### Finding Hooks
-
-1. Check `src/hooks/` for hook files
-2. Hooks typically start with `use` prefix
-3. Search for hook usage in components
+1. Check `src/lib/stores/` for store files
+2. Search for `writable`, `readable`, or `derived` usage
+3. Check components that use `$store` syntax
 
 ## Quick Reference
 
 | What | Where |
 |------|-------|
-| Pages | `src/pages/` |
-| Components | `src/components/` |
-| Layouts | `src/layouts/` |
-| Utilities | `src/utils/` |
-| Styles | `src/styles/` |
-| Assets | `src/assets/` |
-| Public | `public/` |
-| Contexts | `src/contexts/` |
-| Hooks | `src/hooks/` |
+| Pages | `src/routes/*/+page.svelte` |
+| Components | `src/lib/components/` |
+| Layouts | `src/routes/+layout.svelte` |
+| Utilities | `src/lib/utils/` |
+| Styles | `src/app.css` |
+| Assets | `static/` |
+| Stores | `src/lib/stores/` |
 
 ## Search Tips
 

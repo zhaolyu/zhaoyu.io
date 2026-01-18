@@ -9,35 +9,25 @@ This guide provides comprehensive documentation for writing tests in the zhaoyu.
 The project uses Vitest as the test runner. Configuration is typically in `vitest.config.ts` or `package.json`:
 
 - **Test Environment**: `jsdom` (browser-like environment)
-- **Test Match**: `**/*.{test,spec}.{ts,tsx,js,jsx}`
+- **Test Match**: `**/*.{test,spec}.{ts,js}`
 - **Coverage**: Enabled via `--coverage` flag
 
-### React Testing Library
+### Svelte Testing Library
 
-**Preferred** for React component testing:
+**Preferred** for Svelte component testing:
 
 ```typescript
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-```
-
-### Astro Testing
-
-For Astro components, use `@astrojs/testing-library` (if available) or test the rendered output:
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { render } from '@astrojs/testing-library';
-import Welcome from '../components/Welcome.astro';
 ```
 
 ## Test File Conventions
 
 ### Naming
 
-- Use `*.test.ts`, `*.test.tsx`, `*.test.js`, or `*.spec.ts` extension
+- Use `*.test.ts`, `*.test.js`, or `*.spec.ts` extension
 - Co-locate tests with source files
-- Example: `Button.test.tsx` for `Button.tsx`
+- Example: `Button.test.ts` for `Button.svelte`
 
 ### Location
 
@@ -45,9 +35,10 @@ Tests are **co-located** with their source files:
 
 ```
 src/
-  components/
-    Button.tsx
-    Button.test.tsx  ← Test file here
+  lib/
+    components/
+      Button.svelte
+      Button.test.ts  ← Test file here
 ```
 
 ### Test Structure
@@ -58,75 +49,56 @@ Organize tests using `describe` blocks:
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('ComponentName', () => {
-  beforeEach(() => {
-    // Setup
-  });
+	beforeEach(() => {
+		// Setup
+	});
 
-  afterEach(() => {
-    // Cleanup
-  });
+	afterEach(() => {
+		// Cleanup
+	});
 
-  describe('Rendering', () => {
-    it('should render correctly', () => {
-      // Test
-    });
-  });
+	describe('Rendering', () => {
+		it('should render correctly', () => {
+			// Test
+		});
+	});
 
-  describe('User Interactions', () => {
-    it('should handle click events', () => {
-      // Test
-    });
-  });
+	describe('User Interactions', () => {
+		it('should handle click events', () => {
+			// Test
+		});
+	});
 });
 ```
 
 ## Testing Patterns by Code Type
 
-### React Components
+### Svelte Components
 
-**Preferred: React Testing Library**
+**Preferred: Svelte Testing Library**
 
 Focus on testing user-visible behavior:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import Button from './Button';
+import Button from './Button.svelte';
 
 describe('Button', () => {
-  it('should render with label', () => {
-    render(<Button label="Click me" />);
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
+	it('should render with label', () => {
+		render(Button, { props: { label: 'Click me' } });
+		expect(screen.getByText('Click me')).toBeInTheDocument();
+	});
 
-  it('should handle click events', () => {
-    const handleClick = vi.fn();
-    render(<Button label="Click me" onClick={handleClick} />);
-    
-    fireEvent.click(screen.getByText('Click me'));
-    
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-});
-```
+	it('should handle click events', async () => {
+		const handleClick = vi.fn();
+		render(Button, { props: { label: 'Click me', onClick: handleClick } });
 
-### Astro Components
+		await fireEvent.click(screen.getByText('Click me'));
 
-Test Astro components by rendering them:
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { render } from '@astrojs/testing-library';
-import Welcome from '../components/Welcome.astro';
-
-describe('Welcome', () => {
-  it('should render correctly', async () => {
-    const result = await render(Welcome, {
-      props: { name: 'John' },
-    });
-    expect(result.html()).toContain('John');
-  });
+		expect(handleClick).toHaveBeenCalledTimes(1);
+	});
 });
 ```
 
@@ -136,39 +108,38 @@ Test pure functions with various inputs:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { formatDate } from '../utils/date';
+import { formatDate } from '$lib/utils/date';
 
 describe('formatDate', () => {
-  it('should format date correctly', () => {
-    const date = new Date('2024-01-01');
-    expect(formatDate(date, 'MM/DD/YYYY')).toBe('01/01/2024');
-  });
+	it('should format date correctly', () => {
+		const date = new Date('2024-01-01');
+		expect(formatDate(date, 'MM/DD/YYYY')).toBe('01/01/2024');
+	});
 
-  it('should handle invalid dates', () => {
-    expect(() => formatDate('invalid', 'MM/DD/YYYY')).toThrow();
-  });
+	it('should handle invalid dates', () => {
+		expect(() => formatDate('invalid' as any, 'MM/DD/YYYY')).toThrow();
+	});
 });
 ```
 
-### Custom Hooks
+### Stores
 
-Test custom hooks using React Testing Library hooks utilities:
+Test Svelte stores by subscribing and checking values:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useCounter } from '../hooks/useCounter';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { get } from 'svelte/store';
+import { count } from '$lib/stores/counter';
 
-describe('useCounter', () => {
-  it('should increment count', () => {
-    const { result } = renderHook(() => useCounter());
-    
-    act(() => {
-      result.current.increment();
-    });
-    
-    expect(result.current.count).toBe(1);
-  });
+describe('count store', () => {
+	beforeEach(() => {
+		count.set(0);
+	});
+
+	it('should increment', () => {
+		count.update((n) => n + 1);
+		expect(get(count)).toBe(1);
+	});
 });
 ```
 
@@ -181,8 +152,8 @@ Use `vi.mock()` for entire modules:
 ```typescript
 import { vi } from 'vitest';
 
-vi.mock('../utils/api', () => ({
-  fetchData: vi.fn(() => Promise.resolve({ data: 'test' })),
+vi.mock('$lib/utils/api', () => ({
+	fetchData: vi.fn(() => Promise.resolve({ data: 'test' }))
 }));
 ```
 
@@ -195,9 +166,9 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 
 const server = setupServer(
-  rest.get('/api/data', (req, res, ctx) => {
-    return res(ctx.json({ data: 'test' }));
-  })
+	rest.get('/api/data', (req, res, ctx) => {
+		return res(ctx.json({ data: 'test' }));
+	})
 );
 
 beforeAll(() => server.listen());
@@ -209,10 +180,10 @@ afterAll(() => server.close());
 
 ```typescript
 const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
+	getItem: vi.fn(),
+	setItem: vi.fn(),
+	removeItem: vi.fn(),
+	clear: vi.fn()
 };
 
 global.localStorage = localStorageMock as any;
@@ -231,7 +202,7 @@ npm run test:watch
 npm test -- --coverage
 
 # Run specific test file
-npm test -- Button.test.tsx
+npm test -- Button.test.ts
 ```
 
 ## Best Practices
@@ -263,11 +234,11 @@ npm test -- --coverage
 
 ```typescript
 it('should handle async operations', async () => {
-  render(<AsyncComponent />);
-  
-  await waitFor(() => {
-    expect(screen.getByText('Loaded')).toBeInTheDocument();
-  });
+	render(<AsyncComponent />);
+
+	await waitFor(() => {
+		expect(screen.getByText('Loaded')).toBeInTheDocument();
+	});
 });
 ```
 
@@ -275,23 +246,23 @@ it('should handle async operations', async () => {
 
 ```typescript
 it('should update input value', () => {
-  render(<Form />);
-  const input = screen.getByLabelText('Name');
-  
-  fireEvent.change(input, { target: { value: 'John' } });
-  
-  expect(input).toHaveValue('John');
+	render(Form);
+	const input = screen.getByLabelText('Name');
+
+	fireEvent.change(input, { target: { value: 'John' } });
+
+	expect(input).toHaveValue('John');
 });
 ```
 
-### Testing Context Providers
+### Testing Store Subscriptions
 
 ```typescript
-it('should provide context value', () => {
-  const { result } = renderHook(() => useTheme(), {
-    wrapper: ThemeProvider,
-  });
-  
-  expect(result.current.theme).toBe('light');
+it('should update when store changes', () => {
+	const { component } = render(Component);
+	
+	theme.set('dark');
+	
+	expect(screen.getByText('Dark mode')).toBeInTheDocument();
 });
 ```

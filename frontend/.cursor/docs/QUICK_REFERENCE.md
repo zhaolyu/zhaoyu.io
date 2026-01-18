@@ -8,13 +8,12 @@ Quick lookup guide for common paths, commands, and patterns in the zhaoyu.io por
 
 | Path | Purpose |
 |------|---------|
-| `src/pages/` | File-based routing (pages) |
-| `src/components/` | Reusable components |
-| `src/layouts/` | Layout components |
-| `src/styles/` | Global styles |
-| `src/assets/` | Processed assets |
-| `public/` | Static public assets |
-| `astro.config.mjs` | Astro configuration |
+| `src/routes/` | File-based routing (pages) |
+| `src/lib/components/` | Reusable components |
+| `src/routes/+layout.svelte` | Root layout component |
+| `src/app.css` | Global styles |
+| `static/` | Static public assets |
+| `svelte.config.js` | SvelteKit configuration |
 | `package.json` | Dependencies and scripts |
 | `tsconfig.json` | TypeScript configuration |
 
@@ -22,9 +21,8 @@ Quick lookup guide for common paths, commands, and patterns in the zhaoyu.io por
 
 | Path | Purpose |
 |------|---------|
-| `src/utils/` | Utility functions |
-| `src/contexts/` | React Context providers |
-| `src/hooks/` | Custom React hooks |
+| `src/lib/utils/` | Utility functions |
+| `src/lib/stores/` | Svelte stores |
 
 ## Development Commands
 
@@ -44,6 +42,9 @@ npm run preview
 ### Code Quality
 
 ```bash
+# Run type check
+npm run check
+
 # Run lint
 npm run lint
 
@@ -69,128 +70,95 @@ npm test -- --coverage
 
 ## Common Patterns
 
-### Astro Component
+### Svelte Component
 
-```astro
----
-interface Props {
-  title: string;
-}
+```svelte
+<script lang="ts">
+	interface Props {
+		title: string;
+	}
 
-const { title } = Astro.props;
----
+	let { title }: Props = $props();
+</script>
 
 <div class="card">
-  <h2>{title}</h2>
+	<h2>{title}</h2>
 </div>
 
 <style>
-  .card {
-    padding: 1rem;
-  }
+	.card {
+		padding: 1rem;
+	}
 </style>
 ```
 
-### React Component
+### Using a Component
+
+```svelte
+<script lang="ts">
+	import Button from '$lib/components/Button.svelte';
+</script>
+
+<Button label="Click me" />
+```
+
+### Data Fetching (Load Function)
 
 ```typescript
-import React from 'react';
-
-interface ButtonProps {
-  label: string;
-  onClick?: () => void;
+// src/routes/projects/+page.ts
+export async function load() {
+	const data = await fetch('https://api.example.com/data')
+		.then((res) => res.json());
+	return { data };
 }
-
-const Button: React.FC<ButtonProps> = ({ label, onClick }) => (
-  <button onClick={onClick}>{label}</button>
-);
-
-export default Button;
-```
-
-### Using React in Astro
-
-```astro
----
-import Button from '../components/Button';
----
-
-<Button client:load label="Click me" />
-```
-
-### Data Fetching (Build Time)
-
-```astro
----
-const data = await fetch('https://api.example.com/data')
-  .then(res => res.json());
----
-
-<div>{data.title}</div>
 ```
 
 ### Data Fetching (Client Side)
 
-```typescript
-import { useState, useEffect } from 'react';
+```svelte
+<script lang="ts">
+	import { onMount } from 'svelte';
 
-const Component = () => {
-  const [data, setData] = useState(null);
+	let data: any = null;
 
-  useEffect(() => {
-    fetch('/api/data')
-      .then(res => res.json())
-      .then(setData);
-  }, []);
+	onMount(async () => {
+		const res = await fetch('/api/data');
+		data = await res.json();
+	});
+</script>
 
-  return <div>{data?.title}</div>;
-};
+{#if data}
+	<div>{data.title}</div>
+{/if}
 ```
 
 ## File-Based Routing
 
 | File | Route |
 |------|-------|
-| `src/pages/index.astro` | `/` |
-| `src/pages/about.astro` | `/about` |
-| `src/pages/projects/index.astro` | `/projects` |
-| `src/pages/projects/[slug].astro` | `/projects/[slug]` |
-
-## Client Directives
-
-| Directive | When to Load |
-|-----------|--------------|
-| `client:load` | Immediately |
-| `client:idle` | When browser is idle |
-| `client:visible` | When element is visible |
-| `client:media="(max-width: 768px)"` | When media query matches |
+| `src/routes/+page.svelte` | `/` |
+| `src/routes/about/+page.svelte` | `/about` |
+| `src/routes/projects/+page.svelte` | `/projects` |
+| `src/routes/projects/[slug]/+page.svelte` | `/projects/[slug]` |
 
 ## Styling
 
 ### Tailwind CSS
 
-```astro
+```svelte
 <div class="flex items-center justify-between p-4 bg-white rounded-lg">
-  <h2 class="text-2xl font-bold">Title</h2>
+	<h2 class="text-2xl font-bold">Title</h2>
 </div>
 ```
 
-### Scoped Styles (Astro)
+### Scoped Styles (Svelte)
 
-```astro
+```svelte
 <style>
-  .card {
-    padding: 1rem;
-  }
+	.card {
+		padding: 1rem;
+	}
 </style>
-```
-
-### CSS Modules (React)
-
-```typescript
-import styles from './Button.module.css';
-
-<button className={styles.button}>Click me</button>
 ```
 
 ## TypeScript
@@ -199,9 +167,9 @@ import styles from './Button.module.css';
 
 ```typescript
 interface Props {
-  title: string;
-  description?: string;
-  count: number;
+	title: string;
+	description?: string;
+	count: number;
 }
 ```
 
@@ -209,7 +177,7 @@ interface Props {
 
 ```typescript
 const formatDate = (date: Date, format: string): string => {
-  // Implementation
+	// Implementation
 };
 ```
 
@@ -227,22 +195,15 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
 ## Common Imports
 
-### Astro Components
+### Svelte Components
 
-```astro
----
-import Layout from '../layouts/Layout.astro';
-import Button from '../components/Button';
-import { formatDate } from '../utils/date';
----
-```
-
-### React Components
-
-```typescript
-import React from 'react';
-import { useState, useEffect } from 'react';
-import Button from '../components/Button';
+```svelte
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { theme } from '$lib/stores/theme';
+	import Button from '$lib/components/Button.svelte';
+	import '../app.css';
+</script>
 ```
 
 ## Testing
@@ -251,21 +212,21 @@ import Button from '../components/Button';
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import Button from './Button';
+import { render, screen } from '@testing-library/svelte';
+import Button from './Button.svelte';
 
 describe('Button', () => {
-  it('should render correctly', () => {
-    render(<Button label="Click me" />);
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
+	it('should render correctly', () => {
+		render(Button, { props: { label: 'Click me' } });
+		expect(screen.getByText('Click me')).toBeInTheDocument();
+	});
 });
 ```
 
 ## Deployment
 
 1. Build: `npm run build`
-2. Deploy `dist/` directory to hosting provider
+2. Deploy `build/` directory to hosting provider
 3. Set environment variables in hosting dashboard
 
 ## Troubleshooting
@@ -278,6 +239,6 @@ npm run dev -- --port 3000
 
 ### Build Errors
 
-1. Check TypeScript: `npm run build`
+1. Check TypeScript: `npm run check`
 2. Check lint: `npm run lint`
 3. Review error messages

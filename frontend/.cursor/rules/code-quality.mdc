@@ -23,8 +23,7 @@ This rule applies to **ALL code changes** that you intend to keep, including:
 - ✅ Refactoring (see also [.cursor/rules/refactoring.mdc](mdc:.cursor/rules/refactoring.mdc))
 - ✅ Component modifications
 - ✅ Utility function additions/changes
-- ✅ Context provider changes
-- ✅ Hook implementations
+- ✅ Store changes
 - ✅ Any code that will be committed or saved
 
 ## Verification Workflow

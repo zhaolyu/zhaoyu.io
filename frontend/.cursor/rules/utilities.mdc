@@ -6,7 +6,7 @@ alwaysApply: true
 
 ## MANDATORY: Check Utilities Before Writing New Code
 
-**CRITICAL RULE**: Before writing ANY utility function, helper function, or shared code, you MUST first check if similar functionality already exists in `src/utils/` or `src/utilities/`.
+**CRITICAL RULE**: Before writing ANY utility function, helper function, or shared code, you MUST first check if similar functionality already exists in `src/lib/utils/` or `src/lib/utilities/`.
 
 ## Why This Matters
 
@@ -27,9 +27,9 @@ Use IDE search (`Cmd+Shift+F` / `Ctrl+Shift+F`) to search for:
 - Related keywords (e.g., "time", "date", "string", "number")
 
 ### 2. Browse the Directory
-Explore `src/utils/` or `src/utilities/` to see what's available:
+Explore `src/lib/utils/` or `src/lib/utilities/` to see what's available:
 ```bash
-ls src/utils/
+ls src/lib/utils/
 ```
 
 ### 3. Use Semantic Search
@@ -52,7 +52,7 @@ const formatDate = (date: Date) => {
 };
 
 // ✅ DO check and use existing utility
-import { formatDate } from '../utils/date';
+import { formatDate } from '$lib/utils/date';
 ```
 
 ## When to Extend Existing Utilities
@@ -66,13 +66,13 @@ If an existing utility is close but not quite right:
 ## When to Create New Utilities
 
 Create a new utility ONLY when:
-- No similar functionality exists in `src/utils/` or `src/utilities/`
+- No similar functionality exists in `src/lib/utils/` or `src/lib/utilities/`
 - The functionality is reusable across multiple components
 - The functionality is pure (no side effects) or has well-defined side effects
 - The functionality is testable in isolation
 
 **Before creating, verify:**
-1. ✅ Searched `src/utils/` and `src/utilities/` thoroughly
+1. ✅ Searched `src/lib/utils/` and `src/lib/utilities/` thoroughly
 2. ✅ Used semantic search to find similar code
 3. ✅ Confirmed no existing utility can be extended
 
@@ -95,7 +95,7 @@ const formatDate = (date: Date) => {
 };
 
 // ✅ DO check and use existing
-import { formatDate } from '../utils/date';
+import { formatDate } from '$lib/utils/date';
 const formatted = formatDate(new Date());
 ```
 
@@ -107,7 +107,7 @@ const truncate = (str: string, maxLength: number) => {
 };
 
 // ✅ DO check and use existing
-import { truncateString } from '../utils/string';
+import { truncateString } from '$lib/utils/string';
 const truncated = truncateString(longString, 100);
 ```
 
