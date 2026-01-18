@@ -1,5 +1,5 @@
 ---
-globs: **/*.ts,**/*.tsx,**/*.astro,**/*.js,**/*.jsx
+globs: **/*.ts,**/*.js,**/*.svelte
 ---
 
 # Code Generation Workflow
@@ -34,7 +34,7 @@ Apply these principles when writing or refactoring code:
 - ❌ **Avoid**: Duplicating code that already exists
 - ❌ **Avoid**: Copy-pasting similar logic in multiple places
 
-**MANDATORY**: Before writing ANY utility function, check `src/utils/` or `src/utilities/` first. See [.cursor/rules/utilities.mdc](mdc:.cursor/rules/utilities.mdc) for details.
+**MANDATORY**: Before writing ANY utility function, check `src/lib/utils/` or `src/lib/utilities/` first. See [.cursor/rules/utilities.mdc](mdc:.cursor/rules/utilities.mdc) for details.
 
 #### 3. Keep It Simple (KISS)
 - ✅ **Simple, straightforward solutions over complex ones**
@@ -52,16 +52,15 @@ Apply these principles when writing or refactoring code:
 #### 5. Separation of Concerns
 - ✅ **Separate data fetching from rendering**
 - ✅ **Separate business logic from UI**
-- ✅ **Use Astro for static content, React for interactivity**
+- ✅ **Use Svelte stores for shared state, components for UI**
 - ❌ **Avoid**: Mixing concerns in a single component/function
 
 ## When to Write Tests
 
 Write tests for:
-- ✅ **New components** - Astro and React components need test files
+- ✅ **New components** - Svelte components need test files
 - ✅ **New utilities** - Utility functions need test files
-- ✅ **New hooks** - Custom hooks need test files
-- ✅ **New contexts** - Context providers need test files
+- ✅ **New stores** - Svelte stores need test files
 - ❌ **Style files (CSS)** - No tests needed (but lint is required)
 - ❌ **Configuration files** - No tests needed (but lint is required)
 
@@ -75,7 +74,7 @@ Write tests for:
 
 After writing new code, determine if tests are needed. If tests are needed:
 
-1. Create a test file co-located with the source file (e.g., `Component.test.tsx` for `Component.tsx`)
+1. Create a test file co-located with the source file (e.g., `Component.test.ts` for `Component.svelte`)
 2. Write comprehensive tests following [.cursor/rules/testing.mdc](mdc:.cursor/rules/testing.mdc)
 3. Aim for **at least 90% coverage** (statements, branches, functions, lines) for the source file
 
@@ -119,7 +118,7 @@ npm run lint:fix
 ```
 
 **IMPORTANT RULES**:
-- ✅ **DO**: Run lint for ALL new code (TypeScript, JavaScript, Astro, and CSS)
+- ✅ **DO**: Run lint for ALL new code (TypeScript, JavaScript, Svelte, and CSS)
 - ✅ **DO**: Fix all linting errors before completing the task
 - ✅ **DO**: Use `npm run lint:fix` to auto-fix issues when possible
 - ❌ **NEVER**: Skip linting, even if tests pass

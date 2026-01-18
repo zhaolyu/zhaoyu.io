@@ -4,165 +4,287 @@
 
 ```
 zhaoyu.io/
-├── frontend/
+├── frontend-svelte/
 │   ├── .cursor/              # Cursor AI documentation and rules
-│   ├── public/               # Static assets (images, fonts, etc.)
+│   ├── static/               # Static assets (images, fonts, etc.)
 │   ├── src/
-│   │   ├── assets/          # Assets processed by Astro
-│   │   ├── components/      # Reusable components (Astro and React)
-│   │   ├── layouts/         # Layout components
-│   │   ├── pages/           # File-based routing (Astro pages)
-│   │   ├── styles/          # Global styles
-│   │   └── utils/           # Utility functions (optional)
-│   ├── astro.config.mjs     # Astro configuration
-│   ├── package.json         # Dependencies and scripts
-│   ├── tsconfig.json        # TypeScript configuration
-│   └── tailwind.config.js   # Tailwind CSS configuration (if used)
+│   │   ├── lib/              # Shared code
+│   │   │   ├── components/   # Reusable components
+│   │   │   │   ├── ui/       # Base UI components (Button, Card, etc.)
+│   │   │   │   ├── layout/   # Layout components (Navbar, Footer, ThemeToggle)
+│   │   │   │   └── features/ # Feature-specific shared components
+│   │   │   ├── stores/        # Svelte stores (theme, user, etc.)
+│   │   │   ├── utils/        # Utility functions (date, format, validation)
+│   │   │   ├── services/     # API clients & external services
+│   │   │   │   └── api/      # API client and endpoints
+│   │   │   ├── types/        # TypeScript type definitions
+│   │   │   └── constants/    # Shared constants (routes, config)
+│   │   ├── routes/           # File-based routing
+│   │   │   ├── +layout.svelte # Root layout
+│   │   │   ├── +layout.ts     # Root layout data
+│   │   │   ├── +page.svelte   # Home page (/)
+│   │   │   ├── +error.svelte  # Global error page
+│   │   │   ├── about/
+│   │   │   │   └── +page.svelte # About page (/about)
+│   │   │   ├── blog/          # Feature: Blog
+│   │   │   │   ├── +layout.svelte # Blog-specific layout
+│   │   │   │   ├── +page.svelte   # Blog listing
+│   │   │   │   ├── [slug]/
+│   │   │   │   │   ├── +page.svelte # Blog post detail
+│   │   │   │   │   └── +page.ts     # Data loading
+│   │   │   │   └── components/      # Blog-specific components
+│   │   │   ├── api-demo/      # Feature: API Demo
+│   │   │   │   ├── +page.svelte
+│   │   │   │   └── components/
+│   │   │   ├── comparison/    # Feature: Comparison
+│   │   │   │   ├── +page.svelte
+│   │   │   │   └── components/
+│   │   │   └── api/           # API routes organized by feature
+│   │   │       ├── test/      # Legacy endpoint
+│   │   │       ├── demo/      # Demo API endpoint
+│   │   │       └── blog/      # Blog API endpoint
+│   │   ├── app.html          # HTML template
+│   │   ├── app.css           # Global styles
+│   │   └── app.d.ts          # TypeScript app types
+│   ├── svelte.config.js      # SvelteKit configuration
+│   ├── vite.config.js        # Vite configuration
+│   ├── package.json          # Dependencies and scripts
+│   └── tsconfig.json         # TypeScript configuration
 ```
 
 ## Source Directory (`src/`)
 
-### `src/pages/`
+### `src/routes/`
 
-File-based routing in Astro. Each file in this directory becomes a route.
+File-based routing in SvelteKit. Each directory with a `+page.svelte` file becomes a route.
 
 **Structure**:
-- `index.astro` → `/`
-- `about.astro` → `/about`
-- `projects/index.astro` → `/projects`
-- `projects/[slug].astro` → `/projects/[slug]` (dynamic route)
+- `+page.svelte` → `/` (home)
+- `about/+page.svelte` → `/about`
+- `blog/+page.svelte` → `/blog`
+- `blog/[slug]/+page.svelte` → `/blog/[slug]` (dynamic route)
+
+**Feature-based Organization**:
+Routes are organized by feature, with feature-specific components co-located:
+- `blog/` - Blog feature with listing, detail pages, and components
+- `api-demo/` - API demo feature with its own components
+- `comparison/` - Comparison feature with its own components
 
 **Example**:
-```astro
----
-// src/pages/index.astro
-import Layout from '../layouts/Layout.astro';
----
+```svelte
+<!-- src/routes/+page.svelte -->
+<script lang="ts">
+	import '../app.css';
+</script>
 
-<Layout title="Home">
-  <h1>Welcome</h1>
-</Layout>
+<h1>Welcome</h1>
 ```
 
-### `src/components/`
+### `src/lib/components/`
 
-Reusable components (both Astro and React).
+Reusable Svelte components organized by purpose.
 
 **Structure**:
 ```
-components/
-├── Welcome.astro          # Astro component
-├── Button.tsx             # React component
-├── ProjectCard.astro     # Astro component
-└── Navigation.tsx         # React component
+lib/
+├── components/
+│   ├── ui/                   # Base UI components (Button, Card, etc.)
+│   │   ├── Button.svelte
+│   │   ├── Card.svelte
+│   │   └── index.ts          # Barrel exports
+│   ├── layout/               # Layout components
+│   │   ├── Navbar.svelte
+│   │   ├── ThemeToggle.svelte
+│   │   └── index.ts          # Barrel exports
+│   └── features/             # Feature-specific shared components
+│       └── api-demo/
+│           └── index.ts
 ```
+
+**Component Hierarchy**:
+1. **UI Components** (`lib/components/ui/`) - Generic, reusable components with no business logic
+2. **Layout Components** (`lib/components/layout/`) - Site-wide layout elements (Navbar, Footer, ThemeToggle)
+3. **Feature Components** (`lib/components/features/` or `routes/[feature]/components/`) - Feature-specific components
 
 **Naming**:
-- Astro components: PascalCase (e.g., `Welcome.astro`)
-- React components: PascalCase (e.g., `Button.tsx`)
-
-### `src/layouts/`
-
-Layout components that wrap pages.
-
-**Structure**:
-```
-layouts/
-├── Layout.astro           # Base layout
-└── BlogLayout.astro       # Blog-specific layout
-```
+- Svelte components: PascalCase (e.g., `Welcome.svelte`, `BlogCard.svelte`)
+- Use barrel exports (`index.ts`) for clean imports
 
 **Example**:
-```astro
----
-// src/layouts/Layout.astro
-interface Props {
-  title: string;
-}
+```svelte
+<!-- Using layout components -->
+<script lang="ts">
+	import { Navbar, ThemeToggle } from '$lib/components/layout';
+</script>
 
-const { title } = Astro.props;
----
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>{title}</title>
-  </head>
-  <body>
-    <slot />
-  </body>
-</html>
+<Navbar />
+<ThemeToggle />
 ```
 
-### `src/assets/`
+### `src/routes/+layout.svelte`
 
-Assets processed by Astro (images, fonts, etc.).
+Root layout component that wraps all pages.
+
+**Structure**:
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script lang="ts">
+	import '../app.css';
+	import { Navbar } from '$lib/components/layout';
+</script>
+
+<Navbar />
+
+<slot />
+```
+
+### `src/lib/stores/`
+
+Svelte stores for shared global state.
 
 **Structure**:
 ```
-assets/
-├── images/
-│   ├── logo.svg
-│   └── hero.jpg
-└── fonts/
-    └── custom-font.woff2
-```
-
-**Usage**:
-```astro
----
-import logo from '../assets/images/logo.svg';
----
-
-<img src={logo} alt="Logo" />
-```
-
-### `src/styles/`
-
-Global styles and CSS files.
-
-**Structure**:
-```
-styles/
-├── global.css             # Global styles
-└── variables.css          # CSS variables (if used)
-```
-
-**Usage**:
-```astro
----
-import '../styles/global.css';
----
-```
-
-### `src/utils/` (Optional)
-
-Utility functions and helpers.
-
-**Structure**:
-```
-utils/
-├── date.ts                # Date utilities
-├── format.ts              # Formatting utilities
-└── validation.ts          # Validation utilities
+lib/
+└── stores/
+    ├── theme.ts              # Theme store
+    └── index.ts              # Barrel exports
 ```
 
 **Example**:
 ```typescript
-// src/utils/date.ts
-export const formatDate = (date: Date, format: string): string => {
-  // Implementation
-};
+// src/lib/stores/theme.ts
+import { writable } from 'svelte/store';
+
+export const theme = createThemeStore();
 ```
 
-## Public Directory (`public/`)
+**Usage**:
+```typescript
+import { theme } from '$lib/stores';
+```
 
-Static assets served as-is (not processed by Astro).
+### `src/lib/utils/`
+
+Utility functions and helpers (pure functions, no side effects).
 
 **Structure**:
 ```
-public/
+lib/
+└── utils/
+    ├── date.ts               # Date formatting utilities
+    ├── format.ts             # General formatting utilities
+    ├── validation.ts         # Validation helpers
+    └── index.ts             # Barrel exports
+```
+
+**Example**:
+```typescript
+// src/lib/utils/date.ts
+export function formatDate(date: Date | string, format: 'short' | 'long' = 'short'): string {
+	// Implementation
+}
+```
+
+**Usage**:
+```typescript
+import { formatDate, getRelativeTime } from '$lib/utils';
+```
+
+### `src/lib/services/`
+
+API clients and external service integrations.
+
+**Structure**:
+```
+lib/
+└── services/
+    ├── api/
+    │   ├── client.ts         # Base API client
+    │   └── endpoints.ts      # API endpoint definitions
+    └── index.ts             # Barrel exports
+```
+
+**Example**:
+```typescript
+// src/lib/services/api/client.ts
+export class ApiClient {
+	async get<T>(endpoint: string): Promise<T> {
+		// Implementation
+	}
+}
+```
+
+**Usage**:
+```typescript
+import { apiClient } from '$lib/services';
+import { API_ENDPOINTS } from '$lib/services/api/endpoints';
+```
+
+### `src/lib/types/`
+
+TypeScript type definitions.
+
+**Structure**:
+```
+lib/
+└── types/
+    ├── api.ts               # API response types
+    ├── common.ts            # Common types (Theme, Route, etc.)
+    └── index.ts             # Barrel exports
+```
+
+**Example**:
+```typescript
+// src/lib/types/api.ts
+export interface ApiResponse<T = unknown> {
+	data?: T;
+	error?: string;
+}
+```
+
+**Usage**:
+```typescript
+import type { ApiResponse, Theme } from '$lib/types';
+```
+
+### `src/lib/constants/`
+
+Shared constants and configuration.
+
+**Structure**:
+```
+lib/
+└── constants/
+    ├── routes.ts            # Route path constants
+    ├── config.ts            # App configuration
+    └── index.ts             # Barrel exports
+```
+
+**Example**:
+```typescript
+// src/lib/constants/routes.ts
+export const ROUTES = {
+	HOME: '/',
+	ABOUT: '/about',
+	BLOG: '/blog',
+	API_DEMO: '/api-demo',
+	COMPARISON: '/comparison'
+} as const;
+```
+
+**Usage**:
+```typescript
+import { ROUTES } from '$lib/constants';
+import { APP_CONFIG } from '$lib/constants/config';
+```
+
+## Static Directory (`static/`)
+
+Static assets served as-is (not processed by SvelteKit).
+
+**Structure**:
+```
+static/
 ├── favicon.svg
 ├── robots.txt
 └── images/
@@ -170,60 +292,65 @@ public/
 ```
 
 **Usage**:
-```astro
+```svelte
 <img src="/images/og-image.jpg" alt="OG Image" />
 ```
 
 ## File Naming Conventions
 
 ### Components
-- **Astro**: PascalCase (e.g., `Welcome.astro`, `ProjectCard.astro`)
-- **React**: PascalCase (e.g., `Button.tsx`, `Navigation.tsx`)
+- **Svelte**: PascalCase (e.g., `Welcome.svelte`, `ProjectCard.svelte`)
 
 ### Utilities
 - **camelCase** (e.g., `formatDate.ts`, `apiClient.ts`)
 
-### Pages
-- **kebab-case** or **PascalCase** (e.g., `about.astro`, `project-detail.astro`)
+### Routes
+- **kebab-case** directories (e.g., `about/`, `project-detail/`)
+- **+page.svelte** for pages
+- **+layout.svelte** for layouts
+- **+server.ts** for API endpoints
+- **+error.svelte** for error pages
 
 ### Config Files
-- **kebab-case** (e.g., `astro.config.mjs`, `tailwind.config.js`)
+- **kebab-case** (e.g., `svelte.config.js`, `vite.config.js`)
 
 ## Import Paths
+
+### SvelteKit $lib Alias (Recommended)
+
+SvelteKit provides a `$lib` alias that maps to `src/lib/`:
+
+```typescript
+// Using barrel exports for clean imports
+import { formatDate } from '$lib/utils';
+import { theme } from '$lib/stores';
+import { Navbar, ThemeToggle } from '$lib/components/layout';
+import { ROUTES } from '$lib/constants';
+import { apiClient } from '$lib/services';
+import type { ApiResponse } from '$lib/types';
+```
 
 ### Relative Imports
 
 ```typescript
-// From a component
-import Button from '../components/Button';
-import { formatDate } from '../../utils/date';
-```
-
-### Path Aliases (if configured)
-
-If you configure path aliases in `tsconfig.json`:
-
-```json
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  }
-}
-```
-
-Then use:
-```typescript
-import Button from '@/components/Button';
-import { formatDate } from '@/utils/date';
+// From a component within routes
+import Button from '../lib/components/ui/Button.svelte';
+import { formatDate } from '../../lib/utils/date';
 ```
 
 ## Best Practices
 
-1. **Co-locate related files** - Keep component files, styles, and tests together when possible
-2. **Use clear, descriptive names** - File names should clearly indicate their purpose
-3. **Organize by feature** - Group related components and utilities together
-4. **Keep it flat** - Avoid deep nesting unless necessary
-5. **Separate concerns** - Keep Astro components, React components, and utilities separate
+1. **Feature-based organization** - Group routes, components, and API routes by feature
+2. **Co-locate related files** - Keep feature-specific components in feature directories
+3. **Use barrel exports** - Create `index.ts` files for clean imports
+4. **Separate concerns** - Keep UI components, layout components, and feature components separate
+5. **Centralize shared code** - Put reusable utilities, types, and constants in `lib/`
+6. **Use route constants** - Import route paths from `$lib/constants/routes` instead of hardcoding
+7. **Component hierarchy**:
+   - `lib/components/ui/` - Base UI components (Button, Card, etc.)
+   - `lib/components/layout/` - Layout components (Navbar, Footer, etc.)
+   - `lib/components/features/` - Feature-specific shared components
+   - `routes/[feature]/components/` - Page-specific components
+8. **Error handling** - Use `+error.svelte` for error boundaries at route level
+9. **Type safety** - Define types in `lib/types/` and use them throughout the app
+10. **API organization** - Group API routes by feature in `routes/api/[feature]/`

@@ -143,7 +143,7 @@ This rule defines the mandatory requirements and best practices for all refactor
 - **Improve readability**: Make code easier to understand
 - **Reduce complexity**: Break down complex functions/components
 - **Follow SOLID principles**: Apply Single Responsibility, Open/Closed, etc.
-- **Use existing utilities**: Check `src/utils/` before writing new helper functions
+- **Use existing utilities**: Check `src/lib/utils/` or `src/lib/utilities/` before writing new helper functions
 
 #### Testing Strategy
 

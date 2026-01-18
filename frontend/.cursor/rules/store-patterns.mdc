@@ -1,0 +1,203 @@
+---
+globs: **/stores/**/*.ts,**/stores/**/*.js
+---
+
+# Store Patterns
+
+Svelte stores are used for shared state in SvelteKit applications. Stores are located in `src/lib/stores/`.
+
+## Store Types
+
+### Writable Store
+
+For mutable state:
+
+```typescript
+// src/lib/stores/theme.ts
+import { writable } from 'svelte/store';
+
+export const theme = writable<'light' | 'dark'>('light');
+```
+
+### Readable Store
+
+For read-only derived state:
+
+```typescript
+import { readable } from 'svelte/store';
+
+export const time = readable(new Date(), (set) => {
+	const interval = setInterval(() => {
+		set(new Date());
+	}, 1000);
+
+	return () => clearInterval(interval);
+});
+```
+
+### Derived Store
+
+For computed values from other stores:
+
+```typescript
+import { derived } from 'svelte/store';
+import { theme } from './theme';
+
+export const isDark = derived(theme, ($theme) => $theme === 'dark');
+```
+
+## Creating a Store
+
+### Simple Store
+
+```typescript
+// src/lib/stores/counter.ts
+import { writable } from 'svelte/store';
+
+export const count = writable(0);
+```
+
+### Store with Methods
+
+```typescript
+// src/lib/stores/theme.ts
+import { writable } from 'svelte/store';
+
+function createTheme() {
+	const { subscribe, set, update } = writable<'light' | 'dark'>('light');
+
+	return {
+		subscribe,
+		init: () => {
+			if (typeof window !== 'undefined') {
+				const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+				if (stored) {
+					set(stored);
+				}
+			}
+		},
+		toggle: () => {
+			update((current) => {
+				const next = current === 'light' ? 'dark' : 'light';
+				if (typeof window !== 'undefined') {
+					localStorage.setItem('theme', next);
+					document.documentElement.classList.toggle('dark', next === 'dark');
+				}
+				return next;
+			});
+		}
+	};
+}
+
+export const theme = createTheme();
+```
+
+## Using Stores
+
+### Auto-Subscription (Recommended)
+
+Use the `$` prefix for automatic subscription:
+
+```svelte
+<script lang="ts">
+	import { theme } from '$lib/stores/theme';
+
+	// Auto-subscribes and updates when store changes
+	$: isDark = $theme === 'dark';
+</script>
+
+<div class:dark={isDark}>
+	Content
+</div>
+```
+
+### Manual Subscription
+
+For more control:
+
+```svelte
+<script lang="ts">
+	import { onMount, onDestroy } from 'svelte';
+	import { theme } from '$lib/stores/theme';
+
+	let currentTheme: 'light' | 'dark' = 'light';
+	let unsubscribe: () => void;
+
+	onMount(() => {
+		unsubscribe = theme.subscribe((value) => {
+			currentTheme = value;
+		});
+	});
+
+	onDestroy(() => {
+		unsubscribe?.();
+	});
+</script>
+```
+
+### Updating Stores
+
+```svelte
+<script lang="ts">
+	import { count } from '$lib/stores/counter';
+
+	function increment() {
+		count.update((n) => n + 1);
+	}
+
+	function reset() {
+		count.set(0);
+	}
+</script>
+
+<button on:click={increment}>Increment</button>
+<button on:click={reset}>Reset</button>
+```
+
+## Best Practices
+
+1. **Type safety**: Always define TypeScript types for store values
+2. **Store location**: Keep stores in `src/lib/stores/`
+3. **Auto-subscription**: Prefer `$store` syntax for automatic subscription
+4. **Separation**: Keep store logic separate from component logic
+5. **Persistence**: Use stores with localStorage for persistent state
+
+## Store Patterns
+
+### Theme Store Example
+
+```typescript
+// src/lib/stores/theme.ts
+import { writable } from 'svelte/store';
+
+function createTheme() {
+	const { subscribe, set, update } = writable<'light' | 'dark'>('light');
+
+	return {
+		subscribe,
+		init: () => {
+			if (typeof window !== 'undefined') {
+				const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+				if (stored) {
+					set(stored);
+					document.documentElement.classList.toggle('dark', stored === 'dark');
+				}
+			}
+		},
+		toggle: () => {
+			update((current) => {
+				const next = current === 'light' ? 'dark' : 'light';
+				if (typeof window !== 'undefined') {
+					localStorage.setItem('theme', next);
+					document.documentElement.classList.toggle('dark', next === 'dark');
+				}
+				return next;
+			});
+		}
+	};
+}
+
+export const theme = createTheme();
+```
+
+See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for complete store patterns.

@@ -1,13 +1,13 @@
 ---
-globs: *.js,*.jsx,*.ts,*.tsx,*.astro
+globs: *.js,*.ts,*.svelte
 ---
 
 # Coding Conventions
 
 ## ESLint Configuration
 
-- Base: Airbnb config with Prettier (or project-specific config)
-- Parser: TypeScript for `.ts`/`.tsx` files
+- Base: Project-specific config (or SvelteKit recommended config)
+- Parser: TypeScript for `.ts` files, Svelte for `.svelte` files
 - Key rules: no-console (error), semicolons required
 
 ## Prettier
@@ -23,74 +23,71 @@ globs: *.js,*.jsx,*.ts,*.tsx,*.astro
 - **Functions/Variables**: camelCase (`fetchData`, `userName`)
 - **Constants**: UPPER_SNAKE_CASE (`API_BASE_URL`)
 - **Files**: 
-  - Astro components: PascalCase (e.g., `Welcome.astro`)
-  - React components: PascalCase (e.g., `Button.tsx`)
+  - Svelte components: PascalCase (e.g., `Welcome.svelte`)
   - Utilities: camelCase (e.g., `formatDate.ts`)
 
 ## Imports
 
-Use relative imports or path aliases as configured:
+Use SvelteKit's `$lib` alias for lib imports, or relative imports:
 
 ```typescript
 // Relative imports
 import Component from '../components/Component';
-import { formatDate } from '../../utils/date';
+import { formatDate } from '../lib/utils/date';
 
-// Path aliases (if configured)
-import Component from '@/components/Component';
+// SvelteKit $lib alias (recommended)
+import { formatDate } from '$lib/utils/date';
+import { theme } from '$lib/stores/theme';
 ```
 
 ## Component Structure
 
-### Astro Components
+### Svelte Components
 
-```astro
----
-// Component script (TypeScript/JavaScript)
-interface Props {
-  title: string;
-  count?: number;
-}
+```svelte
+<script lang="ts">
+	// Component script (TypeScript)
+	interface Props {
+		title: string;
+		count?: number;
+	}
 
-const { title, count = 0 } = Astro.props;
----
+	let { title, count = 0 }: Props = $props();
+</script>
 
 <div class="component">
-  <h1>{title}</h1>
-  {count > 0 && <p>Count: {count}</p>}
+	<h1>{title}</h1>
+	{#if count > 0}
+		<p>Count: {count}</p>
+	{/if}
 </div>
 
 <style>
-  .component {
-    padding: 1rem;
-  }
+	.component {
+		padding: 1rem;
+	}
 </style>
 ```
 
-### React Components (for client-side interactivity)
+### Svelte Components with Reactivity
 
-```typescript
-import React from 'react';
-import './styles.css';
+```svelte
+<script lang="ts">
+	let count = $state(0);
 
-interface Props {
-  title: string;
-  count?: number;
-}
+	function increment() {
+		count++;
+	}
+</script>
 
-const Component: React.FC<Props> = ({ title, count = 0 }) => (
-  <div className="component">
-    <h1>{title}</h1>
-    {count > 0 && <p>Count: {count}</p>}
-  </div>
-);
-
-export default Component;
+<button on:click={increment}>
+	Clicked {count} times
+</button>
 ```
 
 ## Code Style
 
-- 2 spaces indentation
+- 2 spaces indentation (tabs converted to spaces)
 - Single quotes for strings
 - Always use semicolons
 - Always use braces for if/for/while
@@ -109,7 +106,7 @@ export default Component;
  * @returns Formatted date string
  */
 const formatDate = (date: Date | string, format: string): string => {
-  // Implementation
+	// Implementation
 };
 ```
 

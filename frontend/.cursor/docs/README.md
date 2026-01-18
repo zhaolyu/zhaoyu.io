@@ -43,10 +43,8 @@ Setup and development process:
 ### [Patterns](PATTERNS.md)
 
 Common code patterns and practices:
-- Astro component pattern
-- React component pattern
-- Context provider pattern
-- Custom hook pattern
+- Svelte component pattern
+- Store pattern
 - Data fetching patterns
 - Layout pattern
 - Styling patterns
@@ -56,9 +54,9 @@ Common code patterns and practices:
 ### [Testing](TESTING.md)
 
 Comprehensive testing guide:
-- Test framework setup (Vitest, React Testing Library)
+- Test framework setup (Vitest, Svelte Testing Library)
 - Test file conventions and organization
-- Testing patterns for components, utilities, hooks, and contexts
+- Testing patterns for components, utilities, and stores
 - Mocking strategies
 - Best practices
 
@@ -69,7 +67,7 @@ Comprehensive testing guide:
 Guidelines for finding code in the codebase:
 - Finding components, pages, and layouts
 - Locating utilities and styles
-- Finding assets and contexts
+- Finding assets and stores
 - Search tips
 
 **Start here if**: You're looking for specific code or functionality.
@@ -81,7 +79,6 @@ Quick lookup guide:
 - Development commands
 - Common patterns
 - File-based routing
-- Client directives
 - Styling examples
 
 **Start here if**: You need a quick lookup for paths, commands, or patterns.
@@ -141,4 +138,4 @@ If you can't find what you're looking for:
 
 ---
 
-**Last Updated**: Documentation for zhaoyu.io portfolio site.
+**Last Updated**: Documentation for zhaoyu.io portfolio site (SvelteKit).

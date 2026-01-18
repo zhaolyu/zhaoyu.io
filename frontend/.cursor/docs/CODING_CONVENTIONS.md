@@ -8,8 +8,8 @@ This document outlines the coding standards and conventions used in the zhaoyu.i
 
 ### Base Configuration
 
-- **Extends**: Project-specific ESLint config
-- **Parser**: `@typescript-eslint/parser` for TypeScript files
+- **Extends**: Project-specific ESLint config or SvelteKit recommended config
+- **Parser**: `@typescript-eslint/parser` for TypeScript files, `svelte-eslint-parser` for Svelte files
 - **Environments**: `browser`, `node`
 
 ### Key Rules
@@ -41,16 +41,14 @@ npm run format  # or npm run lint:fix
 **Configuration File**: `tsconfig.json`
 
 - Strict mode enabled
-- Type checking for `.ts` and `.tsx` files
-- Path aliases configured (if used)
+- Type checking for `.ts` and `.svelte` files
+- `$lib` alias configured for `src/lib/`
 
 ## Naming Conventions
 
 ### Components
 
-- **Astro Components**: PascalCase (e.g., `Welcome.astro`, `Layout.astro`)
-- **React Components**: PascalCase (e.g., `Button.tsx`, `ProjectCard.tsx`)
-- **Component files**: Match component name
+- **Svelte Components**: PascalCase (e.g., `Welcome.svelte`, `Layout.svelte`)
 
 ### Functions and Variables
 
@@ -62,103 +60,100 @@ npm run format  # or npm run lint:fix
 
 ### Files and Directories
 
-- **PascalCase** for component files: `Welcome.astro`, `Button.tsx`
+- **PascalCase** for component files: `Welcome.svelte`, `Button.svelte`
 - **camelCase** for utility files: `formatDate.ts`, `apiClient.ts`
-- **kebab-case** for config files: `astro.config.mjs`
+- **kebab-case** for config files: `svelte.config.js`
 
 ## Import Conventions
 
+### SvelteKit $lib Alias (Recommended)
+
+Use SvelteKit's `$lib` alias for imports from `src/lib/`:
+
+```typescript
+// Preferred
+import { formatDate } from '$lib/utils/date';
+import { theme } from '$lib/stores/theme';
+import Button from '$lib/components/Button.svelte';
+```
+
 ### Relative Imports
 
-Use relative imports or path aliases:
+Use relative imports when appropriate:
 
 ```typescript
 // Relative imports
-import Component from '../components/Component';
-import { formatDate } from '../../utils/date';
-
-// Path aliases (if configured in tsconfig.json)
-import Component from '@/components/Component';
+import Component from '../lib/components/Component.svelte';
+import { formatDate } from '../lib/utils/date';
 ```
 
 ### Import Order
 
 While not strictly enforced, typical order:
-1. Astro imports (for `.astro` files)
-2. React and React-related imports
-3. Third-party libraries
-4. Application imports (components, utils, etc.)
-5. Relative imports
-6. Styles
+1. Svelte imports (for `.svelte` files)
+2. Third-party libraries
+3. Application imports (components, utils, stores) using `$lib` alias
+4. Relative imports
+5. Styles
 
-```typescript
-// Astro component example
----
-import Layout from '../layouts/Layout.astro';
-import Button from '../components/Button';
-import { formatDate } from '../utils/date';
-import '../styles/global.css';
----
+```svelte
+<!-- Svelte component example -->
+<script lang="ts">
+	import { onMount } from 'svelte';
+	import { theme } from '$lib/stores/theme';
+	import Button from '$lib/components/Button.svelte';
+	import '../app.css';
+</script>
 ```
 
 ## Component Conventions
 
-### Astro Components
+### Svelte Components
 
-```astro
----
-// Component script (TypeScript)
-interface Props {
-  title: string;
-  description?: string;
-}
+```svelte
+<script lang="ts">
+	// Component script (TypeScript)
+	interface Props {
+		title: string;
+		description?: string;
+	}
 
-const { title, description } = Astro.props;
----
+	let { title, description }: Props = $props();
+</script>
 
 <article class="card">
-  <h2>{title}</h2>
-  {description && <p>{description}</p>}
+	<h2>{title}</h2>
+	{#if description}
+		<p>{description}</p>
+	{/if}
 </article>
 
 <style>
-  .card {
-    padding: 1rem;
-  }
+	.card {
+		padding: 1rem;
+	}
 </style>
 ```
 
-### React Components
+### Svelte Components with Reactivity
 
-```typescript
-import React from 'react';
-import './Button.css';
+```svelte
+<script lang="ts">
+	let count = $state(0);
 
-interface ButtonProps {
-  label: string;
-  onClick?: () => void;
-  variant?: 'primary' | 'secondary';
-}
+	function increment() {
+		count++;
+	}
+</script>
 
-const Button: React.FC<ButtonProps> = ({ 
-  label, 
-  onClick, 
-  variant = 'primary' 
-}) => (
-  <button 
-    className={`btn btn-${variant}`}
-    onClick={onClick}
-  >
-    {label}
-  </button>
-);
-
-export default Button;
+<button on:click={increment} class="btn btn-primary">
+	Clicked {count} times
+</button>
 ```
 
 ## Code Style
 
-- 2 spaces indentation
+- 2 spaces indentation (tabs converted to spaces)
 - Single quotes for strings
 - Always use semicolons
 - Always use braces for if/for/while
@@ -178,7 +173,7 @@ export default Button;
  * @returns Formatted date string
  */
 const formatDate = (date: Date | string, format: string): string => {
-  // Implementation
+	// Implementation
 };
 ```
 
@@ -208,26 +203,32 @@ Follow SOLID principles for maintainable code:
 
 Use Tailwind utility classes for styling:
 
-```astro
+```svelte
 <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
-  <h2 class="text-2xl font-bold text-gray-900">Title</h2>
+	<h2 class="text-2xl font-bold text-gray-900">Title</h2>
 </div>
 ```
 
-### CSS Modules (if used)
+### Scoped Styles (Svelte)
 
-```typescript
-import styles from './Component.module.css';
+```svelte
+<style>
+	.card {
+		padding: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 8px;
+	}
 
-<div className={styles.container}>
-  <h2 className={styles.title}>Title</h2>
-</div>
+	.card:hover {
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+</style>
 ```
 
 ## Best Practices
 
-1. **Use Astro for static content** - Leverage zero-JS by default
-2. **Use React for interactivity** - Only add React when you need client-side interactivity
-3. **Type safety** - Always use TypeScript interfaces for props and function parameters
-4. **Component composition** - Compose smaller components into larger ones
-5. **Progressive enhancement** - Start with Astro, add React only where needed
+1. **Use Svelte reactivity** - Leverage Svelte's reactive statements and stores
+2. **Type safety** - Always use TypeScript interfaces for props and function parameters
+3. **Component composition** - Compose smaller components into larger ones
+4. **Store management** - Use Svelte stores for shared state
+5. **Progressive enhancement** - Start with static content, add interactivity where needed

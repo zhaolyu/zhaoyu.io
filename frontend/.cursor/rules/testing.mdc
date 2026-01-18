@@ -1,5 +1,5 @@
 ---
-globs: **/*.test.ts,**/*.test.tsx,**/*.test.js,**/*.spec.ts,**/*.spec.tsx
+globs: **/*.test.ts,**/*.test.js,**/*.spec.ts,**/*.spec.tsx
 ---
 
 # Testing Standards
@@ -8,52 +8,50 @@ When writing tests, always reference [.cursor/docs/TESTING.md](mdc:.cursor/docs/
 
 ## Test File Conventions
 
-- **Naming**: Use `*.test.ts`, `*.test.tsx`, `*.test.js`, or `*.spec.ts` extension
-- **Location**: Co-locate tests with source files (e.g., `Component.test.tsx` next to `Component.tsx`)
+- **Naming**: Use `*.test.ts`, `*.test.js`, or `*.spec.ts` extension
+- **Location**: Co-locate tests with source files (e.g., `Component.test.ts` next to `Component.svelte`)
 - **Structure**: Organize with `describe` blocks for related tests
 
 ## Testing Framework
 
 - **Vitest**: Test runner (configured in `package.json` or `vitest.config.ts`)
-- **React Testing Library**: For React component testing
-- **@testing-library/astro**: For Astro component testing (if available)
+- **@testing-library/svelte**: For Svelte component testing
 
 ## Testing Patterns
 
-### Astro Components
+### Svelte Components
 
-Test Astro components by rendering them and checking the output:
+Test Svelte components using Svelte Testing Library:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { render } from '@astrojs/testing-library';
-import Welcome from '../components/Welcome.astro';
+import { render, screen } from '@testing-library/svelte';
+import Welcome from '../components/Welcome.svelte';
 
 describe('Welcome', () => {
-  it('should render correctly', async () => {
-    const result = await render(Welcome, {
-      props: { title: 'Test' },
-    });
-    expect(result.html()).toContain('Test');
-  });
+	it('should render correctly', () => {
+		render(Welcome, { props: { title: 'Test' } });
+		expect(screen.getByText('Test')).toBeInTheDocument();
+	});
 });
 ```
 
-### React Components
-
-Use React Testing Library for React components:
+### Svelte Components with Interactions
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Button from '../components/Button';
+import { render, screen, fireEvent } from '@testing-library/svelte';
+import Button from '../components/Button.svelte';
 
 describe('Button', () => {
-  it('should render correctly', () => {
-    render(<Button>Click me</Button>);
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
+	it('should handle click events', async () => {
+		render(Button, { props: { label: 'Click me' } });
+		const button = screen.getByText('Click me');
+		
+		await fireEvent.click(button);
+		
+		expect(screen.getByText('Clicked 1 times')).toBeInTheDocument();
+	});
 });
 ```
 
@@ -63,32 +61,33 @@ Test pure functions with various inputs and edge cases:
 
 ```typescript
 import { describe, it, expect } from 'vitest';
-import { formatDate } from '../utils/date';
+import { formatDate } from '$lib/utils/date';
 
 describe('formatDate', () => {
-  it('should handle normal input', () => {
-    expect(formatDate(new Date('2024-01-01'))).toBe('01/01/2024');
-  });
+	it('should handle normal input', () => {
+		expect(formatDate(new Date('2024-01-01'))).toBe('01/01/2024');
+	});
 });
 ```
 
-### Custom Hooks
+### Stores
 
-Test custom hooks using React Testing Library hooks utilities:
+Test Svelte stores by subscribing and checking values:
 
 ```typescript
-import { describe, it, expect } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
-import { useCounter } from '../hooks/useCounter';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { get } from 'svelte/store';
+import { count } from '$lib/stores/counter';
 
-describe('useCounter', () => {
-  it('should increment count', () => {
-    const { result } = renderHook(() => useCounter());
-    act(() => {
-      result.current.increment();
-    });
-    expect(result.current.count).toBe(1);
-  });
+describe('count store', () => {
+	beforeEach(() => {
+		count.set(0);
+	});
+
+	it('should increment', () => {
+		count.update((n) => n + 1);
+		expect(get(count)).toBe(1);
+	});
 });
 ```
 
@@ -98,7 +97,7 @@ describe('useCounter', () => {
 - **API mocking**: Use MSW (Mock Service Worker) for HTTP requests
 - **localStorage**: Mock with custom implementation in `beforeEach`
 - **Window objects**: Mock `window.confirm`, `window.navigator`, etc.
-- **Contexts**: Mock React Contexts when needed
+- **Stores**: Mock Svelte stores when needed
 
 ## Best Practices
 
