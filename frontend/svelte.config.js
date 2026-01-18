@@ -18,7 +18,8 @@ const config = {
 		}),
 		// Prerender configuration - pages will be prerendered at build time
 		prerender: {
-			handleHttpError: 'warn'
+			handleHttpError: 'warn',
+			handleUnseenRoutes: 'ignore' // Ignore dynamic routes that weren't found during crawling (they'll be handled client-side)
 		}
 	}
 };
