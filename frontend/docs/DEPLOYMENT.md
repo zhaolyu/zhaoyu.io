@@ -52,21 +52,20 @@ Before deploying, ensure you have:
 
 ## Step 4: Create Cloudflare Pages Project
 
-1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Navigate to **Workers & Pages** → **Pages**
-3. Click **Create a project**
-4. Select **Connect to Git**
-5. Authorize Cloudflare to access your GitHub account
-6. Select your repository (`zhaoyu.io`)
-7. Configure project settings:
-   - **Project name**: `zhaoyu-io`
-   - **Production branch**: `main`
-   - **Build command**: Leave empty (handled by GitHub Actions)
-   - **Build output directory**: Leave empty (handled by GitHub Actions)
-   - **Root directory**: Leave empty (handled by GitHub Actions)
-8. Click **Save and Deploy**
+**Important**: You need a **Pages** project, not a Workers project. Make sure you're creating it under "Pages", not "Workers".
 
-**Note**: The first deployment might fail because GitHub Actions hasn't run yet. This is normal. Once you push the workflow file, it will deploy automatically.
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Navigate to **Workers & Pages** → **Pages** (not Workers!)
+3. Click **Create a project**
+4. Select **Upload assets** (we're using GitHub Actions, not Cloudflare's Git integration)
+5. Enter project name: `zhaoyu-io`
+6. You can skip the upload for now - GitHub Actions will handle deployments
+7. Click **Create project**
+
+**Note**: 
+- Make sure you're creating a **Pages** project, not a Workers project
+- The project name must match exactly: `zhaoyu-io`
+- After creating, the first deployment will happen when you push to `main` branch via GitHub Actions
 
 ## Step 5: Trigger First Deployment
 
