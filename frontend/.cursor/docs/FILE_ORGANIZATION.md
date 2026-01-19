@@ -79,6 +79,7 @@ Reusable Svelte components organized by purpose.
 ```
 lib/
 ├── components/
+│   ├── index.ts              # Main barrel export (re-exports ui/ and layout/)
 │   ├── ui/                   # Base UI components (Button, Card, etc.)
 │   │   ├── Button.svelte
 │   │   ├── Card.svelte
@@ -100,6 +101,33 @@ lib/
 **Naming**:
 - Svelte components: PascalCase (e.g., `Welcome.svelte`, `BlogCard.svelte`)
 - Use barrel exports (`index.ts`) for clean imports
+
+**Import Patterns**:
+
+You can import components in two ways:
+
+1. **Category-specific imports** (recommended for clarity):
+```svelte
+<script lang="ts">
+	import { Navbar, ThemeToggle } from '$lib/components/layout';
+	import { SectionHeader } from '$lib/components/ui';
+</script>
+```
+
+2. **Main barrel export** (convenient for multiple categories):
+```svelte
+<script lang="ts">
+	import { Navbar, ThemeToggle, SectionHeader } from '$lib/components';
+</script>
+```
+
+3. **Feature components** (import directly from feature folder):
+```svelte
+<script lang="ts">
+	import { Hero } from '$lib/components/features/hero';
+	import { Skills } from '$lib/components/features/skills';
+</script>
+```
 
 **Example**:
 ```svelte
@@ -315,7 +343,13 @@ SvelteKit provides a `$lib` alias that maps to `src/lib/`:
 // Using barrel exports for clean imports
 import { formatDate } from '$lib/utils';
 import { theme } from '$lib/stores';
+// Components: category-specific (recommended)
 import { Navbar, ThemeToggle } from '$lib/components/layout';
+import { SectionHeader } from '$lib/components/ui';
+// Or use main barrel export (convenient for multiple categories)
+import { Navbar, ThemeToggle, SectionHeader } from '$lib/components';
+// Feature components: import directly from feature folder
+import { Hero } from '$lib/components/features/hero';
 import { ROUTES } from '$lib/constants';
 import { apiClient } from '$lib/services';
 import type { ApiResponse } from '$lib/types';
