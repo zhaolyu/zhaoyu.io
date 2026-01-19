@@ -60,10 +60,11 @@ jobs:
           script: |
             try {
               // Check if a workflow_run deployment is already running/completed for this commit
+              // Use workflow file name instead of display name for API compatibility
               const { data: runs } = await github.rest.actions.listWorkflowRuns({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: 'Deploy to Cloudflare Pages',
+                workflow_id: 'cloudflare-pages.yml',
                 head_sha: context.sha,
                 per_page: 5
               });
@@ -106,10 +107,11 @@ jobs:
             const startTime = Date.now();
             
             const getLatestRun = async () => {
+              // Use workflow file name instead of display name for API compatibility
               const { data: runs } = await github.rest.actions.listWorkflowRuns({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                workflow_id: 'CI - Quality Checks and Build',
+                workflow_id: 'ci.yml',
                 branch: context.ref.replace('refs/heads/', ''),
                 per_page: 1
               });
