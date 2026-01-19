@@ -26,7 +26,7 @@ jobs:
       cancel-in-progress: true
     # Only deploy if CI passed (or manual dispatch with skip)
     if: |
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') ||
+      (github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'pull_request')) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ci_check == 'true') ||
       github.event_name == 'workflow_dispatch'
     steps:
@@ -85,8 +85,13 @@ jobs:
         id: deployment
         run: |
           # Extract branch name from workflow_run event or use current ref
+          # For PRs, head_branch contains the source branch (feature branch)
+          # For pushes, head_branch contains the branch that was pushed to
           if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
             BRANCH="${{ github.event.workflow_run.head_branch }}"
+          elif [ -n "${{ github.event.workflow_run.pull_requests[0].head.ref }}" ]; then
+            # Fallback: get branch from PR head ref
+            BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
           else
             BRANCH="${{ github.ref_name }}"
           fi
@@ -102,6 +107,7 @@ jobs:
           fi
 
       - name: Deploy to Cloudflare Pages
+        id: deploy
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -110,6 +116,12 @@ jobs:
           directory: frontend/build
           branch: ${{ steps.deployment.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Check deployment status
+        if: steps.deploy.outcome == 'success'
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Deployment may take a few moments to propagate."
       
       - name: Get Preview URL
         if: steps.deployment.outputs.environment == 'preview'
@@ -128,6 +140,12 @@ jobs:
           echo "🌐 Preview deployment created!"
           echo "Branch: ${{ steps.preview-url.outputs.branch }}"
           echo "Preview URL: ${{ steps.preview-url.outputs.url }}"
+          echo ""
+          echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
+          echo "   1. Wait 1-2 minutes for deployment to propagate"
+          echo "   2. Check Cloudflare Pages dashboard → Deployments tab"
+          echo "   3. Verify the deployment status is 'Success'"
+          echo "   4. The URL may take a few minutes to become active"
           echo ""
           echo "Note: Cloudflare Pages may also create a hash-based URL."
           echo "Check the Cloudflare Pages dashboard for the exact deployment URL."
