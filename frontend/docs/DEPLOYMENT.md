@@ -399,6 +399,118 @@ You can set different environment variables for production and preview:
 - Check [Setup Guide](SETUP.md) for development setup
 - Read [CI/CD Workflows Documentation](../../.github/workflows/README.md) for detailed workflow information
 
+## Understanding Cloudflare Workers
+
+### What are Cloudflare Workers?
+
+**Cloudflare Workers** is a serverless platform that allows you to run JavaScript, TypeScript, or WebAssembly code at Cloudflare's edge locations worldwide. Workers execute code before requests reach your site, enabling powerful edge computing capabilities.
+
+### Cloudflare Pages vs Cloudflare Workers
+
+This project uses **Cloudflare Pages** (not Workers directly), but understanding the difference helps:
+
+| Feature | Cloudflare Pages | Cloudflare Workers |
+|---------|-----------------|-------------------|
+| **Purpose** | Static site hosting | Serverless functions at the edge |
+| **Best For** | Frontend applications, static sites | Dynamic server-side logic, API endpoints |
+| **Deployment** | Static files (HTML, CSS, JS) | JavaScript/WASM code |
+| **Execution** | Serves pre-built files | Runs code on every request |
+| **Use Case** | Your SvelteKit frontend | Backend logic, middleware, transformations |
+
+### Common Use Cases for Workers
+
+Cloudflare Workers are useful for:
+
+1. **API Proxying & Transformation**
+   - Modify requests/responses on the fly
+   - Transform data formats
+   - Add headers or modify content
+
+2. **Authentication & Authorization**
+   - Verify JWT tokens
+   - Implement custom auth logic
+   - Route based on user permissions
+
+3. **A/B Testing & Feature Flags**
+   - Route users to different versions
+   - Implement feature flags
+   - Personalize content
+
+4. **Custom Routing & Load Balancing**
+   - Route requests based on headers, cookies, or geolocation
+   - Implement custom load balancing logic
+   - Handle redirects dynamically
+
+5. **Real-time Data Transformation**
+   - Aggregate data from multiple sources
+   - Transform API responses
+   - Implement caching strategies
+
+6. **Bot Detection & Security**
+   - Custom bot detection logic
+   - Rate limiting
+   - Security headers injection
+
+7. **Edge Caching & Optimization**
+   - Custom cache control
+   - Cache manipulation
+   - Performance optimization
+
+### Using Workers with Pages
+
+You can enhance your Cloudflare Pages project with Workers in several ways:
+
+#### 1. Pages Functions (Recommended)
+
+**Pages Functions** are Workers that integrate seamlessly with Pages projects. They're perfect for adding server-side functionality to your static site.
+
+**Location**: Create a `functions/` directory in your Pages project root.
+
+**Example**: Create `functions/api/hello.ts`:
+```typescript
+export async function onRequest() {
+  return new Response(JSON.stringify({ message: "Hello from Pages Functions!" }), {
+    headers: { "Content-Type": "application/json" },
+  });
+}
+```
+
+This creates an API endpoint at `/api/hello` that runs at the edge.
+
+#### 2. Standalone Workers
+
+You can deploy standalone Workers that run independently and can be called from your Pages site or other services.
+
+**When to use**: When you need Workers that aren't directly tied to your Pages deployment (e.g., scheduled tasks, webhooks, separate APIs).
+
+#### 3. Workers for Middleware
+
+Use Workers as middleware to intercept and modify requests before they reach your Pages site.
+
+**When to use**: For cross-cutting concerns like authentication, logging, or request transformation that applies to all routes.
+
+### When to Consider Adding Workers
+
+Consider adding Workers to your Pages project if you need:
+
+- ✅ **API Endpoints**: Server-side API routes for your frontend
+- ✅ **Authentication**: Custom auth logic before serving pages
+- ✅ **Request Transformation**: Modify requests/responses dynamically
+- ✅ **Geolocation Routing**: Route users based on location
+- ✅ **A/B Testing**: Serve different content to different users
+- ✅ **Real-time Features**: WebSocket connections, real-time updates
+- ✅ **Data Aggregation**: Combine data from multiple APIs
+- ✅ **Custom Caching**: Fine-grained cache control
+
+**Current Setup**: This project uses static Pages deployment, which is perfect for a frontend-only application. If you need server-side functionality in the future, you can add Pages Functions without changing your deployment workflow.
+
+### Resources for Learning Workers
+
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [Pages Functions Documentation](https://developers.cloudflare.com/pages/platform/functions/)
+- [Workers Examples](https://github.com/cloudflare/workers-examples)
+- [Workers Tutorial](https://developers.cloudflare.com/workers/tutorials/)
+
 ## Additional Resources
 
 - [CI/CD Workflows Documentation](../../.github/workflows/README.md) - Comprehensive guide to CI/CD setup and optimizations
