@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { createSectionObserver } from '$lib/utils/intersection';
+	import { createSectionObserver } from '$lib/utils/section-observer';
 
 	let mode = $state<'naive' | 'optimized'>('optimized');
 	let tokens = $state<string[]>([]);
