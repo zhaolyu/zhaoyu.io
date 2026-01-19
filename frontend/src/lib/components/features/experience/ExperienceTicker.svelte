@@ -32,10 +32,16 @@
 		width: 100%;
 		border-bottom: 1px solid var(--border-color);
 		background: var(--bg-primary);
-		padding: 2rem 0;
+		padding: 1rem 0;
 		overflow: hidden;
 		position: relative;
 		transition: background-color 0.2s, border-color 0.2s;
+	}
+
+	@media (min-width: 768px) {
+		.experience-ticker {
+			padding: 1.5rem 0;
+		}
 	}
 
 	.fade-left,

@@ -50,7 +50,9 @@
 }
 
 :global(html) {
-	scroll-behavior: smooth;
+	/* DIAGNOSTIC: Disabled smooth scroll to test if it's causing jumping */
+	scroll-behavior: auto;
+	/* scroll-behavior: smooth; */
 }
 
 :global(body) {
@@ -62,10 +64,108 @@
 
 /* Account for fixed header when scrolling to anchor links */
 :global([id]) {
-	scroll-margin-top: 5rem;
+	scroll-margin-top: 4rem;
+}
+
+@media (min-width: 768px) {
+	:global([id]) {
+		scroll-margin-top: 5rem;
+	}
 }
 
 :global(code),
 :global(pre) {
 	font-family: var(--font-mono);
+}
+
+@media print {
+	/* 1. FORCE WHITE BACKGROUNDS (Saves Ink) */
+	:global(body),
+	:global(section),
+	:global(main),
+	:global(div),
+	:global(span),
+	:global(p),
+	:global(h1),
+	:global(h2),
+	:global(h3),
+	:global(h4),
+	:global(code),
+	:global(pre) {
+		background-color: white !important;
+		color: black !important;
+		background-image: none !important; /* Removes gradients */
+	}
+
+	/* 2. SPECIFIC FIX FOR TERMINALS & CARDS */
+	/* Target your specific dark containers */
+	:global(.bg-neutral-900),
+	:global(.bg-neutral-950),
+	:global(.bg-black) {
+		border: 1px solid #ddd !important; /* Replace dark bg with light border */
+		box-shadow: none !important;
+	}
+
+	/* Fix the Code Block Text Colors */
+	/* Ensures code syntax highlighting doesn't disappear on white */
+	:global(span[class*="text-blue"]),
+	:global(span[class*="text-green"]),
+	:global(span[class*="text-red"]) {
+		filter: brightness(0.7); /* Darkens colors so they read better on white */
+	}
+
+	/* 3. HIDE INTERACTIVE ELEMENTS */
+	:global(button),
+	:global(a[href^="javascript"]),
+	:global(nav),
+	:global(footer),
+	:global(.animate-scroll),
+	/* Hide the ticker */
+	:global(.experience-ticker),
+	:global(.ticker-container),
+	:global(#latency),
+	/* Hide the interactive sim */
+	:global(.telemetry-footer),
+	:global(header) {
+		display: none !important;
+	}
+
+	/* 4. PREVENT AWKWARD BREAKS */
+	:global(section),
+	:global(.card),
+	:global(.terminal-window),
+	:global(.code-viewer) {
+		break-inside: avoid;
+		page-break-inside: avoid;
+		margin-bottom: 2rem;
+	}
+
+	/* 5. CLEAN UP LINKS */
+	:global(a) {
+		text-decoration: underline;
+		color: black !important;
+	}
+
+	/* Optional: Show URL after link */
+	:global(a[href^="http"]::after) {
+		content: " (" attr(href) ")";
+		font-size: 0.8em;
+		color: #666;
+	}
+
+	/* 6. Ensure Charts Print Cleanly */
+	:global(svg) {
+		filter: invert(1) hue-rotate(180deg); /* Inverts dark mode charts to light mode */
+	}
+
+	/* 7. Add a "Printed From" Footer */
+	:global(body::after) {
+		content: "View the live interactive portfolio at https://zhaoyu.io";
+		display: block;
+		text-align: center;
+		font-family: monospace;
+		font-size: 10px;
+		margin-top: 2rem;
+		color: #666;
+	}
 }
