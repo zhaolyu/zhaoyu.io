@@ -10,16 +10,11 @@ name: Deploy to Cloudflare Pages
 
 on:
   # Primary: Deploy after CI workflow completes successfully
+  # This triggers for all branches (feature branches get preview URLs, main gets production)
   workflow_run:
     workflows: ["CI - Quality Checks and Build"]
     types:
       - completed
-    # Deploy for all branches (feature branches will get preview URLs)
-  # Fallback: Direct push trigger (includes main for production deployments)
-  # Note: workflow_run is preferred, but push ensures main branch always deploys
-  push:
-    branches:
-      - main
   # Allow manual deployment
   workflow_dispatch:
 
@@ -39,80 +34,12 @@ jobs:
       group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
       cancel-in-progress: true
     # Deployment conditions:
-    # - workflow_run: Only if CI succeeded or was skipped (path filtering) - PREFERRED
-    # - push: Only if CI passed or was skipped (verified in step) - FALLBACK if workflow_run doesn't trigger
+    # - workflow_run: Only if CI succeeded or was skipped (path filtering)
     # - workflow_dispatch: Always deploy (manual trigger)
     if: |
       (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'skipped')) ||
-      (github.event_name == 'push') ||
       github.event_name == 'workflow_dispatch'
     steps:
-      - name: Check CI status (for push events)
-        if: github.event_name == 'push'
-        uses: actions/github-script@v7
-        id: check-ci
-        with:
-          script: |
-            const maxWaitTime = 300000; // 5 minutes
-            const pollInterval = 10000; // 10 seconds
-            const startTime = Date.now();
-            
-            const getLatestRun = async () => {
-              // Use workflow file name instead of display name for API compatibility
-              const { data: runs } = await github.rest.actions.listWorkflowRuns({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: 'ci.yml',
-                branch: context.ref.replace('refs/heads/', ''),
-                per_page: 1
-              });
-              return runs.workflow_runs[0];
-            };
-            
-            let latestRun = await getLatestRun();
-            
-            if (!latestRun) {
-              core.setFailed('No CI workflow run found for this branch. Please ensure CI has run.');
-              return;
-            }
-            
-            // Wait for CI to complete if still running
-            while (latestRun.status !== 'completed' && (Date.now() - startTime) < maxWaitTime) {
-              console.log(`⏳ CI workflow is ${latestRun.status}, waiting...`);
-              await new Promise(resolve => setTimeout(resolve, pollInterval));
-              latestRun = await getLatestRun();
-            }
-            
-            if (latestRun.status !== 'completed') {
-              core.setFailed('CI workflow did not complete within 5 minutes. Cannot deploy.');
-              return;
-            }
-            
-            // Handle different workflow conclusions
-            if (latestRun.conclusion === 'success') {
-              console.log('✅ CI workflow passed, proceeding with deployment');
-              return;
-            }
-            
-            if (latestRun.conclusion === 'skipped') {
-              console.log('⏭️  CI workflow was skipped (likely due to path filtering). Proceeding with deployment.');
-              return;
-            }
-            
-            if (latestRun.conclusion === 'cancelled') {
-              core.setFailed('CI workflow was cancelled. Cannot deploy.');
-              return;
-            }
-            
-            // For failures, provide more context
-            if (latestRun.conclusion === 'failure') {
-              core.setFailed(`CI workflow failed. Cannot deploy. Check the CI workflow run: ${latestRun.html_url}`);
-              return;
-            }
-            
-            // Unknown conclusion
-            core.setFailed(`CI workflow has unexpected conclusion: ${latestRun.conclusion}. Cannot deploy.`);
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -222,50 +149,98 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
+            const branch = '${{ steps.deployment.outputs.branch }}';
+            console.log('Looking for PR for branch:', branch);
+            console.log('Event name:', context.eventName);
+            console.log('Workflow run payload:', JSON.stringify(context.payload.workflow_run || {}, null, 2));
+            
             // Get PR number from workflow_run event or pull_request event
             let prNumber;
+            
+            // Method 1: Try workflow_run.pull_requests
             if (context.payload.workflow_run && context.payload.workflow_run.pull_requests && context.payload.workflow_run.pull_requests.length > 0) {
               prNumber = context.payload.workflow_run.pull_requests[0].number;
-            } else if (context.payload.pull_request) {
+              console.log('Found PR from workflow_run.pull_requests:', prNumber);
+            } 
+            // Method 2: Try direct pull_request payload
+            else if (context.payload.pull_request) {
               prNumber = context.payload.pull_request.number;
-            } else {
-              // Try to find PR by branch name
-              const branch = '${{ steps.deployment.outputs.branch }}';
-              const { data: pulls } = await github.rest.pulls.list({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                head: context.repo.owner + ':' + branch,
-                state: 'open'
-              });
-              if (pulls.length > 0) {
-                prNumber = pulls[0].number;
+              console.log('Found PR from pull_request payload:', prNumber);
+            } 
+            // Method 3: Find PR by branch name (most reliable for workflow_run events)
+            else {
+              console.log('Searching for PR by branch name:', branch);
+              try {
+                const { data: pulls } = await github.rest.pulls.list({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  head: context.repo.owner + ':' + branch,
+                  state: 'open',
+                  per_page: 1
+                });
+                
+                if (pulls && pulls.length > 0) {
+                  prNumber = pulls[0].number;
+                  console.log('Found PR by branch search:', prNumber);
+                } else {
+                  console.log('No open PR found for branch:', branch);
+                }
+              } catch (error) {
+                console.error('Error searching for PR:', error.message);
               }
             }
             
             if (!prNumber) {
-              console.log('No PR found for this branch, skipping comment');
+              console.log('❌ No PR found for this branch, skipping comment');
+              console.log('Branch:', branch);
+              console.log('Available context:', {
+                eventName: context.eventName,
+                hasWorkflowRun: !!context.payload.workflow_run,
+                hasPullRequests: !!(context.payload.workflow_run && context.payload.workflow_run.pull_requests),
+                hasPullRequest: !!context.payload.pull_request
+              });
               return;
             }
+            
+            console.log('✅ Found PR #' + prNumber + ' for branch: ' + branch);
             
             // Get URLs from Cloudflare Pages action outputs
             const atomicUrl = '${{ steps.deploy.outputs.url }}';
             const aliasUrl = '${{ steps.deploy.outputs.alias }}';
             const branch = '${{ steps.deployment.outputs.branch }}';
             
+            console.log('Deployment URLs:', {
+              atomicUrl: atomicUrl || '(empty)',
+              aliasUrl: aliasUrl || '(empty)',
+              branch: branch
+            });
+            
+            // Validate URLs
+            if (!atomicUrl || atomicUrl.trim() === '') {
+              console.error('❌ Atomic URL is empty! Cannot post comment.');
+              return;
+            }
+            
             // Use alias URL if available (branch-based), otherwise use atomic URL
-            const previewUrl = aliasUrl && aliasUrl !== atomicUrl ? aliasUrl : atomicUrl;
+            const previewUrl = (aliasUrl && aliasUrl.trim() !== '' && aliasUrl !== atomicUrl) ? aliasUrl : atomicUrl;
+            
+            console.log('Using preview URL:', previewUrl);
+            
+            // Format the URL as a clickable link
+            const urlLink = '[' + previewUrl + '](' + previewUrl + ')';
             
             let comment = '## 🌐 Preview Deployment\n\n';
             comment += '**Branch:** `' + branch + '`\n';
-            comment += '**Preview URL:** ' + previewUrl + '\n';
+            comment += '**Preview URL:** ' + urlLink + '\n';
             
             // Show both URLs if they're different
-            if (aliasUrl && aliasUrl !== atomicUrl) {
-              comment += '**Atomic URL:** ' + atomicUrl + ' (specific deployment)\n';
+            if (aliasUrl && aliasUrl.trim() !== '' && aliasUrl !== atomicUrl) {
+              const atomicLink = '[' + atomicUrl + '](' + atomicUrl + ')';
+              comment += '**Atomic URL:** ' + atomicLink + ' (specific deployment)\n';
             }
             
             comment += '\n';
-            comment += '> ⚠️ **Note:** The preview URL may take 1-2 minutes to become active. If you see "Nothing is here yet", wait a moment and refresh.\n';
+            comment += '> ⚠️ **Note:** The preview URL may take 1-2 minutes to become active. If you see "Nothing is here yet" or a Cloudflare Access login, wait a moment and refresh.\n';
             comment += '> \n';
             comment += '> You can also check the [Cloudflare Pages dashboard](https://dash.cloudflare.com/) for deployment status.';
             
@@ -284,22 +259,29 @@ jobs:
               comment.body.includes('`' + branch + '`')
             );
             
-            if (botComment) {
-              // Update existing comment
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: comment
-              });
-              console.log('Updated preview URL comment on PR #' + prNumber);
-            } else {
-              // Create new comment
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: comment
-              });
-              console.log('Posted preview URL comment on PR #' + prNumber);
+            try {
+              if (botComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: comment
+                });
+                console.log('✅ Updated preview URL comment on PR #' + prNumber);
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: comment
+                });
+                console.log('✅ Posted preview URL comment on PR #' + prNumber);
+                console.log('Preview URL:', previewUrl);
+              }
+            } catch (error) {
+              console.error('❌ Error posting comment to PR:', error.message);
+              console.error('Error details:', error);
+              throw error;
             }
