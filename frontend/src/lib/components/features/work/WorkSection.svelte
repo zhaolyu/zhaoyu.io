@@ -4,33 +4,19 @@
 	import ProjectCard from './ProjectCard.svelte';
 	import { getDisplayProjects } from '$lib/constants/content';
 	import { SectionHeader } from '$lib/components/ui';
+	import { observeSection } from '$lib/utils/intersection';
 
 	const displayProjects = getDisplayProjects();
 	let sectionVisible = $state(false);
 	let workSection: HTMLElement;
 
 	onMount(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						sectionVisible = true;
-					}
-				});
+		return observeSection(workSection, {
+			onVisible: () => {
+				sectionVisible = true;
 			},
-			{
-				threshold: 0.1,
-				rootMargin: '0px 0px -50px 0px'
-			}
-		);
-
-		if (workSection) {
-			observer.observe(workSection);
-		}
-
-		return () => {
-			observer.disconnect();
-		};
+			threshold: 0.1 // Override to trigger earlier for this section
+		});
 	});
 </script>
 

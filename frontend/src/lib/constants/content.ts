@@ -121,14 +121,25 @@ export interface ExperienceData {
 }
 
 export const experienceData: ExperienceData = {
-	items: [
-		{ name: 'NBCUNIVERSAL', type: 'org' },
-		{ name: 'CNBC', type: 'org' },
-		{ name: 'VERCEL', type: 'tech' },
-		{ name: 'NEXT.JS', type: 'tech' },
-		{ name: 'TYPESCRIPT', type: 'tech' },
-		{ name: 'VERSANT', type: 'org' }
-	]
+  items: [
+    // ORGANIZATIONS (The Authority)
+    { name: 'NBCUNIVERSAL', type: 'org' },
+    { name: 'NBC NEWS', type: 'org' },
+    { name: 'VERSANT', type: 'org' },
+    { name: 'CNBC', type: 'org' },
+
+    // --- THE UI FOUNDATION ---
+    { name: 'REACT', type: 'tech' },
+    { name: 'NEXT.JS', type: 'tech' },
+    { name: 'TYPESCRIPT', type: 'tech' },
+    { name: 'TAILWIND', type: 'tech' },
+
+    // --- THE PERFORMANCE & DATA LAYER (The "Principal" Edge) ---
+    { name: 'SVELTE', type: 'tech' },    // Performance
+    { name: 'NODE.JS', type: 'tech' },   // Backend
+    { name: 'GRAPHQL', type: 'tech' },   // API Architecture
+    { name: 'MONGODB', type: 'tech' }    // Persistence
+  ]
 };
 
 export interface EngineeringNote {
@@ -187,7 +198,7 @@ export interface CareerHistory {
 
 export const careerHistory: CareerHistory = {
 	points: [
-		{ year: 2013, impact: 10, role: 'Associate', company: 'LaGuardia CC' },
+		{ year: 2016, impact: 10, role: 'Intern', company: 'LaGuardia CC' },
 		{ year: 2017, impact: 30, role: 'Software Engineer', company: 'CNBC' },
 		{ year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
 		{ year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },

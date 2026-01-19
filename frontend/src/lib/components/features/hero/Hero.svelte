@@ -13,7 +13,7 @@
   );
 </script>
 
-<section class="hero-section relative min-h-screen w-full overflow-hidden flex items-center justify-center border-b">
+<section class="hero-section relative min-h-screen w-full overflow-hidden flex items-center justify-center border-b hero-section-mobile">
   
   <div class="absolute inset-0 z-0 pointer-events-none">
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
@@ -21,7 +21,7 @@
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 dark:bg-blue-500/10 blur-[120px] rounded-full animate-pulse duration-[4000ms]"></div>
   </div>
 
-  <div class="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20">
+  <div class="relative z-10 text-center px-4 max-w-5xl mx-auto hero-content">
     <div 
       in:fly={{ y: -20, duration: 800, delay: 0 }}
       class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/20 dark:bg-blue-900/20 border border-blue-500/20 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs md:text-sm font-mono mb-8 backdrop-blur-sm transition-colors"
@@ -72,7 +72,7 @@
 
     <div 
       in:fade={{ duration: 1000, delay: 1000 }}
-      class="hero-motto mt-20 flex flex-col md:flex-row justify-center gap-4 md:gap-12 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em]"
+      class="hero-motto hero-motto-spacing flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em]"
     >
       <span class="flex items-center gap-2 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-default">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -118,6 +118,33 @@
   .hero-motto {
     color: var(--text-muted);
     transition: color 0.2s;
+  }
+
+  .hero-section-mobile {
+    min-height: 100vh;
+    padding-top: 0;
+  }
+
+  .hero-content {
+    padding-top: 4.5rem;
+    padding-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .hero-content {
+      padding-top: 5rem;
+      padding-bottom: 0;
+    }
+  }
+
+  .hero-motto-spacing {
+    margin-top: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .hero-motto-spacing {
+      margin-top: 5rem;
+    }
   }
 
   /* Bio text colors that adapt to theme */

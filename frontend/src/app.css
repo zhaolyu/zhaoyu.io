@@ -50,7 +50,9 @@
 }
 
 :global(html) {
-	scroll-behavior: smooth;
+	/* DIAGNOSTIC: Disabled smooth scroll to test if it's causing jumping */
+	scroll-behavior: auto;
+	/* scroll-behavior: smooth; */
 }
 
 :global(body) {
@@ -62,7 +64,13 @@
 
 /* Account for fixed header when scrolling to anchor links */
 :global([id]) {
-	scroll-margin-top: 5rem;
+	scroll-margin-top: 4rem;
+}
+
+@media (min-width: 768px) {
+	:global([id]) {
+		scroll-margin-top: 5rem;
+	}
 }
 
 :global(code),

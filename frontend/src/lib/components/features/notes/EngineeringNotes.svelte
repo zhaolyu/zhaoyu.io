@@ -4,32 +4,18 @@
 	import EngineeringNote from './EngineeringNote.svelte';
 	import { notesData } from '$lib/constants/content';
 	import { SectionHeader } from '$lib/components/ui';
+	import { observeSection } from '$lib/utils/intersection';
 
 	let sectionVisible = $state(false);
 	let notesSection: HTMLElement;
 
 	onMount(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						sectionVisible = true;
-					}
-				});
+		return observeSection(notesSection, {
+			onVisible: () => {
+				sectionVisible = true;
 			},
-			{
-				threshold: 0.1,
-				rootMargin: '0px 0px -50px 0px'
-			}
-		);
-
-		if (notesSection) {
-			observer.observe(notesSection);
-		}
-
-		return () => {
-			observer.disconnect();
-		};
+			threshold: 0.1 // Override to trigger earlier for this section
+		});
 	});
 </script>
 
