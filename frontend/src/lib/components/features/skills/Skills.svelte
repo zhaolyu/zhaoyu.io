@@ -69,7 +69,7 @@
 	);
 </script>
 
-<section class="skills" bind:this={skillsContainer}>
+<section id="skills" class="skills" bind:this={skillsContainer}>
 	<div class="skills-container">
 		{#if sectionVisible}
 			<div class="skills-content" transition:fade={{ duration: 600 }}>
