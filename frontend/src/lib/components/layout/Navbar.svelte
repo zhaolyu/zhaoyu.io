@@ -1,36 +1,20 @@
 <script lang="ts">
   import ThemeToggle from './ThemeToggle.svelte';
-  import { browser } from '$app/environment';
+  import { handleAnchorNavigation, scrollToTop } from '$lib/utils/navigation';
   
+  import { ANIMATION_CONFIG } from '$lib/constants/config';
+
   let scrollY = $state(0);
-  let isScrolled = $derived(scrollY > 20);
+  let isScrolled = $derived(scrollY > ANIMATION_CONFIG.scrollThreshold.nav);
 
   const navLinks = [
-    { name: '/architecture', href: '/#work' },
     { name: '/skills', href: '/#skills' },
+    { name: '/career', href: '/#career' },
+    { name: '/architecture', href: '/#work' },
+    { name: '/latency', href: '/#latency' },
+    { name: '/manifesto', href: '/#manifesto' },
     { name: '/notes', href: '/#notes' },
   ];
-
-  function handleNavClick(e: MouseEvent, href: string) {
-    if (!browser) return;
-    
-    // Check if it's an anchor link
-    if (href.startsWith('/#')) {
-      e.preventDefault();
-      e.stopPropagation();
-      const targetId = href.substring(2); // Remove '/#'
-      const targetElement = document.getElementById(targetId);
-      
-      if (targetElement) {
-        // Use scrollIntoView which respects scroll-margin-top automatically
-        // The smooth behavior will be slower due to CSS scroll-behavior: smooth
-        targetElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }
-  }
 
   const headerClasses = $derived.by(() => {
     const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b header-nav';
@@ -46,7 +30,7 @@
 <header class={headerClasses}>
   <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
     
-    <a href="/" class="group flex items-center gap-2">
+    <a href="/" onclick={(e) => scrollToTop(e)} class="group flex items-center gap-2">
       <div class="font-mono font-bold text-xl tracking-tighter text-neutral-900 dark:text-white">
         zhaoyu.io
       </div>
@@ -57,7 +41,7 @@
       {#each navLinks as link}
         <a 
           href={link.href} 
-          onclick={(e) => handleNavClick(e, link.href)}
+          onclick={(e) => handleAnchorNavigation(e, link.href)}
           class="text-sm font-mono text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors relative group"
         >
           {link.name}

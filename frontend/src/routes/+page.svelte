@@ -2,7 +2,10 @@
 	import { Hero } from '$lib/components/features/hero';
 	import { ExperienceTicker } from '$lib/components/features/experience';
 	import { Skills } from '$lib/components/features/skills';
+	import { CareerChart } from '$lib/components/features/career-chart';
 	import { WorkSection } from '$lib/components/features/work';
+	import { LatencySim } from '$lib/components/features/latency-sim';
+	import { CodeManifesto } from '$lib/components/features/code-manifesto';
 	import { EngineeringNotes } from '$lib/components/features/notes';
 </script>
 
@@ -15,7 +18,10 @@
 	<Hero />
 	<ExperienceTicker />
 	<Skills />
+	<CareerChart />
 	<WorkSection />
+	<LatencySim />
+	<CodeManifesto />
 	<EngineeringNotes />
 </main>
 
@@ -29,6 +35,6 @@
 	}
 
 	:global(.main-container ::selection) {
-		background: rgba(59, 130, 246, 0.3);
+		background: var(--accent-primary-30);
 	}
 </style>

@@ -65,7 +65,7 @@
 	}
 
 	.tag {
-		color: #60a5fa;
+		color: var(--accent-primary-light);
 	}
 
 	.note-title {

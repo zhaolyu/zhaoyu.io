@@ -177,12 +177,15 @@ This `.cursor/` directory contains:
 
 When updating documentation:
 
-1. Keep it accurate - verify against actual code
-2. Update cross-references if structure changes
-3. Add examples where helpful
-4. Keep formatting consistent
-5. Update this README if adding new documents
-6. For `.mdc` rule files, preserve frontmatter metadata format
+1. **⚠️ MANDATORY**: Always ask for user acceptance before editing any markdown files (`.md` or `.mdc`) - present a summary of changes and wait for approval
+2. Keep it accurate - verify against actual code
+3. Update cross-references if structure changes
+4. Add examples where helpful
+5. Keep formatting consistent
+6. Update this README if adding new documents
+7. For `.mdc` rule files, preserve frontmatter metadata format
+
+See [Documentation Handling Rule](../rules/documentation-handling.mdc) for complete guidelines.
 
 ## Getting Help
 

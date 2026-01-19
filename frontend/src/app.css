@@ -11,12 +11,31 @@
 }
 
 :root {
+	/* Theme Colors */
 	--bg-primary: #ffffff;
 	--bg-secondary: #f9fafb;
 	--text-primary: #111827;
 	--text-secondary: #4b5563;
 	--text-muted: #6b7280;
 	--border-color: rgba(0, 0, 0, 0.1);
+
+	/* Accent Colors */
+	--accent-primary: #3b82f6;
+	--accent-primary-hover: #2563eb;
+	--accent-primary-light: #60a5fa;
+	--accent-primary-dark: #1d4ed8;
+	--accent-gradient-start: #3b82f6;
+	--accent-gradient-end: #6366f1;
+	--accent-primary-10: rgba(59, 130, 246, 0.1);
+	--accent-primary-20: rgba(59, 130, 246, 0.2);
+	--accent-primary-30: rgba(59, 130, 246, 0.3);
+
+	/* Status Colors */
+	--status-success: #10b981;
+	--status-warning: #fbbf24;
+	--status-error: #ef4444;
+
+	/* Typography */
 	--font-sans: "Geist Sans", system-ui, -apple-system, sans-serif;
 	--font-mono: "Geist Mono", "Courier New", monospace;
 }

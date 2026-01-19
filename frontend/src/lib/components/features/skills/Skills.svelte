@@ -200,9 +200,9 @@
 	.badge-dot {
 		width: 0.5rem;
 		height: 0.5rem;
-		background: #3b82f6;
+		background: var(--accent-primary);
 		border-radius: 9999px;
-		box-shadow: 0 0 10px #3b82f6;
+		box-shadow: 0 0 10px var(--accent-primary);
 		animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 	}
 
@@ -234,7 +234,7 @@
 		font-weight: 500;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: #60a5fa;
+		color: var(--accent-primary-light);
 	}
 
 	.skills-headline {
@@ -246,7 +246,7 @@
 	}
 
 	.highlight-blue {
-		color: #60a5fa;
+		color: var(--accent-primary-light);
 	}
 
 	.highlight-purple {
@@ -285,7 +285,7 @@
 	}
 
 	.stat-card:hover {
-		border-color: #3b82f6;
+		border-color: var(--accent-primary);
 		transform: translateY(-2px);
 	}
 
@@ -342,8 +342,8 @@
 	}
 
 	.chart-fill {
-		fill: rgba(59, 130, 246, 0.15);
-		stroke: #3b82f6;
+		fill: var(--accent-primary-10);
+		stroke: var(--accent-primary);
 		stroke-width: 2;
 	}
 
@@ -393,8 +393,8 @@
 	}
 
 	.legend-current {
-		background: rgba(59, 130, 246, 0.2);
-		border: 1px solid #3b82f6;
+		background: var(--accent-primary-20);
+		border: 1px solid var(--accent-primary);
 	}
 
 	.legend-goal {

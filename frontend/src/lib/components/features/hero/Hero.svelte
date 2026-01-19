@@ -2,34 +2,13 @@
   import { fly, fade } from 'svelte/transition';
   import { backOut } from 'svelte/easing';
   import { heroContent } from '$lib/constants/content';
-  import { browser } from '$app/environment';
+  import { handleAnchorNavigation } from '$lib/utils/navigation';
 
   function formatBio(bio: string): string {
     return bio
       .replace(/Zhao Yu/g, '<strong class="bio-name font-semibold">Zhao Yu</strong>')
       .replace(/shaving milliseconds off a render/g, '<strong class="bio-emphasis font-normal">shaving milliseconds off a render</strong>')
       .replace(/sub-1:25 half-marathon/g, '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">sub-1:25 half-marathon</span>');
-  }
-
-  function handleAnchorClick(e: MouseEvent, href: string) {
-    if (!browser) return;
-    
-    // Check if it's an anchor link
-    if (href.startsWith('/#')) {
-      e.preventDefault();
-      e.stopPropagation();
-      const targetId = href.substring(2); // Remove '/#'
-      const targetElement = document.getElementById(targetId);
-      
-      if (targetElement) {
-        // Use scrollIntoView which respects scroll-margin-top automatically
-        // The smooth behavior will be slower due to CSS scroll-behavior: smooth
-        targetElement.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    }
   }
 </script>
 
@@ -76,14 +55,14 @@
     >
       <a 
         href="/#work" 
-        onclick={(e) => handleAnchorClick(e, '/#work')}
+        onclick={(e) => handleAnchorNavigation(e, '/#work')}
         class="px-8 py-3 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 font-bold rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors w-full md:w-auto"
       >
         {heroContent.cta.primary}
       </a>
       <a 
         href="/#notes" 
-        onclick={(e) => handleAnchorClick(e, '/#notes')}
+        onclick={(e) => handleAnchorNavigation(e, '/#notes')}
         class="px-8 py-3 border border-neutral-300 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-neutral-900 dark:hover:text-white transition-colors w-full md:w-auto"
       >
         {heroContent.cta.secondary}
