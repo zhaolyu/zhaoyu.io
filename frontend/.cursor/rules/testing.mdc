@@ -6,6 +6,29 @@ globs: **/*.test.ts,**/*.test.js,**/*.spec.ts
 
 When writing tests, always reference [.cursor/docs/TESTING.md](mdc:.cursor/docs/TESTING.md) for comprehensive testing guidelines and complete examples.
 
+## Testing Philosophy
+
+**Tests should focus on behavior and functionality, not just code coverage.** The primary goal is to catch regressions when code is updated, ensuring that existing functionality continues to work correctly.
+
+### Core Principles
+
+1. **Test behavior, not implementation**: Focus on what the code does, not how it does it
+2. **Test the function's contract**: Verify that functions do what they promise to do
+3. **Test real-world usage**: Test how functions are actually used in the codebase
+4. **Test regression prevention**: Write tests that would fail if someone breaks the function
+5. **Test integration points**: Verify functions work correctly with their dependencies
+6. **Test meaningful edge cases**: Focus on edge cases that could cause real bugs in production
+
+### What Makes a Good Test
+
+- **Would catch breaking changes**: If someone modifies the function incorrectly, the test should fail
+- **Tests realistic scenarios**: Test actual usage patterns from the codebase
+- **Tests the contract**: Verify the function delivers on its promises
+- **Tests integration**: Ensure functions work with dependencies (config, browser APIs, etc.)
+- **Tests edge cases that matter**: Focus on boundary conditions that could cause production bugs
+
+Coverage metrics are a byproduct of thorough behavior testing, not the primary goal.
+
 ## Test File Conventions
 
 - **Naming**: Use `*.test.ts`, `*.test.js`, or `*.spec.ts` extension (SvelteKit projects use `.ts`, not `.tsx`)
@@ -31,7 +54,15 @@ expect(screen.getByText('Test')).toBeInTheDocument();
 
 ### Utilities
 
-Test pure functions with various inputs and edge cases. Focus on behavior, not implementation.
+Test pure functions with various inputs and edge cases. Focus on behavior and regression prevention:
+
+- **Test the function's contract**: Does it do what it promises?
+- **Test real-world scenarios**: How is it actually used in components?
+- **Test regression risks**: What would break if the implementation changes?
+- **Test edge cases**: Boundary conditions that could cause bugs
+- **Test integration**: Does it work correctly with dependencies (config, constants, etc.)?
+
+Example: For a date formatting function, test that it produces the expected format, handles different input types, and would catch if locale or format strings change.
 
 ### Stores
 
@@ -56,6 +87,18 @@ expect(get(count)).toBe(1);
 3. **Async testing**: Use `waitFor` for async operations
 4. **Cleanup**: Always clean up mocks in `afterEach`
 5. **Test behavior, not implementation**: Focus on what the code does, not how
+6. **Test regression prevention**: Write tests that would catch if someone breaks the function
+7. **Test realistic scenarios**: Test how functions/components are actually used
+8. **Test integration points**: Verify functions work with their dependencies
+9. **Test meaningful edge cases**: Focus on cases that could cause real bugs
+10. **Document what would break**: Consider what the test would catch if the implementation changes
+
+### Regression Prevention Examples
+
+- **Formatting functions**: Test that output format matches expectations (would catch locale/format changes)
+- **Validation functions**: Test valid/invalid inputs (would catch regex or logic changes)
+- **Observer utilities**: Test callback firing and cleanup (would catch memory leaks or broken state)
+- **Navigation helpers**: Test scroll behavior and event handling (would catch broken navigation)
 
 ## Running Tests
 

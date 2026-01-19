@@ -2,6 +2,29 @@
 
 This guide provides comprehensive documentation for writing tests in the zhaoyu.io portfolio site.
 
+## Testing Philosophy
+
+**Tests should focus on behavior and functionality, not just code coverage.** The primary goal is to catch regressions when code is updated, ensuring that existing functionality continues to work correctly.
+
+### Core Principles
+
+1. **Test behavior, not implementation**: Focus on what the code does, not how it does it
+2. **Test the function's contract**: Verify that functions do what they promise to do
+3. **Test real-world usage**: Test how functions are actually used in the codebase
+4. **Test regression prevention**: Write tests that would fail if someone breaks the function
+5. **Test integration points**: Verify functions work correctly with their dependencies
+6. **Test meaningful edge cases**: Focus on edge cases that could cause real bugs in production
+
+### What Makes a Good Test
+
+- **Would catch breaking changes**: If someone modifies the function incorrectly, the test should fail
+- **Tests realistic scenarios**: Test actual usage patterns from the codebase
+- **Tests the contract**: Verify the function delivers on its promises
+- **Tests integration**: Ensure functions work with dependencies (config, browser APIs, etc.)
+- **Tests edge cases that matter**: Focus on boundary conditions that could cause production bugs
+
+Coverage metrics are a byproduct of thorough behavior testing, not the primary goal. When writing tests, ask yourself: "Would this test catch a regression if someone breaks this function?"
+
 ## Test Framework Setup
 
 **Note**: Test dependencies (Vitest, Svelte Testing Library) need to be installed before running tests. Install with:

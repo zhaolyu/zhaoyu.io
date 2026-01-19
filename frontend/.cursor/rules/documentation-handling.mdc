@@ -1,10 +1,10 @@
 ---
-globs: .cursor/**/*.md,.cursor/**/*.mdc
+globs: **/*.md,**/*.mdc
 ---
 
-# Documentation Handling for .cursor/ Files
+# Documentation Handling for Markdown Files
 
-**⚠️ IMPORTANT**: This rule GUIDES proper editing practices but does NOT prevent legitimate updates. When updating any file in the `.cursor/` directory (`.md` or `.mdc`), preserve structure, formatting, cross-references, and metadata to prevent breaking the documentation system. However, content updates, additions, and corrections are expected and should proceed normally.
+**⚠️ IMPORTANT**: This rule GUIDES proper editing practices but does NOT prevent legitimate updates. When updating any markdown file (`.md` or `.mdc`) in the project, preserve structure, formatting, cross-references, and metadata to prevent breaking the documentation system. However, content updates, additions, and corrections are expected and should proceed normally.
 
 **MANDATORY**: Before making ANY changes to markdown files (`.md` or `.mdc`), you MUST ask the user to accept the updates. Present a summary of the changes and wait for explicit approval before proceeding with file modifications.
 
@@ -55,7 +55,7 @@ globs: **/*.ts,**/*.js
 
 ### 3. General Preservation Rules
 
-**When updating ANY `.cursor/` file**:
+**When updating ANY markdown file**:
 
 1. **Read the entire file first** - Understand the full structure before making changes
 2. **Preserve formatting** - Maintain consistent spacing, indentation, and line breaks
@@ -123,7 +123,7 @@ globs: **/*.ts,**/*.js  <!-- Preserved original -->
 
 ## Update Workflow
 
-When updating `.cursor/` documentation files:
+When updating markdown files:
 
 1. **Read the entire file** - Understand current structure
 2. **Identify what needs to change** - Be precise about the update
@@ -182,7 +182,7 @@ When updating cross-references:
 
 ## Verification Checklist
 
-Before completing any `.cursor/` file update:
+Before completing any markdown file update:
 
 - [ ] User acceptance obtained (unless explicitly approved in request)
 - [ ] Frontmatter preserved (for `.mdc` files)
@@ -201,4 +201,4 @@ Before completing any `.cursor/` file update:
 
 ---
 
-**Enforcement**: This rule applies to ALL files in `.cursor/` directory. The goal is to maintain documentation quality while allowing necessary updates. Content changes are expected - just preserve structure and formatting when making them.
+**Enforcement**: This rule applies to ALL markdown files (`.md` and `.mdc`) in the project. The goal is to maintain documentation quality while allowing necessary updates. Content changes are expected - just preserve structure and formatting when making them.
