@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { createSectionObserver } from '$lib/utils/intersection';
 
 	let mode = $state<'naive' | 'optimized'>('optimized');
 	let tokens = $state<string[]>([]);
 	let isRunning = $state(false);
 	let sectionVisible = $state(false);
-	let hasAnimated = $state(false);
 	let latencySection: HTMLElement;
 
 	const fullText =
@@ -27,12 +27,27 @@
 				}
 
 				// Artificial "Jank" - simulating a heavy React render
+				// Use a blocking loop but break it into smaller chunks to reduce violation warnings
 				const start = performance.now();
-				while (performance.now() - start < 50); // Block thread for 50ms per word
-
-				tokens = [...tokens, words[i]];
-				i++;
-				setTimeout(tick, Math.random() * 100); // Random network jitter
+				const blockDuration = 50;
+				const chunkSize = 5; // Break into 5ms chunks
+				const blockUntil = start + blockDuration;
+				
+				// Block in smaller chunks to reduce browser violation warnings
+				const block = () => {
+					if (performance.now() < blockUntil) {
+						const chunkStart = performance.now();
+						while (performance.now() - chunkStart < chunkSize);
+						// Yield briefly to reduce violation severity
+						setTimeout(block, 0);
+					} else {
+						// Blocking complete, continue with token update
+						tokens = [...tokens, words[i]];
+						i++;
+						setTimeout(tick, Math.random() * 100); // Random network jitter
+					}
+				};
+				block();
 			};
 			tick();
 		} else {
@@ -57,44 +72,32 @@
 		// Reset state to allow restart
 		isRunning = false;
 		tokens = [];
-		// Small delay to ensure state is reset
-		setTimeout(() => {
-			startSim();
-		}, 50);
+		// Use requestAnimationFrame instead of setTimeout to avoid violation warnings
+		// while still ensuring state is reset before starting
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				startSim();
+			});
+		});
 	}
 
 	onMount(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						sectionVisible = true;
-						// Auto-start animation on first view with optimized mode
-						if (!hasAnimated && mode === 'optimized') {
-							hasAnimated = true;
-							// Small delay to ensure smooth entry
-							setTimeout(() => {
-								startSim();
-							}, 300);
-						}
-					} else {
-						sectionVisible = false;
-					}
-				});
+		return createSectionObserver(latencySection, {
+			enableReanimation: true,
+			onVisible: () => {
+				sectionVisible = true;
+				// Auto-start animation with optimized mode
+				if (mode === 'optimized') {
+					// Small delay to ensure smooth entry
+					setTimeout(() => {
+						startSim();
+					}, 300);
+				}
 			},
-			{
-				threshold: 0.2,
-				rootMargin: '0px 0px -50px 0px'
+			onHidden: () => {
+				sectionVisible = false;
 			}
-		);
-
-		if (latencySection) {
-			observer.observe(latencySection);
-		}
-
-		return () => {
-			observer.disconnect();
-		};
+		});
 	});
 </script>
 
