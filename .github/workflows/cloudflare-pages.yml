@@ -47,23 +47,13 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Download build artifacts from CI
-        id: download-artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: frontend/build
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
-          # If artifacts not found (e.g., manual dispatch), build locally
-          fail-on-error: false
-
-      - name: Build (if artifacts not available)
-        if: steps.download-artifacts.outcome != 'success'
+      - name: Sync SvelteKit
         working-directory: frontend
-        run: |
-          echo "⚠️ Build artifacts not found, building locally..."
-          npm run build
+        run: npm run sync
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
         continue-on-error: false
 
       - name: Verify build output
