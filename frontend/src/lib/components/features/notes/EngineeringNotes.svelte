@@ -3,7 +3,7 @@
 	import { notesData } from '$lib/constants/content';
 </script>
 
-<section class="engineering-notes">
+<section id="notes" class="engineering-notes">
 	<div class="notes-header">
 		<div class="header-badge">
 			<div class="badge-line"></div>

@@ -3,7 +3,7 @@
 	import { projectsData } from '$lib/constants/content';
 </script>
 
-<section class="work-section">
+<section id="work" class="work-section">
 	<div class="work-header">
 		<div class="header-badge">
 			<div class="badge-line"></div>

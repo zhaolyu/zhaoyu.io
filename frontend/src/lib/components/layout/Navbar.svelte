@@ -1,241 +1,69 @@
 <script lang="ts">
-	import ThemeToggle from './ThemeToggle.svelte';
-	import { ROUTES } from '$lib/constants/routes';
+  import ThemeToggle from './ThemeToggle.svelte';
+  
+  let scrollY = $state(0);
+  let isScrolled = $derived(scrollY > 20);
 
-	let mobileMenuOpen = false;
+  const navLinks = [
+    { name: '/architecture', href: '#work' },
+    { name: '/skills', href: '#skills' },
+    { name: '/notes', href: '#notes' },
+  ];
 
-	function toggleMobileMenu() {
-		mobileMenuOpen = !mobileMenuOpen;
-	}
-
-	function closeMobileMenu() {
-		mobileMenuOpen = false;
-	}
+  const headerClasses = $derived.by(() => {
+    const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b';
+    const scrolledClasses = isScrolled
+      ? 'bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-neutral-200 dark:border-neutral-800 py-3'
+      : 'bg-white dark:bg-neutral-950 border-transparent py-4';
+    return `${baseClasses} ${scrolledClasses}`;
+  });
 </script>
 
-<nav class="nav">
-	<div class="nav-container">
-		<a href={ROUTES.HOME} class="nav-logo">zhaoyu.io</a>
-		<div class="nav-right">
-			<div class="nav-links">
-				<a href={ROUTES.HOME}>Home</a>
-				<a href={ROUTES.ABOUT}>About</a>
-				<a href={ROUTES.BLOG}>Blog</a>
-				<a href={ROUTES.API_DEMO}>API Demo</a>
-				<a href={ROUTES.COMPARISON}>Comparison</a>
-			</div>
-			<ThemeToggle />
-			<button
-				class="mobile-menu-button"
-				on:click={toggleMobileMenu}
-				aria-label="Toggle menu"
-				aria-expanded={mobileMenuOpen}
-			>
-				<svg
-					class="hamburger-icon"
-					class:open={mobileMenuOpen}
-					xmlns="http://www.w3.org/2000/svg"
-					width="24"
-					height="24"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<line x1="3" y1="12" x2="21" y2="12"></line>
-					<line x1="3" y1="6" x2="21" y2="6"></line>
-					<line x1="3" y1="18" x2="21" y2="18"></line>
-				</svg>
-			</button>
-		</div>
-	</div>
-	<div class="mobile-menu" class:open={mobileMenuOpen}>
-		<a href={ROUTES.HOME} on:click={closeMobileMenu}>Home</a>
-		<a href={ROUTES.ABOUT} on:click={closeMobileMenu}>About</a>
-		<a href={ROUTES.BLOG} on:click={closeMobileMenu}>Blog</a>
-		<a href={ROUTES.API_DEMO} on:click={closeMobileMenu}>API Demo</a>
-		<a href={ROUTES.COMPARISON} on:click={closeMobileMenu}>Comparison</a>
-	</div>
-</nav>
+<svelte:window bind:scrollY />
 
-<style>
-	.nav {
-		background: var(--bg-primary);
-		border-bottom: 1px solid var(--border-color);
-		position: sticky;
-		top: 0;
-		z-index: 100;
-		transition: background 0.2s, border-color 0.2s;
-	}
+<header class={headerClasses}>
+  <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    
+    <a href="/" class="group flex items-center gap-2">
+      <div class="font-mono font-bold text-xl tracking-tighter text-neutral-900 dark:text-white">
+        zhaoyu.io
+      </div>
+      <div class="h-5 w-2 bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 animate-pulse"></div>
+    </a>
 
-	.nav-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 1rem 1.5rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+    <nav class="hidden md:flex items-center gap-8">
+      {#each navLinks as link}
+        <a 
+          href={link.href} 
+          class="text-sm font-mono text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors relative group"
+        >
+          {link.name}
+          <span class="absolute -bottom-1 left-0 w-0 h-px bg-blue-500 transition-all group-hover:w-full"></span>
+        </a>
+      {/each}
+    </nav>
 
-	@media (min-width: 768px) {
-		.nav-container {
-			padding: 1rem 2rem;
-		}
-	}
+    <div class="flex items-center gap-4">
+      <div class="hidden md:block h-4 w-px bg-neutral-300 dark:bg-neutral-800"></div>
+      
+      <a href="https://github.com/zhaolyu" target="_blank" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+        <span class="sr-only">GitHub</span>
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+      </a>
+      
+      <a href="https://linkedin.com/in/zhaolyu" target="_blank" class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+        <span class="sr-only">LinkedIn</span>
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clip-rule="evenodd"></path></svg>
+      </a>
 
-	.nav-logo {
-		font-weight: bold;
-		font-size: 1.25rem;
-		text-decoration: none;
-		color: #111827;
-		transition: color 0.2s;
-	}
+      <ThemeToggle />
 
-	:global(.dark) .nav-logo {
-		color: #f9fafb;
-	}
-
-	.nav-right {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-	}
-
-	@media (min-width: 768px) {
-		.nav-right {
-			gap: 1.5rem;
-		}
-	}
-
-	.nav-links {
-		display: none;
-		visibility: hidden;
-		opacity: 0;
-		position: absolute;
-		gap: 2rem;
-	}
-
-	@media (min-width: 768px) {
-		.nav-links {
-			display: flex;
-			visibility: visible;
-			opacity: 1;
-			position: static;
-		}
-	}
-
-	.nav-links a {
-		text-decoration: none;
-		color: #4b5563;
-		transition: color 0.2s;
-	}
-
-	.nav-links a:hover {
-		color: #111827;
-	}
-
-	:global(.dark) .nav-links a {
-		color: #9ca3af;
-	}
-
-	:global(.dark) .nav-links a:hover {
-		color: #f9fafb;
-	}
-
-	.mobile-menu-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		padding: 0.5rem;
-		color: #4b5563;
-		transition: color 0.2s;
-	}
-
-	.mobile-menu-button:hover {
-		color: #111827;
-	}
-
-	:global(.dark) .mobile-menu-button {
-		color: #9ca3af;
-	}
-
-	:global(.dark) .mobile-menu-button:hover {
-		color: #f9fafb;
-	}
-
-	@media (min-width: 768px) {
-		.mobile-menu-button {
-			display: none;
-		}
-	}
-
-	.hamburger-icon {
-		width: 24px;
-		height: 24px;
-		transition: transform 0.3s ease;
-	}
-
-	.hamburger-icon.open {
-		transform: rotate(90deg);
-	}
-
-	.mobile-menu {
-		display: flex;
-		flex-direction: column;
-		gap: 0;
-		max-height: 0;
-		overflow: hidden;
-		background: var(--bg-primary);
-		border-top: 1px solid var(--border-color);
-		transition: max-height 0.3s ease, padding 0.3s ease;
-		padding: 0 1.5rem;
-		position: relative;
-		z-index: 99;
-	}
-
-	.mobile-menu.open {
-		max-height: 500px;
-		padding: 1rem 1.5rem;
-	}
-
-	.mobile-menu a {
-		text-decoration: none;
-		color: #4b5563;
-		padding: 0.75rem 0;
-		border-bottom: 1px solid var(--border-color);
-		transition: color 0.2s;
-		font-size: 1rem;
-	}
-
-	.mobile-menu a:last-child {
-		border-bottom: none;
-	}
-
-	.mobile-menu a:hover {
-		color: #111827;
-	}
-
-	:global(.dark) .mobile-menu {
-		border-top-color: var(--border-color);
-	}
-
-	:global(.dark) .mobile-menu a {
-		color: #9ca3af;
-		border-bottom-color: var(--border-color);
-	}
-
-	:global(.dark) .mobile-menu a:hover {
-		color: #f9fafb;
-	}
-
-	@media (min-width: 768px) {
-		.mobile-menu {
-			display: none;
-		}
-	}
-</style>
+      <a 
+        href="/resume.pdf" 
+        class="ml-2 px-3 py-1.5 text-xs font-mono font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700 rounded bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-500 transition-all"
+      >
+        RESUME
+      </a>
+    </div>
+  </div>
+</header>
