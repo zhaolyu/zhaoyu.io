@@ -10,6 +10,9 @@
 # - Parallel job execution for faster feedback (~2-3 min vs ~4-5 min sequential)
 # - All jobs include SvelteKit sync step for consistency
 # - Build artifacts removed (deployment workflow builds directly)
+# - Concurrency control prevents duplicate runs on rapid commits
+# - Path-based filtering skips CI for docs/config-only changes
+# - Draft PR skipping saves minutes until PR is ready for review
 
 name: CI - Quality Checks and Build
 
@@ -17,17 +20,42 @@ on:
   push:
     # Run CI on all branches to enable feature branch deployments
     branches-ignore: []
+    # Skip CI for documentation and config-only changes
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'docs/**'
+      - '.gitignore'
+      - '.prettierrc'
+      - 'LICENSE'
   pull_request:
     branches:
       - main
       - develop
+    # Skip CI for documentation and config-only changes
+    paths-ignore:
+      - '**.md'
+      - '.github/**'
+      - 'docs/**'
+      - '.gitignore'
+      - '.prettierrc'
+      - 'LICENSE'
   workflow_dispatch:
+
+# Prevent concurrent runs for the same branch/PR
+# Cancels in-progress runs when a new commit is pushed
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   # Branch protection: Prevent direct pushes to main
   branch-protection:
     runs-on: ubuntu-latest
     name: Branch Protection Check
+    timeout-minutes: 2
+    permissions:
+      contents: read
     # Always run, but only fail on direct pushes to main
     steps:
       - name: Check for direct push to main
@@ -57,9 +85,14 @@ jobs:
   # Parallel quality checks for faster feedback
   type-check:
     needs: branch-protection
-    if: needs.branch-protection.result == 'success'
+    if: |
+      needs.branch-protection.result == 'success' &&
+      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
     name: Type Check
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -86,9 +119,14 @@ jobs:
 
   lint:
     needs: branch-protection
-    if: needs.branch-protection.result == 'success'
+    if: |
+      needs.branch-protection.result == 'success' &&
+      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
     name: Lint
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -111,9 +149,14 @@ jobs:
 
   test:
     needs: branch-protection
-    if: needs.branch-protection.result == 'success'
+    if: |
+      needs.branch-protection.result == 'success' &&
+      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
     name: Test
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -140,9 +183,14 @@ jobs:
 
   build:
     needs: branch-protection
-    if: needs.branch-protection.result == 'success'
+    if: |
+      needs.branch-protection.result == 'success' &&
+      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
     name: Build
+    timeout-minutes: 15
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -189,6 +237,9 @@ jobs:
   ci-success:
     runs-on: ubuntu-latest
     name: CI Success
+    timeout-minutes: 1
+    permissions:
+      contents: read
     needs: [branch-protection, type-check, lint, test, build]
     if: always()
     steps:
@@ -199,12 +250,36 @@ jobs:
             echo "❌ Branch protection check failed - direct push to main blocked"
             exit 1
           fi
-          # Check other jobs (they may be skipped if branch-protection failed)
-          if [ "${{ needs.type-check.result }}" != "success" ] || \
-             [ "${{ needs.lint.result }}" != "success" ] || \
-             [ "${{ needs.test.result }}" != "success" ] || \
-             [ "${{ needs.build.result }}" != "success" ]; then
+          # Check other jobs (allow skipped results for draft PRs or path filtering)
+          # Only fail if result is "failure", allow "success" or "skipped"
+          check_job() {
+            local result="$1"
+            local job_name="$2"
+            if [ "$result" == "failure" ]; then
+              echo "❌ $job_name failed"
+              return 1
+            elif [ "$result" == "skipped" ]; then
+              echo "⏭️  $job_name skipped (draft PR or path filtering)"
+              return 0
+            elif [ "$result" == "success" ]; then
+              echo "✅ $job_name passed"
+              return 0
+            else
+              echo "⚠️  $job_name has unexpected result: $result"
+              return 1
+            fi
+          }
+          
+          FAILED=0
+          check_job "${{ needs.type-check.result }}" "Type check" || FAILED=1
+          check_job "${{ needs.lint.result }}" "Lint" || FAILED=1
+          check_job "${{ needs.test.result }}" "Test" || FAILED=1
+          check_job "${{ needs.build.result }}" "Build" || FAILED=1
+          
+          if [ $FAILED -eq 1 ]; then
+            echo ""
             echo "❌ One or more CI checks failed"
             exit 1
           fi
-          echo "✅ All CI checks passed"
+          echo ""
+          echo "✅ All CI checks passed or were skipped (as expected)"
