@@ -4,8 +4,10 @@
 	import { cubicOut } from 'svelte/easing';
 	import { fade } from 'svelte/transition';
 	import { skillsData } from '$lib/constants/content';
+	import { createSectionObserver } from '$lib/utils/section-observer';
 
 	let sectionVisible = $state(false);
+	let animationKey = $state(0); // Counter for forcing transition re-trigger
 	let skillsContainer: HTMLElement;
 
 	const progress = tweened(0, {
@@ -13,37 +15,23 @@
 		easing: cubicOut
 	});
 
+	function triggerAnimation() {
+		sectionVisible = true;
+		animationKey++; // Increment key to force remount and re-trigger transitions
+		progress.set(0);
+		setTimeout(() => {
+			progress.set(1);
+		}, 100);
+	}
+
 	onMount(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						sectionVisible = true;
-						// Reset and re-animate each time section comes into view
-						progress.set(0);
-						setTimeout(() => {
-							progress.set(1);
-						}, 100);
-					} else {
-						// Reset progress when section leaves view so it can re-animate
-						progress.set(0);
-						sectionVisible = false;
-					}
-				});
+		return createSectionObserver(skillsContainer, {
+			enableReanimation: true,
+			onVisible: () => {
+				triggerAnimation();
 			},
-			{
-				threshold: 0.2,
-				rootMargin: '0px 0px -50px 0px'
-			}
-		);
-
-		if (skillsContainer) {
-			observer.observe(skillsContainer);
-		}
-
-		return () => {
-			observer.disconnect();
-		};
+			threshold: 0.1 // Trigger when 10% visible
+		});
 	});
 
 	function getPoint(index: number, total: number, value: number): string {
@@ -129,16 +117,18 @@
 						/>
 
 						{#if $progress > 0}
-							<polygon
-								transition:fade={{ duration: 1500, delay: 500 }}
-								points={goalPoints}
-								class="chart-goal"
-							/>
-							<polygon transition:fade={{ duration: 1000 }} points={currentPoints} class="chart-fill" />
-							{#each skillsData.skills as skill, i}
-								{@const coords = getPoint(i, skillsData.skills.length, skill.value * $progress).split(',').map(Number)}
-								<circle cx={coords[0]} cy={coords[1]} r="4" class="chart-dot" />
-							{/each}
+							{#key animationKey}
+								<polygon
+									transition:fade={{ duration: 1500, delay: 500 }}
+									points={goalPoints}
+									class="chart-goal"
+								/>
+								<polygon transition:fade={{ duration: 1000 }} points={currentPoints} class="chart-fill" />
+								{#each skillsData.skills as skill, i}
+									{@const coords = getPoint(i, skillsData.skills.length, skill.value * $progress).split(',').map(Number)}
+									<circle cx={coords[0]} cy={coords[1]} r="4" class="chart-dot" />
+								{/each}
+							{/key}
 						{/if}
 
 						{#each skillsData.skills as skill, i}

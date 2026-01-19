@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-This is your personal website repository (`zhaoyu.io`) with two frontend implementations for comparison and learning purposes.
+This is your personal website repository (`zhaoyu.io`) built with SvelteKit. The Astro implementation was removed after comparison, and SvelteKit was chosen as the primary framework.
 
 ## Current State
 
@@ -71,10 +71,9 @@ Based on your comparison document, your priorities were:
 - **Adapter**: @sveltejs/adapter-static (SPA mode)
 - **Node Version**: 24.13.0 (via .nvmrc)
 
-### Astro Frontend
-- **Framework**: Astro 5.16.11
-- **UI Framework**: React 19.2.3
-- **Styling**: Tailwind CSS v4.1.18
+### Removed: Astro Frontend
+- The Astro implementation was removed after comparison
+- See `frontend/docs/COMPARISON.md` for the detailed comparison that led to choosing SvelteKit
 
 ## Current Implementation Status
 
@@ -88,9 +87,8 @@ Based on your comparison document, your priorities were:
 - Documentation (architecture, comparison, setup guides)
 
 ### Potentially In Progress / To Do
-- `/blog` route (linked in nav but may need implementation)
 - Content for various pages
-- Deployment configuration
+- Deployment to Cloudflare Pages (see [Deployment Recommendation](DEPLOYMENT_RECOMMENDATION.md))
 - Additional features/functionality
 
 ## Git Configuration
@@ -99,11 +97,10 @@ The repository is configured to use a Personal Access Token (PAT) from your pers
 
 ## Next Steps Suggestions
 
-1. **Implement Blog Route**: The `/blog` link exists in navigation but may need a page component
+1. **Deploy**: Set up deployment to Cloudflare Pages (see [Deployment Recommendation](DEPLOYMENT_RECOMMENDATION.md))
 2. **Add Content**: Populate pages with actual content
-3. **Deploy**: Set up deployment (Vercel, Netlify, etc.)
-4. **Enhance Features**: Add more interactive features or pages
-5. **Content Management**: Consider CMS integration if planned
+3. **Enhance Features**: Add more interactive features or pages
+4. **Content Management**: Consider CMS integration if planned
 
 ## Development Commands
 
