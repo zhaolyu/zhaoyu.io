@@ -265,7 +265,14 @@ You can also use Tailwind classes:
 
 ### Theme Support (Light & Dark Mode)
 
-**All components MUST support both light and dark modes.** Use CSS variables and theme-aware styling.
+**MANDATORY: All components MUST support both light and dark modes. This is REQUIRED for ALL code generation.**
+
+**Critical Requirements:**
+- ✅ **ALWAYS use CSS variables** - Never hardcode colors like `bg-white`, `text-black`, `dark:bg-neutral-950`
+- ✅ **Use CSS variables from `app.css`**: `--bg-primary`, `--text-primary`, `--text-secondary`, `--text-muted`, `--border-color`, `--bg-secondary`
+- ✅ **Always add transitions**: `transition: background-color 0.2s, color 0.2s, border-color 0.2s`
+- ❌ **NEVER hardcode colors** - Always use CSS variables for backgrounds, text, and borders
+- ❌ **NEVER use Tailwind color classes** like `bg-white dark:bg-neutral-950` - Use CSS variables instead
 
 **All components MUST use the Geist font family.** Use `var(--font-sans)` for regular text and `var(--font-mono)` for monospace text.
 

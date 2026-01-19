@@ -74,7 +74,14 @@ For complete code examples and patterns, see:
 
 ## Theme Support (Light & Dark Mode)
 
-**All components MUST support both light and dark modes.**
+**MANDATORY: All components MUST support both light and dark modes. This is REQUIRED for ALL code generation.**
+
+### Critical Rules
+
+- ✅ **ALWAYS use CSS variables** - Never hardcode colors
+- ✅ **Never use** `bg-white dark:bg-neutral-950` or similar hardcoded Tailwind color classes
+- ✅ **Always use** `var(--bg-primary)`, `var(--text-primary)`, `var(--border-color)`, etc.
+- ✅ **Always add transitions** for smooth theme switching
 
 ### Quick Reference
 
@@ -87,8 +94,33 @@ For complete code examples and patterns, see:
 		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 	}
 
+	.component:hover {
+		background: var(--bg-secondary);
+	}
+
 	:global(.dark) .component {
-		/* Theme-specific overrides if needed */
+		/* Theme-specific overrides only if absolutely necessary */
+	}
+</style>
+```
+
+### Anti-Pattern (DO NOT DO THIS)
+
+```svelte
+<!-- ❌ WRONG: Hardcoded colors -->
+<div class="bg-white dark:bg-neutral-950 text-black dark:text-white">
+	Content
+</div>
+
+<!-- ✅ CORRECT: CSS variables -->
+<div class="component">
+	Content
+</div>
+
+<style>
+	.component {
+		background: var(--bg-primary);
+		color: var(--text-primary);
 	}
 </style>
 ```

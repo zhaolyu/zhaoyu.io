@@ -3,7 +3,7 @@
 	import { ExperienceTicker } from '$lib/components/features/experience';
 	import { Skills } from '$lib/components/features/skills';
 	import { WorkSection } from '$lib/components/features/work';
-	// import { EngineeringNotes } from '$lib/components/features/notes';
+	import { EngineeringNotes } from '$lib/components/features/notes';
 </script>
 
 <svelte:head>
@@ -16,7 +16,7 @@
 	<ExperienceTicker />
 	<Skills />
 	<WorkSection />
-	<!-- <EngineeringNotes /> -->
+	<EngineeringNotes />
 </main>
 
 <style>

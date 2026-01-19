@@ -199,13 +199,48 @@ Follow SOLID principles for maintainable code:
 
 ## Styling Conventions
 
+### Theme Support (MANDATORY)
+
+**CRITICAL**: All components MUST support both light and dark modes using CSS variables. Never hardcode colors.
+
+**Required CSS Variables**:
+- `var(--bg-primary)` - Main background
+- `var(--bg-secondary)` - Secondary background
+- `var(--text-primary)` - Main text color
+- `var(--text-secondary)` - Secondary text color
+- `var(--text-muted)` - Muted text color
+- `var(--border-color)` - Border color
+
+**Always add transitions**: `transition: background-color 0.2s, color 0.2s, border-color 0.2s`
+
 ### Tailwind CSS
 
-Use Tailwind utility classes for styling:
+Use Tailwind utility classes for layout and spacing, but **ALWAYS use CSS variables for colors**:
 
 ```svelte
-<div class="flex items-center justify-between p-4 bg-white rounded-lg shadow-md">
-	<h2 class="text-2xl font-bold text-gray-900">Title</h2>
+<!-- ✅ CORRECT: Use Tailwind for layout, CSS variables for colors -->
+<div class="flex items-center justify-between p-4 rounded-lg shadow-md card">
+	<h2 class="text-2xl font-bold card-title">Title</h2>
+</div>
+
+<style>
+	.card {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-color);
+		transition: background-color 0.2s, border-color 0.2s;
+	}
+
+	.card-title {
+		color: var(--text-primary);
+		transition: color 0.2s;
+	}
+</style>
+```
+
+```svelte
+<!-- ❌ INCORRECT: Hardcoded colors -->
+<div class="flex items-center justify-between p-4 bg-white dark:bg-neutral-950 rounded-lg">
+	<h2 class="text-2xl font-bold text-gray-900 dark:text-white">Title</h2>
 </div>
 ```
 

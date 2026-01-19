@@ -9,7 +9,7 @@
 	let skillsContainer: HTMLElement;
 
 	const progress = tweened(0, {
-		duration: 1500,
+		duration: 3000,
 		easing: cubicOut
 	});
 
@@ -19,13 +19,15 @@
 				entries.forEach((entry) => {
 					if (entry.isIntersecting) {
 						sectionVisible = true;
+						// Reset and re-animate each time section comes into view
 						progress.set(0);
 						setTimeout(() => {
 							progress.set(1);
 						}, 100);
 					} else {
-						// Optional: reset progress if you want it to re-animate every scroll
-						// progress.set(0);
+						// Reset progress when section leaves view so it can re-animate
+						progress.set(0);
+						sectionVisible = false;
 					}
 				});
 			},
