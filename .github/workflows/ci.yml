@@ -1,7 +1,7 @@
 # GitHub Actions workflow for CI checks on pull requests
 # 
 # This workflow:
-# - Triggers only on pull request creation (opened event)
+# - Triggers on pull request creation (opened) and reopening (reopened)
 # - Runs type checking, linting, testing, and build verification in parallel
 # - Ensures code quality before merging
 # - Does NOT deploy (deployment is handled by cloudflare-pages.yml)
@@ -18,7 +18,7 @@ name: CI - Quality Checks and Build
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
     # Run CI on PRs targeting any branch (including feature/... branches)
     # Skip CI for documentation and config-only changes
     paths-ignore:
