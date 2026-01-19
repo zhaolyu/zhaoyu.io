@@ -16,7 +16,7 @@
 	</div>
 
 	<div class="projects-container">
-		{#each projectsData.projects as project}
+		{#each projectsData.projects.filter((p) => p.title !== 'Generative AI Interface') as project}
 			<ProjectCard {...project} />
 		{/each}
 	</div>
