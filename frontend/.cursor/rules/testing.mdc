@@ -60,7 +60,7 @@ expect(get(count)).toBe(1);
 ## Running Tests
 
 ```bash
-npm test                    # Run all tests
+npm run test                # Run all tests
 npm run test:watch          # Watch mode
 npm test -- --coverage      # With coverage
 npm test -- path/to/file.test.ts  # Specific file

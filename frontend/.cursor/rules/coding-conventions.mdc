@@ -95,7 +95,7 @@ Use `$state()` for reactive state. Always define TypeScript interfaces for compo
 
 ## Theme Support Requirement
 
-**MANDATORY: All components MUST support both light and dark modes. This is REQUIRED for ALL code generation.**
+**MANDATORY: All components MUST support both light and dark modes. This is MANDATORY for ALL code generation.**
 
 ### Critical Rules
 
