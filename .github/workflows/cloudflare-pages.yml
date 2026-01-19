@@ -18,10 +18,12 @@ on:
     # Only trigger on successful or skipped CI runs (filters at trigger level)
     branches:
       - '**'  # All branches
-  # Backup: Direct push trigger for main branch (ensures deployment on merge)
+  # Backup: Direct push trigger for all branches
+  # Note: workflow_run uses workflow file from default branch (main), so push trigger
+  # ensures feature branches can deploy with their own workflow changes
   push:
     branches:
-      - main
+      - '**'  # All branches
   workflow_dispatch:
 
 jobs:
