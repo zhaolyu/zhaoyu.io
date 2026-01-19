@@ -1,7 +1,12 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	let mode = $state<'naive' | 'optimized'>('optimized');
 	let tokens = $state<string[]>([]);
 	let isRunning = $state(false);
+	let sectionVisible = $state(false);
+	let hasAnimated = $state(false);
+	let latencySection: HTMLElement;
 
 	const fullText =
 		'The architecture uses a decoupled React state buffer. Instead of triggering a reconciliation cycle for every single token (which creates jank), we buffer incoming chunks in a Ref and flush to the DOM using requestAnimationFrame. This ensures the UI thread remains unblocked.';
@@ -49,11 +54,51 @@
 
 	function handleModeChange(newMode: 'naive' | 'optimized') {
 		mode = newMode;
-		startSim();
+		// Reset state to allow restart
+		isRunning = false;
+		tokens = [];
+		// Small delay to ensure state is reset
+		setTimeout(() => {
+			startSim();
+		}, 50);
 	}
+
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						sectionVisible = true;
+						// Auto-start animation on first view with optimized mode
+						if (!hasAnimated && mode === 'optimized') {
+							hasAnimated = true;
+							// Small delay to ensure smooth entry
+							setTimeout(() => {
+								startSim();
+							}, 300);
+						}
+					} else {
+						sectionVisible = false;
+					}
+				});
+			},
+			{
+				threshold: 0.2,
+				rootMargin: '0px 0px -50px 0px'
+			}
+		);
+
+		if (latencySection) {
+			observer.observe(latencySection);
+		}
+
+		return () => {
+			observer.disconnect();
+		};
+	});
 </script>
 
-<section id="latency" class="latency-sim-section">
+<section id="latency" class="latency-sim-section" bind:this={latencySection}>
 	<div class="sim-container">
 		<div class="sim-content">
 			<div class="sim-text">

@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { experienceData } from '$lib/constants/content';
 
-	// Triple loop for smoother animation
-	const items = [
-		...experienceData.companies,
-		...experienceData.companies,
-		...experienceData.companies
-	];
+	// Memoize duplicated items for seamless infinite scroll
+	// Only compute once, not on every render
+	const tickerItems = $derived([
+		...experienceData.items,
+		...experienceData.items
+	]);
 </script>
 
 <section class="experience-ticker">
@@ -14,9 +14,14 @@
 	<div class="fade-right"></div>
 
 	<div class="ticker-container">
-		{#each items as item}
+		{#each tickerItems as item}
 			<div class="ticker-item">
-				<span class="ticker-text">{item}</span>
+				<div
+					class="status-dot"
+					class:tech={item.type === 'tech'}
+					class:org={item.type === 'org'}
+				></div>
+				<span class="ticker-text">{item.name}</span>
 			</div>
 		{/each}
 	</div>
@@ -63,7 +68,13 @@
 		margin: 0 2rem;
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		gap: 0.75rem;
+		opacity: 0.5;
+		transition: opacity 0.3s;
+	}
+
+	.ticker-item:hover {
+		opacity: 1;
 	}
 
 	@media (min-width: 768px) {
@@ -72,16 +83,32 @@
 		}
 	}
 
+	.status-dot {
+		width: 0.375rem;
+		height: 0.375rem;
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+
+	.status-dot.tech {
+		background: var(--accent-primary);
+		box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+	}
+
+	.status-dot.org {
+		background: var(--text-muted);
+	}
+
 	.ticker-text {
 		font-size: 0.875rem;
 		font-weight: 700;
-		color: var(--text-muted);
+		color: var(--text-primary);
 		font-family: var(--font-mono);
 		letter-spacing: 0.2em;
 		text-transform: uppercase;
-		transition: color 0.2s;
 		cursor: default;
 		white-space: nowrap;
+		transition: color 0.2s;
 	}
 
 	@media (min-width: 768px) {
@@ -90,16 +117,12 @@
 		}
 	}
 
-	.ticker-item:hover .ticker-text {
-		color: var(--text-secondary);
-	}
-
 	@keyframes scroll {
 		0% {
 			transform: translateX(0);
 		}
 		100% {
-			transform: translateX(-33.33%);
+			transform: translateX(-50%);
 		}
 	}
 

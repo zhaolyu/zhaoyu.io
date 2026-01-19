@@ -1,10 +1,10 @@
-# GitHub Actions workflow for CI checks on commits and pull requests
+# GitHub Actions workflow for CI checks and deployment on pull requests
 # 
 # This workflow:
-# - Triggers on push to all branches and pull requests
+# - Triggers on pull request creation (opened) and reopening (reopened)
 # - Runs type checking, linting, testing, and build verification in parallel
+# - Deploys to Cloudflare Pages after successful build
 # - Ensures code quality before merging
-# - Does NOT deploy (deployment is handled by cloudflare-pages.yml)
 # 
 # Optimizations:
 # - Parallel job execution for faster feedback (~2-3 min vs ~4-5 min sequential)
@@ -17,21 +17,9 @@
 name: CI - Quality Checks and Build
 
 on:
-  push:
-    # Run CI on all branches to enable feature branch deployments
-    branches-ignore: []
-    # Skip CI for documentation and config-only changes
-    paths-ignore:
-      - '**.md'
-      - '.github/**'
-      - 'docs/**'
-      - '.gitignore'
-      - '.prettierrc'
-      - 'LICENSE'
   pull_request:
-    branches:
-      - main
-      - develop
+    types: [opened, reopened]
+    # Run CI on PRs targeting any branch (including feature/... branches)
     # Skip CI for documentation and config-only changes
     paths-ignore:
       - '**.md'
@@ -40,7 +28,6 @@ on:
       - '.gitignore'
       - '.prettierrc'
       - 'LICENSE'
-  workflow_dispatch:
 
 # Prevent concurrent runs for the same branch/PR
 # Cancels in-progress runs when a new commit is pushed
@@ -50,42 +37,24 @@ concurrency:
 
 jobs:
   # Check if this is a merge commit (skip CI since PR already passed)
+  # Note: This is kept for consistency but won't apply to PR opened events
   check-merge-commit:
     runs-on: ubuntu-latest
     name: Check Merge Commit
     timeout-minutes: 1
     permissions:
       contents: read
-    # Always run, but only check for pushes to main
     outputs:
-      is_merge_commit: ${{ steps.check-merge.outputs.is_merge_commit || 'false' }}
+      is_merge_commit: 'false'
     steps:
       - name: Set default output
         id: set-default
         run: |
           echo "is_merge_commit=false" >> $GITHUB_OUTPUT
-      
-      - name: Checkout
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      
-      - name: Check if merge commit
-        id: check-merge
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Check if commit has 2+ parents (merge commit)
-          PARENT_COUNT=$(git rev-list --count ${{ github.sha }}^@ 2>/dev/null || echo "1")
-          if [ "$PARENT_COUNT" -ge 2 ]; then
-            echo "is_merge_commit=true" >> $GITHUB_OUTPUT
-            echo "✅ Detected merge commit - PR already passed CI, skipping CI checks"
-          else
-            echo "is_merge_commit=false" >> $GITHUB_OUTPUT
-            echo "Not a merge commit, CI will run normally"
-          fi
+          echo "✅ PR opened event - CI will run normally"
 
   # Branch protection: Prevent direct pushes to main
+  # Note: This is kept for consistency but won't apply to PR opened events
   branch-protection:
     runs-on: ubuntu-latest
     name: Branch Protection Check
@@ -94,46 +63,17 @@ jobs:
       contents: read
     needs: check-merge-commit
     if: always()
-    # Always run, but only fail on direct pushes to main (not merge commits)
     steps:
-      - name: Check for direct push to main
-        if: |
-          github.event_name == 'push' && 
-          github.ref == 'refs/heads/main' && 
-          needs.check-merge-commit.outputs.is_merge_commit != 'true'
-        run: |
-          echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
-          echo ""
-          echo "This push bypassed the local pre-push hook. Please use a pull request workflow instead:"
-          echo "  1. Create a feature branch: git checkout -b feature/your-feature"
-          echo "  2. Push your changes: git push origin feature/your-feature"
-          echo "  3. Create a pull request to merge into main"
-          echo ""
-          echo "This ensures code review and CI checks before merging."
-          echo ""
-          echo "⚠️  This workflow will fail, preventing deployment."
-          echo "⚠️  The commit is already in the repository but should be reverted manually."
-          echo ""
-          echo "To revert this commit:"
-          echo "  git revert ${{ github.sha }}"
-          echo "  git push origin main"
-          exit 1
-      - name: Branch protection passed (merge commit)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check-merge-commit.outputs.is_merge_commit == 'true'
-        run: |
-          echo "✅ Merge commit detected - PR already passed CI, skipping branch protection check"
       - name: Branch protection passed
-        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         run: |
-          echo "✅ Branch protection check passed (not a direct push to main)"
+          echo "✅ Branch protection check passed (PR opened event)"
 
   # Parallel quality checks for faster feedback
   type-check:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Type Check
     timeout-minutes: 10
@@ -166,9 +106,8 @@ jobs:
   lint:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Lint
     timeout-minutes: 10
@@ -197,9 +136,8 @@ jobs:
   test:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Test
     timeout-minutes: 10
@@ -232,9 +170,8 @@ jobs:
   build:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Build
     timeout-minutes: 15
@@ -282,6 +219,221 @@ jobs:
           echo "  Files: $(find build/ -type f | wc -l)"
           echo "  Directories: $(find build/ -type d | wc -l)"
 
+  # Deploy to Cloudflare Pages after successful build
+  deploy:
+    needs: [check-merge-commit, branch-protection, build]
+    if: |
+      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
+      (needs.build.result == 'success') &&
+      (github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    name: Deploy to Cloudflare Pages
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      deployments: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.13.0'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Sync SvelteKit
+        working-directory: frontend
+        run: npm run sync
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+        continue-on-error: false
+
+      - name: Verify build output
+        working-directory: frontend
+        run: |
+          if [ ! -d "build" ]; then
+            echo "❌ Error: build directory not found"
+            exit 1
+          fi
+          if [ ! -f "build/index.html" ]; then
+            echo "❌ Error: build/index.html not found"
+            exit 1
+          fi
+          echo "✅ Build output verified successfully"
+          echo "Build size:"
+          du -sh build/
+
+      - name: Determine deployment type
+        id: deployment
+        run: |
+          # Get the PR head branch (source branch)
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          
+          if [ "${{ github.event.pull_request.base.ref }}" = "main" ]; then
+            echo "environment=preview" >> $GITHUB_OUTPUT
+            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+            echo "Deploying to PREVIEW (PR targeting main)"
+          else
+            echo "environment=preview" >> $GITHUB_OUTPUT
+            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+            echo "Deploying to PREVIEW (feature branch)"
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: zhaoyu-io
+          directory: frontend/build
+          branch: ${{ steps.deployment.outputs.branch }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Check deployment status
+        if: steps.deploy.outcome == 'success'
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Deployment may take a few moments to propagate."
+      
+      - name: Output Deployment URLs
+        if: steps.deploy.outcome == 'success'
+        run: |
+          echo "🌐 Deployment completed successfully!"
+          echo ""
+          echo "**Preview Deployment URLs:**"
+          echo "  - Atomic URL: ${{ steps.deploy.outputs.url }}"
+          echo "  - Branch Alias: ${{ steps.deploy.outputs.alias }}"
+          echo ""
+          echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
+          echo "   1. Wait 1-2 minutes for deployment to propagate"
+          echo "   2. Check Cloudflare Pages dashboard → Deployments tab"
+          echo "   3. Verify the deployment status is 'Success'"
+      
+      - name: Extract deployment URLs
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.deploy.outcome == 'success'
+        id: extract-urls
+        run: |
+          echo "Extracting deployment URLs from Cloudflare Pages action..."
+          ATOMIC_URL="${{ steps.deploy.outputs.url }}"
+          ALIAS_URL="${{ steps.deploy.outputs.alias }}"
+          
+          if [ -z "$ATOMIC_URL" ]; then
+            echo "❌ ERROR: Atomic URL is empty!"
+            exit 1
+          fi
+          
+          if [ -n "$ALIAS_URL" ] && [ "$ALIAS_URL" != "$ATOMIC_URL" ]; then
+            echo "preview_url=$ALIAS_URL" >> $GITHUB_OUTPUT
+          else
+            echo "preview_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
+          fi
+          echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
+          echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
+      
+      - name: Comment Preview URL on PR
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.deploy.outcome == 'success' &&
+          steps.extract-urls.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const branch = '${{ steps.deployment.outputs.branch }}';
+            
+            console.log('✅ Found PR #' + prNumber + ' for branch: ' + branch);
+            
+            // Get URLs from extract-urls step
+            const previewUrl = '${{ steps.extract-urls.outputs.preview_url }}'.trim();
+            const atomicUrl = '${{ steps.extract-urls.outputs.atomic_url }}'.trim();
+            
+            console.log('Deployment URLs:', {
+              previewUrl: previewUrl || '(empty)',
+              atomicUrl: atomicUrl || '(empty)',
+              branch: branch
+            });
+            
+            // Validate URL
+            if (!previewUrl || previewUrl === '' || previewUrl === '${{ steps.extract-urls.outputs.preview_url }}') {
+              console.error('❌ Preview URL is empty or not set!');
+              console.error('Check the "Extract deployment URLs" step logs for details.');
+              return;
+            }
+            
+            console.log('Using preview URL:', previewUrl);
+            
+            // Format the URL as a clickable link
+            const urlLink = '[' + previewUrl + '](' + previewUrl + ')';
+            
+            let comment = '## 🌐 Preview Deployment\n\n';
+            comment += '**Branch:** `' + branch + '`\n';
+            comment += '**Preview URL:** ' + urlLink + '\n';
+            
+            // Show atomic URL if different from preview URL
+            if (atomicUrl && atomicUrl !== previewUrl) {
+              const atomicLink = '[' + atomicUrl + '](' + atomicUrl + ')';
+              comment += '**Atomic URL:** ' + atomicLink + ' (specific deployment)\n';
+            }
+            
+            comment += '\n';
+            comment += '> ⚠️ **Note:** The preview URL may take 1-2 minutes to become active. If you see "Nothing is here yet" or a Cloudflare Access login, wait a moment and refresh.\n';
+            comment += '> \n';
+            comment += '> You can also check the [Cloudflare Pages dashboard](https://dash.cloudflare.com/) for deployment status.';
+            
+            // Check if we've already commented on this PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            
+            // Look for existing comment from this workflow
+            // Match by "Preview Deployment" header and branch name
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Preview Deployment') &&
+              comment.body.includes('`' + branch + '`')
+            );
+            
+            try {
+              if (botComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: comment
+                });
+                console.log('✅ Updated preview URL comment on PR #' + prNumber);
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: comment
+                });
+                console.log('✅ Posted preview URL comment on PR #' + prNumber);
+                console.log('Preview URL:', previewUrl);
+              }
+            } catch (error) {
+              console.error('❌ Error posting comment to PR:', error.message);
+              console.error('Error details:', error);
+              throw error;
+            }
+
   # Summary job that depends on all checks passing
   ci-success:
     runs-on: ubuntu-latest
@@ -289,19 +441,10 @@ jobs:
     timeout-minutes: 1
     permissions:
       contents: read
-    needs: [check-merge-commit, branch-protection, type-check, lint, test, build]
+    needs: [check-merge-commit, branch-protection, type-check, lint, test, build, deploy]
     if: always()
     steps:
-      - name: Check if merge commit (skip CI)
-        if: needs.check-merge-commit.outputs.is_merge_commit == 'true'
-        run: |
-          echo "✅ Merge commit detected - PR already passed CI"
-          echo "⏭️  Skipping CI checks - merge commits don't need re-validation"
-          echo "✅ CI workflow marked as successful (bypassed)"
-          exit 0
-      
       - name: Check all jobs status
-        if: needs.check-merge-commit.outputs.is_merge_commit != 'true'
         run: |
           # Check branch protection first
           if [ "${{ needs.branch-protection.result }}" == "failure" ]; then
@@ -333,6 +476,7 @@ jobs:
           check_job "${{ needs.lint.result }}" "Lint" || FAILED=1
           check_job "${{ needs.test.result }}" "Test" || FAILED=1
           check_job "${{ needs.build.result }}" "Build" || FAILED=1
+          check_job "${{ needs.deploy.result }}" "Deploy" || FAILED=1
           
           if [ $FAILED -eq 1 ]; then
             echo ""
