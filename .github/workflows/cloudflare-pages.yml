@@ -1,14 +1,25 @@
+# Deploy to Cloudflare Pages
+# 
+# Optimizations:
+# - Prevents duplicate deployments (checks for workflow_run deployments before push-triggered deployments)
+# - Polls CI status for push events (waits up to 5 minutes for CI to complete)
+# - Builds directly (no artifact download needed, avoids permission issues)
+# - Supports both workflow_run (preferred) and push (fallback) triggers
+
 name: Deploy to Cloudflare Pages
 
 on:
-  # Deploy after CI workflow completes successfully
+  # Primary: Deploy after CI workflow completes successfully
   workflow_run:
     workflows: ["CI - Quality Checks and Build"]
     types:
       - completed
-    branches:
+    # Deploy for all branches (feature branches will get preview URLs)
+  # Fallback: Direct push trigger (only if workflow_run doesn't trigger)
+  # Note: This is a fallback - workflow_run is preferred to avoid duplicate deployments
+  push:
+    branches-ignore:
       - main
-      - develop
   # Allow manual deployment
   workflow_dispatch:
     inputs:
@@ -22,23 +33,126 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
+    # Permissions needed for checking workflow runs and creating deployments
+    permissions:
+      contents: read
+      actions: read
+      deployments: write
     # Prevent concurrent deployments for the same branch
     concurrency:
       group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
       cancel-in-progress: true
-    # Only deploy if CI passed (or manual dispatch with skip)
+    # Deployment conditions:
+    # - workflow_run: Only if CI succeeded (for push or pull_request events) - PREFERRED
+    # - push: Only if CI passed (verified in step) - FALLBACK if workflow_run doesn't trigger
+    # - workflow_dispatch: Always deploy (manual trigger)
     if: |
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ci_check == 'true') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'pull_request')) ||
+      (github.event_name == 'push') ||
       github.event_name == 'workflow_dispatch'
     steps:
+      - name: Check for duplicate deployment (push events)
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        id: check-duplicate
+        continue-on-error: true
+        with:
+          script: |
+            try {
+              // Check if a workflow_run deployment is already running/completed for this commit
+              // Use workflow file name instead of display name for API compatibility
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'cloudflare-pages.yml',
+                head_sha: context.sha,
+                per_page: 5
+              });
+              
+              const workflowRunDeployments = runs.workflow_runs.filter(
+                run => run.event === 'workflow_run' && run.head_sha === context.sha
+              );
+              
+              if (workflowRunDeployments.length > 0) {
+                const latest = workflowRunDeployments[0];
+                if (latest.status === 'in_progress' || latest.status === 'queued') {
+                  core.info('⏭️  Skipping: workflow_run deployment already in progress');
+                  core.setOutput('skip', 'true');
+                  return;
+                }
+                if (latest.status === 'completed' && latest.conclusion === 'success') {
+                  core.info('⏭️  Skipping: workflow_run deployment already completed successfully');
+                  core.setOutput('skip', 'true');
+                  return;
+                }
+              }
+              
+              core.setOutput('skip', 'false');
+            } catch (error) {
+              // If we can't check (permissions issue), just proceed with deployment
+              // The concurrency group will handle any actual duplicates
+              core.warning(`Could not check for duplicate deployments: ${error.message}`);
+              core.info('Proceeding with deployment (concurrency group will prevent duplicates)');
+              core.setOutput('skip', 'false');
+            }
+
+      - name: Check CI status (for push events)
+        if: github.event_name == 'push' && steps.check-duplicate.outputs.skip != 'true'
+        uses: actions/github-script@v7
+        id: check-ci
+        with:
+          script: |
+            const maxWaitTime = 300000; // 5 minutes
+            const pollInterval = 10000; // 10 seconds
+            const startTime = Date.now();
+            
+            const getLatestRun = async () => {
+              // Use workflow file name instead of display name for API compatibility
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'ci.yml',
+                branch: context.ref.replace('refs/heads/', ''),
+                per_page: 1
+              });
+              return runs.workflow_runs[0];
+            };
+            
+            let latestRun = await getLatestRun();
+            
+            if (!latestRun) {
+              core.setFailed('No CI workflow run found for this branch. Please ensure CI has run.');
+              return;
+            }
+            
+            // Wait for CI to complete if still running
+            while (latestRun.status !== 'completed' && (Date.now() - startTime) < maxWaitTime) {
+              console.log(`⏳ CI workflow is ${latestRun.status}, waiting...`);
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+              latestRun = await getLatestRun();
+            }
+            
+            if (latestRun.status !== 'completed') {
+              core.setFailed('CI workflow did not complete within 5 minutes. Cannot deploy.');
+              return;
+            }
+            
+            if (latestRun.conclusion !== 'success') {
+              core.setFailed(`CI workflow failed (${latestRun.conclusion}). Cannot deploy.`);
+              return;
+            }
+            
+            console.log('✅ CI workflow passed, proceeding with deployment');
+
       - name: Checkout
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         uses: actions/checkout@v4
         with:
           # Use the commit SHA from the CI workflow run, or current ref for manual dispatch
           ref: ${{ github.event.workflow_run.head_sha || github.ref }}
 
       - name: Setup Node.js
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
@@ -46,29 +160,23 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
         run: npm ci
 
-      - name: Download build artifacts from CI
-        id: download-artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-output
-          path: frontend/build
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id || github.run_id }}
-          # If artifacts not found (e.g., manual dispatch), build locally
-          fail-on-error: false
-
-      - name: Build (if artifacts not available)
-        if: steps.download-artifacts.outcome != 'success'
+      - name: Sync SvelteKit
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
-        run: |
-          echo "⚠️ Build artifacts not found, building locally..."
-          npm run build
+        run: npm run sync
+
+      - name: Build
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
+        working-directory: frontend
+        run: npm run build
         continue-on-error: false
 
       - name: Verify build output
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
         run: |
           if [ ! -d "build" ]; then
@@ -84,11 +192,17 @@ jobs:
           du -sh build/
 
       - name: Determine deployment type
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         id: deployment
         run: |
           # Extract branch name from workflow_run event or use current ref
+          # For PRs, head_branch contains the source branch (feature branch)
+          # For pushes, head_branch contains the branch that was pushed to
           if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
             BRANCH="${{ github.event.workflow_run.head_branch }}"
+          elif [ -n "${{ github.event.workflow_run.pull_requests[0].head.ref }}" ]; then
+            # Fallback: get branch from PR head ref
+            BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
           else
             BRANCH="${{ github.ref_name }}"
           fi
@@ -104,6 +218,8 @@ jobs:
           fi
 
       - name: Deploy to Cloudflare Pages
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
+        id: deploy
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -112,3 +228,36 @@ jobs:
           directory: frontend/build
           branch: ${{ steps.deployment.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Check deployment status
+        if: steps.deploy.outcome == 'success'
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "Deployment may take a few moments to propagate."
+      
+      - name: Get Preview URL
+        if: steps.deployment.outputs.environment == 'preview'
+        id: preview-url
+        run: |
+          BRANCH="${{ steps.deployment.outputs.branch }}"
+          # Replace slashes with hyphens for URL-safe branch names
+          BRANCH_SLUG=$(echo "$BRANCH" | sed 's/\//-/g')
+          PREVIEW_URL="https://${BRANCH_SLUG}.zhaoyu-io.pages.dev"
+          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+      
+      - name: Output Preview URL
+        if: steps.deployment.outputs.environment == 'preview'
+        run: |
+          echo "🌐 Preview deployment created!"
+          echo "Branch: ${{ steps.preview-url.outputs.branch }}"
+          echo "Preview URL: ${{ steps.preview-url.outputs.url }}"
+          echo ""
+          echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
+          echo "   1. Wait 1-2 minutes for deployment to propagate"
+          echo "   2. Check Cloudflare Pages dashboard → Deployments tab"
+          echo "   3. Verify the deployment status is 'Success'"
+          echo "   4. The URL may take a few minutes to become active"
+          echo ""
+          echo "Note: Cloudflare Pages may also create a hash-based URL."
+          echo "Check the Cloudflare Pages dashboard for the exact deployment URL."

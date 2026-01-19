@@ -82,31 +82,39 @@ npm run lint:fix
 
 ### Step 4: Final Verification
 
-Before marking code as complete, verify:
+**CRITICAL**: Before marking code as complete, you MUST:
 
-- [ ] All tests pass for modified files
-- [ ] Test coverage ≥90% (for new/significantly changed code)
-- [ ] Lint checks on changed files show zero errors and warnings
-- [ ] Auto-fix has been run on changed files
-- [ ] Code follows project conventions
-- [ ] Theme support implemented (light & dark modes using CSS variables) - for all components
-- [ ] No console errors or warnings in browser (if applicable)
+1. ✅ **Run tests**: `npm run test` - **MUST pass** (CI will fail otherwise)
+2. ✅ **Run lint**: `npm run lint` - **MUST pass with zero errors** (CI will fail otherwise)
+3. ✅ All tests pass for modified files
+4. ✅ Test coverage ≥90% (for new/significantly changed code)
+5. ✅ Lint checks on changed files show zero errors and warnings
+6. ✅ Auto-fix has been run on changed files
+7. ✅ Code follows project conventions
+8. ✅ Theme support implemented (light & dark modes using CSS variables) - for all components
+9. ✅ No console errors or warnings in browser (if applicable)
+
+**DO NOT mark code as complete until both `npm run test` and `npm run lint` pass successfully.**
 
 ## Quick Reference Commands
 
+**MANDATORY FINAL CHECKS** (run these before completing any task):
+
 ```bash
-# 1. Run tests
-npm test
+# 1. Run tests (MUST pass)
+npm run test
 
 # 2. Check coverage
-npm test -- --coverage
+npm run test -- --coverage
 
-# 3. Run lint check
+# 3. Run lint check (MUST pass with zero errors)
 npm run lint
 
 # 4. Auto-fix lint issues
 npm run lint:fix
 ```
+
+**Remember**: Both `npm run test` and `npm run lint` must pass before marking any code task as complete.
 
 ## Enforcement
 
@@ -117,6 +125,10 @@ npm run lint:fix
 - Moving on to the next task
 
 **Failure to verify tests and lint is a blocking issue** - code is not complete until verification passes.
+
+**Required Commands**:
+- `npm run test` - **MUST pass** (CI will fail if tests fail)
+- `npm run lint` - **MUST pass with zero errors** (CI will fail if lint fails)
 
 ## Exceptions
 

@@ -1,19 +1,22 @@
 # GitHub Actions workflow for CI checks on commits and pull requests
 # 
 # This workflow:
-# - Triggers on push to main/develop branches and pull requests
+# - Triggers on push to all branches and pull requests
 # - Runs type checking, linting, testing, and build verification in parallel
 # - Ensures code quality before merging
-# - Uploads build artifacts for deployment workflow
 # - Does NOT deploy (deployment is handled by cloudflare-pages.yml)
+# 
+# Optimizations:
+# - Parallel job execution for faster feedback (~2-3 min vs ~4-5 min sequential)
+# - All jobs include SvelteKit sync step for consistency
+# - Build artifacts removed (deployment workflow builds directly)
 
 name: CI - Quality Checks and Build
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    # Run CI on all branches to enable feature branch deployments
+    branches-ignore: []
   pull_request:
     branches:
       - main
@@ -25,11 +28,10 @@ jobs:
   branch-protection:
     runs-on: ubuntu-latest
     name: Branch Protection Check
-    # Only run this check on direct pushes to main (not PRs or workflow_dispatch)
-    # PRs have event_name == 'pull_request', workflow_dispatch has event_name == 'workflow_dispatch'
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Always run, but only fail on direct pushes to main
     steps:
       - name: Check for direct push to main
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
           echo ""
@@ -47,11 +49,15 @@ jobs:
           echo "  git revert ${{ github.sha }}"
           echo "  git push origin main"
           exit 1
+      - name: Branch protection passed
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        run: |
+          echo "✅ Branch protection check passed (not a direct push to main)"
 
   # Parallel quality checks for faster feedback
   type-check:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Type Check
     steps:
@@ -69,6 +75,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Sync SvelteKit
+        working-directory: frontend
+        run: npm run sync
+
       - name: Type check
         working-directory: frontend
         run: npm run check
@@ -76,7 +86,7 @@ jobs:
 
   lint:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -101,7 +111,7 @@ jobs:
 
   test:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Test
     steps:
@@ -119,6 +129,10 @@ jobs:
         working-directory: frontend
         run: npm ci
 
+      - name: Sync SvelteKit
+        working-directory: frontend
+        run: npm run sync
+
       - name: Run tests
         working-directory: frontend
         run: npm run test
@@ -126,7 +140,7 @@ jobs:
 
   build:
     needs: branch-protection
-    if: always() && (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped')
+    if: needs.branch-protection.result == 'success'
     runs-on: ubuntu-latest
     name: Build
     steps:
@@ -143,6 +157,10 @@ jobs:
       - name: Install dependencies
         working-directory: frontend
         run: npm ci
+
+      - name: Sync SvelteKit
+        working-directory: frontend
+        run: npm run sync
 
       - name: Build
         working-directory: frontend
@@ -166,14 +184,6 @@ jobs:
           echo "  Total size: $(du -sh build/ | cut -f1)"
           echo "  Files: $(find build/ -type f | wc -l)"
           echo "  Directories: $(find build/ -type d | wc -l)"
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-output
-          path: frontend/build
-          retention-days: 1
-          compression-level: 6
 
   # Summary job that depends on all checks passing
   ci-success:
