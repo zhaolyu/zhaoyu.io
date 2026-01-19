@@ -350,9 +350,9 @@
 	.chart-goal {
 		fill: transparent;
 		stroke: #a855f7;
-		stroke-width: 1.5;
+		stroke-width: 2;
 		stroke-dasharray: 4, 4;
-		opacity: 0.6;
+		opacity: 0.8;
 	}
 
 	.chart-dot {
