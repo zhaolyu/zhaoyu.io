@@ -140,8 +140,8 @@
 		font-family: var(--font-mono);
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
-		color: #60a5fa;
-		background: rgba(59, 130, 246, 0.1);
+		color: var(--accent-primary-light);
+		background: var(--accent-primary-10);
 		padding: 0.25rem 0.5rem;
 		border-radius: 0.25rem;
 	}
@@ -207,7 +207,7 @@
 	}
 
 	.project-card:hover .view-button {
-		color: #60a5fa;
+		color: var(--accent-primary-light);
 	}
 
 	.arrow-icon {
@@ -274,7 +274,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		color: #60a5fa;
+		color: var(--accent-primary-light);
 		font-family: var(--font-mono);
 		font-size: 0.75rem;
 		text-align: center;

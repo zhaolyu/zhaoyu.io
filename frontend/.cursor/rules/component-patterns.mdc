@@ -124,7 +124,7 @@ Use `$state()` for reactive state. Each component should be self-contained with 
 </style>
 ```
 
-See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive theme support examples and all available CSS variables.
+See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive theme support examples and [.cursor/docs/DESIGN_TOKENS.md](mdc:.cursor/docs/DESIGN_TOKENS.md) for complete design token reference.
 
 ## Responsive Design (Mobile-First)
 

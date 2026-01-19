@@ -103,6 +103,14 @@ export const projectsData: ProjectsData = {
 	]
 };
 
+/**
+ * Get projects to display on the landing page
+ * Filters out projects that should not be shown (e.g., work in progress)
+ */
+export function getDisplayProjects(): Project[] {
+	return projectsData.projects.filter((p) => p.title !== 'Generative AI Interface');
+}
+
 export interface ExperienceData {
 	companies: string[];
 }
@@ -136,4 +144,79 @@ export const notesData: NotesData = {
 			]
 		}
 	]
+};
+
+export interface CareerPoint {
+	year: number;
+	impact: number; // 0-100
+	role: string;
+	company: string;
+}
+
+export interface CareerHistory {
+	points: CareerPoint[];
+}
+
+export const careerHistory: CareerHistory = {
+	points: [
+		{ year: 2013, impact: 10, role: 'Associate', company: 'LaGuardia CC' },
+		{ year: 2017, impact: 30, role: 'Software Engineer', company: 'CNBC' },
+		{ year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
+		{ year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },
+		{ year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
+		{ year: 2026, impact: 100, role: 'Full Stack Architect', company: 'Projected' }
+	]
+};
+
+export interface CodeStandard {
+	key: string;
+	title: string;
+	bad: string;
+	good: string;
+}
+
+export interface CodeStandards {
+	standards: Record<string, CodeStandard>;
+}
+
+export const codeStandards: CodeStandards = {
+	standards: {
+		state: {
+			key: 'state',
+			title: 'URL > Store',
+			bad: `// ❌ The "Sync" Trap
+const [filter, setFilter] = useState('all');
+
+// Bug: Not shareable, resets on reload
+useEffect(() => {
+  fetchData(filter);
+}, [filter]);`,
+			good: `// ✅ The URL is Truth
+const searchParams = useSearchParams();
+const filter = searchParams.get('filter') ?? 'all';
+
+// The UI is just a reflection of the URL
+const data = useQuery(['items', filter]);`
+		},
+		dry: {
+			key: 'dry',
+			title: 'WET > DRY', // Write Everything Twice > Don't Repeat Yourself
+			bad: `// ❌ The Wrong Abstraction
+// This component does too much
+<Button 
+  variant="primary" 
+  hasIcon={true} 
+  isLoading={loading} 
+  isLink={false} 
+  onClick={submit} 
+/>`,
+			good: `// ✅ Composition > Configuration
+// Decoupled, explicit, and easy to delete
+<button class="btn-primary">
+  {#if loading}<Spinner />{/if}
+  <Icon name="save" />
+  <span>Submit</span>
+</button>`
+		}
+	}
 };
