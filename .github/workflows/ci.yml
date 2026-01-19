@@ -1,7 +1,7 @@
-# GitHub Actions workflow for CI checks on commits and pull requests
+# GitHub Actions workflow for CI checks on pull requests
 # 
 # This workflow:
-# - Triggers on push to all branches and pull requests
+# - Triggers only on pull request creation (opened event)
 # - Runs type checking, linting, testing, and build verification in parallel
 # - Ensures code quality before merging
 # - Does NOT deploy (deployment is handled by cloudflare-pages.yml)
@@ -17,21 +17,9 @@
 name: CI - Quality Checks and Build
 
 on:
-  push:
-    # Run CI on all branches to enable feature branch deployments
-    branches-ignore: []
-    # Skip CI for documentation and config-only changes
-    paths-ignore:
-      - '**.md'
-      - '.github/**'
-      - 'docs/**'
-      - '.gitignore'
-      - '.prettierrc'
-      - 'LICENSE'
   pull_request:
-    branches:
-      - main
-      - develop
+    types: [opened]
+    # Run CI on PRs targeting any branch (including feature/... branches)
     # Skip CI for documentation and config-only changes
     paths-ignore:
       - '**.md'
@@ -40,7 +28,6 @@ on:
       - '.gitignore'
       - '.prettierrc'
       - 'LICENSE'
-  workflow_dispatch:
 
 # Prevent concurrent runs for the same branch/PR
 # Cancels in-progress runs when a new commit is pushed
@@ -50,42 +37,24 @@ concurrency:
 
 jobs:
   # Check if this is a merge commit (skip CI since PR already passed)
+  # Note: This is kept for consistency but won't apply to PR opened events
   check-merge-commit:
     runs-on: ubuntu-latest
     name: Check Merge Commit
     timeout-minutes: 1
     permissions:
       contents: read
-    # Always run, but only check for pushes to main
     outputs:
-      is_merge_commit: ${{ steps.check-merge.outputs.is_merge_commit || 'false' }}
+      is_merge_commit: 'false'
     steps:
       - name: Set default output
         id: set-default
         run: |
           echo "is_merge_commit=false" >> $GITHUB_OUTPUT
-      
-      - name: Checkout
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-      
-      - name: Check if merge commit
-        id: check-merge
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Check if commit has 2+ parents (merge commit)
-          PARENT_COUNT=$(git rev-list --count ${{ github.sha }}^@ 2>/dev/null || echo "1")
-          if [ "$PARENT_COUNT" -ge 2 ]; then
-            echo "is_merge_commit=true" >> $GITHUB_OUTPUT
-            echo "✅ Detected merge commit - PR already passed CI, skipping CI checks"
-          else
-            echo "is_merge_commit=false" >> $GITHUB_OUTPUT
-            echo "Not a merge commit, CI will run normally"
-          fi
+          echo "✅ PR opened event - CI will run normally"
 
   # Branch protection: Prevent direct pushes to main
+  # Note: This is kept for consistency but won't apply to PR opened events
   branch-protection:
     runs-on: ubuntu-latest
     name: Branch Protection Check
@@ -94,46 +63,17 @@ jobs:
       contents: read
     needs: check-merge-commit
     if: always()
-    # Always run, but only fail on direct pushes to main (not merge commits)
     steps:
-      - name: Check for direct push to main
-        if: |
-          github.event_name == 'push' && 
-          github.ref == 'refs/heads/main' && 
-          needs.check-merge-commit.outputs.is_merge_commit != 'true'
-        run: |
-          echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
-          echo ""
-          echo "This push bypassed the local pre-push hook. Please use a pull request workflow instead:"
-          echo "  1. Create a feature branch: git checkout -b feature/your-feature"
-          echo "  2. Push your changes: git push origin feature/your-feature"
-          echo "  3. Create a pull request to merge into main"
-          echo ""
-          echo "This ensures code review and CI checks before merging."
-          echo ""
-          echo "⚠️  This workflow will fail, preventing deployment."
-          echo "⚠️  The commit is already in the repository but should be reverted manually."
-          echo ""
-          echo "To revert this commit:"
-          echo "  git revert ${{ github.sha }}"
-          echo "  git push origin main"
-          exit 1
-      - name: Branch protection passed (merge commit)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check-merge-commit.outputs.is_merge_commit == 'true'
-        run: |
-          echo "✅ Merge commit detected - PR already passed CI, skipping branch protection check"
       - name: Branch protection passed
-        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         run: |
-          echo "✅ Branch protection check passed (not a direct push to main)"
+          echo "✅ Branch protection check passed (PR opened event)"
 
   # Parallel quality checks for faster feedback
   type-check:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Type Check
     timeout-minutes: 10
@@ -166,9 +106,8 @@ jobs:
   lint:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Lint
     timeout-minutes: 10
@@ -197,9 +136,8 @@ jobs:
   test:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Test
     timeout-minutes: 10
@@ -232,9 +170,8 @@ jobs:
   build:
     needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false || github.event_name != 'pull_request')
+      (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
     name: Build
     timeout-minutes: 15
@@ -292,16 +229,7 @@ jobs:
     needs: [check-merge-commit, branch-protection, type-check, lint, test, build]
     if: always()
     steps:
-      - name: Check if merge commit (skip CI)
-        if: needs.check-merge-commit.outputs.is_merge_commit == 'true'
-        run: |
-          echo "✅ Merge commit detected - PR already passed CI"
-          echo "⏭️  Skipping CI checks - merge commits don't need re-validation"
-          echo "✅ CI workflow marked as successful (bypassed)"
-          exit 0
-      
       - name: Check all jobs status
-        if: needs.check-merge-commit.outputs.is_merge_commit != 'true'
         run: |
           # Check branch protection first
           if [ "${{ needs.branch-protection.result }}" == "failure" ]; then
