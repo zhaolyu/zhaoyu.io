@@ -33,6 +33,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
+    # Permissions needed for checking workflow runs and creating deployments
+    permissions:
+      contents: read
+      actions: read
+      deployments: write
     # Prevent concurrent deployments for the same branch
     concurrency:
       group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
@@ -50,36 +55,45 @@ jobs:
         if: github.event_name == 'push'
         uses: actions/github-script@v7
         id: check-duplicate
+        continue-on-error: true
         with:
           script: |
-            // Check if a workflow_run deployment is already running/completed for this commit
-            const { data: runs } = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'Deploy to Cloudflare Pages',
-              head_sha: context.sha,
-              per_page: 5
-            });
-            
-            const workflowRunDeployments = runs.workflow_runs.filter(
-              run => run.event === 'workflow_run' && run.head_sha === context.sha
-            );
-            
-            if (workflowRunDeployments.length > 0) {
-              const latest = workflowRunDeployments[0];
-              if (latest.status === 'in_progress' || latest.status === 'queued') {
-                core.info('⏭️  Skipping: workflow_run deployment already in progress');
-                core.setOutput('skip', 'true');
-                return;
+            try {
+              // Check if a workflow_run deployment is already running/completed for this commit
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'Deploy to Cloudflare Pages',
+                head_sha: context.sha,
+                per_page: 5
+              });
+              
+              const workflowRunDeployments = runs.workflow_runs.filter(
+                run => run.event === 'workflow_run' && run.head_sha === context.sha
+              );
+              
+              if (workflowRunDeployments.length > 0) {
+                const latest = workflowRunDeployments[0];
+                if (latest.status === 'in_progress' || latest.status === 'queued') {
+                  core.info('⏭️  Skipping: workflow_run deployment already in progress');
+                  core.setOutput('skip', 'true');
+                  return;
+                }
+                if (latest.status === 'completed' && latest.conclusion === 'success') {
+                  core.info('⏭️  Skipping: workflow_run deployment already completed successfully');
+                  core.setOutput('skip', 'true');
+                  return;
+                }
               }
-              if (latest.status === 'completed' && latest.conclusion === 'success') {
-                core.info('⏭️  Skipping: workflow_run deployment already completed successfully');
-                core.setOutput('skip', 'true');
-                return;
-              }
+              
+              core.setOutput('skip', 'false');
+            } catch (error) {
+              // If we can't check (permissions issue), just proceed with deployment
+              // The concurrency group will handle any actual duplicates
+              core.warning(`Could not check for duplicate deployments: ${error.message}`);
+              core.info('Proceeding with deployment (concurrency group will prevent duplicates)');
+              core.setOutput('skip', 'false');
             }
-            
-            core.setOutput('skip', 'false');
 
       - name: Check CI status (for push events)
         if: github.event_name == 'push' && steps.check-duplicate.outputs.skip != 'true'
