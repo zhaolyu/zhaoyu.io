@@ -220,9 +220,54 @@ Layouts are automatically applied to all child routes. The root `+layout.svelte`
 
 ## Styling Patterns
 
+### Font Usage
+
+**All components MUST use the Geist font family.** Never hardcode fonts - always use CSS variables.
+
+#### Font Variables
+
+- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif (default for all text)
+- `--font-mono`: "Geist Mono", "Courier New", monospace (for code, badges, etc.)
+
+#### Using Fonts
+
+```svelte
+<style>
+	/* Regular text inherits Geist Sans automatically from body */
+	.card {
+		/* No font-family needed - inherits from global body style */
+	}
+
+	/* For monospace text (code blocks, badges, etc.) */
+	.code-block {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+	}
+
+	.badge {
+		font-family: var(--font-mono);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+</style>
+```
+
+#### Tailwind Font Classes
+
+You can also use Tailwind classes:
+- `font-sans` - Geist Sans (default)
+- `font-mono` - Geist Mono
+
+```svelte
+<div class="font-sans">Regular text</div>
+<code class="font-mono">Monospace text</code>
+```
+
 ### Theme Support (Light & Dark Mode)
 
 **All components MUST support both light and dark modes.** Use CSS variables and theme-aware styling.
+
+**All components MUST use the Geist font family.** Use `var(--font-sans)` for regular text and `var(--font-mono)` for monospace text.
 
 #### Using CSS Variables
 
@@ -261,12 +306,17 @@ Layouts are automatically applied to all child routes. The root `+layout.svelte`
 
 #### Available CSS Variables
 
+**Theme Variables:**
 - `--bg-primary`: Main background (white in light, dark gray in dark)
 - `--bg-secondary`: Secondary background
 - `--text-primary`: Main text color (black in light, white in dark)
 - `--text-secondary`: Secondary text color
 - `--text-muted`: Muted text color
 - `--border-color`: Border color (adapts to theme)
+
+**Font Variables:**
+- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif (default for all text)
+- `--font-mono`: "Geist Mono", "Courier New", monospace (for code, badges, etc.)
 
 #### Complete Theme-Aware Component Example
 

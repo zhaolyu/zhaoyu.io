@@ -27,6 +27,41 @@ Use `$state()` for reactive state. Each component should be self-contained with 
 - **Layout components**: `src/routes/+layout.svelte`
 - **Route-specific components**: Co-locate with routes or in `src/lib/components/`
 
+## Font Usage
+
+**MANDATORY: All components MUST use the Geist font family.**
+
+- **Sans-serif text**: Use `var(--font-sans)` or Tailwind class `font-sans` (default: Geist Sans)
+- **Monospace text**: Use `var(--font-mono)` or Tailwind class `font-mono` (default: Geist Mono)
+- **Never hardcode fonts** - Always use CSS variables or Tailwind classes
+- All text elements inherit Geist Sans by default from the global body style
+
+### Font Variables
+
+- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif
+- `--font-mono`: "Geist Mono", "Courier New", monospace
+
+### Example
+
+```svelte
+<style>
+	/* Regular text inherits Geist Sans automatically */
+	.card {
+		/* No font-family needed - inherits from body */
+	}
+
+	/* For monospace (code, badges, etc.) */
+	.code-block {
+		font-family: var(--font-mono);
+	}
+
+	.badge {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+	}
+</style>
+```
+
 ## Theme Support (Light & Dark Mode)
 
 **MANDATORY: All components MUST support both light and dark modes.**
@@ -57,6 +92,110 @@ Use `$state()` for reactive state. Each component should be self-contained with 
 
 See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive theme support examples and all available CSS variables.
 
+## Responsive Design (Mobile-First)
+
+**MANDATORY: All components MUST be mobile-first and responsive.**
+
+### Quick Reference
+
+- Start with mobile styles (base, no media query)
+- Enhance for desktop using `@media (min-width: 768px)`
+- Use `clamp()` for fluid typography
+- Ensure touch targets are at least 44x44px on mobile
+- Test on multiple viewport sizes
+
+### Mobile-First Pattern
+
+```svelte
+<style>
+	/* Mobile styles (base) */
+	.component {
+		padding: 1rem;
+		font-size: 1rem;
+		flex-direction: column;
+	}
+
+	/* Desktop styles (enhancement) */
+	@media (min-width: 768px) {
+		.component {
+			padding: 2rem;
+			font-size: 1.25rem;
+			flex-direction: row;
+		}
+	}
+</style>
+```
+
+### Responsive Typography
+
+Use `clamp()` for fluid scaling:
+
+```svelte
+<style>
+	.headline {
+		/* clamp(min, preferred, max) */
+		font-size: clamp(2rem, 5vw, 4rem);
+	}
+
+	.body-text {
+		font-size: clamp(1rem, 2vw, 1.25rem);
+	}
+</style>
+```
+
+**Real Example** (from Hero component):
+```svelte
+.hero-headline {
+	font-size: clamp(2.5rem, 8vw, 4.5rem);
+}
+```
+
+### Responsive Layouts
+
+**Flexbox with Direction Changes**:
+```svelte
+<style>
+	.flex-container {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.flex-container {
+			flex-direction: row;
+			gap: 2rem;
+		}
+	}
+</style>
+```
+
+**CSS Grid with Responsive Columns**:
+```svelte
+<style>
+	.grid-container {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1rem;
+	}
+
+	@media (min-width: 768px) {
+		.grid-container {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 2rem;
+		}
+	}
+</style>
+```
+
+### Standard Breakpoint
+
+The project uses a single primary breakpoint:
+- **Mobile (Base)**: Default styles, no media query needed
+- **Tablet/Desktop**: `@media (min-width: 768px)`
+
+See [responsive-design.mdc](mdc:.cursor/rules/responsive-design.mdc) for comprehensive responsive design patterns and examples.
+
 ## Best Practices
 
 1. **Use Svelte reactivity** - Leverage reactive statements and stores
@@ -65,6 +204,7 @@ See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive t
 4. **Scoped styles** - Use component-scoped styles by default
 5. **Reactive statements** - Use `$:` for derived state
 6. **Theme support** - Always support both light and dark modes using CSS variables
+7. **Mobile-first responsive design** - Start with mobile styles, enhance for desktop
 
 ## Using Stores
 
@@ -83,5 +223,6 @@ See [.cursor/rules/store-patterns.mdc](mdc:.cursor/rules/store-patterns.mdc) for
 
 - [Route Patterns](.cursor/rules/route-patterns.mdc) - Patterns for route components
 - [Store Patterns](.cursor/rules/store-patterns.mdc) - Using stores in components
+- [Responsive Design](.cursor/rules/responsive-design.mdc) - Mobile-first responsive patterns and standards
 
 See [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for complete component examples.

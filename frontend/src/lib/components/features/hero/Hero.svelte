@@ -6,7 +6,7 @@
 
 	const mottoIcons = [
 		'<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>',
-		'<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>',
+		'<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>',
 		'<svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>'
 	];
 
@@ -69,14 +69,24 @@
 	.hero {
 		position: relative;
 		width: 100%;
-		height: 100vh;
-		overflow: hidden;
+		min-height: 100vh;
+		height: auto;
+		overflow: visible;
 		background: var(--bg-primary);
 		border-bottom: 1px solid var(--border-color);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		transition: background-color 0.2s, border-color 0.2s;
+		padding: 2rem 0;
+	}
+
+	@media (min-width: 768px) {
+		.hero {
+			height: 100vh;
+			overflow: hidden;
+			padding: 0;
+		}
 	}
 
 	.hero-background {
@@ -149,6 +159,12 @@
 		margin: 0 auto;
 	}
 
+	@media (min-width: 768px) {
+		.hero-content {
+			padding: 0 1rem;
+		}
+	}
+
 	.hero-badge {
 		display: inline-flex;
 		align-items: center;
@@ -159,7 +175,7 @@
 		border: 1px solid rgba(59, 130, 246, 0.3);
 		color: #3b82f6;
 		font-size: 0.875rem;
-		font-family: ui-monospace, 'Courier New', monospace;
+		font-family: var(--font-mono);
 		margin-bottom: 2rem;
 		backdrop-filter: blur(4px);
 		transition: background 0.2s, border-color 0.2s, color 0.2s;
@@ -276,7 +292,7 @@
 		gap: 1rem;
 		justify-content: center;
 		align-items: center;
-		margin-bottom: 5rem;
+		margin-bottom: 3rem;
 	}
 
 	.cta-primary,
@@ -339,21 +355,31 @@
 		justify-content: center;
 		align-items: center;
 		font-size: 0.625rem;
-		font-family: ui-monospace, 'Courier New', monospace;
-		color: var(--text-muted);
+		font-family: var(--font-mono);
+		color: #737373;
 		text-transform: uppercase;
 		letter-spacing: 0.2em;
 		transition: color 0.2s;
 	}
 
 	:global(.dark) .hero-motto {
-		color: #525252;
+		color: #737373;
 	}
 
 	.motto-item {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
+		cursor: default;
+		transition: color 0.2s;
+	}
+
+	.motto-item:hover {
+		color: #60a5fa;
+	}
+
+	:global(.dark) .motto-item:hover {
+		color: #60a5fa;
 	}
 
 	.motto-item :global(svg) {
@@ -363,11 +389,17 @@
 
 	.motto-separator {
 		display: none;
+		color: #262626;
+	}
+
+	:global(.dark) .motto-separator {
+		color: #262626;
 	}
 
 	@media (min-width: 768px) {
 		.hero-cta {
 			flex-direction: row;
+			margin-bottom: 5rem;
 		}
 
 		.cta-primary,

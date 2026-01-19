@@ -1,4 +1,11 @@
 @import "tailwindcss";
+@import "@fontsource/geist-sans";
+@import "@fontsource/geist-mono";
+
+@theme {
+	--font-sans: "Geist Sans", system-ui, -apple-system, sans-serif;
+	--font-mono: "Geist Mono", "Courier New", monospace;
+}
 
 :root {
 	--bg-primary: #ffffff;
@@ -7,6 +14,8 @@
 	--text-secondary: #4b5563;
 	--text-muted: #6b7280;
 	--border-color: rgba(0, 0, 0, 0.1);
+	--font-sans: "Geist Sans", system-ui, -apple-system, sans-serif;
+	--font-mono: "Geist Mono", "Courier New", monospace;
 }
 
 .dark {
@@ -22,4 +31,10 @@
 	background-color: var(--bg-primary);
 	color: var(--text-primary);
 	transition: background-color 0.2s, color 0.2s;
+	font-family: var(--font-sans);
+}
+
+:global(code),
+:global(pre) {
+	font-family: var(--font-mono);
 }

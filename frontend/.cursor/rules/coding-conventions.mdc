@@ -61,6 +61,38 @@ Use `$state()` for reactive state. Always define TypeScript interfaces for compo
 - Always use semicolons
 - Always use braces for if/for/while
 
+## Font Usage
+
+**MANDATORY: All components MUST use the Geist font family.**
+
+- **Sans-serif text**: Use `var(--font-sans)` or Tailwind class `font-sans` (default: Geist Sans)
+- **Monospace text**: Use `var(--font-mono)` or Tailwind class `font-mono` (default: Geist Mono)
+- **Never hardcode fonts** - Always use CSS variables or Tailwind classes
+- Fonts are globally configured in `app.css` and available via CSS variables
+
+### Font Variables
+
+- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif
+- `--font-mono`: "Geist Mono", "Courier New", monospace
+
+### Examples
+
+```css
+/* ✅ DO: Use CSS variables */
+.my-text {
+	font-family: var(--font-sans);
+}
+
+.code-block {
+	font-family: var(--font-mono);
+}
+
+/* ❌ DON'T: Hardcode fonts */
+.bad-example {
+	font-family: Arial, sans-serif;
+}
+```
+
 ## Theme Support Requirement
 
 **MANDATORY: All components MUST support both light and dark modes.**

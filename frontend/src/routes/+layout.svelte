@@ -16,6 +16,6 @@
 	}
 
 	:global(body) {
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: var(--font-sans);
 	}
 </style>

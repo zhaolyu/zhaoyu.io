@@ -182,7 +182,7 @@ export const GET: RequestHandler = async () => {
 
 	.code-block code {
 		color: #f9fafb;
-		font-family: 'Monaco', 'Courier New', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.875rem;
 		line-height: 1.6;
 	}
@@ -214,5 +214,6 @@ export const GET: RequestHandler = async () => {
 		padding: 0.25rem 0.5rem;
 		border-radius: 4px;
 		font-size: 0.875rem;
+		font-family: var(--font-mono);
 	}
 </style>
