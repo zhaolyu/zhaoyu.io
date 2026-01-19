@@ -3,7 +3,7 @@
 	import { draw } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { careerHistory } from '$lib/constants/content';
-	import { observeSvgRedraw } from '$lib/utils/intersection';
+	import { createSectionObserver } from '$lib/utils/section-observer';
 
 	let sectionVisible = $state(false);
 	let animationKey = $state(0); // Counter key for forcing transition re-trigger
@@ -24,14 +24,32 @@
 	const areaD = `${pathD} L ${width - padding},${height} L ${padding},${height} Z`;
 
 	onMount(() => {
-		return observeSvgRedraw(chartContainer, {
+		// Use createSectionObserver with enableReanimation to track when scrolling out
+		// This allows us to reset sectionVisible when scrolled past, ensuring clean remount
+		let hasScrolledPast = false;
+		
+		return createSectionObserver(chartContainer, {
+			enableReanimation: true,
 			onVisible: () => {
-				// Always set visible and increment key to force {#key} re-trigger
-				// This ensures the in:draw transition runs every time onVisible is called
-				sectionVisible = true;
-				animationKey++; // Increment key to force remount and re-trigger transition
+				// If we scrolled past, reset and remount to trigger animation
+				if (hasScrolledPast) {
+					sectionVisible = false;
+					animationKey++;
+					// Use setTimeout to ensure unmount happens before remount
+					setTimeout(() => {
+						sectionVisible = true;
+					}, 0);
+				} else {
+					// First time - just set visible and increment key
+					sectionVisible = true;
+					animationKey++;
+				}
+				hasScrolledPast = false;
 			},
-			threshold: 0.2 // Trigger when 20% visible
+			onScrolledPast: () => {
+				hasScrolledPast = true;
+			},
+			threshold: 0.2
 		});
 	});
 </script>

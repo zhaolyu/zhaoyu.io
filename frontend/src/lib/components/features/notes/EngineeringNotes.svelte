@@ -4,7 +4,7 @@
 	import EngineeringNote from './EngineeringNote.svelte';
 	import { notesData } from '$lib/constants/content';
 	import { SectionHeader } from '$lib/components/ui';
-	import { observeSection } from '$lib/utils/intersection';
+	import { observeSection } from '$lib/utils/section-observer';
 
 	let sectionVisible = $state(false);
 	let notesSection: HTMLElement;

@@ -130,6 +130,18 @@ Quick lookup guide:
 
 **Start here if**: You need a quick lookup for paths, commands, or patterns.
 
+### [Intersection Observer Utilities](INTERSECTION_OBSERVER_UTILITIES.md)
+
+Comprehensive guide to scroll-triggered visibility and animation utilities:
+- Core utilities (`intersection-core.ts`)
+- Section observers (`section-observer.ts`)
+- When to use which utility
+- Common patterns and examples
+- API reference
+- Troubleshooting
+
+**Start here if**: You're working with scroll-triggered animations, section visibility, or SVG animations.
+
 ## Quick Start Guide
 
 ### For New Developers

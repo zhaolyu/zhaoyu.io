@@ -4,7 +4,7 @@
 	import ProjectCard from './ProjectCard.svelte';
 	import { getDisplayProjects } from '$lib/constants/content';
 	import { SectionHeader } from '$lib/components/ui';
-	import { observeSection } from '$lib/utils/intersection';
+	import { observeSection } from '$lib/utils/section-observer';
 
 	const displayProjects = getDisplayProjects();
 	let sectionVisible = $state(false);

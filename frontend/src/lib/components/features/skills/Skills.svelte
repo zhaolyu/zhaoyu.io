@@ -4,7 +4,7 @@
 	import { cubicOut } from 'svelte/easing';
 	import { fade } from 'svelte/transition';
 	import { skillsData } from '$lib/constants/content';
-	import { observeSvgRedraw } from '$lib/utils/intersection';
+	import { createSectionObserver } from '$lib/utils/section-observer';
 
 	let sectionVisible = $state(false);
 	let animationKey = $state(0); // Counter for forcing transition re-trigger
@@ -25,7 +25,8 @@
 	}
 
 	onMount(() => {
-		return observeSvgRedraw(skillsContainer, {
+		return createSectionObserver(skillsContainer, {
+			enableReanimation: true,
 			onVisible: () => {
 				triggerAnimation();
 			},
