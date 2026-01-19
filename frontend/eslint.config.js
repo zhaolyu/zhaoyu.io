@@ -27,7 +27,11 @@ export default [
 		rules: {
 			'no-console': 'warn',
 			semi: ['error', 'always'],
-			'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+			'@typescript-eslint/no-unused-vars': ['warn', { 
+				argsIgnorePattern: '^_',
+				varsIgnorePattern: '^_'
+			}],
+			'no-unused-vars': 'off', // Use TypeScript version instead
 			'no-undef': 'off' // TypeScript handles this
 		}
 	},

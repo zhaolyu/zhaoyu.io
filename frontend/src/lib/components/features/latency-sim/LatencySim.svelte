@@ -7,10 +7,21 @@
 	let isRunning = $state(false);
 	let sectionVisible = $state(false);
 	let latencySection: HTMLElement;
+	let displayContent: HTMLElement;
 
 	const fullText =
 		'The architecture uses a decoupled React state buffer. Instead of triggering a reconciliation cycle for every single token (which creates jank), we buffer incoming chunks in a Ref and flush to the DOM using requestAnimationFrame. This ensures the UI thread remains unblocked.';
 	const words = fullText.split(' ');
+
+	// Auto-scroll to bottom as text streams
+	$effect(() => {
+		if (displayContent && tokens.length > 0) {
+			// Use requestAnimationFrame to ensure DOM has updated
+			requestAnimationFrame(() => {
+				displayContent.scrollTop = displayContent.scrollHeight;
+			});
+		}
+	});
 
 	function startSim() {
 		if (isRunning) return;
@@ -136,7 +147,7 @@
 
 			<div class="sim-display">
 				<div class="display-grid"></div>
-				<div class="display-content">
+				<div class="display-content" bind:this={displayContent}>
 					<span class="display-text">{tokens.join(' ')}</span>
 					{#if isRunning}
 						<span class="cursor"></span>
@@ -281,6 +292,8 @@
 		color: var(--text-secondary);
 		height: 100%;
 		overflow-y: auto;
+		padding-top: 2.5rem;
+		padding-right: 5rem;
 	}
 
 	.display-text {
@@ -343,6 +356,18 @@
 		.sim-display {
 			height: 12rem;
 			padding: 1rem;
+		}
+
+		.display-content {
+			padding-top: 2.5rem;
+			padding-right: 4rem;
+		}
+
+		.display-badge {
+			top: 0.75rem;
+			right: 0.75rem;
+			font-size: 0.625rem;
+			padding: 0.2rem 0.4rem;
 		}
 	}
 </style>

@@ -198,7 +198,7 @@ export interface CareerHistory {
 
 export const careerHistory: CareerHistory = {
 	points: [
-		{ year: 2016, impact: 10, role: 'Intern', company: 'LaGuardia CC' },
+		{ year: 2016, impact: 10, role: 'Intern', company: 'CNBC' },
 		{ year: 2017, impact: 30, role: 'Software Engineer', company: 'CNBC' },
 		{ year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
 		{ year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },

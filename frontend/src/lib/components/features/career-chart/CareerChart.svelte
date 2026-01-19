@@ -12,9 +12,10 @@
 	const history = careerHistory.points;
 
 	// SVG dimensions
-	const width = 800;
-	const height = 300;
-	const padding = 40;
+	const width = 1000;
+	const height = 400;
+	const padding = 50;
+	const labelHeight = 60; // Extra space for labels below chart
 
 	// Helper to map data to pixels
 	const getX = (i: number) => padding + (i / (history.length - 1)) * (width - padding * 2);
@@ -62,7 +63,18 @@
 		</div>
 
 		<div class="chart-wrapper">
-			<svg viewBox="0 0 {width} {height}" class="chart-svg" class:visible={sectionVisible}>
+			<!-- Mobile: Show data points as list -->
+			<div class="mobile-points-list">
+				{#each history as point, i}
+					<div class="mobile-point-item">
+						<div class="mobile-point-year">{point.year}</div>
+						<div class="mobile-point-role">{point.role}</div>
+						<div class="mobile-point-company">{point.company}</div>
+					</div>
+				{/each}
+			</div>
+			
+			<svg viewBox="0 0 {width} {height + labelHeight}" preserveAspectRatio="xMidYMin meet" class="chart-svg" class:visible={sectionVisible}>
 				<defs>
 					<linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
 						<stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.2" />
@@ -85,6 +97,7 @@
 							stroke="var(--accent-primary)"
 							stroke-width="3"
 							stroke-linecap="round"
+							class="chart-line"
 							in:draw={{ duration: 2000, easing: cubicOut }}
 						/>
 					{/key}
@@ -104,7 +117,7 @@
 
 						<text
 							x={getX(i)}
-							y={height - padding + 20}
+							y={height - padding + 18}
 							class="year-label"
 							text-anchor="middle"
 							style="animation-delay: {1000 + i * 100}ms;"
@@ -114,7 +127,7 @@
 
 						<text
 							x={getX(i)}
-							y={height - padding + 35}
+							y={height - padding + 32}
 							class="role-label"
 							text-anchor="middle"
 							style="animation-delay: {1200 + i * 100}ms;"
@@ -130,9 +143,14 @@
 							class="point-tooltip"
 						>
 							<div class="tooltip-content">
-								<div class="tooltip-year">{point.year}</div>
-								<div class="tooltip-role">{point.role}</div>
-								<div class="tooltip-company">{point.company}</div>
+								<div class="flex flex-col items-center text-center">
+									<span class="text-[10px] sm:text-xs font-bold tooltip-year-text">
+										{point.year}
+									</span>
+									<span class="hidden md:block text-[10px] font-mono tooltip-title-text mt-1 uppercase tracking-wider">
+										{point.role}
+									</span>
+								</div>
 							</div>
 						</foreignObject>
 					</g>
@@ -145,11 +163,15 @@
 <style>
 	.career-chart-section {
 		padding: 6rem 1.5rem;
+		padding-bottom: 10rem;
 		background: var(--bg-primary);
 		border-bottom: 1px solid var(--border-color);
 		color: var(--text-primary);
 		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 		scroll-margin-top: 0;
+		position: relative;
+		overflow: visible;
+		margin-bottom: 2rem;
 	}
 
 	.chart-container {
@@ -181,13 +203,20 @@
 	.chart-wrapper {
 		position: relative;
 		width: 100%;
-		height: 300px;
+		height: 400px;
+		margin-bottom: 4rem;
+		overflow: visible;
+	}
+
+	.chart-svg {
+		overflow: visible;
 	}
 
 	@media (min-width: 768px) {
 		.chart-wrapper {
 			height: auto;
-			aspect-ratio: 3 / 1;
+			aspect-ratio: 2.5 / 1;
+			margin-bottom: 5rem;
 		}
 	}
 
@@ -196,7 +225,19 @@
 		height: 100%;
 		overflow: visible;
 		/* Ensure SVG always takes up space to prevent layout shifts */
-		min-height: 300px;
+		min-height: 400px;
+	}
+
+	@media (min-width: 768px) {
+		.chart-svg {
+			overflow: visible;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.chart-svg {
+			display: none;
+		}
 	}
 
 	.chart-area {
@@ -206,6 +247,16 @@
 
 	.chart-area.visible {
 		opacity: 1;
+	}
+
+	.chart-line {
+		stroke-width: 3;
+	}
+
+	@media (max-width: 767px) {
+		.chart-line {
+			stroke-width: 4;
+		}
 	}
 
 	.point-group {
@@ -224,7 +275,14 @@
 		stroke-width: 2;
 		opacity: 0;
 		animation: fade-in 0.3s ease-in-out forwards;
-		transition: fill 0.2s;
+		transition: fill 0.2s, stroke-width 0.2s, transform 0.2s;
+	}
+
+	@media (max-width: 767px) {
+		.chart-point {
+			stroke-width: 3;
+			transform: scale(1.33);
+		}
 	}
 
 	.chart-point:hover {
@@ -232,23 +290,49 @@
 	}
 
 	.year-label {
-		font-size: 0.75rem;
+		font-size: clamp(0.75rem, 2vw, 0.875rem);
 		font-family: var(--font-mono);
-		fill: var(--text-secondary);
+		fill: var(--text-primary);
+		font-weight: 700;
 		opacity: 0;
 		animation: fade-in 0.3s ease-in-out forwards;
 		transition: fill 0.2s;
 	}
 
 	.role-label {
-		font-size: 0.625rem;
+		font-size: clamp(0.625rem, 1.8vw, 0.75rem);
 		font-family: var(--font-mono);
-		fill: var(--text-muted);
+		fill: var(--text-secondary);
 		opacity: 0;
 		animation: fade-in 0.3s ease-in-out forwards;
 		transition: fill 0.2s;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+	}
+
+	@media (min-width: 768px) {
+		.year-label {
+			font-size: 0.7rem;
+		}
+		
+		.role-label {
+			font-size: 0.55rem;
+			letter-spacing: 0.1em;
+			word-spacing: 0.1em;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.year-label {
+			font-size: clamp(0.875rem, 3vw, 1rem);
+			fill: var(--text-primary);
+		}
+		
+		.role-label {
+			font-size: clamp(0.625rem, 2vw, 0.75rem);
+			visibility: visible;
+			fill: var(--text-secondary);
+		}
 	}
 
 	.point-group:hover .year-label,
@@ -268,8 +352,19 @@
 		transition: opacity 0.2s;
 	}
 
-	.point-group:hover .point-tooltip {
+	.point-group:hover .point-tooltip,
+	.point-group:active .point-tooltip {
 		opacity: 1;
+	}
+
+	@media (max-width: 767px) {
+		.point-tooltip {
+			pointer-events: auto;
+		}
+		
+		.point-group:active .point-tooltip {
+			opacity: 1;
+		}
 	}
 
 	.tooltip-content {
@@ -282,35 +377,74 @@
 		transition: background-color 0.2s, border-color 0.2s;
 	}
 
-	.tooltip-year {
-		font-size: 0.625rem;
-		color: var(--accent-primary-light);
-		font-family: var(--font-mono);
-		margin-bottom: 0.25rem;
+	.tooltip-year-text {
+		color: var(--text-secondary);
 	}
 
-	.tooltip-role {
-		font-size: 0.75rem;
-		color: var(--text-primary);
-		font-weight: 700;
-		line-height: 1.2;
-	}
-
-	.tooltip-company {
-		font-size: 0.5625rem;
+	.tooltip-title-text {
 		color: var(--text-muted);
-		margin-top: 0.25rem;
-		text-transform: uppercase;
 	}
 
-	@media (max-width: 768px) {
+	.mobile-points-list {
+		display: none;
+	}
+
+	@media (max-width: 767px) {
 		.career-chart-section {
-			padding: 6rem 1rem 8rem 1rem;
-			min-height: 500px;
+			padding: 4rem 1rem 12rem 1rem;
+			min-height: auto;
+			margin-bottom: 4rem;
 		}
 
 		.chart-header {
-			margin-bottom: 2.5rem;
+			margin-bottom: 2rem;
+		}
+
+		.chart-wrapper {
+			height: 400px;
+			margin-bottom: 4rem;
+		}
+
+		.mobile-points-list {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 1rem;
+			margin-top: 2rem;
+			margin-bottom: 2rem;
+		}
+
+		.mobile-point-item {
+			background: var(--bg-secondary);
+			border: 1px solid var(--border-color);
+			border-radius: 0.5rem;
+			padding: 1rem;
+			text-align: left;
+		}
+
+		.mobile-point-year {
+			font-size: 0.875rem;
+			font-family: var(--font-mono);
+			color: var(--accent-primary-light);
+			font-weight: 700;
+			margin-bottom: 0.25rem;
+		}
+
+		.mobile-point-role {
+			font-size: 1rem;
+			color: var(--text-primary);
+			font-weight: 600;
+			margin-bottom: 0.25rem;
+		}
+
+		.mobile-point-company {
+			font-size: 0.75rem;
+			color: var(--text-muted);
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+		}
+
+		.chart-svg {
+			min-height: 400px;
 		}
 	}
 </style>

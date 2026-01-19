@@ -39,11 +39,13 @@
 <style>
 	.work-section {
 		padding: 8rem 1rem;
+		padding-top: 10rem;
 		max-width: 72rem;
 		margin: 0 auto;
 		background: var(--bg-primary);
 		color: var(--text-primary);
 		transition: background-color 0.2s, color 0.2s;
+		scroll-margin-top: 2rem;
 	}
 
 	.projects-container {
@@ -54,7 +56,7 @@
 
 	@media (max-width: 768px) {
 		.work-section {
-			padding: 4rem 1rem;
+			padding: 8rem 1rem 4rem 1rem;
 		}
 	}
 </style>
