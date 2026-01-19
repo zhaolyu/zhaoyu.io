@@ -15,7 +15,13 @@ on:
     workflows: ["CI - Quality Checks and Build"]
     types:
       - completed
-  # Allow manual deployment
+    # Only trigger on successful or skipped CI runs (filters at trigger level)
+    branches:
+      - '**'  # All branches
+  # Backup: Direct push trigger for main branch (ensures deployment on merge)
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -29,21 +35,24 @@ jobs:
       actions: read
       deployments: write
       pull-requests: write
-    # Prevent concurrent deployments for the same branch
+    # Prevent concurrent deployments for the same branch/commit
+    # Group by branch name to prevent duplicate deployments
     concurrency:
-      group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
+      group: deploy-${{ github.event.workflow_run && github.event.workflow_run.head_branch || github.ref_name || 'unknown' }}
       cancel-in-progress: true
     # Deployment conditions:
     # - workflow_run: Only if CI succeeded or was skipped (path filtering)
+    # - push: Always deploy on push to main (backup trigger)
     # - workflow_dispatch: Always deploy (manual trigger)
     if: |
       (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'skipped')) ||
+      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # Use the commit SHA from the CI workflow run, or current ref for manual dispatch
+          # Use the commit SHA from the CI workflow run, or current ref for push/manual dispatch
           ref: ${{ github.event.workflow_run.head_sha || github.ref }}
 
       - name: Setup Node.js
@@ -84,7 +93,7 @@ jobs:
       - name: Determine deployment type
         id: deployment
         run: |
-          # Extract branch name from workflow_run event or use current ref
+          # Extract branch name from workflow_run event, push event, or use current ref
           # For PRs, head_branch contains the source branch (feature branch)
           # For pushes, head_branch contains the branch that was pushed to
           if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
@@ -93,6 +102,7 @@ jobs:
             # Fallback: get branch from PR head ref
             BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
           else
+            # For push events or manual dispatch, use ref_name
             BRANCH="${{ github.ref_name }}"
           fi
           
@@ -232,33 +242,6 @@ jobs:
               // Don't fail the workflow if deployment status creation fails
             }
       
-      - name: Capture deployment URL
-        if: |
-          steps.deployment.outputs.environment == 'preview' &&
-          steps.deploy.outcome == 'success'
-        id: capture-url
-        run: |
-          DEPLOY_URL="${{ steps.deploy.outputs.url }}"
-          DEPLOY_ALIAS="${{ steps.deploy.outputs.alias }}"
-          
-          echo "Verifying deployment outputs..."
-          echo "URL output: ${DEPLOY_URL}"
-          echo "Alias output: ${DEPLOY_ALIAS}"
-          
-          if [ -z "${DEPLOY_URL}" ] || [ "${DEPLOY_URL}" = "" ]; then
-            echo "⚠️  WARNING: URL output is empty!"
-            echo "url=" >> $GITHUB_OUTPUT
-            echo "alias=" >> $GITHUB_OUTPUT
-          else
-            echo "✅ URL output is available: ${DEPLOY_URL}"
-            echo "url=${DEPLOY_URL}" >> $GITHUB_OUTPUT
-            if [ -n "${DEPLOY_ALIAS}" ] && [ "${DEPLOY_ALIAS}" != "" ]; then
-              echo "alias=${DEPLOY_ALIAS}" >> $GITHUB_OUTPUT
-            else
-              echo "alias=" >> $GITHUB_OUTPUT
-            fi
-          fi
-      
       - name: Comment Preview URL on PR
         if: |
           steps.deployment.outputs.environment == 'preview' &&
@@ -321,40 +304,30 @@ jobs:
             
             console.log('✅ Found PR #' + prNumber + ' for branch: ' + branch);
             
-            // Get URLs - try captured step output first, then direct deploy output
-            let atomicUrl = '${{ steps.capture-url.outputs.url }}'.trim();
-            let aliasUrl = '${{ steps.capture-url.outputs.alias }}'.trim();
-            
-            // Fallback to direct deploy outputs if capture step didn't work
-            if (!atomicUrl || atomicUrl === '') {
-              atomicUrl = '${{ steps.deploy.outputs.url }}'.trim();
-              aliasUrl = '${{ steps.deploy.outputs.alias }}'.trim();
-            }
-            
-            const branch = '${{ steps.deployment.outputs.branch }}';
+            // Get URLs directly from deploy step outputs
+            const atomicUrl = '${{ steps.deploy.outputs.url }}'.trim();
+            const aliasUrl = '${{ steps.deploy.outputs.alias }}'.trim();
             
             console.log('Deployment URLs:', {
               atomicUrl: atomicUrl || '(empty)',
               aliasUrl: aliasUrl || '(empty)',
               branch: branch,
               atomicUrlLength: atomicUrl ? atomicUrl.length : 0,
-              aliasUrlLength: aliasUrl ? aliasUrl.length : 0,
-              fromCaptureStep: '${{ steps.capture-url.outputs.url }}' !== '',
-              fromDeployStep: '${{ steps.deploy.outputs.url }}' !== ''
+              aliasUrlLength: aliasUrl ? aliasUrl.length : 0
             });
             
             // Validate URLs - check if they're actually set
-            if (!atomicUrl || atomicUrl === '' || atomicUrl === '${{ steps.deploy.outputs.url }}' || atomicUrl === '${{ steps.capture-url.outputs.url }}') {
+            if (!atomicUrl || atomicUrl === '' || atomicUrl === '${{ steps.deploy.outputs.url }}') {
               console.error('❌ Atomic URL is empty or not set!');
-              console.error('Tried capture-url output:', '${{ steps.capture-url.outputs.url }}');
-              console.error('Tried deploy output:', '${{ steps.deploy.outputs.url }}');
+              console.error('Deploy output:', atomicUrl);
               console.error('This usually means the Cloudflare Pages action did not set the output.');
               console.error('Check the "Deploy to Cloudflare Pages" step logs for errors.');
               console.error('The deployment may have succeeded but the URL output was not captured.');
               return;
             }
             
-            // Use alias URL if available (branch-based), otherwise use atomic URL
+            // Use alias URL if available (branch-based preview URL), otherwise use atomic URL
+            // Alias is preferred for preview deployments as it's stable per branch
             const previewUrl = (aliasUrl && aliasUrl.trim() !== '' && aliasUrl !== atomicUrl) ? aliasUrl : atomicUrl;
             
             console.log('Using preview URL:', previewUrl);
