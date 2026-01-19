@@ -126,13 +126,13 @@ export const notesData: NotesData = {
 	notes: [
 		{
 			title: 'Decoupling State from Render in LLM Streaming',
-			date: 'Oct 2023',
-			tags: ['React Performance', 'LLM', 'Web Sockets'],
+			date: 'Feb 2026',
+			tags: ['React Performance', 'SSE', '60fps'],
 			content: [
 				'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
 				'<strong>This is a performance trap.</strong> Triggering a React reconciliation cycle on every single token blows through the browser\'s 16ms frame budget, causing noticeable jank and layout thrashing as the response grows long. The UI cannot keep up with the socket.',
 				'The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously without triggering a re-render. We then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit that buffer to real React state only when the browser was ready to paint the next frame.',
-				'This ensured a buttery-smooth 60fps "typewriter" effect, regardless of how fast the backend GPU was spitting out tokens.'
+				'This ensured a smooth "typewriter" effect, regardless of the throughput of the backend inference engine.'
 			]
 		}
 	]

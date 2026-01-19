@@ -21,10 +21,11 @@
 
 <style>
 	.main-container {
-		background: #0a0a0a;
+		background: var(--bg-primary);
 		min-height: 100vh;
-		color: #ffffff;
+		color: var(--text-primary);
 		font-family: var(--font-sans);
+		transition: background-color 0.2s, color 0.2s;
 	}
 
 	:global(.main-container ::selection) {
