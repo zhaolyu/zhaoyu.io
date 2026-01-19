@@ -28,11 +28,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
     timeout-minutes: 15
-    # Permissions needed for checking workflow runs and creating deployments
+    # Permissions needed for checking workflow runs, creating deployments, and posting PR comments
     permissions:
       contents: read
       actions: read
       deployments: write
+      pull-requests: write
     # Prevent concurrent deployments for the same branch
     concurrency:
       group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
@@ -195,29 +196,110 @@ jobs:
           echo "✅ Deployment completed successfully!"
           echo "Deployment may take a few moments to propagate."
       
-      - name: Get Preview URL
-        if: steps.deployment.outputs.environment == 'preview'
-        id: preview-url
+      - name: Output Deployment URLs
+        if: steps.deploy.outcome == 'success'
         run: |
-          BRANCH="${{ steps.deployment.outputs.branch }}"
-          # Replace slashes with hyphens for URL-safe branch names
-          BRANCH_SLUG=$(echo "$BRANCH" | sed 's/\//-/g')
-          PREVIEW_URL="https://${BRANCH_SLUG}.zhaoyu-io.pages.dev"
-          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-      
-      - name: Output Preview URL
-        if: steps.deployment.outputs.environment == 'preview'
-        run: |
-          echo "🌐 Preview deployment created!"
-          echo "Branch: ${{ steps.preview-url.outputs.branch }}"
-          echo "Preview URL: ${{ steps.preview-url.outputs.url }}"
+          echo "🌐 Deployment completed successfully!"
+          echo ""
+          if [ "${{ steps.deployment.outputs.environment }}" = "preview" ]; then
+            echo "**Preview Deployment URLs:**"
+            echo "  - Atomic URL: ${{ steps.deploy.outputs.url }}"
+            echo "  - Branch Alias: ${{ steps.deploy.outputs.alias }}"
+          else
+            echo "**Production Deployment:**"
+            echo "  - URL: ${{ steps.deploy.outputs.url }}"
+          fi
           echo ""
           echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
           echo "   1. Wait 1-2 minutes for deployment to propagate"
           echo "   2. Check Cloudflare Pages dashboard → Deployments tab"
           echo "   3. Verify the deployment status is 'Success'"
-          echo "   4. The URL may take a few minutes to become active"
-          echo ""
-          echo "Note: Cloudflare Pages may also create a hash-based URL."
-          echo "Check the Cloudflare Pages dashboard for the exact deployment URL."
+      
+      - name: Comment Preview URL on PR
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.deploy.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get PR number from workflow_run event or pull_request event
+            let prNumber;
+            if (context.payload.workflow_run && context.payload.workflow_run.pull_requests && context.payload.workflow_run.pull_requests.length > 0) {
+              prNumber = context.payload.workflow_run.pull_requests[0].number;
+            } else if (context.payload.pull_request) {
+              prNumber = context.payload.pull_request.number;
+            } else {
+              // Try to find PR by branch name
+              const branch = '${{ steps.deployment.outputs.branch }}';
+              const { data: pulls } = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head: context.repo.owner + ':' + branch,
+                state: 'open'
+              });
+              if (pulls.length > 0) {
+                prNumber = pulls[0].number;
+              }
+            }
+            
+            if (!prNumber) {
+              console.log('No PR found for this branch, skipping comment');
+              return;
+            }
+            
+            // Get URLs from Cloudflare Pages action outputs
+            const atomicUrl = '${{ steps.deploy.outputs.url }}';
+            const aliasUrl = '${{ steps.deploy.outputs.alias }}';
+            const branch = '${{ steps.deployment.outputs.branch }}';
+            
+            // Use alias URL if available (branch-based), otherwise use atomic URL
+            const previewUrl = aliasUrl && aliasUrl !== atomicUrl ? aliasUrl : atomicUrl;
+            
+            let comment = '## 🌐 Preview Deployment\n\n';
+            comment += '**Branch:** `' + branch + '`\n';
+            comment += '**Preview URL:** ' + previewUrl + '\n';
+            
+            // Show both URLs if they're different
+            if (aliasUrl && aliasUrl !== atomicUrl) {
+              comment += '**Atomic URL:** ' + atomicUrl + ' (specific deployment)\n';
+            }
+            
+            comment += '\n';
+            comment += '> ⚠️ **Note:** The preview URL may take 1-2 minutes to become active. If you see "Nothing is here yet", wait a moment and refresh.\n';
+            comment += '> \n';
+            comment += '> You can also check the [Cloudflare Pages dashboard](https://dash.cloudflare.com/) for deployment status.';
+            
+            // Check if we've already commented on this PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            
+            // Look for existing comment from this workflow
+            // Match by "Preview Deployment" header and branch name
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Preview Deployment') &&
+              comment.body.includes('`' + branch + '`')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+              console.log('Updated preview URL comment on PR #' + prNumber);
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: comment
+              });
+              console.log('Posted preview URL comment on PR #' + prNumber);
+            }
