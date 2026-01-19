@@ -117,26 +117,28 @@ The project uses a two-stage CI/CD pipeline:
 ### Stage 1: CI - Quality Checks and Build
 
 The CI workflow (`.github/workflows/ci.yml`) runs automatically on:
-- Push to `main` or `develop` branches
+- Push to **all branches** (enables feature branch deployments)
 - Pull requests targeting `main` or `develop`
 
 **Quality Checks (run in parallel):**
-1. **Type Check** - Validates TypeScript types
+1. **Type Check** - Validates TypeScript types (includes SvelteKit sync)
 2. **Lint** - Checks code style with ESLint
-3. **Test** - Runs unit/integration tests
-4. **Build** - Creates production build and uploads artifacts
+3. **Test** - Runs unit/integration tests (includes SvelteKit sync)
+4. **Build** - Creates production build and verifies output
 
 ### Stage 2: Deploy to Cloudflare Pages
 
 The deploy workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
-1. **Waits** for CI workflow to complete successfully
-2. **Downloads** build artifacts from CI (or builds locally if unavailable)
-3. **Verifies** build output exists
-4. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
+1. **Checks** for duplicate deployments (prevents duplicate `workflow_run` and `push` triggers)
+2. **Polls CI status** (for push events, waits up to 5 minutes for CI to complete)
+3. **Builds** directly (no artifact download needed)
+4. **Verifies** build output exists
+5. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
 
 **Triggers:**
-- Automatically after successful CI on `main` or `develop`
-- Manual workflow dispatch (with optional CI check skip)
+- **Primary:** `workflow_run` - After successful CI on any branch
+- **Fallback:** `push` - Direct push to feature branches (with CI status check)
+- **Manual:** `workflow_dispatch` - Manual trigger (with optional CI check skip)
 
 ### Workflow Details
 
@@ -145,8 +147,10 @@ The deploy workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
 - Build output: frontend/build/
 - Node version: 24.13.0 (from .nvmrc)
 - Deployment: Automatic via cloudflare/pages-action
-- Triggers: main, develop branches (automatic)
-- Artifact reuse: Build artifacts from CI are reused for faster deployment
+- Triggers: All branches (workflow_run preferred, push as fallback)
+- Build strategy: Direct build in deployment workflow (no artifacts)
+- Duplicate prevention: Checks for existing workflow_run deployments
+- CI polling: Waits up to 5 minutes for CI to complete on push events
 ```
 
 ## Deployment Environments
@@ -168,18 +172,18 @@ This project is configured with **two deployment environments**:
 - Environment: Production
 - Custom domain: `zhaoyu.io`
 
-### Dev/Preview Environment
+### Preview Environment
 
-**Trigger:** Push to `develop` branch (or manual deployment)
+**Trigger:** Push to any feature branch (automatic after CI passes)
 
 **Deployment:**
 - Deploys as **Preview** deployment
-- Available at: `develop.zhaoyu-io.pages.dev`
-- Hash-based URLs: `{hash}.zhaoyu-io.pages.dev`
+- Available at: `{branch-name}.zhaoyu-io.pages.dev` (slashes replaced with hyphens)
+- Hash-based URLs: `{hash}.zhaoyu-io.pages.dev` (also available from Cloudflare dashboard)
 - Isolated from production
 - Perfect for testing before merging to `main`
 
-**Note:** Feature branches no longer trigger automatic deployments. Use pull requests to test changes, which will run CI checks. Deploy manually if needed.
+**Note:** Feature branches automatically get preview deployments after CI passes. The deployment workflow prevents duplicates by checking for existing `workflow_run` deployments before processing `push`-triggered deployments.
 
 ### How Branch Detection Works
 

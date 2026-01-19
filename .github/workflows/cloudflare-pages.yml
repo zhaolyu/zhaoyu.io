@@ -1,12 +1,25 @@
+# Deploy to Cloudflare Pages
+# 
+# Optimizations:
+# - Prevents duplicate deployments (checks for workflow_run deployments before push-triggered deployments)
+# - Polls CI status for push events (waits up to 5 minutes for CI to complete)
+# - Builds directly (no artifact download needed, avoids permission issues)
+# - Supports both workflow_run (preferred) and push (fallback) triggers
+
 name: Deploy to Cloudflare Pages
 
 on:
-  # Deploy after CI workflow completes successfully
+  # Primary: Deploy after CI workflow completes successfully
   workflow_run:
     workflows: ["CI - Quality Checks and Build"]
     types:
       - completed
     # Deploy for all branches (feature branches will get preview URLs)
+  # Fallback: Direct push trigger (only if workflow_run doesn't trigger)
+  # Note: This is a fallback - workflow_run is preferred to avoid duplicate deployments
+  push:
+    branches-ignore:
+      - main
   # Allow manual deployment
   workflow_dispatch:
     inputs:
@@ -24,19 +37,106 @@ jobs:
     concurrency:
       group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
       cancel-in-progress: true
-    # Only deploy if CI passed (or manual dispatch with skip)
+    # Deployment conditions:
+    # - workflow_run: Only if CI succeeded (for push or pull_request events) - PREFERRED
+    # - push: Only if CI passed (verified in step) - FALLBACK if workflow_run doesn't trigger
+    # - workflow_dispatch: Always deploy (manual trigger)
     if: |
-      (github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'pull_request')) ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_ci_check == 'true') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'pull_request')) ||
+      (github.event_name == 'push') ||
       github.event_name == 'workflow_dispatch'
     steps:
+      - name: Check for duplicate deployment (push events)
+        if: github.event_name == 'push'
+        uses: actions/github-script@v7
+        id: check-duplicate
+        with:
+          script: |
+            // Check if a workflow_run deployment is already running/completed for this commit
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'Deploy to Cloudflare Pages',
+              head_sha: context.sha,
+              per_page: 5
+            });
+            
+            const workflowRunDeployments = runs.workflow_runs.filter(
+              run => run.event === 'workflow_run' && run.head_sha === context.sha
+            );
+            
+            if (workflowRunDeployments.length > 0) {
+              const latest = workflowRunDeployments[0];
+              if (latest.status === 'in_progress' || latest.status === 'queued') {
+                core.info('⏭️  Skipping: workflow_run deployment already in progress');
+                core.setOutput('skip', 'true');
+                return;
+              }
+              if (latest.status === 'completed' && latest.conclusion === 'success') {
+                core.info('⏭️  Skipping: workflow_run deployment already completed successfully');
+                core.setOutput('skip', 'true');
+                return;
+              }
+            }
+            
+            core.setOutput('skip', 'false');
+
+      - name: Check CI status (for push events)
+        if: github.event_name == 'push' && steps.check-duplicate.outputs.skip != 'true'
+        uses: actions/github-script@v7
+        id: check-ci
+        with:
+          script: |
+            const maxWaitTime = 300000; // 5 minutes
+            const pollInterval = 10000; // 10 seconds
+            const startTime = Date.now();
+            
+            const getLatestRun = async () => {
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'CI - Quality Checks and Build',
+                branch: context.ref.replace('refs/heads/', ''),
+                per_page: 1
+              });
+              return runs.workflow_runs[0];
+            };
+            
+            let latestRun = await getLatestRun();
+            
+            if (!latestRun) {
+              core.setFailed('No CI workflow run found for this branch. Please ensure CI has run.');
+              return;
+            }
+            
+            // Wait for CI to complete if still running
+            while (latestRun.status !== 'completed' && (Date.now() - startTime) < maxWaitTime) {
+              console.log(`⏳ CI workflow is ${latestRun.status}, waiting...`);
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+              latestRun = await getLatestRun();
+            }
+            
+            if (latestRun.status !== 'completed') {
+              core.setFailed('CI workflow did not complete within 5 minutes. Cannot deploy.');
+              return;
+            }
+            
+            if (latestRun.conclusion !== 'success') {
+              core.setFailed(`CI workflow failed (${latestRun.conclusion}). Cannot deploy.`);
+              return;
+            }
+            
+            console.log('✅ CI workflow passed, proceeding with deployment');
+
       - name: Checkout
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         uses: actions/checkout@v4
         with:
           # Use the commit SHA from the CI workflow run, or current ref for manual dispatch
           ref: ${{ github.event.workflow_run.head_sha || github.ref }}
 
       - name: Setup Node.js
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
@@ -44,19 +144,23 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
         run: npm ci
 
       - name: Sync SvelteKit
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
         run: npm run sync
 
       - name: Build
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
         run: npm run build
         continue-on-error: false
 
       - name: Verify build output
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         working-directory: frontend
         run: |
           if [ ! -d "build" ]; then
@@ -72,6 +176,7 @@ jobs:
           du -sh build/
 
       - name: Determine deployment type
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         id: deployment
         run: |
           # Extract branch name from workflow_run event or use current ref
@@ -97,6 +202,7 @@ jobs:
           fi
 
       - name: Deploy to Cloudflare Pages
+        if: github.event_name != 'push' || steps.check-duplicate.outputs.skip != 'true'
         id: deploy
         uses: cloudflare/pages-action@v1
         with:
