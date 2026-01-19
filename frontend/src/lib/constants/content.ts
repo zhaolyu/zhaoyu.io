@@ -79,8 +79,8 @@ export const projectsData: ProjectsData = {
 		{
 			title: 'CNBC.com Next-Gen Migration',
 			description:
-				'Architected the complete migration of CNBC.com from a legacy monolith to a distributed Next.js edge architecture. The goal: handle millions of concurrent users during market-moving events with zero downtime.',
-			tags: ['Next.js', 'Edge Computing', 'High Scale', 'Performance'],
+				'Architected the complete migration of CNBC.com from a legacy monolith to a distributed custom isomorphic React app. The goal: handle millions of concurrent users during market-moving events with zero downtime.',
+			tags: ['Custom Isomorphic React', 'Edge Computing', 'High Scale', 'Performance'],
 			metrics: [
 				{ label: 'Core Web Vitals', value: '100' },
 				{ label: 'Latency', value: '-40%' }

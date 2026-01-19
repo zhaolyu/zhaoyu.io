@@ -58,10 +58,10 @@ jobs:
       contents: read
     # Always run, but only check for pushes to main
     outputs:
-      is_merge_commit: ${{ steps.check.outputs.is_merge_commit || 'false' }}
+      is_merge_commit: ${{ steps.check-merge.outputs.is_merge_commit || 'false' }}
     steps:
       - name: Set default output
-        id: check
+        id: set-default
         run: |
           echo "is_merge_commit=false" >> $GITHUB_OUTPUT
       
@@ -72,7 +72,7 @@ jobs:
           fetch-depth: 2
       
       - name: Check if merge commit
-        id: check
+        id: check-merge
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           # Check if commit has 2+ parents (merge commit)
@@ -301,7 +301,7 @@ jobs:
           exit 0
       
       - name: Check all jobs status
-        if: needs.check-pr-ci.outputs.should_skip != 'true'
+        if: needs.check-merge-commit.outputs.is_merge_commit != 'true'
         run: |
           # Check branch protection first
           if [ "${{ needs.branch-protection.result }}" == "failure" ]; then
