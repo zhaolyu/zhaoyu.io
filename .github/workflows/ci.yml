@@ -60,11 +60,11 @@ jobs:
       actions: read
     # Always run, but only check PR status for pushes to main
     outputs:
-      pr_passed: ${{ steps.check.outputs.pr_passed || 'false' }}
-      should_skip: ${{ steps.check.outputs.should_skip || 'false' }}
+      pr_passed: ${{ steps.pr-check.outputs.pr_passed || steps.defaults.outputs.pr_passed || 'false' }}
+      should_skip: ${{ steps.pr-check.outputs.should_skip || steps.defaults.outputs.should_skip || 'false' }}
     steps:
       - name: Set default outputs
-        id: check
+        id: defaults
         run: |
           echo "pr_passed=false" >> $GITHUB_OUTPUT
           echo "should_skip=false" >> $GITHUB_OUTPUT
@@ -76,7 +76,7 @@ jobs:
           fetch-depth: 2
       
       - name: Check if merge commit and PR CI status
-        id: check
+        id: pr-check
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/github-script@v7
         with:
