@@ -37,10 +37,10 @@ This rule applies to **ALL code changes** that you intend to keep, including:
 npm test -- path/to/test/file.test.ts
 
 # Run all tests
-npm test
+npm run test
 ```
 
-**IMPORTANT**:
+**⚠️ IMPORTANT**:
 - ✅ **DO**: Run tests for specific files you've modified
 - ✅ **DO**: Fix any failing tests before proceeding
 
@@ -70,7 +70,7 @@ npm run lint
 npm run lint:fix
 ```
 
-**IMPORTANT**:
+**⚠️ IMPORTANT**:
 - ✅ **DO**: Run lint on specific files you've modified
 - ✅ **DO**: Run auto-fix first, then manually fix any remaining issues
 
@@ -91,7 +91,7 @@ npm run lint:fix
 5. ✅ Lint checks on changed files show zero errors and warnings
 6. ✅ Auto-fix has been run on changed files
 7. ✅ Code follows project conventions
-8. ✅ Theme support implemented (light & dark modes using CSS variables) - for all components
+8. ✅ **MANDATORY: Theme support implemented** - All components MUST support both light and dark modes using CSS variables (`var(--bg-primary)`, `var(--text-primary)`, `var(--border-color)`, etc.). Never hardcode colors - always use CSS variables. Verify both themes work correctly
 9. ✅ No console errors or warnings in browser (if applicable)
 
 **DO NOT mark code as complete until both `npm run test` and `npm run lint` pass successfully.**

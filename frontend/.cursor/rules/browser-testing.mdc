@@ -1,0 +1,83 @@
+---
+globs: **/*.svelte,**/*.tsx,**/*.jsx,**/*.css
+description: Browser testing and UI verification for localhost development
+---
+
+# Browser Testing for UI Components
+
+When implementing or modifying UI components, agents should verify the implementation in the browser.
+
+## Preferred Method: MCP Browser Tools
+
+If MCP browser extension tools are available, agents should:
+
+1. **Verify Dev Server is Running**:
+   ```bash
+   lsof -ti:5173 || echo "Server not running - start with: npm run dev"
+   ```
+
+2. **Navigate to Localhost**:
+   - Use MCP browser tools to navigate to `http://localhost:5173`
+   - Take screenshots to verify visual appearance
+   - Test interactions (clicks, hovers, form submissions)
+
+3. **Test Responsive Design**:
+   - Check mobile viewport (375px width)
+   - Check tablet viewport (768px width)
+   - Check desktop viewport (≥1024px width)
+
+4. **Verify Implementation**:
+   - Components render correctly
+   - Styling matches design specifications
+   - Interactive elements work as expected
+   - Animations and transitions function properly
+
+## Fallback Method: Terminal-Based Verification
+
+If MCP browser tools are NOT available, use terminal commands:
+
+1. **Check Server Status**:
+   ```bash
+   lsof -ti:5173  # Check if dev server is running
+   ```
+
+2. **Fetch and Verify HTML**:
+   ```bash
+   curl -s http://localhost:5173 | grep -i "component-class-name"
+   ```
+
+3. **Verify Component Structure**:
+   - Check for component classes in HTML output
+   - Verify content is rendered correctly
+   - Confirm data attributes and IDs are present
+
+4. **Run Type Checks**:
+   ```bash
+   npm run check  # Verify TypeScript compilation
+   npm run lint   # Verify no linting errors
+   ```
+
+## Localhost Access
+
+The development server typically runs on:
+- **Default**: `http://localhost:5173`
+- **Check port**: `lsof -ti:5173` or check `npm run dev` output
+- **Alternative ports**: Check `vite.config.js` for custom port configuration
+
+## Verification Checklist
+
+Before marking UI work as complete:
+
+- [ ] Dev server is running
+- [ ] Components render in HTML output (or visible in browser)
+- [ ] TypeScript compilation passes (`npm run check`)
+- [ ] No linting errors (`npm run lint`)
+- [ ] Responsive design works (if applicable)
+- [ ] Interactive elements function (hover, click, etc.)
+- [ ] Theme support works (light/dark mode if applicable)
+
+## Notes
+
+- **Visual verification**: While terminal tools can verify structure, visual appearance should ideally be checked in browser
+- **MCP tools preferred**: Browser tools provide better verification than HTML parsing
+- **User verification**: For final visual confirmation, user should manually check in browser

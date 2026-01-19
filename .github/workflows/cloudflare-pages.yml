@@ -1,26 +1,24 @@
 # Deploy to Cloudflare Pages
 # 
 # Optimizations:
-# - Polls CI status for push events (waits up to 5 minutes for CI to complete)
 # - Builds directly (no artifact download needed, avoids permission issues)
-# - Supports both workflow_run (preferred) and push (fallback) triggers
+# - Triggers after CI workflow completes successfully (prevents duplicate deployments)
 # - Concurrency group prevents duplicate deployments for the same branch
+# - Manual dispatch available for cases where CI was skipped (e.g., docs-only changes)
 
 name: Deploy to Cloudflare Pages
 
 on:
   # Primary: Deploy after CI workflow completes successfully
+  # This triggers for all branches (feature branches get preview URLs, main gets production)
   workflow_run:
     workflows: ["CI - Quality Checks and Build"]
     types:
       - completed
-    # Deploy for all branches (feature branches will get preview URLs)
-  # Fallback: Direct push trigger (includes main for production deployments)
-  # Note: workflow_run is preferred, but push ensures main branch always deploys
-  push:
+    # Only trigger on successful or skipped CI runs (filters at trigger level)
     branches:
-      - main
-  # Allow manual deployment
+      - '**'  # All branches
+  # Manual trigger for cases where CI was skipped (e.g., docs-only changes)
   workflow_dispatch:
 
 jobs:
@@ -28,95 +26,53 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
     timeout-minutes: 15
-    # Permissions needed for checking workflow runs and creating deployments
+    # Permissions needed for checking workflow runs, creating deployments, and posting PR comments
     permissions:
       contents: read
       actions: read
       deployments: write
+      pull-requests: write
     # Prevent concurrent deployments for the same branch
+    # Group by branch name to prevent duplicate deployments
+    # Note: We deploy the latest commit on the branch, not a specific SHA
     concurrency:
-      group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
+      group: deploy-${{ github.event.workflow_run && github.event.workflow_run.head_branch || github.ref_name || 'unknown' }}
       cancel-in-progress: true
     # Deployment conditions:
-    # - workflow_run: Only if CI succeeded or was skipped (path filtering) - PREFERRED
-    # - push: Only if CI passed or was skipped (verified in step) - FALLBACK if workflow_run doesn't trigger
+    # - workflow_run: Only if CI succeeded or was skipped (path filtering)
     # - workflow_dispatch: Always deploy (manual trigger)
     if: |
       (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'skipped')) ||
-      (github.event_name == 'push') ||
       github.event_name == 'workflow_dispatch'
     steps:
-      - name: Check CI status (for push events)
-        if: github.event_name == 'push'
-        uses: actions/github-script@v7
-        id: check-ci
-        with:
-          script: |
-            const maxWaitTime = 300000; // 5 minutes
-            const pollInterval = 10000; // 10 seconds
-            const startTime = Date.now();
-            
-            const getLatestRun = async () => {
-              // Use workflow file name instead of display name for API compatibility
-              const { data: runs } = await github.rest.actions.listWorkflowRuns({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: 'ci.yml',
-                branch: context.ref.replace('refs/heads/', ''),
-                per_page: 1
-              });
-              return runs.workflow_runs[0];
-            };
-            
-            let latestRun = await getLatestRun();
-            
-            if (!latestRun) {
-              core.setFailed('No CI workflow run found for this branch. Please ensure CI has run.');
-              return;
-            }
-            
-            // Wait for CI to complete if still running
-            while (latestRun.status !== 'completed' && (Date.now() - startTime) < maxWaitTime) {
-              console.log(`⏳ CI workflow is ${latestRun.status}, waiting...`);
-              await new Promise(resolve => setTimeout(resolve, pollInterval));
-              latestRun = await getLatestRun();
-            }
-            
-            if (latestRun.status !== 'completed') {
-              core.setFailed('CI workflow did not complete within 5 minutes. Cannot deploy.');
-              return;
-            }
-            
-            // Handle different workflow conclusions
-            if (latestRun.conclusion === 'success') {
-              console.log('✅ CI workflow passed, proceeding with deployment');
-              return;
-            }
-            
-            if (latestRun.conclusion === 'skipped') {
-              console.log('⏭️  CI workflow was skipped (likely due to path filtering). Proceeding with deployment.');
-              return;
-            }
-            
-            if (latestRun.conclusion === 'cancelled') {
-              core.setFailed('CI workflow was cancelled. Cannot deploy.');
-              return;
-            }
-            
-            // For failures, provide more context
-            if (latestRun.conclusion === 'failure') {
-              core.setFailed(`CI workflow failed. Cannot deploy. Check the CI workflow run: ${latestRun.html_url}`);
-              return;
-            }
-            
-            // Unknown conclusion
-            core.setFailed(`CI workflow has unexpected conclusion: ${latestRun.conclusion}. Cannot deploy.`);
-
+      - name: Determine branch and commit
+        id: branch-info
+        run: |
+          # Extract branch name from workflow_run event or use current ref
+          if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
+            BRANCH="${{ github.event.workflow_run.head_branch }}"
+            # Use the latest commit from the branch, not the old workflow_run.head_sha
+            # This ensures we deploy the latest code even if CI was queued
+            REF="refs/heads/$BRANCH"
+          elif [ -n "${{ github.event.workflow_run.pull_requests[0].head.ref }}" ]; then
+            BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
+            REF="refs/heads/$BRANCH"
+          else
+            # For manual dispatch, use current ref
+            BRANCH="${{ github.ref_name }}"
+            REF="${{ github.ref }}"
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "ref=$REF" >> $GITHUB_OUTPUT
+          echo "Using branch: $BRANCH"
+          echo "Using ref: $REF"
+      
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # Use the commit SHA from the CI workflow run, or current ref for manual dispatch
-          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+          # Checkout the latest commit from the branch (not the old workflow_run.head_sha)
+          # This ensures we always deploy the latest code
+          ref: ${{ steps.branch-info.outputs.ref || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -156,17 +112,8 @@ jobs:
       - name: Determine deployment type
         id: deployment
         run: |
-          # Extract branch name from workflow_run event or use current ref
-          # For PRs, head_branch contains the source branch (feature branch)
-          # For pushes, head_branch contains the branch that was pushed to
-          if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
-            BRANCH="${{ github.event.workflow_run.head_branch }}"
-          elif [ -n "${{ github.event.workflow_run.pull_requests[0].head.ref }}" ]; then
-            # Fallback: get branch from PR head ref
-            BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
-          else
-            BRANCH="${{ github.ref_name }}"
-          fi
+          # Use branch from previous step
+          BRANCH="${{ steps.branch-info.outputs.branch }}"
           
           if [ "$BRANCH" = "main" ]; then
             echo "environment=production" >> $GITHUB_OUTPUT
@@ -195,29 +142,186 @@ jobs:
           echo "✅ Deployment completed successfully!"
           echo "Deployment may take a few moments to propagate."
       
-      - name: Get Preview URL
-        if: steps.deployment.outputs.environment == 'preview'
-        id: preview-url
+      - name: Output Deployment URLs
+        if: steps.deploy.outcome == 'success'
         run: |
-          BRANCH="${{ steps.deployment.outputs.branch }}"
-          # Replace slashes with hyphens for URL-safe branch names
-          BRANCH_SLUG=$(echo "$BRANCH" | sed 's/\//-/g')
-          PREVIEW_URL="https://${BRANCH_SLUG}.zhaoyu-io.pages.dev"
-          echo "url=$PREVIEW_URL" >> $GITHUB_OUTPUT
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-      
-      - name: Output Preview URL
-        if: steps.deployment.outputs.environment == 'preview'
-        run: |
-          echo "🌐 Preview deployment created!"
-          echo "Branch: ${{ steps.preview-url.outputs.branch }}"
-          echo "Preview URL: ${{ steps.preview-url.outputs.url }}"
+          echo "🌐 Deployment completed successfully!"
+          echo ""
+          if [ "${{ steps.deployment.outputs.environment }}" = "preview" ]; then
+            echo "**Preview Deployment URLs:**"
+            echo "  - Atomic URL: ${{ steps.deploy.outputs.url }}"
+            echo "  - Branch Alias: ${{ steps.deploy.outputs.alias }}"
+          else
+            echo "**Production Deployment:**"
+            echo "  - URL: ${{ steps.deploy.outputs.url }}"
+          fi
           echo ""
           echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
           echo "   1. Wait 1-2 minutes for deployment to propagate"
           echo "   2. Check Cloudflare Pages dashboard → Deployments tab"
           echo "   3. Verify the deployment status is 'Success'"
-          echo "   4. The URL may take a few minutes to become active"
-          echo ""
-          echo "Note: Cloudflare Pages may also create a hash-based URL."
-          echo "Check the Cloudflare Pages dashboard for the exact deployment URL."
+      
+      - name: Extract deployment URLs
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.deploy.outcome == 'success'
+        id: extract-urls
+        run: |
+          echo "Extracting deployment URLs from Cloudflare Pages action..."
+          ATOMIC_URL="${{ steps.deploy.outputs.url }}"
+          ALIAS_URL="${{ steps.deploy.outputs.alias }}"
+          
+          if [ -z "$ATOMIC_URL" ]; then
+            echo "❌ ERROR: Atomic URL is empty!"
+            exit 1
+          fi
+          
+          if [ -n "$ALIAS_URL" ] && [ "$ALIAS_URL" != "$ATOMIC_URL" ]; then
+            echo "preview_url=$ALIAS_URL" >> $GITHUB_OUTPUT
+          else
+            echo "preview_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
+          fi
+          echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
+          echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
+      
+      - name: Comment Preview URL on PR
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.deploy.outcome == 'success' &&
+          steps.extract-urls.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = '${{ steps.deployment.outputs.branch }}';
+            console.log('Looking for PR for branch:', branch);
+            console.log('Event name:', context.eventName);
+            console.log('Workflow run payload:', JSON.stringify(context.payload.workflow_run || {}, null, 2));
+            
+            // Get PR number from workflow_run event or pull_request event
+            let prNumber;
+            
+            // Method 1: Try workflow_run.pull_requests
+            if (context.payload.workflow_run && context.payload.workflow_run.pull_requests && context.payload.workflow_run.pull_requests.length > 0) {
+              prNumber = context.payload.workflow_run.pull_requests[0].number;
+              console.log('Found PR from workflow_run.pull_requests:', prNumber);
+            } 
+            // Method 2: Try direct pull_request payload
+            else if (context.payload.pull_request) {
+              prNumber = context.payload.pull_request.number;
+              console.log('Found PR from pull_request payload:', prNumber);
+            } 
+            // Method 3: Find PR by branch name (most reliable for workflow_run events)
+            else {
+              console.log('Searching for PR by branch name:', branch);
+              try {
+                const { data: pulls } = await github.rest.pulls.list({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  head: context.repo.owner + ':' + branch,
+                  state: 'open',
+                  per_page: 1
+                });
+                
+                if (pulls && pulls.length > 0) {
+                  prNumber = pulls[0].number;
+                  console.log('Found PR by branch search:', prNumber);
+                } else {
+                  console.log('No open PR found for branch:', branch);
+                }
+              } catch (error) {
+                console.error('Error searching for PR:', error.message);
+              }
+            }
+            
+            if (!prNumber) {
+              console.log('❌ No PR found for this branch, skipping comment');
+              console.log('Branch:', branch);
+              console.log('Available context:', {
+                eventName: context.eventName,
+                hasWorkflowRun: !!context.payload.workflow_run,
+                hasPullRequests: !!(context.payload.workflow_run && context.payload.workflow_run.pull_requests),
+                hasPullRequest: !!context.payload.pull_request
+              });
+              return;
+            }
+            
+            console.log('✅ Found PR #' + prNumber + ' for branch: ' + branch);
+            
+            // Get URLs from extract-urls step
+            const previewUrl = '${{ steps.extract-urls.outputs.preview_url }}'.trim();
+            const atomicUrl = '${{ steps.extract-urls.outputs.atomic_url }}'.trim();
+            
+            console.log('Deployment URLs:', {
+              previewUrl: previewUrl || '(empty)',
+              atomicUrl: atomicUrl || '(empty)',
+              branch: branch
+            });
+            
+            // Validate URL
+            if (!previewUrl || previewUrl === '' || previewUrl === '${{ steps.extract-urls.outputs.preview_url }}') {
+              console.error('❌ Preview URL is empty or not set!');
+              console.error('Check the "Extract deployment URLs" step logs for details.');
+              return;
+            }
+            
+            console.log('Using preview URL:', previewUrl);
+            
+            // Format the URL as a clickable link
+            const urlLink = '[' + previewUrl + '](' + previewUrl + ')';
+            
+            let comment = '## 🌐 Preview Deployment\n\n';
+            comment += '**Branch:** `' + branch + '`\n';
+            comment += '**Preview URL:** ' + urlLink + '\n';
+            
+            // Show atomic URL if different from preview URL
+            if (atomicUrl && atomicUrl !== previewUrl) {
+              const atomicLink = '[' + atomicUrl + '](' + atomicUrl + ')';
+              comment += '**Atomic URL:** ' + atomicLink + ' (specific deployment)\n';
+            }
+            
+            comment += '\n';
+            comment += '> ⚠️ **Note:** The preview URL may take 1-2 minutes to become active. If you see "Nothing is here yet" or a Cloudflare Access login, wait a moment and refresh.\n';
+            comment += '> \n';
+            comment += '> You can also check the [Cloudflare Pages dashboard](https://dash.cloudflare.com/) for deployment status.';
+            
+            // Check if we've already commented on this PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber
+            });
+            
+            // Look for existing comment from this workflow
+            // Match by "Preview Deployment" header and branch name
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Preview Deployment') &&
+              comment.body.includes('`' + branch + '`')
+            );
+            
+            try {
+              if (botComment) {
+                // Update existing comment
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: comment
+                });
+                console.log('✅ Updated preview URL comment on PR #' + prNumber);
+              } else {
+                // Create new comment
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: comment
+                });
+                console.log('✅ Posted preview URL comment on PR #' + prNumber);
+                console.log('Preview URL:', previewUrl);
+              }
+            } catch (error) {
+              console.error('❌ Error posting comment to PR:', error.message);
+              console.error('Error details:', error);
+              throw error;
+            }

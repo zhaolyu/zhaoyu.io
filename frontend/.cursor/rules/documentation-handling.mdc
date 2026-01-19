@@ -1,0 +1,204 @@
+---
+globs: .cursor/**/*.md,.cursor/**/*.mdc
+---
+
+# Documentation Handling for .cursor/ Files
+
+**⚠️ IMPORTANT**: This rule GUIDES proper editing practices but does NOT prevent legitimate updates. When updating any file in the `.cursor/` directory (`.md` or `.mdc`), preserve structure, formatting, cross-references, and metadata to prevent breaking the documentation system. However, content updates, additions, and corrections are expected and should proceed normally.
+
+**MANDATORY**: Before making ANY changes to markdown files (`.md` or `.mdc`), you MUST ask the user to accept the updates. Present a summary of the changes and wait for explicit approval before proceeding with file modifications.
+
+## File Types in .cursor/
+
+- **`.cursor/docs/*.md`** - Human-readable documentation (standard Markdown)
+- **`.cursor/rules/*.mdc`** - AI agent rules (Markdown with frontmatter metadata)
+- **`.cursor/commands/*.md`** - Cursor-specific command documentation
+
+## MANDATORY: Preservation Requirements
+
+### 1. For `.mdc` Rule Files (`.cursor/rules/*.mdc`)
+
+**CRITICAL**: `.mdc` files MUST have frontmatter metadata at the top. NEVER remove or break this:
+
+```markdown
+---
+alwaysApply: true
+---
+# Rule Title
+```
+
+OR
+
+```markdown
+---
+globs: **/*.ts,**/*.js
+---
+# Rule Title
+```
+
+**Requirements**:
+- ✅ **PRESERVE frontmatter exactly** - Do not modify `alwaysApply`, `globs`, or `description` unless explicitly requested
+- ✅ **PRESERVE YAML format** - Keep the `---` delimiters and proper YAML syntax
+- ✅ **PRESERVE metadata structure** - Don't change the frontmatter format
+- ✅ **PRESERVE file references** - Keep `[filename](mdc:path)` references intact
+- ✅ **PRESERVE section structure** - Maintain headings, lists, and code blocks
+
+### 2. For `.md` Documentation Files (`.cursor/docs/*.md`)
+
+**Requirements**:
+- ✅ **PRESERVE cross-references** - Keep all `[Link Text](FILENAME.md)` references working
+- ✅ **PRESERVE section structure** - Maintain heading hierarchy (H1, H2, H3, etc.)
+- ✅ **PRESERVE code blocks** - Keep syntax highlighting and formatting
+- ✅ **PRESERVE lists and formatting** - Maintain bullet points, numbered lists, tables
+- ✅ **PRESERVE "Last Updated" sections** - Don't remove footer metadata if present
+- ✅ **PRESERVE table of contents** - Maintain navigation structure
+
+### 3. General Preservation Rules
+
+**When updating ANY `.cursor/` file**:
+
+1. **Read the entire file first** - Understand the full structure before making changes
+2. **Preserve formatting** - Maintain consistent spacing, indentation, and line breaks
+3. **Preserve cross-references** - All `[Link](path)` references must remain valid
+4. **Preserve code examples** - Don't break code blocks or syntax highlighting
+5. **Preserve metadata** - Keep frontmatter, footers, and metadata sections
+6. **Verify after editing** - Ensure the file structure is intact
+
+## Common Mistakes to Avoid
+
+### ❌ DON'T: Break Frontmatter
+
+```markdown
+<!-- ❌ WRONG: Missing closing delimiter -->
+---
+alwaysApply: true
+# Rule Title
+
+<!-- ✅ CORRECT: Proper frontmatter -->
+---
+alwaysApply: true
+---
+# Rule Title
+```
+
+### ❌ DON'T: Remove Cross-References
+
+```markdown
+<!-- ❌ WRONG: Removed link -->
+See coding-conventions.mdc for details
+
+<!-- ✅ CORRECT: Preserved link -->
+See [coding-conventions.mdc](mdc:.cursor/rules/coding-conventions.mdc) for details
+```
+
+### ❌ DON'T: Break File Structure
+
+```markdown
+<!-- ❌ WRONG: Removed section, breaking navigation -->
+## Section 1
+Content here
+## Section 3  <!-- Missing Section 2! -->
+
+<!-- ✅ CORRECT: Maintained structure -->
+## Section 1
+Content here
+## Section 2
+Content here
+## Section 3
+```
+
+### ❌ DON'T: Modify Metadata Without Request
+
+```markdown
+<!-- ❌ WRONG: Changed globs without being asked -->
+---
+globs: **/*.ts  <!-- Was: **/*.ts,**/*.js -->
+---
+
+<!-- ✅ CORRECT: Only change if explicitly requested -->
+---
+globs: **/*.ts,**/*.js  <!-- Preserved original -->
+---
+```
+
+## Update Workflow
+
+When updating `.cursor/` documentation files:
+
+1. **Read the entire file** - Understand current structure
+2. **Identify what needs to change** - Be precise about the update
+3. **⚠️ MANDATORY: Ask for user acceptance** - Present a summary of proposed changes and wait for explicit approval before making any edits
+4. **Make minimal changes** - Only modify what's necessary (after approval)
+5. **Preserve everything else** - Structure, formatting, references, metadata
+6. **Verify the file** - Check that:
+   - Frontmatter is intact (for `.mdc` files)
+   - Cross-references still work
+   - Section structure is maintained
+   - Code blocks are formatted correctly
+   - No unintended deletions occurred
+
+## Special Cases
+
+### Updating Rule Metadata
+
+**ONLY modify frontmatter when**:
+- User explicitly requests it
+- Adding a new rule file
+- Fixing a broken frontmatter (preserve original intent)
+
+**NEVER modify frontmatter when**:
+- Just updating rule content
+- Adding examples or sections
+- Fixing typos or formatting
+
+### Adding New Sections
+
+When adding new sections:
+- ✅ Follow existing heading hierarchy
+- ✅ Maintain consistent formatting
+- ✅ Add cross-references if linking to other docs
+- ✅ Update table of contents if present
+- ✅ Preserve existing section order unless reorganizing
+
+### Updating Cross-References
+
+When updating cross-references:
+- ✅ Use correct path format: `[text](FILENAME.md)` or `[text](mdc:path)`
+- ✅ Verify target files exist
+- ✅ Maintain relative path structure
+- ✅ Update both source and target if moving files
+
+## User Acceptance Requirement
+
+**CRITICAL**: Before editing ANY markdown file (`.md` or `.mdc`):
+
+1. **Present a clear summary** of what will be changed
+2. **List specific sections** that will be modified
+3. **Show examples** of key changes if significant
+4. **Wait for explicit approval** - Use phrases like "Please review and accept these updates" or "Should I proceed with these changes?"
+5. **Only proceed after user confirms** - Do not make changes until explicitly approved
+
+**Exception**: If the user explicitly says "update", "apply", "proceed", or similar approval language in the same message requesting the update, you may proceed immediately.
+
+## Verification Checklist
+
+Before completing any `.cursor/` file update:
+
+- [ ] User acceptance obtained (unless explicitly approved in request)
+- [ ] Frontmatter preserved (for `.mdc` files)
+- [ ] All cross-references intact and valid
+- [ ] Section structure maintained
+- [ ] Code blocks properly formatted
+- [ ] No unintended deletions
+- [ ] Formatting consistent with existing style
+- [ ] Metadata sections preserved
+- [ ] File can be read without errors
+
+## Related Documentation
+
+- [Cursor Rules Instructions](.cursor/commands/generate-cursor-rules.md) - How to create/edit `.mdc` rules
+- [Documentation README](.cursor/docs/README.md) - Overview of `.cursor/` directory structure
+
+---
+
+**Enforcement**: This rule applies to ALL files in `.cursor/` directory. The goal is to maintain documentation quality while allowing necessary updates. Content changes are expected - just preserve structure and formatting when making them.

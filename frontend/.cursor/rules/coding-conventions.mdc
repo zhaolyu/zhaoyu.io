@@ -61,14 +61,72 @@ Use `$state()` for reactive state. Always define TypeScript interfaces for compo
 - Always use semicolons
 - Always use braces for if/for/while
 
+## Font Usage
+
+**MANDATORY: All components MUST use the Geist font family.**
+
+- **Sans-serif text**: Use `var(--font-sans)` or Tailwind class `font-sans` (default: Geist Sans)
+- **Monospace text**: Use `var(--font-mono)` or Tailwind class `font-mono` (default: Geist Mono)
+- **Never hardcode fonts** - Always use CSS variables or Tailwind classes
+- Fonts are globally configured in `app.css` and available via CSS variables
+
+### Font Variables
+
+- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif
+- `--font-mono`: "Geist Mono", "Courier New", monospace
+
+### Examples
+
+```css
+/* ✅ DO: Use CSS variables */
+.my-text {
+	font-family: var(--font-sans);
+}
+
+.code-block {
+	font-family: var(--font-mono);
+}
+
+/* ❌ DON'T: Hardcode fonts */
+.bad-example {
+	font-family: Arial, sans-serif;
+}
+```
+
 ## Theme Support Requirement
 
-**MANDATORY: All components MUST support both light and dark modes.**
+**MANDATORY: All components MUST support both light and dark modes. This is MANDATORY for ALL code generation.**
 
-- Use CSS variables from `app.css` (`--bg-primary`, `--text-primary`, `--border-color`, etc.)
-- Add transitions: `transition: background-color 0.2s, color 0.2s`
-- Use `:global(.dark)` for theme-specific overrides when needed
-- Avoid hardcoded colors - prefer CSS variables
+### Critical Rules
+
+- ✅ **ALWAYS use CSS variables** - Never hardcode colors like `bg-white`, `text-black`, `dark:bg-neutral-950`, `dark:text-white`
+- ✅ **Use CSS variables from `app.css`**: `--bg-primary`, `--text-primary`, `--text-secondary`, `--text-muted`, `--border-color`, `--bg-secondary`
+- ✅ **Always add transitions**: `transition: background-color 0.2s, color 0.2s, border-color 0.2s`
+- ✅ **Use `:global(.dark)` for theme-specific overrides** only when absolutely necessary
+- ❌ **NEVER hardcode colors** - Always use CSS variables for backgrounds, text, and borders
+- ❌ **NEVER use Tailwind color classes** like `bg-white dark:bg-neutral-950` - Use CSS variables instead
+
+### Example (CORRECT)
+
+```svelte
+<style>
+	.card {
+		background: var(--bg-primary);
+		color: var(--text-primary);
+		border: 1px solid var(--border-color);
+		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+	}
+</style>
+```
+
+### Anti-Pattern (INCORRECT)
+
+```svelte
+<!-- ❌ DO NOT DO THIS -->
+<div class="bg-white dark:bg-neutral-950 text-black dark:text-white">
+	Content
+</div>
+```
 
 See [.cursor/rules/component-patterns.mdc](mdc:.cursor/rules/component-patterns.mdc) for quick reference and [.cursor/docs/PATTERNS.md](mdc:.cursor/docs/PATTERNS.md) for comprehensive examples.
 

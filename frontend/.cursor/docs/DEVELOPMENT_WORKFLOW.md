@@ -299,6 +299,103 @@ Use browser DevTools to inspect:
 
 SvelteKit provides helpful error messages in the terminal and browser console.
 
+## Visual Verification
+
+**RECOMMENDED**: When working on UI components or visual changes, verify your changes in the browser.
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+This starts the SvelteKit development server, typically at `http://localhost:5173`. Open this URL in your browser to see your changes.
+
+### Test Responsive Design
+
+Use browser DevTools to test your components at different viewport sizes:
+
+1. **Open DevTools**: Press `F12` or right-click → Inspect
+2. **Enable Responsive Design Mode**: 
+   - Chrome/Edge: Press `Ctrl+Shift+M` (Windows/Linux) or `Cmd+Shift+M` (Mac)
+   - Firefox: Press `Ctrl+Shift+M` (Windows/Linux) or `Cmd+Shift+M` (Mac)
+3. **Test Viewport Sizes**:
+   - **Mobile**: 375px width (iPhone SE size)
+   - **Desktop**: ≥768px width
+4. **Check for Issues**:
+   - No horizontal scrolling
+   - Touch targets are easily tappable (at least 44x44px)
+   - Text is readable at all sizes
+   - Layout adapts correctly
+
+### Test Both Themes
+
+Verify your components work in both light and dark modes:
+
+1. Use the theme toggle button in the navigation
+2. Check that all colors, borders, and backgrounds adapt correctly
+3. Ensure text remains readable in both themes
+4. Verify interactive elements (buttons, links) are clearly visible
+
+### Visual Checklist
+
+When verifying UI components:
+
+- ✅ Component displays correctly on mobile (375px)
+- ✅ Component displays correctly on desktop (≥768px)
+- ✅ No horizontal scrolling at any viewport size
+- ✅ Touch targets are appropriately sized (mobile)
+- ✅ Light theme works correctly
+- ✅ Dark theme works correctly
+
+## Agent Browser Testing
+
+**For AI Agents**: When implementing or modifying UI components, agents should verify the implementation.
+
+### MCP Browser Tools (Preferred)
+
+If MCP browser extension tools are available:
+
+1. **Verify Dev Server**: Check if server is running on port 5173
+2. **Navigate**: Use browser tools to navigate to `http://localhost:5173`
+3. **Screenshot**: Take screenshots to verify visual appearance
+4. **Test Interactions**: Verify clicks, hovers, and form submissions work
+5. **Responsive Testing**: Check different viewport sizes programmatically
+
+### Terminal-Based Verification (Fallback)
+
+If browser tools are not available:
+
+1. **Check Server Status**:
+   ```bash
+   lsof -ti:5173  # Verify dev server is running
+   ```
+
+2. **Fetch HTML**:
+   ```bash
+   curl -s http://localhost:5173 | grep -i "component-class"
+   ```
+
+3. **Verify Structure**: Check HTML output for component classes and content
+4. **Run Checks**: Execute `npm run check` and `npm run lint`
+
+### Verification Checklist for Agents
+
+Before marking UI work complete:
+
+- [ ] Dev server is running (`lsof -ti:5173`)
+- [ ] Components render in HTML output (or visible via browser tools)
+- [ ] TypeScript compilation passes (`npm run check`)
+- [ ] No linting errors (`npm run lint`)
+- [ ] Component structure matches implementation
+- [ ] Content/data is present in rendered HTML
+
+**Note**: See [Browser Testing Rule](../rules/browser-testing.mdc) for detailed guidelines.
+- ✅ Interactive elements (buttons, links) are functional
+- ✅ Typography scales appropriately (using `clamp()` where applicable)
+
+**Note**: Visual verification is recommended but not mandatory for all changes. Non-visual changes (e.g., API routes, utilities, tests) may not require visual verification.
+
 ## Deployment
 
 ### Build and Deploy
