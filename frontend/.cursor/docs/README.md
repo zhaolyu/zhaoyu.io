@@ -53,7 +53,7 @@ src/
 Before completing any code task:
 1. ✅ Check utilities first (DRY principle)
 2. ✅ Write tests if applicable (90% coverage required)
-3. ✅ Run tests: `npm test`
+3. ✅ Run tests: `npm run test`
 4. ✅ Run lint: `npm run lint` (fix all issues)
 5. ✅ Verify code follows [Coding Conventions](CODING_CONVENTIONS.md)
 6. ✅ Ensure theme support (light & dark modes) using CSS variables
@@ -168,8 +168,7 @@ This `.cursor/` directory contains:
 - **`docs/`** - Human-readable documentation (`.md` files) for developers and AI assistants
 - **`rules/`** - AI agent rules (`.mdc` files) that guide code generation and quality
 - **`commands/`** - Cursor-specific command documentation
-
-**Important**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
+**⚠️ IMPORTANT**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
 - **`.md` files**: Standard Markdown format
 - **`.mdc` files**: Markdown with frontmatter metadata (see `commands/generate-cursor-rules.md`)
 

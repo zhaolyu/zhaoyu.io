@@ -37,10 +37,10 @@ This rule applies to **ALL code changes** that you intend to keep, including:
 npm test -- path/to/test/file.test.ts
 
 # Run all tests
-npm test
+npm run test
 ```
 
-**IMPORTANT**:
+**⚠️ IMPORTANT**:
 - ✅ **DO**: Run tests for specific files you've modified
 - ✅ **DO**: Fix any failing tests before proceeding
 
@@ -70,7 +70,7 @@ npm run lint
 npm run lint:fix
 ```
 
-**IMPORTANT**:
+**⚠️ IMPORTANT**:
 - ✅ **DO**: Run lint on specific files you've modified
 - ✅ **DO**: Run auto-fix first, then manually fix any remaining issues
 

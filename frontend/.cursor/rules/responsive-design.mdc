@@ -44,7 +44,7 @@ The project uses a single primary breakpoint:
 </style>
 ```
 
-## Required Responsive Patterns
+## MANDATORY Responsive Patterns
 
 ### 1. Mobile-First Media Queries
 

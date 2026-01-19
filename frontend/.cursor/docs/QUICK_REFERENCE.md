@@ -74,7 +74,7 @@ For complete code examples and patterns, see:
 
 ## Theme Support (Light & Dark Mode)
 
-**MANDATORY: All components MUST support both light and dark modes. This is REQUIRED for ALL code generation.**
+**MANDATORY: All components MUST support both light and dark modes. This is MANDATORY for ALL code generation.**
 
 ### Critical Rules
 
