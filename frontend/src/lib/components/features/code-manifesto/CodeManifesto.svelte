@@ -23,50 +23,52 @@
 
 <section id="manifesto" class="code-manifesto-section">
 	<div class="manifesto-container">
-		<div class="manifesto-header">
-			<div class="header-content">
-				<h2 class="section-badge">Engineering Philosophy</h2>
-				<h3 class="section-title">Strong opinions, weakly held.</h3>
-			</div>
-
-			<div class="tab-container">
-				{#each standardKeys as key}
-					<button
-						onclick={() => (activeTab = key)}
-						class="tab-button"
-						class:active={activeTab === key}
-					>
-						{standards[key].title}
-					</button>
-				{/each}
-			</div>
-		</div>
-
-		<div class="code-viewer">
-			<div class="viewer-header">
-				<div class="window-controls">
-					<div class="control-dot control-red"></div>
-					<div class="control-dot control-yellow"></div>
-					<div class="control-dot control-green"></div>
-				</div>
-				<div class="file-path">~/philosophy/{getFileName(activeTab)}</div>
-			</div>
-
-			<div class="code-grid">
-				<div class="code-panel code-bad">
-					<div class="panel-label">Anti-Pattern</div>
-					<pre class="code-content">{standards[activeTab].bad}</pre>
+		<div class="manifesto-content">
+			<div class="manifesto-header">
+				<div class="header-content">
+					<h2 class="section-badge">Engineering Philosophy</h2>
+					<h3 class="section-title">Strong opinions, weakly held.</h3>
 				</div>
 
-				<div class="code-panel code-good">
-					<div class="panel-label">Preferred</div>
-					<pre class="code-content">{standards[activeTab].good}</pre>
+				<div class="tab-container">
+					{#each standardKeys as key}
+						<button
+							onclick={() => (activeTab = key)}
+							class="tab-button"
+							class:active={activeTab === key}
+						>
+							{standards[key].title}
+						</button>
+					{/each}
 				</div>
 			</div>
-		</div>
 
-		<div class="manifesto-note">
-			<span class="note-label">NOTE:</span> {getNote(activeTab)}
+			<div class="code-viewer">
+				<div class="viewer-header">
+					<div class="window-controls">
+						<div class="control-dot control-red"></div>
+						<div class="control-dot control-yellow"></div>
+						<div class="control-dot control-green"></div>
+					</div>
+					<div class="file-path">~/philosophy/{getFileName(activeTab)}</div>
+				</div>
+
+				<div class="code-grid">
+					<div class="code-panel code-bad">
+						<div class="panel-label">Anti-Pattern</div>
+						<pre class="code-content">{standards[activeTab].bad}</pre>
+					</div>
+
+					<div class="code-panel code-good">
+						<div class="panel-label">Preferred</div>
+						<pre class="code-content">{standards[activeTab].good}</pre>
+					</div>
+				</div>
+			</div>
+
+			<div class="manifesto-note">
+				<span class="note-label">NOTE:</span> {getNote(activeTab)}
+			</div>
 		</div>
 	</div>
 </section>
@@ -78,6 +80,13 @@
 		background: var(--bg-primary);
 		color: var(--text-primary);
 		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+		min-height: 400px;
+		display: block;
+		visibility: visible;
+		opacity: 1;
+		position: relative;
+		width: 100%;
+		z-index: 1;
 	}
 
 	.manifesto-container {

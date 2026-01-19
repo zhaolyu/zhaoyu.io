@@ -4,12 +4,13 @@
   import { heroContent } from '$lib/constants/content';
   import { handleAnchorNavigation } from '$lib/utils/navigation';
 
-  function formatBio(bio: string): string {
-    return bio
+  // Memoize formatted bio to avoid re-processing on every render
+  const formattedBio = $derived(
+    heroContent.bio
       .replace(/Zhao Yu/g, '<strong class="bio-name font-semibold">Zhao Yu</strong>')
       .replace(/shaving milliseconds off a render/g, '<strong class="bio-emphasis font-normal">shaving milliseconds off a render</strong>')
-      .replace(/sub-1:25 half-marathon/g, '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">sub-1:25 half-marathon</span>');
-  }
+      .replace(/sub-1:25 half-marathon/g, '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">sub-1:25 half-marathon</span>')
+  );
 </script>
 
 <section class="hero-section relative min-h-screen w-full overflow-hidden flex items-center justify-center border-b">
@@ -46,7 +47,7 @@
       in:fly={{ y: 20, duration: 800, delay: 400 }}
       class="hero-bio text-lg md:text-2xl font-light tracking-wide max-w-4xl mx-auto leading-relaxed mb-10"
     >
-      {@html formatBio(heroContent.bio)}
+      {@html formattedBio}
     </p>
 
     <div 
