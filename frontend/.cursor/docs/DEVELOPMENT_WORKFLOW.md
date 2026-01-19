@@ -68,12 +68,14 @@ npm run check:watch
 ### Linting
 
 ```bash
-# Run lint
+# Run lint (MANDATORY before completing code)
 npm run lint
 
 # Fix linting issues
 npm run lint:fix
 ```
+
+**⚠️ IMPORTANT**: Lint MUST pass with zero errors before marking any code task as complete. CI will fail if lint fails.
 
 ### Formatting
 
@@ -259,8 +261,12 @@ For shared state across components:
 ### Run Tests
 
 ```bash
-npm test
+npm run test          # Run all tests (MANDATORY before completing code)
+npm run test:watch    # Watch mode for development
+npm run test:ui       # UI mode for interactive testing
 ```
+
+**⚠️ IMPORTANT**: Tests MUST pass before marking any code task as complete. CI will fail if tests fail.
 
 ### Write Tests
 
@@ -340,3 +346,13 @@ npm run dev -- --port 3000
 3. **Follow file structure** - Keep components, pages, and layouts organized
 4. **Test your code** - Write tests for components and utilities
 5. **Lint and format** - Run lint and format before committing
+
+## Mandatory Final Steps
+
+**Before completing any code task, you MUST:**
+
+1. ✅ **Run tests**: `npm run test` - Must pass (CI will fail otherwise)
+2. ✅ **Run lint**: `npm run lint` - Must pass with zero errors (CI will fail otherwise)
+3. ✅ Fix any failing tests or lint errors before marking as complete
+
+**DO NOT mark code as complete until both commands pass successfully.**
