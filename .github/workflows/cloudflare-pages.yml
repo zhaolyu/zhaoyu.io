@@ -2,9 +2,9 @@
 # 
 # Optimizations:
 # - Builds directly (no artifact download needed, avoids permission issues)
-# - Supports both workflow_run (preferred) and push (fallback) triggers
+# - Triggers after CI workflow completes successfully (prevents duplicate deployments)
 # - Concurrency group prevents duplicate deployments for the same branch
-# - CI and deployment run in parallel on push events
+# - Manual dispatch available for cases where CI was skipped (e.g., docs-only changes)
 
 name: Deploy to Cloudflare Pages
 
@@ -18,13 +18,7 @@ on:
     # Only trigger on successful or skipped CI runs (filters at trigger level)
     branches:
       - '**'  # All branches
-  # Backup: Direct push trigger for all branches
-  # Note: workflow_run uses workflow file from default branch (main), so push trigger
-  # ensures feature branches can deploy with their own workflow changes
-  # CI and deployment run in parallel on push events
-  push:
-    branches:
-      - '**'  # All branches
+  # Manual trigger for cases where CI was skipped (e.g., docs-only changes)
   workflow_dispatch:
 
 jobs:
@@ -45,11 +39,9 @@ jobs:
       cancel-in-progress: true
     # Deployment conditions:
     # - workflow_run: Only if CI succeeded or was skipped (path filtering)
-    # - push: Always deploy on push (runs in parallel with CI)
     # - workflow_dispatch: Always deploy (manual trigger)
     if: |
       (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'skipped')) ||
-      github.event_name == 'push' ||
       github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
