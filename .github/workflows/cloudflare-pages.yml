@@ -32,8 +32,9 @@ jobs:
       actions: read
       deployments: write
       pull-requests: write
-    # Prevent concurrent deployments for the same branch/commit
+    # Prevent concurrent deployments for the same branch
     # Group by branch name to prevent duplicate deployments
+    # Note: We deploy the latest commit on the branch, not a specific SHA
     concurrency:
       group: deploy-${{ github.event.workflow_run && github.event.workflow_run.head_branch || github.ref_name || 'unknown' }}
       cancel-in-progress: true
@@ -44,11 +45,34 @@ jobs:
       (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'skipped')) ||
       github.event_name == 'workflow_dispatch'
     steps:
+      - name: Determine branch and commit
+        id: branch-info
+        run: |
+          # Extract branch name from workflow_run event or use current ref
+          if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
+            BRANCH="${{ github.event.workflow_run.head_branch }}"
+            # Use the latest commit from the branch, not the old workflow_run.head_sha
+            # This ensures we deploy the latest code even if CI was queued
+            REF="refs/heads/$BRANCH"
+          elif [ -n "${{ github.event.workflow_run.pull_requests[0].head.ref }}" ]; then
+            BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
+            REF="refs/heads/$BRANCH"
+          else
+            # For manual dispatch, use current ref
+            BRANCH="${{ github.ref_name }}"
+            REF="${{ github.ref }}"
+          fi
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "ref=$REF" >> $GITHUB_OUTPUT
+          echo "Using branch: $BRANCH"
+          echo "Using ref: $REF"
+      
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # Use the commit SHA from the CI workflow run, or current ref for push/manual dispatch
-          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+          # Checkout the latest commit from the branch (not the old workflow_run.head_sha)
+          # This ensures we always deploy the latest code
+          ref: ${{ steps.branch-info.outputs.ref || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -88,18 +112,8 @@ jobs:
       - name: Determine deployment type
         id: deployment
         run: |
-          # Extract branch name from workflow_run event, push event, or use current ref
-          # For PRs, head_branch contains the source branch (feature branch)
-          # For pushes, head_branch contains the branch that was pushed to
-          if [ -n "${{ github.event.workflow_run.head_branch }}" ]; then
-            BRANCH="${{ github.event.workflow_run.head_branch }}"
-          elif [ -n "${{ github.event.workflow_run.pull_requests[0].head.ref }}" ]; then
-            # Fallback: get branch from PR head ref
-            BRANCH="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
-          else
-            # For push events or manual dispatch, use ref_name
-            BRANCH="${{ github.ref_name }}"
-          fi
+          # Use branch from previous step
+          BRANCH="${{ steps.branch-info.outputs.branch }}"
           
           if [ "$BRANCH" = "main" ]; then
             echo "environment=production" >> $GITHUB_OUTPUT
