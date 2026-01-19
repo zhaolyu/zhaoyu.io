@@ -1,26 +1,60 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import EngineeringNote from './EngineeringNote.svelte';
 	import { notesData } from '$lib/constants/content';
 	import { SectionHeader } from '$lib/components/ui';
+
+	let sectionVisible = $state(false);
+	let notesSection: HTMLElement;
+
+	onMount(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						sectionVisible = true;
+					}
+				});
+			},
+			{
+				threshold: 0.1,
+				rootMargin: '0px 0px -50px 0px'
+			}
+		);
+
+		if (notesSection) {
+			observer.observe(notesSection);
+		}
+
+		return () => {
+			observer.disconnect();
+		};
+	});
 </script>
 
-<section id="notes" class="engineering-notes">
+<section id="notes" class="engineering-notes" bind:this={notesSection}>
 	<SectionHeader
-		badge="Engineering Notes"
-		headline="How I think about <br />"
-		accentText="performance constraints."
+		badge="Digital Garden"
+		headline="Engineering Notes."
+		accentText=""
 	/>
-
-	<div class="notes-container">
-		{#each notesData.notes as note}
-			<EngineeringNote
-				title={note.title}
-				date={note.date}
-				tags={note.tags}
-				content={note.content}
-			/>
-		{/each}
+	<div class="section-description">
+		A collection of architectural decisions, performance constraints, and trade-offs I've encountered in production.
 	</div>
+
+	{#if sectionVisible}
+		<div class="notes-container" transition:fade={{ duration: 600 }}>
+			{#each notesData.notes as note}
+				<EngineeringNote
+					title={note.title}
+					date={note.date}
+					tags={note.tags}
+					content={note.content}
+				/>
+			{/each}
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -31,6 +65,16 @@
 		background: var(--bg-primary);
 		color: var(--text-primary);
 		transition: background-color 0.2s, color 0.2s;
+	}
+
+	.section-description {
+		color: var(--text-secondary);
+		font-size: 1.125rem;
+		line-height: 1.75;
+		font-weight: 300;
+		max-width: 42rem;
+		margin-bottom: 4rem;
+		transition: color 0.2s;
 	}
 
 	.notes-container {
