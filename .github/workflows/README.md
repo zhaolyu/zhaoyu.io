@@ -13,7 +13,7 @@ The project uses two main workflows:
 
 ```
 ┌─────────────────────────────────────────────────┐
-│  Push to main/develop or Open PR                │
+│  Push to any branch or Open PR                  │
 └─────────────────┬───────────────────────────────┘
                   │
                   ▼
@@ -24,7 +24,7 @@ The project uses two main workflows:
 │  │ Check    │  │          │  │          │     │
 │  └──────────┘  └──────────┘  └──────────┘     │
 │  ┌──────────────────────────────────────────┐  │
-│  │ Build (uploads artifacts)                │  │
+│  │ Build (verifies output)                   │  │
 │  └──────────────────────────────────────────┘  │
 └─────────────────┬───────────────────────────────┘
                   │
@@ -33,8 +33,11 @@ The project uses two main workflows:
 ┌─────────────────────────────────────────────────┐
 │  Deploy to Cloudflare Pages                     │
 │  ┌──────────────────────────────────────────┐  │
-│  │ Download build artifacts from CI         │  │
-│  │ (or build locally if artifacts missing)  │  │
+│  │ Check for duplicate deployments          │  │
+│  │ Poll CI status (if push-triggered)       │  │
+│  └──────────────────────────────────────────┘  │
+│  ┌──────────────────────────────────────────┐  │
+│  │ Build directly (no artifacts needed)     │  │
 │  └──────────────────────────────────────────┘  │
 │  ┌──────────────────────────────────────────┐  │
 │  │ Deploy to Cloudflare Pages               │  │
@@ -49,7 +52,7 @@ The project uses two main workflows:
 **File:** `.github/workflows/ci.yml`
 
 **Triggers:**
-- Push to `main` or `develop` branches
+- Push to **all branches** (enables feature branch deployments)
 - Pull requests targeting `main` or `develop`
 - Manual workflow dispatch
 
@@ -60,6 +63,7 @@ The project uses two main workflows:
 All quality checks run in parallel for faster feedback:
 
 1. **Type Check** (`type-check`)
+   - Runs `npm run sync` to generate SvelteKit config
    - Runs `npm run check`
    - Validates TypeScript types and Svelte component syntax
    - Fails the workflow if type errors are found
@@ -77,11 +81,12 @@ All quality checks run in parallel for faster feedback:
 #### Build Job
 
 4. **Build** (`build`)
+   - Runs `npm run sync` to generate SvelteKit config
    - Runs `npm run build`
    - Creates production build in `frontend/build/`
    - Verifies build output exists and contains required files
-   - **Uploads build artifacts** for use by deployment workflow
    - Displays build statistics (size, file count, etc.)
+   - **Note:** Artifacts are no longer uploaded (deployment builds directly)
 
 #### Summary Job
 
@@ -90,22 +95,19 @@ All quality checks run in parallel for faster feedback:
    - Verifies all checks passed
    - Provides final status confirmation
 
-**Artifacts:**
-- Build output is uploaded as `build-output` artifact
-- Retention: 1 day
-- Compression level: 6 (balanced size/speed)
-
 **Performance:**
 - Parallel execution reduces total CI time
 - Typical duration: ~2-3 minutes (longest job determines total time)
+- No artifact upload (saves ~10-15 seconds per run)
 
 ### 2. Deploy to Cloudflare Pages
 
 **File:** `.github/workflows/cloudflare-pages.yml`
 
 **Triggers:**
-- **Automatic:** After CI workflow completes successfully on `main` or `develop`
-- **Manual:** Workflow dispatch (with optional CI check skip)
+- **Primary:** `workflow_run` - After CI workflow completes successfully (all branches)
+- **Fallback:** `push` - Direct push to feature branches (with CI status check)
+- **Manual:** `workflow_dispatch` - Manual trigger (with optional CI check skip)
 
 **Job: Deploy**
 
@@ -121,24 +123,21 @@ All quality checks run in parallel for faster feedback:
 - Cancels in-progress deployments when a new one starts
 - Ensures only the latest commit is deployed
 
-#### Build Artifact Reuse
+#### Build Process
 
-1. **Download Artifacts** (preferred)
-   - Downloads build artifacts from CI workflow
-   - Saves ~2-3 minutes by avoiding rebuild
-   - Uses `actions/download-artifact@v4`
-
-2. **Fallback Build** (if artifacts unavailable)
-   - Builds locally if artifacts can't be downloaded
-   - Useful for manual deployments
-   - Ensures deployment always works
+- **Builds directly** in the deployment workflow
+- No artifact download needed (avoids permission issues)
+- Ensures fresh build for each deployment
+- Includes SvelteKit sync step before building
 
 #### Deployment
 
 - **Production:** Deploys to `main` branch → Production environment
-- **Preview:** Deploys to `develop` or other branches → Preview environment
+- **Preview:** Deploys to feature branches → Preview environment with branch-based URLs
 - Uses Cloudflare Pages action with proper authentication
 - Includes build verification before deployment
+- **Duplicate Prevention:** Checks for existing `workflow_run` deployments before push-triggered deployments
+- **CI Status Polling:** For push events, polls CI status (waits up to 5 minutes) instead of failing immediately
 
 **Environment Variables Required:**
 - `CLOUDFLARE_API_TOKEN` - API token with Pages edit permissions
@@ -152,10 +151,10 @@ All quality checks run in parallel for faster feedback:
 - **After:** Parallel execution (~2-3 minutes)
 - **Benefit:** Faster feedback, especially for PRs
 
-### 2. Build Artifact Reuse
-- **Before:** Rebuilt in deploy workflow (~2-3 minutes)
-- **After:** Reuses CI build artifacts (~30 seconds download)
-- **Benefit:** Faster deployments, consistent builds
+### 2. Direct Build in Deployment
+- **Before:** Downloaded artifacts from CI (permission issues, complexity)
+- **After:** Builds directly in deployment workflow
+- **Benefit:** Simpler workflow, avoids permission issues, ensures fresh builds
 
 ### 3. Quality Checks
 - **Before:** Only type check and build
@@ -172,10 +171,20 @@ All quality checks run in parallel for faster feedback:
 - **After:** One deployment per branch at a time
 - **Benefit:** Prevents conflicts, ensures latest code deploys
 
-### 6. Branch Optimization
-- **Before:** Deployed on every `feature/**` and `dev/**` push
-- **After:** Only deploys `main` and `develop` automatically
-- **Benefit:** Reduces unnecessary deployments and costs
+### 6. Duplicate Deployment Prevention
+- **Before:** Both `workflow_run` and `push` triggers could deploy simultaneously
+- **After:** Checks for existing `workflow_run` deployments before push-triggered deployments
+- **Benefit:** Prevents duplicate deployments, saves compute resources
+
+### 7. CI Status Polling
+- **Before:** Push-triggered deployments failed immediately if CI was still running
+- **After:** Polls CI status for up to 5 minutes, waits for completion
+- **Benefit:** More reliable deployments, handles CI timing variations
+
+### 8. SvelteKit Sync Consistency
+- **Before:** Only test and build jobs ran `npm run sync`
+- **After:** All jobs that need it (type-check, test, build) run sync step
+- **Benefit:** Consistent setup, prevents missing config errors
 
 ## Workflow Status Badges
 
@@ -225,10 +234,11 @@ When manually dispatching, you can skip the CI check:
 
 ### Deployment Fails
 
-**Artifact Download Fails:**
-- Workflow will automatically fall back to local build
-- Check that CI workflow completed successfully
-- Verify artifact retention hasn't expired (1 day)
+**CI Status Check Fails:**
+- For push events, workflow polls CI status for up to 5 minutes
+- If CI is still running after 5 minutes, deployment fails
+- Check CI workflow logs to see why it's taking so long
+- Ensure CI workflow is configured correctly
 
 **Cloudflare Deployment Fails:**
 - Verify `CLOUDFLARE_API_TOKEN` secret is set correctly
@@ -278,7 +288,8 @@ Both workflows use npm cache:
 
 3. **Use feature branches:**
    - Create branches for new features
-   - CI runs on PRs, but deployment only on `main`/`develop`
+   - CI runs on all branches automatically
+   - Feature branches get preview deployments with branch-based URLs
 
 4. **Monitor deployment status:**
    - Check GitHub Actions tab for workflow status
@@ -298,6 +309,18 @@ Both workflows use npm cache:
 
 - `.github/workflows/ci.yml` - CI quality checks and build
 - `.github/workflows/cloudflare-pages.yml` - Deployment workflow
+- `.github/workflows/CLOUDFLARE_SETUP.md` - Cloudflare Pages configuration guide
+
+## Cloudflare Pages Configuration
+
+For feature branch preview deployments to work correctly, verify your Cloudflare Pages settings:
+
+**Quick Check:**
+1. **Production branch:** Set to `main` (Settings → Builds & deployments)
+2. **Preview branch control:** Should allow "All non-production branches" (default)
+3. **Access Policy:** Configure as desired (public or restricted)
+
+**Detailed Guide:** See [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md) for complete configuration instructions.
 
 ## Support
 
