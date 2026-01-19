@@ -242,10 +242,34 @@ jobs:
               // Don't fail the workflow if deployment status creation fails
             }
       
-      - name: Comment Preview URL on PR
+      - name: Extract deployment URLs
         if: |
           steps.deployment.outputs.environment == 'preview' &&
           steps.deploy.outcome == 'success'
+        id: extract-urls
+        run: |
+          echo "Extracting deployment URLs from Cloudflare Pages action..."
+          ATOMIC_URL="${{ steps.deploy.outputs.url }}"
+          ALIAS_URL="${{ steps.deploy.outputs.alias }}"
+          
+          if [ -z "$ATOMIC_URL" ]; then
+            echo "❌ ERROR: Atomic URL is empty!"
+            exit 1
+          fi
+          
+          if [ -n "$ALIAS_URL" ] && [ "$ALIAS_URL" != "$ATOMIC_URL" ]; then
+            echo "preview_url=$ALIAS_URL" >> $GITHUB_OUTPUT
+          else
+            echo "preview_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
+          fi
+          echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
+          echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
+      
+      - name: Comment Preview URL on PR
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.deploy.outcome == 'success' &&
+          steps.extract-urls.outcome == 'success'
         uses: actions/github-script@v7
         with:
           script: |
@@ -304,31 +328,22 @@ jobs:
             
             console.log('✅ Found PR #' + prNumber + ' for branch: ' + branch);
             
-            // Get URLs directly from deploy step outputs
-            const atomicUrl = '${{ steps.deploy.outputs.url }}'.trim();
-            const aliasUrl = '${{ steps.deploy.outputs.alias }}'.trim();
+            // Get URLs from extract-urls step
+            const previewUrl = '${{ steps.extract-urls.outputs.preview_url }}'.trim();
+            const atomicUrl = '${{ steps.extract-urls.outputs.atomic_url }}'.trim();
             
             console.log('Deployment URLs:', {
+              previewUrl: previewUrl || '(empty)',
               atomicUrl: atomicUrl || '(empty)',
-              aliasUrl: aliasUrl || '(empty)',
-              branch: branch,
-              atomicUrlLength: atomicUrl ? atomicUrl.length : 0,
-              aliasUrlLength: aliasUrl ? aliasUrl.length : 0
+              branch: branch
             });
             
-            // Validate URLs - check if they're actually set
-            if (!atomicUrl || atomicUrl === '' || atomicUrl === '${{ steps.deploy.outputs.url }}') {
-              console.error('❌ Atomic URL is empty or not set!');
-              console.error('Deploy output:', atomicUrl);
-              console.error('This usually means the Cloudflare Pages action did not set the output.');
-              console.error('Check the "Deploy to Cloudflare Pages" step logs for errors.');
-              console.error('The deployment may have succeeded but the URL output was not captured.');
+            // Validate URL
+            if (!previewUrl || previewUrl === '' || previewUrl === '${{ steps.extract-urls.outputs.preview_url }}') {
+              console.error('❌ Preview URL is empty or not set!');
+              console.error('Check the "Extract deployment URLs" step logs for details.');
               return;
             }
-            
-            // Use alias URL if available (branch-based preview URL), otherwise use atomic URL
-            // Alias is preferred for preview deployments as it's stable per branch
-            const previewUrl = (aliasUrl && aliasUrl.trim() !== '' && aliasUrl !== atomicUrl) ? aliasUrl : atomicUrl;
             
             console.log('Using preview URL:', previewUrl);
             
@@ -339,8 +354,8 @@ jobs:
             comment += '**Branch:** `' + branch + '`\n';
             comment += '**Preview URL:** ' + urlLink + '\n';
             
-            // Show both URLs if they're different
-            if (aliasUrl && aliasUrl.trim() !== '' && aliasUrl !== atomicUrl) {
+            // Show atomic URL if different from preview URL
+            if (atomicUrl && atomicUrl !== previewUrl) {
               const atomicLink = '[' + atomicUrl + '](' + atomicUrl + ')';
               comment += '**Atomic URL:** ' + atomicLink + ' (specific deployment)\n';
             }
