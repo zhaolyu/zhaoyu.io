@@ -1,7 +1,7 @@
 # GitHub Actions workflow for CI checks and deployment on pull requests
 # 
 # This workflow:
-# - Triggers on pull request creation (opened) and reopening (reopened)
+# - Triggers on pull request creation (opened), reopening (reopened), and new commits (synchronize)
 # - Runs type checking, linting, testing, and build verification in parallel
 # - Deploys to Cloudflare Pages after successful build
 # - Ensures code quality before merging
@@ -18,7 +18,7 @@ name: CI - Quality Checks and Build
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
     # Run CI on PRs targeting any branch (including feature/... branches)
     # Skip CI for documentation and config-only changes
     paths-ignore:
