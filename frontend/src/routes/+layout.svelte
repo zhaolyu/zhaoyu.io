@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '../app.print.css';
 	import { Navbar, TelemetryFooter } from '$lib/components/layout';
 </script>
 

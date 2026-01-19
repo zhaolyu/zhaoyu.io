@@ -19,7 +19,7 @@
 	}
 </script>
 
-<section class="connect-section">
+<section id="connect" class="connect-section">
 	<div class="connect-container">
 		<div class="connect-header">
 			<div class="header-icon">
@@ -106,6 +106,7 @@
 		background: var(--bg-primary);
 		color: var(--text-primary);
 		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+		scroll-margin-top: 5rem;
 	}
 
 	.connect-container {
@@ -158,12 +159,20 @@
 		border: 1px solid var(--border-color);
 		background: var(--bg-secondary);
 		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-		transition: background-color 0.2s, border-color 0.2s;
+		transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+	}
+
+	/* Light mode terminal styles */
+	:global(html:not(.dark)) .terminal-window {
+		background: #f8f9fa;
+		border-color: rgba(0, 0, 0, 0.12);
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
 
 	:global(.dark) .terminal-window {
 		background: #0d0d0d;
 		border-color: rgba(255, 255, 255, 0.1);
+		box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 	}
 
 	.terminal-header {
@@ -176,8 +185,15 @@
 		transition: background-color 0.2s, border-color 0.2s;
 	}
 
+	/* Light mode terminal header */
+	:global(html:not(.dark)) .terminal-header {
+		background: #ffffff;
+		border-bottom-color: rgba(0, 0, 0, 0.12);
+	}
+
 	:global(.dark) .terminal-header {
 		background: rgba(0, 0, 0, 0.3);
+		border-bottom-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.window-controls {
@@ -220,6 +236,19 @@
 		font-family: var(--font-mono);
 		font-size: 0.875rem;
 		line-height: 1.75;
+		background: transparent;
+		transition: background-color 0.2s;
+	}
+
+	/* Light mode terminal content */
+	:global(html:not(.dark)) .terminal-content {
+		background: #f8f9fa;
+		color: var(--text-primary);
+	}
+
+	:global(.dark) .terminal-content {
+		background: #0d0d0d;
+		color: var(--text-primary);
 	}
 
 	.prompt {
@@ -245,6 +274,15 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+	}
+
+	/* Light mode terminal output border */
+	:global(html:not(.dark)) .terminal-output {
+		border-left-color: rgba(59, 130, 246, 0.3);
+	}
+
+	:global(.dark) .terminal-output {
+		border-left-color: rgba(59, 130, 246, 0.4);
 	}
 
 	.output-label {

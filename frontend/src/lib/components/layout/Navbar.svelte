@@ -14,6 +14,7 @@
     { name: '/latency', href: '/#latency' },
     { name: '/manifesto', href: '/#manifesto' },
     { name: '/notes', href: '/#notes' },
+    { name: '/contact', href: '/#connect' },
   ];
 
   const headerClasses = $derived.by(() => {
@@ -116,7 +117,7 @@
       <div class="h-5 w-2 bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-100 animate-pulse"></div>
     </a>
 
-    <nav class="hidden md:flex items-center gap-8">
+    <nav class="hidden md:flex items-center gap-6">
       {#each navLinks as link}
         <a 
           href={link.href} 
