@@ -64,7 +64,16 @@ Use `$state()` for reactive state. Each component should be self-contained with 
 
 ## Theme Support (Light & Dark Mode)
 
-**MANDATORY: All components MUST support both light and dark modes.**
+**MANDATORY: All components MUST support both light and dark modes. This is REQUIRED for ALL code generation.**
+
+### Critical Requirements
+
+- ✅ **ALWAYS use CSS variables** - Never hardcode colors like `bg-white`, `text-black`, `dark:bg-neutral-950`, `dark:text-white`
+- ✅ **Use CSS variables from `app.css`**: `--bg-primary`, `--text-primary`, `--text-secondary`, `--text-muted`, `--border-color`, `--bg-secondary`
+- ✅ **Add transitions**: `transition: background-color 0.2s, color 0.2s, border-color 0.2s`
+- ✅ **Use `:global(.dark)` for theme-specific overrides** only when absolutely necessary
+- ❌ **NEVER hardcode colors** - Always use CSS variables for backgrounds, text, and borders
+- ❌ **NEVER use Tailwind color classes** like `bg-white dark:bg-neutral-950` - Use CSS variables instead
 
 ### Quick Reference
 
@@ -73,7 +82,7 @@ Use `$state()` for reactive state. Each component should be self-contained with 
 - Use `:global(.dark)` for theme-specific overrides when needed
 - Avoid hardcoded colors - prefer CSS variables
 
-### Example
+### Example (CORRECT - Using CSS Variables)
 
 ```svelte
 <style>
@@ -84,8 +93,33 @@ Use `$state()` for reactive state. Each component should be self-contained with 
 		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 	}
 
+	.card:hover {
+		background: var(--bg-secondary);
+	}
+
 	:global(.dark) .card {
-		/* Theme-specific overrides if needed */
+		/* Theme-specific overrides only if absolutely necessary */
+	}
+</style>
+```
+
+### Anti-Pattern (INCORRECT - Hardcoded Colors)
+
+```svelte
+<!-- ❌ DO NOT DO THIS -->
+<div class="bg-white dark:bg-neutral-950 text-black dark:text-white">
+	<!-- This is wrong - always use CSS variables -->
+</div>
+
+<!-- ✅ DO THIS INSTEAD -->
+<div class="card">
+	<!-- Use CSS variables in style block -->
+</div>
+
+<style>
+	.card {
+		background: var(--bg-primary);
+		color: var(--text-primary);
 	}
 </style>
 ```

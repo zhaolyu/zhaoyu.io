@@ -91,7 +91,7 @@ npm run lint:fix
 5. ✅ Lint checks on changed files show zero errors and warnings
 6. ✅ Auto-fix has been run on changed files
 7. ✅ Code follows project conventions
-8. ✅ Theme support implemented (light & dark modes using CSS variables) - for all components
+8. ✅ **MANDATORY: Theme support implemented** - All components MUST support both light and dark modes using CSS variables (`var(--bg-primary)`, `var(--text-primary)`, `var(--border-color)`, etc.). Never hardcode colors - always use CSS variables. Verify both themes work correctly
 9. ✅ No console errors or warnings in browser (if applicable)
 
 **DO NOT mark code as complete until both `npm run test` and `npm run lint` pass successfully.**

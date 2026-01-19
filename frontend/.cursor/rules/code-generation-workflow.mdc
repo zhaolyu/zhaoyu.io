@@ -23,7 +23,7 @@ globs: **/*.ts,**/*.js,**/*.svelte
 - **KISS**: Simple solutions over complex ones
 - **YAGNI**: Build only what's needed now
 - **Separation of Concerns**: Separate data fetching, business logic, and UI
-- **Theme Support**: All components MUST support both light and dark modes using CSS variables
+- **MANDATORY Theme Support**: **ALL components MUST support both light and dark modes using CSS variables** - Never hardcode colors, always use `var(--bg-primary)`, `var(--text-primary)`, `var(--border-color)`, etc. See [component-patterns.mdc](mdc:.cursor/rules/component-patterns.mdc) for examples
 - **Mobile-First Responsive Design**: All components MUST be mobile-first and responsive - see [responsive-design.mdc](mdc:.cursor/rules/responsive-design.mdc)
 
 ## When to Write Tests
@@ -95,7 +95,7 @@ npm run lint:fix  # Auto-fix issues
 
 2. ✅ Design principles applied
 3. ✅ No code duplication (checked utilities first)
-4. ✅ Theme support implemented (light & dark modes using CSS variables)
+4. ✅ **MANDATORY: Theme support implemented** - All components MUST support both light and dark modes using CSS variables (`var(--bg-primary)`, `var(--text-primary)`, `var(--border-color)`, etc.). Never hardcode colors like `bg-white`, `text-black`, `dark:bg-neutral-950` - always use CSS variables
 5. ✅ Responsive design implemented (mobile-first approach)
 6. ✅ **All tests pass** (if applicable) - CI will fail otherwise
 7. ✅ Coverage ≥90% (if tests written)

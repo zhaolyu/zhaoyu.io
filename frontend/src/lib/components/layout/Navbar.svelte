@@ -1,20 +1,42 @@
 <script lang="ts">
   import ThemeToggle from './ThemeToggle.svelte';
+  import { browser } from '$app/environment';
   
   let scrollY = $state(0);
   let isScrolled = $derived(scrollY > 20);
 
   const navLinks = [
-    { name: '/architecture', href: '#work' },
-    { name: '/skills', href: '#skills' },
-    { name: '/notes', href: '#notes' },
+    { name: '/architecture', href: '/#work' },
+    { name: '/skills', href: '/#skills' },
+    { name: '/notes', href: '/#notes' },
   ];
 
+  function handleNavClick(e: MouseEvent, href: string) {
+    if (!browser) return;
+    
+    // Check if it's an anchor link
+    if (href.startsWith('/#')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const targetId = href.substring(2); // Remove '/#'
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Use scrollIntoView which respects scroll-margin-top automatically
+        // The smooth behavior will be slower due to CSS scroll-behavior: smooth
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  }
+
   const headerClasses = $derived.by(() => {
-    const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b';
+    const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b header-nav';
     const scrolledClasses = isScrolled
-      ? 'bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-neutral-200 dark:border-neutral-800 py-3'
-      : 'bg-white dark:bg-neutral-950 border-transparent py-4';
+      ? 'backdrop-blur-md py-3 header-scrolled'
+      : 'border-transparent py-4';
     return `${baseClasses} ${scrolledClasses}`;
   });
 </script>
@@ -35,6 +57,7 @@
       {#each navLinks as link}
         <a 
           href={link.href} 
+          onclick={(e) => handleNavClick(e, link.href)}
           class="text-sm font-mono text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors relative group"
         >
           {link.name}
@@ -70,3 +93,23 @@
     </div>
   </div>
 </header>
+
+<style>
+  .header-nav {
+    background-color: var(--bg-primary);
+    border-color: transparent;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  .header-scrolled {
+    background-color: var(--bg-primary);
+    border-color: var(--border-color);
+    opacity: 0.95;
+  }
+
+  @supports (backdrop-filter: blur(12px)) {
+    .header-scrolled {
+      background-color: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+    }
+  }
+</style>
