@@ -1,11 +1,11 @@
 <script lang="ts">
+  import { slide, fade } from 'svelte/transition';
   import ThemeToggle from './ThemeToggle.svelte';
   import { handleAnchorNavigation, scrollToTop } from '$lib/utils/navigation';
-  
-  import { ANIMATION_CONFIG } from '$lib/constants/config';
+  import { scroll, isScrolled } from '$lib/stores';
 
-  let scrollY = $state(0);
-  let isScrolled = $derived(scrollY > ANIMATION_CONFIG.scrollThreshold.nav);
+  let isMenuOpen = $state(false);
+  let lastScrollY = $state(0);
 
   const navLinks = [
     { name: '/skills', href: '/#skills' },
@@ -17,15 +17,94 @@
   ];
 
   const headerClasses = $derived.by(() => {
-    const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b header-nav';
+    // DIAGNOSTIC: Keep padding constant (py-4) to prevent height changes
+    // Height changes cause browser to adjust scroll position to maintain visual alignment
+    const baseClasses = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b header-nav py-4';
     const scrolledClasses = isScrolled
-      ? 'backdrop-blur-md py-3 header-scrolled'
-      : 'border-transparent py-4';
+      ? 'backdrop-blur-md header-scrolled'
+      : 'border-transparent';
     return `${baseClasses} ${scrolledClasses}`;
   });
+
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+  }
+
+  function closeMenu() {
+    isMenuOpen = false;
+  }
+
+  function handleNavClick(e: MouseEvent, href: string) {
+    handleAnchorNavigation(e, href);
+    closeMenu();
+  }
+
+  function handleOverlayKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      closeMenu();
+    }
+  }
+
+  // Store scroll position when menu opens
+  $effect(() => {
+    if (isMenuOpen) {
+      lastScrollY = $scroll;
+      document.body.style.overflow = 'hidden';
+      // Also prevent scroll on document and html
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+  });
+
+  // Close menu on any scroll change
+  $effect(() => {
+    if (isMenuOpen && Math.abs($scroll - lastScrollY) > 5) {
+      closeMenu();
+    }
+  });
+
+  // Handle wheel events (mouse wheel scrolling)
+  function handleWheel(e: WheelEvent) {
+    if (isMenuOpen) {
+      // Allow scrolling within the menu itself
+      const target = e.target as HTMLElement;
+      const menuElement = target.closest('.mobile-menu');
+      if (!menuElement) {
+        closeMenu();
+      }
+    }
+  }
+
+  // Handle touch scrolling on mobile
+  let touchStartY = 0;
+  function handleTouchStart(e: TouchEvent) {
+    if (isMenuOpen) {
+      touchStartY = e.touches[0].clientY;
+    }
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    if (isMenuOpen) {
+      const target = e.target as HTMLElement;
+      const menuElement = target.closest('.mobile-menu');
+      const touchY = e.touches[0].clientY;
+      const deltaY = Math.abs(touchY - touchStartY);
+      
+      // If scrolling outside the menu or significant scroll detected, close menu
+      if (!menuElement || deltaY > 10) {
+        closeMenu();
+      }
+    }
+  }
 </script>
 
-<svelte:window bind:scrollY />
+<svelte:window 
+  onwheel={handleWheel} 
+  ontouchstart={handleTouchStart}
+  ontouchmove={handleTouchMove} 
+/>
 
 <header class={headerClasses}>
   <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
@@ -65,24 +144,88 @@
 
       <ThemeToggle />
 
-      <!-- Resume link - uncomment when resume.pdf is added to frontend/static/ -->
-      <!--
-      <a 
-        href="/resume.pdf" 
-        class="ml-2 px-3 py-1.5 text-xs font-mono font-medium text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700 rounded bg-neutral-50 dark:bg-neutral-900/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white hover:border-neutral-400 dark:hover:border-neutral-500 transition-all"
-      >
-        RESUME
-      </a>
-      -->
+      <!-- Hamburger Menu Button (Mobile Only) -->
+      {#if !isMenuOpen}
+        <button
+          onclick={toggleMenu}
+          class="md:hidden hamburger-button"
+          aria-label="Toggle menu"
+          aria-expanded={isMenuOpen}
+          type="button"
+        >
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      {/if}
     </div>
   </div>
 </header>
+
+<!-- Mobile Menu Overlay (outside header for proper positioning) -->
+{#if isMenuOpen}
+  <div
+    class="mobile-menu-overlay"
+    role="button"
+    tabindex="-1"
+    onclick={closeMenu}
+    onkeydown={handleOverlayKeydown}
+    transition:fade={{ duration: 200 }}
+  >
+    <div
+      class="mobile-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation menu"
+      tabindex="0"
+      onkeydown={(e) => {
+        if (e.key === 'Escape') {
+          closeMenu();
+        }
+      }}
+      transition:slide={{ axis: 'x', duration: 300 }}
+    >
+      <div class="mobile-menu-header">
+        <span class="font-mono font-bold text-lg mobile-menu-title">Navigation</span>
+        <button
+          onclick={closeMenu}
+          class="mobile-menu-close"
+          aria-label="Close menu"
+          type="button"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      
+      <div class="mobile-menu-links">
+        {#each navLinks as link}
+          <a
+            href={link.href}
+            onclick={(e) => handleNavClick(e, link.href)}
+            class="mobile-menu-link"
+          >
+            <span class="font-mono">{link.name}</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        {/each}
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .header-nav {
     background-color: var(--bg-primary);
     border-color: transparent;
     transition: background-color 0.2s, border-color 0.2s;
+    /* Prevent layout shifts from backdrop-filter */
+    will-change: background-color, border-color;
+    /* Ensure consistent rendering */
+    transform: translateZ(0);
   }
 
   .header-scrolled {
@@ -94,6 +237,145 @@
   @supports (backdrop-filter: blur(12px)) {
     .header-scrolled {
       background-color: color-mix(in srgb, var(--bg-primary) 80%, transparent);
+      /* Use will-change to hint browser about backdrop-filter changes */
+      will-change: backdrop-filter;
+    }
+  }
+
+  /* Hamburger Button */
+  .hamburger-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 60;
+    gap: 5px;
+  }
+
+  .hamburger-line {
+    width: 24px;
+    height: 2px;
+    background-color: var(--text-primary);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 55;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Mobile Menu */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 80%;
+    max-width: 320px;
+    background-color: var(--bg-primary);
+    border-left: 1px solid var(--border-color);
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+
+  :global(.dark) .mobile-menu {
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.2s;
+  }
+
+  .mobile-menu-title {
+    color: var(--text-primary);
+    transition: color 0.2s;
+  }
+
+  .mobile-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    border-radius: 0.5rem;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .mobile-menu-close:hover {
+    background-color: var(--bg-secondary);
+  }
+
+  .mobile-menu-links {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .mobile-menu-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: background-color 0.2s, color 0.2s;
+    border-left: 3px solid transparent;
+    min-height: 44px;
+  }
+
+  .mobile-menu-link:hover,
+  .mobile-menu-link:focus {
+    background-color: var(--bg-secondary);
+    border-left-color: var(--accent-primary);
+    color: var(--text-primary);
+  }
+
+  .mobile-menu-link svg {
+    color: var(--text-muted);
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .mobile-menu-link:hover svg,
+  .mobile-menu-link:focus svg {
+    color: var(--accent-primary);
+    transform: translateX(4px);
+  }
+
+  /* Hide hamburger on desktop */
+  @media (min-width: 768px) {
+    .hamburger-button {
+      display: none;
     }
   }
 </style>

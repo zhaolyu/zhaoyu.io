@@ -9,6 +9,7 @@ Quick lookup guide for common paths, commands, and links to detailed documentati
 - [Development Workflow](DEVELOPMENT_WORKFLOW.md) - Setup and development process
 - [Patterns](PATTERNS.md) - Common code patterns and examples
 - [Testing](TESTING.md) - Testing guide and patterns
+- [Intersection Observer Utilities](INTERSECTION_OBSERVER_UTILITIES.md) - Scroll-triggered visibility and animations
 
 ## Common File Paths
 
