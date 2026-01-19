@@ -1,5 +1,6 @@
 # zhaoyu.io
-My Personal Website Repo
+
+Personal website repository built with SvelteKit, deployed to Cloudflare Pages.
 
 ## Git Configuration
 
@@ -81,3 +82,14 @@ git remote set-url origin https://zhaolyu:YOUR_PERSONAL_PAT@github.com/zhaolyu/z
    ```
 
 **Note:** This method embeds the PAT in the remote URL. For better security, use Option 1 (credential storage) instead, which stores the PAT securely in macOS Keychain.
+
+## Documentation
+
+Project documentation is available in the [`docs/`](docs/) directory:
+
+- [GitHub Authentication](docs/GITHUB_AUTHENTICATION.md) - Multi-account setup, SAML SSO, troubleshooting
+- [Deployment Recommendation](docs/DEPLOYMENT_RECOMMENDATION.md) - Cloudflare Pages deployment guide
+- [Project Summary](docs/PROJECT_SUMMARY.md) - Project overview and status
+- [MCP Browser Diagnostic](docs/MCP_BROWSER_DIAGNOSTIC.md) - Cursor IDE browser integration troubleshooting
+
+For frontend-specific documentation, see [`frontend/docs/`](frontend/docs/).

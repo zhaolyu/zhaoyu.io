@@ -69,7 +69,10 @@ frontend/
 - [Quick Start](docs/QUICK_START.md) - Get started in minutes
 - [Setup Guide](docs/SETUP.md) - Detailed setup and configuration
 - [Architecture](docs/ARCHITECTURE.md) - Project structure and patterns
+- [Deployment](docs/DEPLOYMENT.md) - Cloudflare Pages deployment guide
 - [Comparison](docs/COMPARISON.md) - Astro vs SvelteKit detailed comparison
+
+See the [docs/](docs/) directory for all documentation.
 
 ## Scripts
 
