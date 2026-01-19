@@ -53,7 +53,7 @@ src/
 Before completing any code task:
 1. ✅ Check utilities first (DRY principle)
 2. ✅ Write tests if applicable (90% coverage required)
-3. ✅ Run tests: `npm test`
+3. ✅ Run tests: `npm run test`
 4. ✅ Run lint: `npm run lint` (fix all issues)
 5. ✅ Verify code follows [Coding Conventions](CODING_CONVENTIONS.md)
 6. ✅ Ensure theme support (light & dark modes) using CSS variables
@@ -168,8 +168,7 @@ This `.cursor/` directory contains:
 - **`docs/`** - Human-readable documentation (`.md` files) for developers and AI assistants
 - **`rules/`** - AI agent rules (`.mdc` files) that guide code generation and quality
 - **`commands/`** - Cursor-specific command documentation
-
-**Important**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
+**⚠️ IMPORTANT**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
 - **`.md` files**: Standard Markdown format
 - **`.mdc` files**: Markdown with frontmatter metadata (see `commands/generate-cursor-rules.md`)
 
@@ -177,12 +176,15 @@ This `.cursor/` directory contains:
 
 When updating documentation:
 
-1. Keep it accurate - verify against actual code
-2. Update cross-references if structure changes
-3. Add examples where helpful
-4. Keep formatting consistent
-5. Update this README if adding new documents
-6. For `.mdc` rule files, preserve frontmatter metadata format
+1. **⚠️ MANDATORY**: Always ask for user acceptance before editing any markdown files (`.md` or `.mdc`) - present a summary of changes and wait for approval
+2. Keep it accurate - verify against actual code
+3. Update cross-references if structure changes
+4. Add examples where helpful
+5. Keep formatting consistent
+6. Update this README if adding new documents
+7. For `.mdc` rule files, preserve frontmatter metadata format
+
+See [Documentation Handling Rule](../rules/documentation-handling.mdc) for complete guidelines.
 
 ## Getting Help
 

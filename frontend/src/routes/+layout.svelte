@@ -1,11 +1,15 @@
 <script lang="ts">
 	import '../app.css';
-	import { Navbar } from '$lib/components/layout';
+	import { Navbar, TelemetryFooter } from '$lib/components/layout';
 </script>
 
-<Navbar />
+<div class="layout-wrapper">
+	<Navbar />
 
-<slot />
+	<slot />
+
+	<TelemetryFooter />
+</div>
 
 <style>
 	:global(html),
@@ -16,6 +20,12 @@
 	}
 
 	:global(body) {
-		font-family: system-ui, -apple-system, sans-serif;
+		font-family: var(--font-sans);
+	}
+
+	.layout-wrapper {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
 	}
 </style>

@@ -28,4 +28,11 @@ npm run test || {
   exit 1
 }
 
+# Run build (ensure the project builds successfully)
+echo "🏗️  Running build..."
+npm run build || {
+  echo "❌ Build failed. Please fix build errors before committing."
+  exit 1
+}
+
 echo "✅ All checks passed!"
