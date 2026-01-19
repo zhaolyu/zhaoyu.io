@@ -38,11 +38,11 @@ jobs:
       group: deploy-${{ github.event.workflow_run.head_branch || github.ref_name }}
       cancel-in-progress: true
     # Deployment conditions:
-    # - workflow_run: Only if CI succeeded (regardless of trigger event) - PREFERRED
-    # - push: Only if CI passed (verified in step) - FALLBACK if workflow_run doesn't trigger
+    # - workflow_run: Only if CI succeeded or was skipped (path filtering) - PREFERRED
+    # - push: Only if CI passed or was skipped (verified in step) - FALLBACK if workflow_run doesn't trigger
     # - workflow_dispatch: Always deploy (manual trigger)
     if: |
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_run' && (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'skipped')) ||
       (github.event_name == 'push') ||
       github.event_name == 'workflow_dispatch'
     steps:
@@ -87,12 +87,30 @@ jobs:
               return;
             }
             
-            if (latestRun.conclusion !== 'success') {
-              core.setFailed(`CI workflow failed (${latestRun.conclusion}). Cannot deploy.`);
+            // Handle different workflow conclusions
+            if (latestRun.conclusion === 'success') {
+              console.log('✅ CI workflow passed, proceeding with deployment');
               return;
             }
             
-            console.log('✅ CI workflow passed, proceeding with deployment');
+            if (latestRun.conclusion === 'skipped') {
+              console.log('⏭️  CI workflow was skipped (likely due to path filtering). Proceeding with deployment.');
+              return;
+            }
+            
+            if (latestRun.conclusion === 'cancelled') {
+              core.setFailed('CI workflow was cancelled. Cannot deploy.');
+              return;
+            }
+            
+            // For failures, provide more context
+            if (latestRun.conclusion === 'failure') {
+              core.setFailed(`CI workflow failed. Cannot deploy. Check the CI workflow run: ${latestRun.html_url}`);
+              return;
+            }
+            
+            // Unknown conclusion
+            core.setFailed(`CI workflow has unexpected conclusion: ${latestRun.conclusion}. Cannot deploy.`);
 
       - name: Checkout
         uses: actions/checkout@v4
