@@ -24,6 +24,7 @@ globs: **/*.ts,**/*.js,**/*.svelte
 - **YAGNI**: Build only what's needed now
 - **Separation of Concerns**: Separate data fetching, business logic, and UI
 - **Theme Support**: All components MUST support both light and dark modes using CSS variables
+- **Mobile-First Responsive Design**: All components MUST be mobile-first and responsive - see [responsive-design.mdc](mdc:.cursor/rules/responsive-design.mdc)
 
 ## When to Write Tests
 
@@ -70,7 +71,19 @@ npm run lint:fix  # Auto-fix issues
 - ✅ All code formatted correctly
 - ✅ **Lint MUST pass** - Fix all linting issues before proceeding
 
-### Step 5: Final Verification
+### Step 5: Verify Responsiveness (Recommended for UI Components)
+
+**RECOMMENDED**: When working on UI components or visual changes, verify responsiveness:
+
+1. Check component on mobile viewport (375px width)
+2. Verify desktop layout (≥768px)
+3. Ensure no horizontal scrolling
+4. Test touch interactions where applicable
+5. Check both light and dark themes at all breakpoints
+
+**Note**: This step is recommended but not mandatory for non-visual changes (e.g., API routes, utilities).
+
+### Step 6: Final Verification
 
 **CRITICAL**: Before marking complete, you MUST verify:
 
@@ -83,9 +96,11 @@ npm run lint:fix  # Auto-fix issues
 2. ✅ Design principles applied
 3. ✅ No code duplication (checked utilities first)
 4. ✅ Theme support implemented (light & dark modes using CSS variables)
-5. ✅ **All tests pass** (if applicable) - CI will fail otherwise
-6. ✅ Coverage ≥90% (if tests written)
-7. ✅ **Lint passes with zero errors/warnings** - CI will fail otherwise
+5. ✅ Responsive design implemented (mobile-first approach)
+6. ✅ **All tests pass** (if applicable) - CI will fail otherwise
+7. ✅ Coverage ≥90% (if tests written)
+8. ✅ **Lint passes with zero errors/warnings** - CI will fail otherwise
+9. ✅ Component tested on mobile and desktop viewports (recommended for UI components)
 
 **DO NOT mark code as complete until both `npm run test` and `npm run lint` pass successfully.**
 
@@ -102,12 +117,46 @@ npm run lint:fix      # Auto-fix lint issues
 
 **Remember**: Both `npm run test` and `npm run lint` must pass before marking any code task as complete.
 
+## Frontend Development Workflow
+
+**RECOMMENDED**: When working on UI components or visual changes, check the local dev server:
+
+1. **Start dev server**: `npm run dev` (typically runs on `http://localhost:5173`)
+2. **Verify changes visually** in browser before marking complete
+3. **Use browser DevTools** to test responsive breakpoints:
+   - Mobile: 375px width (iPhone SE)
+   - Desktop: ≥768px width
+4. **Check both themes**: Verify light and dark modes
+5. **Test interactions**: Ensure buttons, links, and interactive elements work correctly
+
+**Note**: This is recommended but not mandatory for all changes. Non-visual changes (e.g., API routes, utilities, tests) may not require visual verification.
+
+## Quick Reference
+
+**MANDATORY FINAL CHECKS** (run these before completing any task):
+
+```bash
+npm run test          # Run tests (MUST pass)
+npm run lint          # Run lint (MUST pass with zero errors)
+npm run test -- --coverage  # Check coverage (≥90% required)
+npm run lint:fix      # Auto-fix lint issues
+```
+
+**RECOMMENDED FOR UI COMPONENTS**:
+
+```bash
+npm run dev           # Start dev server to visually verify frontend changes
+```
+
+**Remember**: Both `npm run test` and `npm run lint` must pass before marking any code task as complete.
+
 ## Related Rules
 
 - [Testing Standards](.cursor/rules/testing.mdc) - Testing requirements
 - [Code Quality](.cursor/rules/code-quality.mdc) - Quality verification
 - [Coding Conventions](.cursor/rules/coding-conventions.mdc) - Code style
 - [Utilities Check](.cursor/rules/utilities.mdc) - DRY principles
+- [Responsive Design](.cursor/rules/responsive-design.mdc) - Mobile-first responsive patterns
 - [Testing Guide](.cursor/docs/TESTING.md) - Testing patterns
 
 ---

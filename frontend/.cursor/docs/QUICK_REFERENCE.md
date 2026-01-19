@@ -95,11 +95,16 @@ For complete code examples and patterns, see:
 
 ### Available CSS Variables
 
+**Theme Variables:**
 - `--bg-primary`, `--bg-secondary`
 - `--text-primary`, `--text-secondary`, `--text-muted`
 - `--border-color`
 
-See [Patterns](PATTERNS.md) for complete theme support examples.
+**Font Variables:**
+- `--font-sans`: Geist Sans (default for all text)
+- `--font-mono`: Geist Mono (for code, badges, etc.)
+
+See [Patterns](PATTERNS.md) for complete theme support and font usage examples.
 
 ## Troubleshooting
 

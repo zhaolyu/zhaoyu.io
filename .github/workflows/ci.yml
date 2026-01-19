@@ -49,25 +49,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Check if this is a merge commit from a PR that already passed CI
-  check-pr-ci:
+  # Check if this is a merge commit (skip CI since PR already passed)
+  check-merge-commit:
     runs-on: ubuntu-latest
-    name: Check PR CI Status
-    timeout-minutes: 2
+    name: Check Merge Commit
+    timeout-minutes: 1
     permissions:
       contents: read
-      pull-requests: read
-      actions: read
-    # Always run, but only check PR status for pushes to main
+    # Always run, but only check for pushes to main
     outputs:
-      pr_passed: ${{ steps.pr-check.outputs.pr_passed || steps.defaults.outputs.pr_passed || 'false' }}
-      should_skip: ${{ steps.pr-check.outputs.should_skip || steps.defaults.outputs.should_skip || 'false' }}
+      is_merge_commit: ${{ steps.check.outputs.is_merge_commit || 'false' }}
     steps:
-      - name: Set default outputs
-        id: defaults
+      - name: Set default output
+        id: check
         run: |
-          echo "pr_passed=false" >> $GITHUB_OUTPUT
-          echo "should_skip=false" >> $GITHUB_OUTPUT
+          echo "is_merge_commit=false" >> $GITHUB_OUTPUT
       
       - name: Checkout
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -75,88 +71,19 @@ jobs:
         with:
           fetch-depth: 2
       
-      - name: Check if merge commit and PR CI status
-        id: pr-check
+      - name: Check if merge commit
+        id: check
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            // Check if this is a merge commit (has 2+ parents)
-            const { data: commit } = await github.rest.repos.getCommit({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: context.sha
-            });
-            
-            const isMergeCommit = commit.parents.length >= 2;
-            console.log(`Commit ${context.sha} has ${commit.parents.length} parent(s)`);
-            
-            if (!isMergeCommit) {
-              console.log('Not a merge commit, CI will run normally');
-              core.setOutput('should_skip', 'false');
-              core.setOutput('pr_passed', 'false');
-              return;
-            }
-            
-            // Find the PR that was merged
-            const { data: prs } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'closed',
-              base: 'main',
-              sort: 'updated',
-              direction: 'desc',
-              per_page: 20
-            });
-            
-            // Find PR that matches this merge commit and was actually merged (not just closed)
-            const mergedPR = prs.find(pr => 
-              pr.merge_commit_sha === context.sha && 
-              pr.merged_at !== null
-            );
-            
-            if (!mergedPR) {
-              console.log('Could not find merged PR for this commit, CI will run normally');
-              core.setOutput('should_skip', 'false');
-              core.setOutput('pr_passed', 'false');
-              return;
-            }
-            
-            console.log(`Found merged PR #${mergedPR.number}: ${mergedPR.title}`);
-            console.log(`PR merged at: ${mergedPR.merged_at}`);
-            
-            // Check workflow runs for the PR (more reliable than checks API)
-            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head_sha: mergedPR.head.sha,
-              per_page: 10
-            });
-            
-            // Find our specific CI workflow run
-            const ciRun = runs.workflow_runs.find(
-              run => run.name === 'CI - Quality Checks and Build'
-            );
-            
-            if (!ciRun) {
-              console.log('⚠️  No CI workflow run found for PR, CI will run normally');
-              core.setOutput('should_skip', 'false');
-              core.setOutput('pr_passed', 'false');
-              return;
-            }
-            
-            console.log(`CI workflow run status: ${ciRun.status}, conclusion: ${ciRun.conclusion}`);
-            
-            // Allow skip if CI passed OR was skipped (due to path filtering)
-            if (ciRun.conclusion === 'success' || ciRun.conclusion === 'skipped') {
-              console.log(`✅ PR CI ${ciRun.conclusion === 'success' ? 'passed' : 'was skipped'}, skipping CI for merge commit`);
-              core.setOutput('should_skip', 'true');
-              core.setOutput('pr_passed', ciRun.conclusion === 'success' ? 'true' : 'false');
-            } else {
-              console.log(`⚠️  PR CI ${ciRun.conclusion || 'status unclear'}, CI will run normally`);
-              core.setOutput('should_skip', 'false');
-              core.setOutput('pr_passed', 'false');
-            }
+        run: |
+          # Check if commit has 2+ parents (merge commit)
+          PARENT_COUNT=$(git rev-list --count ${{ github.sha }}^@ 2>/dev/null || echo "1")
+          if [ "$PARENT_COUNT" -ge 2 ]; then
+            echo "is_merge_commit=true" >> $GITHUB_OUTPUT
+            echo "✅ Detected merge commit - PR already passed CI, skipping CI checks"
+          else
+            echo "is_merge_commit=false" >> $GITHUB_OUTPUT
+            echo "Not a merge commit, CI will run normally"
+          fi
 
   # Branch protection: Prevent direct pushes to main
   branch-protection:
@@ -165,15 +92,15 @@ jobs:
     timeout-minutes: 2
     permissions:
       contents: read
-    needs: check-pr-ci
+    needs: check-merge-commit
     if: always()
-    # Always run, but only fail on direct pushes to main (not merge commits from PRs)
+    # Always run, but only fail on direct pushes to main (not merge commits)
     steps:
       - name: Check for direct push to main
         if: |
           github.event_name == 'push' && 
           github.ref == 'refs/heads/main' && 
-          needs.check-pr-ci.outputs.should_skip != 'true'
+          needs.check-merge-commit.outputs.is_merge_commit != 'true'
         run: |
           echo "❌ ERROR: Direct pushes to 'main' branch are not allowed!"
           echo ""
@@ -192,9 +119,9 @@ jobs:
           echo "  git push origin main"
           exit 1
       - name: Branch protection passed (merge commit)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check-pr-ci.outputs.should_skip == 'true'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.check-merge-commit.outputs.is_merge_commit == 'true'
         run: |
-          echo "✅ Merge commit from PR that passed CI - skipping branch protection check"
+          echo "✅ Merge commit detected - PR already passed CI, skipping branch protection check"
       - name: Branch protection passed
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         run: |
@@ -202,9 +129,9 @@ jobs:
 
   # Parallel quality checks for faster feedback
   type-check:
-    needs: [check-pr-ci, branch-protection]
+    needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-pr-ci.outputs.should_skip != 'true') &&
+      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
@@ -237,9 +164,9 @@ jobs:
         continue-on-error: false
 
   lint:
-    needs: [check-pr-ci, branch-protection]
+    needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-pr-ci.outputs.should_skip != 'true') &&
+      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
@@ -268,9 +195,9 @@ jobs:
         continue-on-error: false
 
   test:
-    needs: [check-pr-ci, branch-protection]
+    needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-pr-ci.outputs.should_skip != 'true') &&
+      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
@@ -303,9 +230,9 @@ jobs:
         continue-on-error: false
 
   build:
-    needs: [check-pr-ci, branch-protection]
+    needs: [check-merge-commit, branch-protection]
     if: |
-      (needs.check-pr-ci.outputs.should_skip != 'true') &&
+      (needs.check-merge-commit.outputs.is_merge_commit != 'true') &&
       (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
       (github.event.pull_request.draft == false || github.event_name != 'pull_request')
     runs-on: ubuntu-latest
@@ -362,14 +289,14 @@ jobs:
     timeout-minutes: 1
     permissions:
       contents: read
-    needs: [check-pr-ci, branch-protection, type-check, lint, test, build]
+    needs: [check-merge-commit, branch-protection, type-check, lint, test, build]
     if: always()
     steps:
-      - name: Check if PR merge commit (skip CI)
-        if: needs.check-pr-ci.outputs.should_skip == 'true'
+      - name: Check if merge commit (skip CI)
+        if: needs.check-merge-commit.outputs.is_merge_commit == 'true'
         run: |
-          echo "✅ Merge commit from PR that already passed CI"
-          echo "⏭️  Skipping CI checks - PR already passed all checks before merge"
+          echo "✅ Merge commit detected - PR already passed CI"
+          echo "⏭️  Skipping CI checks - merge commits don't need re-validation"
           echo "✅ CI workflow marked as successful (bypassed)"
           exit 0
       
