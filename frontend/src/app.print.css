@@ -1,0 +1,242 @@
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+
+@media print {
+	/* Set page margins and size */
+	@page {
+		margin: 0.75in;
+		size: letter;
+	}
+
+	/* 1. Force white backgrounds (saves ink) */
+	:global(body),
+	:global(section),
+	:global(main),
+	:global(div),
+	:global(span),
+	:global(p),
+	:global(h1),
+	:global(h2),
+	:global(h3),
+	:global(h4),
+	:global(h5),
+	:global(h6),
+	:global(code),
+	:global(pre) {
+		background-color: white !important;
+		color: black !important;
+		background-image: none !important; /* Removes gradients */
+	}
+
+	/* Improve typography for print */
+	:global(body) {
+		font-size: 12pt !important;
+		line-height: 1.6 !important;
+	}
+
+	:global(h1) {
+		font-size: 24pt !important;
+		margin-top: 0 !important;
+		margin-bottom: 12pt !important;
+		page-break-after: avoid !important;
+	}
+
+	:global(h2) {
+		font-size: 20pt !important;
+		margin-top: 18pt !important;
+		margin-bottom: 10pt !important;
+		page-break-after: avoid !important;
+	}
+
+	:global(h3) {
+		font-size: 16pt !important;
+		margin-top: 14pt !important;
+		margin-bottom: 8pt !important;
+		page-break-after: avoid !important;
+	}
+
+	:global(p) {
+		margin-bottom: 10pt !important;
+		orphans: 3 !important;
+		widows: 3 !important;
+	}
+
+	/* 2. Fix for terminals & cards */
+	/* Replace dark backgrounds with light borders */
+	:global(.bg-neutral-900),
+	:global(.bg-neutral-950),
+	:global(.bg-black),
+	:global(.terminal-window),
+	:global(.terminal-content),
+	:global(.sim-display) {
+		background-color: white !important;
+		border: 1px solid #ddd !important;
+		box-shadow: none !important;
+		color: black !important;
+	}
+
+	/* 3. Fix code block text colors */
+	/* Ensures code syntax highlighting doesn't disappear on white */
+	:global(span[class*="text-blue"]),
+	:global(span[class*="text-green"]),
+	:global(span[class*="text-red"]),
+	:global(code),
+	:global(pre) {
+		filter: brightness(0.3) !important; /* Darkens colors so they read better on white */
+		color: #333 !important;
+		background-color: #f5f5f5 !important;
+	}
+
+	/* 4. Hide header and navigation */
+	:global(header),
+	:global(.header-nav),
+	:global(nav),
+	:global(.mobile-menu),
+	:global(.mobile-menu-overlay) {
+		display: none !important;
+	}
+
+	/* 5. Hide interactive elements */
+	:global(button),
+	:global(a[href^="javascript"]),
+	:global(footer),
+	:global(.animate-scroll),
+	:global(.experience-ticker),
+	:global(.ticker-container),
+	:global(#latency),
+	:global(.telemetry-footer),
+	:global(.mode-selector),
+	:global(.window-controls),
+	:global(.cursor),
+	:global(.cursor-blink) {
+		display: none !important;
+	}
+
+	/* 6. Hide copy buttons and external links */
+	:global(.terminal-copy-btn),
+	:global(.copy-button-mobile),
+	:global(.external-link-mobile),
+	:global(a[href*="linkedin"] + a) {
+		display: none !important;
+	}
+
+	/* 7. Prevent awkward page breaks */
+	:global(section),
+	:global(.card),
+	:global(.terminal-window),
+	:global(.code-viewer),
+	:global(.engineering-note),
+	:global(.project-card),
+	:global(.skills-container),
+	:global(.career-chart-container) {
+		break-inside: avoid;
+		page-break-inside: avoid;
+		margin-bottom: 18pt !important;
+		page-break-before: auto;
+	}
+
+	/* Keep headings with their content */
+	:global(h1),
+	:global(h2),
+	:global(h3) {
+		page-break-after: avoid !important;
+	}
+
+	:global(h1) + *,
+	:global(h2) + *,
+	:global(h3) + * {
+		page-break-before: avoid !important;
+	}
+
+	/* 8. Clean up links */
+	:global(a) {
+		text-decoration: underline;
+		color: black !important;
+	}
+
+	/* Show URL after external links */
+	:global(a[href^="http"]::after) {
+		content: " (" attr(href) ")";
+		font-size: 0.8em;
+		color: #666;
+	}
+
+	/* 9. Ensure charts and SVGs print cleanly */
+	:global(svg) {
+		filter: invert(1) hue-rotate(180deg); /* Inverts dark mode charts to light mode */
+		max-width: 100% !important;
+		height: auto !important;
+	}
+
+	/* 10. Improve terminal output visibility */
+	:global(.terminal-output),
+	:global(.display-content) {
+		border-left-color: #999 !important;
+		color: #333 !important;
+	}
+
+	:global(.prompt),
+	:global(.output-label) {
+		color: #666 !important;
+	}
+
+	:global(.output-value),
+	:global(.output-link) {
+		color: #000 !important;
+	}
+
+	/* 11. Ensure images print properly */
+	:global(img) {
+		max-width: 100% !important;
+		height: auto !important;
+		page-break-inside: avoid;
+	}
+
+	/* 12. Improve spacing and layout */
+	:global(.main-container),
+	:global(.layout-wrapper) {
+		padding: 0 !important;
+		margin: 0 !important;
+	}
+
+	:global(section) {
+		padding-top: 18pt !important;
+		padding-bottom: 18pt !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		margin-bottom: 24pt !important;
+	}
+
+	/* 13. Ensure proper text colors for print */
+	:global(.text-muted),
+	:global(.text-secondary) {
+		color: #555 !important;
+	}
+
+	:global(.section-title),
+	:global(.note-title),
+	:global(.card-title) {
+		color: #000 !important;
+	}
+
+	/* 14. Add "Printed From" footer */
+	:global(body::after) {
+		content: "View the live interactive portfolio at https://zhaoyu.io";
+		display: block;
+		text-align: center;
+		font-family: monospace;
+		font-size: 9pt;
+		margin-top: 24pt;
+		padding-top: 12pt;
+		border-top: 1px solid #ddd;
+		color: #666;
+		page-break-inside: avoid;
+	}
+
+	/* 15. Remove animations and transitions */
+	* {
+		animation: none !important;
+		transition: none !important;
+	}
+}

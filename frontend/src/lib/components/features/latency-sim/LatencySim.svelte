@@ -292,8 +292,46 @@
 		color: var(--text-secondary);
 		height: 100%;
 		overflow-y: auto;
+		overflow-x: hidden;
 		padding-top: 2.5rem;
 		padding-right: 5rem;
+	}
+
+	/* Terminal-style scrollbar for display content */
+	.display-content::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	/* Light mode scrollbar */
+	:global(html:not(.dark)) .display-content::-webkit-scrollbar-track {
+		background: rgba(241, 245, 249, 0.5);
+		border-radius: 4px;
+	}
+
+	:global(html:not(.dark)) .display-content::-webkit-scrollbar-thumb {
+		background-color: #cbd5e1;
+		border-radius: 4px;
+		border: 1px solid rgba(241, 245, 249, 0.5);
+	}
+
+	:global(html:not(.dark)) .display-content::-webkit-scrollbar-thumb:hover {
+		background-color: #94a3b8;
+	}
+
+	/* Dark mode scrollbar */
+	:global(.dark) .display-content::-webkit-scrollbar-track {
+		background: rgba(10, 10, 10, 0.5);
+		border-radius: 4px;
+	}
+
+	:global(.dark) .display-content::-webkit-scrollbar-thumb {
+		background-color: #262626;
+		border-radius: 4px;
+		border: 1px solid rgba(10, 10, 10, 0.5);
+	}
+
+	:global(.dark) .display-content::-webkit-scrollbar-thumb:hover {
+		background-color: #404040;
 	}
 
 	.display-text {
