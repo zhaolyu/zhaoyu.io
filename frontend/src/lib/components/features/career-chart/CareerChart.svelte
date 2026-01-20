@@ -24,31 +24,16 @@
 	const pathD = `M ${history.map((h, i) => `${getX(i)},${getY(h.impact)}`).join(' L ')}`;
 	const areaD = `${pathD} L ${width - padding},${height} L ${padding},${height} Z`;
 
+	function triggerAnimation() {
+		sectionVisible = true;
+		animationKey++; // Increment key to force remount and re-trigger transition
+	}
+
 	onMount(() => {
-		// Use createSectionObserver with enableReanimation to track when scrolling out
-		// This allows us to reset sectionVisible when scrolled past, ensuring clean remount
-		let hasScrolledPast = false;
-		
 		return createSectionObserver(chartContainer, {
 			enableReanimation: true,
 			onVisible: () => {
-				// If we scrolled past, reset and remount to trigger animation
-				if (hasScrolledPast) {
-					sectionVisible = false;
-					animationKey++;
-					// Use setTimeout to ensure unmount happens before remount
-					setTimeout(() => {
-						sectionVisible = true;
-					}, 0);
-				} else {
-					// First time - just set visible and increment key
-					sectionVisible = true;
-					animationKey++;
-				}
-				hasScrolledPast = false;
-			},
-			onScrolledPast: () => {
-				hasScrolledPast = true;
+				triggerAnimation();
 			},
 			threshold: 0.2
 		});
@@ -98,7 +83,7 @@
 							stroke-width="3"
 							stroke-linecap="round"
 							class="chart-line"
-							in:draw={{ duration: 2000, easing: cubicOut }}
+							in:draw={{ duration: 4000, easing: cubicOut }}
 						/>
 					{/key}
 				{/if}
@@ -163,7 +148,7 @@
 <style>
 	.career-chart-section {
 		padding: 6rem 1.5rem;
-		padding-bottom: 10rem;
+		padding-bottom: 3rem;
 		background: var(--bg-primary);
 		border-bottom: 1px solid var(--border-color);
 		color: var(--text-primary);
@@ -213,10 +198,14 @@
 	}
 
 	@media (min-width: 768px) {
+		.career-chart-section {
+			margin-bottom: 1rem;
+		}
+
 		.chart-wrapper {
 			height: auto;
 			aspect-ratio: 2.5 / 1;
-			margin-bottom: 5rem;
+			margin-bottom: 3rem;
 		}
 	}
 
