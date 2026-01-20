@@ -82,8 +82,8 @@ export const projectsData: ProjectsData = {
 				'Architected the complete migration of CNBC.com from a legacy monolith to a distributed custom isomorphic React app. The goal: handle millions of concurrent users during market-moving events with zero downtime.',
 			tags: ['Custom Isomorphic React', 'Edge Computing', 'High Scale', 'Performance'],
 			metrics: [
-				{ label: 'Core Web Vitals', value: '100' },
-				{ label: 'Latency', value: '-40%' }
+				{ label: 'LCP (TOP 1%)', value: '1.1s' },
+				{ label: 'EDGE TTFB', value: '300ms' }
 			],
 			image: 'migration-ui',
 			diagram: 'migration-arch'
