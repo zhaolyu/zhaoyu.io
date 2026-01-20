@@ -24,31 +24,16 @@
 	const pathD = `M ${history.map((h, i) => `${getX(i)},${getY(h.impact)}`).join(' L ')}`;
 	const areaD = `${pathD} L ${width - padding},${height} L ${padding},${height} Z`;
 
+	function triggerAnimation() {
+		sectionVisible = true;
+		animationKey++; // Increment key to force remount and re-trigger transition
+	}
+
 	onMount(() => {
-		// Use createSectionObserver with enableReanimation to track when scrolling out
-		// This allows us to reset sectionVisible when scrolled past, ensuring clean remount
-		let hasScrolledPast = false;
-		
 		return createSectionObserver(chartContainer, {
 			enableReanimation: true,
 			onVisible: () => {
-				// If we scrolled past, reset and remount to trigger animation
-				if (hasScrolledPast) {
-					sectionVisible = false;
-					animationKey++;
-					// Use setTimeout to ensure unmount happens before remount
-					setTimeout(() => {
-						sectionVisible = true;
-					}, 0);
-				} else {
-					// First time - just set visible and increment key
-					sectionVisible = true;
-					animationKey++;
-				}
-				hasScrolledPast = false;
-			},
-			onScrolledPast: () => {
-				hasScrolledPast = true;
+				triggerAnimation();
 			},
 			threshold: 0.2
 		});
@@ -74,22 +59,21 @@
 				{/each}
 			</div>
 			
-			<svg viewBox="0 0 {width} {height + labelHeight}" preserveAspectRatio="xMidYMin meet" class="chart-svg" class:visible={sectionVisible}>
-				<defs>
-					<linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-						<stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.2" />
-						<stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0" />
-					</linearGradient>
-				</defs>
+			{#if sectionVisible}
+				<svg viewBox="0 0 {width} {height + labelHeight}" preserveAspectRatio="xMidYMin meet" class="chart-svg">
+					<defs>
+						<linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+							<stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.2" />
+							<stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0" />
+						</linearGradient>
+					</defs>
 
-				<path 
-					d={areaD} 
-					fill="url(#chartGradient)" 
-					class="chart-area"
-					class:visible={sectionVisible}
-				/>
+					<path 
+						d={areaD} 
+						fill="url(#chartGradient)" 
+						class="chart-area"
+					/>
 
-				{#if sectionVisible}
 					{#key animationKey}
 						<path
 							d={pathD}
@@ -98,64 +82,64 @@
 							stroke-width="3"
 							stroke-linecap="round"
 							class="chart-line"
-							in:draw={{ duration: 2000, easing: cubicOut }}
+							in:draw={{ duration: 4000, easing: cubicOut }}
 						/>
 					{/key}
-				{/if}
 
-				{#each history as point, i}
-					{@const tooltipX = getX(i) - 75}
-					{@const tooltipY = getY(point.impact) - 80}
-					<g class="point-group" class:visible={sectionVisible}>
-						<circle
-							cx={getX(i)}
-							cy={getY(point.impact)}
-							r="6"
-							class="chart-point"
-							style="animation-delay: {1000 + i * 100}ms;"
-						/>
+					{#each history as point, i}
+						{@const tooltipX = getX(i) - 75}
+						{@const tooltipY = getY(point.impact) - 80}
+						<g class="point-group">
+							<circle
+								cx={getX(i)}
+								cy={getY(point.impact)}
+								r="6"
+								class="chart-point"
+								style="animation-delay: {1000 + i * 100}ms;"
+							/>
 
-						<text
-							x={getX(i)}
-							y={height - padding + 18}
-							class="year-label"
-							text-anchor="middle"
-							style="animation-delay: {1000 + i * 100}ms;"
-						>
-							{point.year}
-						</text>
+							<text
+								x={getX(i)}
+								y={height - padding + 18}
+								class="year-label"
+								text-anchor="middle"
+								style="animation-delay: {1000 + i * 100}ms;"
+							>
+								{point.year}
+							</text>
 
-						<text
-							x={getX(i)}
-							y={height - padding + 32}
-							class="role-label"
-							text-anchor="middle"
-							style="animation-delay: {1200 + i * 100}ms;"
-						>
-							{point.role}
-						</text>
+							<text
+								x={getX(i)}
+								y={height - padding + 32}
+								class="role-label"
+								text-anchor="middle"
+								style="animation-delay: {1200 + i * 100}ms;"
+							>
+								{point.role}
+							</text>
 
-						<foreignObject
-							x={Math.max(padding - 75, Math.min(tooltipX, width - padding - 75))}
-							y={Math.max(padding - 80, Math.min(tooltipY, height - padding - 10))}
-							width="150"
-							height="70"
-							class="point-tooltip"
-						>
-							<div class="tooltip-content">
-								<div class="flex flex-col items-center text-center">
-									<span class="text-[10px] sm:text-xs font-bold tooltip-year-text">
-										{point.year}
-									</span>
-									<span class="hidden md:block text-[10px] font-mono tooltip-title-text mt-1 uppercase tracking-wider">
-										{point.role}
-									</span>
+							<foreignObject
+								x={Math.max(padding - 75, Math.min(tooltipX, width - padding - 75))}
+								y={Math.max(padding - 80, Math.min(tooltipY, height - padding - 10))}
+								width="150"
+								height="70"
+								class="point-tooltip"
+							>
+								<div class="tooltip-content">
+									<div class="flex flex-col items-center text-center">
+										<span class="text-[10px] sm:text-xs font-bold tooltip-year-text">
+											{point.year}
+										</span>
+										<span class="hidden md:block text-[10px] font-mono tooltip-title-text mt-1 uppercase tracking-wider">
+											{point.role}
+										</span>
+									</div>
 								</div>
-							</div>
-						</foreignObject>
-					</g>
-				{/each}
-			</svg>
+							</foreignObject>
+						</g>
+					{/each}
+				</svg>
+			{/if}
 		</div>
 	</div>
 </section>
@@ -163,7 +147,7 @@
 <style>
 	.career-chart-section {
 		padding: 6rem 1.5rem;
-		padding-bottom: 10rem;
+		padding-bottom: 3rem;
 		background: var(--bg-primary);
 		border-bottom: 1px solid var(--border-color);
 		color: var(--text-primary);
@@ -213,10 +197,14 @@
 	}
 
 	@media (min-width: 768px) {
+		.career-chart-section {
+			margin-bottom: 1rem;
+		}
+
 		.chart-wrapper {
 			height: auto;
 			aspect-ratio: 2.5 / 1;
-			margin-bottom: 5rem;
+			margin-bottom: 3rem;
 		}
 	}
 
@@ -241,12 +229,8 @@
 	}
 
 	.chart-area {
-		opacity: 0;
-		transition: opacity 1s 0.5s;
-	}
-
-	.chart-area.visible {
 		opacity: 1;
+		transition: opacity 1s 0.5s;
 	}
 
 	.chart-line {
@@ -261,11 +245,6 @@
 
 	.point-group {
 		cursor: crosshair;
-		opacity: 0;
-		transition: opacity 0.3s;
-	}
-
-	.point-group.visible {
 		opacity: 1;
 	}
 

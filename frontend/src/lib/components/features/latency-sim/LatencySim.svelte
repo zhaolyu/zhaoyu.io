@@ -10,7 +10,7 @@
 	let displayContent: HTMLElement;
 
 	const fullText =
-		'The architecture uses a decoupled React state buffer. Instead of triggering a reconciliation cycle for every single token (which creates jank), we buffer incoming chunks in a Ref and flush to the DOM using requestAnimationFrame. This ensures the UI thread remains unblocked.';
+		'The architecture uses a decoupled React state buffer. Instead of triggering a reconciliation cycle for every single token (which creates jank), we buffer incoming chunks in a Ref and flush to the DOM using requestAnimationFrame. This ensures the UI thread remains unblocked. The key insight is that token streaming from LLM APIs can arrive at rates exceeding 20 tokens per second, each potentially triggering a full React reconciliation pass. By batching these updates and synchronizing them with the browser\'s rendering pipeline, we maintain a consistent 60 FPS experience. The buffer accumulates tokens synchronously as they arrive, then the RAF callback processes multiple tokens per frame, amortizing the render cost across the available frame budget. This approach transforms a stuttering, janky interface into a smooth, responsive user experience that feels instant even when processing hundreds of tokens.';
 	const words = fullText.split(' ');
 
 	// Auto-scroll to bottom as text streams

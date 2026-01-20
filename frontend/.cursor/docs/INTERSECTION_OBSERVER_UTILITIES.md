@@ -263,7 +263,10 @@ interface SectionObserverOptions extends IntersectionObserverOptions {
 </script>
 ```
 
-**Example 2: SVG Animation with Counter Key Pattern**
+**Example 2: SVG Animation with Counter Key Pattern (Recommended)**
+
+This is the recommended pattern used by `CareerChart.svelte` and `Skills.svelte`:
+
 ```svelte
 <script>
   import { createSectionObserver } from '$lib/utils/section-observer';
@@ -273,28 +276,16 @@ interface SectionObserverOptions extends IntersectionObserverOptions {
   let animationKey = $state(0); // Counter for forcing transition re-trigger
   let container: HTMLElement;
   
+  function triggerAnimation() {
+    sectionVisible = true;
+    animationKey++; // Increment key to force remount and re-trigger transition
+  }
+  
   onMount(() => {
-    let hasScrolledPast = false;
-    
     return createSectionObserver(container, {
       enableReanimation: true,
       onVisible: () => {
-        if (hasScrolledPast) {
-          // Reset and remount to trigger animation
-          sectionVisible = false;
-          animationKey++;
-          setTimeout(() => {
-            sectionVisible = true;
-          }, 0);
-        } else {
-          // First time
-          sectionVisible = true;
-          animationKey++;
-        }
-        hasScrolledPast = false;
-      },
-      onScrolledPast: () => {
-        hasScrolledPast = true;
+        triggerAnimation();
       },
       threshold: 0.2
     });
@@ -306,12 +297,18 @@ interface SectionObserverOptions extends IntersectionObserverOptions {
     {#key animationKey}
       <path
         d={pathD}
-        in:draw={{ duration: 2000 }}
+        in:draw={{ duration: 4000 }}
       />
     {/key}
   {/if}
 </section>
 ```
+
+**Key Points:**
+- Use `createSectionObserver` with `enableReanimation: true`
+- Create a `triggerAnimation()` function that sets visibility and increments the key
+- The utility handles scroll-past detection internally - no manual state tracking needed
+- The `{#key}` block forces remount when the key changes, re-triggering transitions
 
 **Used by:**
 - `CareerChart.svelte` - SVG path animation
@@ -321,6 +318,8 @@ interface SectionObserverOptions extends IntersectionObserverOptions {
 ---
 
 ## Common Patterns
+
+> **Note:** The patterns below are based on production code from `CareerChart.svelte` and `Skills.svelte`. Use these as reference implementations for consistent reanimation behavior.
 
 ### Pattern 1: Simple Show/Hide
 
@@ -345,85 +344,104 @@ interface SectionObserverOptions extends IntersectionObserverOptions {
 </div>
 ```
 
-### Pattern 2: SVG Animation Re-trigger
+### Pattern 2: SVG Animation Re-trigger (Recommended)
+
+**Used by:** `CareerChart.svelte`, `Skills.svelte`
 
 ```svelte
 <script>
   import { createSectionObserver } from '$lib/utils/section-observer';
+  import { draw } from 'svelte/transition';
   
-  let visible = $state(false);
-  let key = $state(0);
-  let element: HTMLElement;
+  let sectionVisible = $state(false);
+  let animationKey = $state(0);
+  let container: HTMLElement;
+  
+  function triggerAnimation() {
+    sectionVisible = true;
+    animationKey++; // Increment key to force remount and re-trigger transition
+  }
   
   onMount(() => {
-    let scrolledPast = false;
-    
-    return createSectionObserver(element, {
+    return createSectionObserver(container, {
       enableReanimation: true,
       onVisible: () => {
-        if (scrolledPast) {
-          visible = false;
-          key++;
-          setTimeout(() => visible = true, 0);
-        } else {
-          visible = true;
-          key++;
-        }
-        scrolledPast = false;
+        triggerAnimation();
       },
-      onScrolledPast: () => {
-        scrolledPast = true;
-      }
+      threshold: 0.2
     });
   });
 </script>
 
-<div bind:this={element}>
-  {#if visible}
-    {#key key}
+<section bind:this={container}>
+  {#if sectionVisible}
+    {#key animationKey}
       <svg>
-        <path in:draw={{ duration: 2000 }} />
+        <path in:draw={{ duration: 4000 }} />
       </svg>
     {/key}
   {/if}
-</div>
+</section>
 ```
 
-### Pattern 3: Progress Animation
+**Why this pattern:**
+- Simple and clean - no manual scroll-past tracking
+- The utility handles all reanimation logic internally
+- Works for both scroll down and scroll up scenarios
+- Consistent with production components
+
+### Pattern 3: Progress Animation with Tweened
+
+**Used by:** `Skills.svelte`
 
 ```svelte
 <script>
   import { createSectionObserver } from '$lib/utils/section-observer';
   import { tweened } from 'svelte/motion';
+  import { cubicOut } from 'svelte/easing';
   
-  let visible = $state(false);
-  let key = $state(0);
-  let progress = tweened(0);
-  let element: HTMLElement;
+  let sectionVisible = $state(false);
+  let animationKey = $state(0);
+  let container: HTMLElement;
+  
+  const progress = tweened(0, {
+    duration: 3000,
+    easing: cubicOut
+  });
   
   function triggerAnimation() {
-    visible = true;
-    key++;
-    progress.set(0);
-    setTimeout(() => progress.set(1), 100);
+    sectionVisible = true;
+    animationKey++; // Increment key to force remount and re-trigger transitions
+    progress.set(0); // Reset progress
+    setTimeout(() => {
+      progress.set(1); // Animate to completion
+    }, 100);
   }
   
   onMount(() => {
-    return createSectionObserver(element, {
+    return createSectionObserver(container, {
       enableReanimation: true,
-      onVisible: triggerAnimation
+      onVisible: () => {
+        triggerAnimation();
+      },
+      threshold: 0.1
     });
   });
 </script>
 
-<div bind:this={element}>
-  {#if visible}
-    {#key key}
+<section bind:this={container}>
+  {#if sectionVisible}
+    {#key animationKey}
       <div style="width: {$progress * 100}%">Progress</div>
     {/key}
   {/if}
-</div>
+</section>
 ```
+
+**Key Points:**
+- Reset tweened values in `triggerAnimation()` before animating
+- Use `setTimeout` to ensure reset completes before starting animation
+- Same pattern as SVG animations - simple and consistent
 
 ---
 
@@ -454,18 +472,21 @@ scrollPastThreshold: 200 // pixels
 2. **Use counter keys for transition re-triggering**
    ```svelte
    let animationKey = $state(0);
-   // In onVisible: animationKey++
+   
+   function triggerAnimation() {
+     sectionVisible = true;
+     animationKey++; // Increment key to force remount
+   }
+   
    {#key animationKey}
      <element in:transition />
    {/key}
    ```
 
-3. **Reset state when scrolled past for clean reanimation**
-   ```typescript
-   onScrolledPast: () => {
-     sectionVisible = false;
-   }
-   ```
+3. **Use `triggerAnimation()` function pattern**
+   - Keep animation logic in a dedicated function
+   - Set visibility, increment key, reset animation state
+   - Let the utility handle scroll-past detection - no manual tracking needed
 
 4. **Choose the right utility**
    - Simple show/hide → `observeSection`
@@ -484,14 +505,33 @@ scrollPastThreshold: 200 // pixels
 
 **Problem:** SVG or transition doesn't re-animate when scrolling back into view.
 
-**Solution:** Use counter key pattern:
+**Solution:** Use the recommended pattern with `triggerAnimation()`:
 ```svelte
-let key = $state(0);
-onVisible: () => { key++; }
-{#key key}
-  <element in:transition />
-{/key}
+let sectionVisible = $state(false);
+let animationKey = $state(0);
+
+function triggerAnimation() {
+  sectionVisible = true;
+  animationKey++; // Force remount
+}
+
+onMount(() => {
+  return createSectionObserver(container, {
+    enableReanimation: true,
+    onVisible: () => triggerAnimation()
+  });
+});
+
+{#if sectionVisible}
+  {#key animationKey}
+    <element in:transition />
+  {/key}
+{/if}
 ```
+
+**Reference implementations:**
+- `CareerChart.svelte` - SVG path animation
+- `Skills.svelte` - SVG polygon with tweened progress
 
 ### Layout shifts on scroll
 
