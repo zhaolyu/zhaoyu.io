@@ -212,6 +212,7 @@ export interface CodeStandard {
 	title: string;
 	bad: string;
 	good: string;
+	note: string;
 }
 
 export interface CodeStandards {
@@ -235,27 +236,67 @@ const searchParams = useSearchParams();
 const filter = searchParams.get('filter') ?? 'all';
 
 // The UI is just a reflection of the URL
-const data = useQuery(['items', filter]);`
+const data = useQuery(['items', filter]);`,
+			note: "If the user can't share the state via a URL, the state shouldn't exist."
 		},
 		dry: {
 			key: 'dry',
 			title: 'WET > DRY', // Write Everything Twice > Don't Repeat Yourself
-			bad: `// ❌ The Wrong Abstraction
-// This component does too much
-<Button 
-  variant="primary" 
-  hasIcon={true} 
-  isLoading={loading} 
-  isLink={false} 
-  onClick={submit} 
-/>`,
-			good: `// ✅ Composition > Configuration
-// Decoupled, explicit, and easy to delete
-<button class="btn-primary">
-  {#if loading}<Spinner />{/if}
-  <Icon name="save" />
-  <span>Submit</span>
-</button>`
+			bad: `// ❌ The "Universal" Button
+// Starts simple, eventually handles 50 edge cases
+const Button = ({ 
+  isPrimary, isSecondary, isLink, isLoading, 
+  hasIcon, iconPos, ...props 
+}) => {
+  if (isLink) return <a ... />;
+  return (
+    <button className={isPrimary ? 'red' : 'blue'}>
+       {isLoading ? <Spinner /> : props.children}
+    </button>
+  );
+}`,
+			good: `// ✅ Decoupled & Composable
+// Duplication is cheaper than the wrong abstraction.
+
+const PrimaryButton = ({ children, ...props }) => (
+  <button className="bg-blue-500 text-white" {...props}>
+    {children}
+  </button>
+);
+
+const LinkButton = ({ href, children }) => (
+  <a href={href} className="text-blue-500 underline">
+    {children}
+  </a>
+);`,
+			note: 'The wrong abstraction is far more expensive to fix than a little duplication.'
+		},
+		server: {
+			key: 'server',
+			title: 'SERVER > CLIENT',
+			bad: `// ❌ The Network Waterfall
+// The user stares at a spinner while JS loads, 
+// then executes, then fetches.
+function Dashboard() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/user').then(setUser);
+  }, []);
+
+  if (!user) return <Spinner />;
+  return <Profile user={user} />;
+}`,
+			good: `// ✅ Zero-Bundle Data Access
+// Data is ready before the HTML even hits the browser.
+
+export default async function Dashboard() {
+  const user = await db.user.findFirst();
+
+  return <Profile user={user} />;
+}
+// No useEffect. No spinners. No client JS.`,
+			note: 'Shift the heavy lifting to the server. Send HTML, not JSON.'
 		}
 	}
 };

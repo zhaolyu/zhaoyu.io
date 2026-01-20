@@ -7,17 +7,16 @@
 	const standardKeys = Object.keys(standards);
 
 	const getNote = (tab: string): string => {
-		if (tab === 'state') {
-			return 'If the user can\'t share the state via a URL, the state shouldn\'t exist.';
-		}
-		return 'Premature optimization is the root of all evil. Premature abstraction is the root of all coupling.';
+		return standards[tab]?.note || '';
 	};
 
 	const getFileName = (tab: string): string => {
-		if (tab === 'state') {
-			return 'single-source-of-truth.ts';
-		}
-		return 'avoid-hasty-abstractions.tsx';
+		const fileMap: Record<string, string> = {
+			state: 'single-source-of-truth.ts',
+			dry: 'avoid-hasty-abstractions.tsx',
+			server: 'edge-first-architecture.ts'
+		};
+		return fileMap[tab] || 'philosophy.ts';
 	};
 </script>
 
