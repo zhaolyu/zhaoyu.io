@@ -1,11 +1,16 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
 		badge: string;
-		headline: string;
+		/** Plain text headline. For line breaks or styled spans, use the children snippet instead. */
+		headline?: string;
 		accentText?: string;
+		/** Snippet for custom headline markup — use instead of headline when you need <br> or inline styles. */
+		children?: Snippet;
 	}
 
-	let { badge, headline, accentText }: Props = $props();
+	let { badge, headline, accentText, children }: Props = $props();
 </script>
 
 <div class="section-header">
@@ -14,29 +19,33 @@
 		<h2 class="badge-text">{badge}</h2>
 	</div>
 	<h3 class="section-headline">
-		{@html headline}
-		{#if accentText}
-			<span class="headline-accent">{accentText}</span>
+		{#if children}
+			{@render children()}
+		{:else}
+			{headline ?? ''}
+			{#if accentText}
+				<span class="headline-accent">{accentText}</span>
+			{/if}
 		{/if}
 	</h3>
 </div>
 
 <style>
 	.section-header {
-		margin-bottom: 4rem;
+		margin-bottom: var(--space-8, 3rem);
 	}
 
 	@media (max-width: 768px) {
 		.section-header {
-			margin-bottom: 3rem;
+			margin-bottom: var(--space-6, 2rem);
 		}
 	}
 
 	.header-badge {
 		display: flex;
 		align-items: center;
-		gap: 1rem;
-		margin-bottom: 1.5rem;
+		gap: var(--space-4, 1rem);
+		margin-bottom: var(--space-5, 1.5rem);
 	}
 
 	.badge-line {
@@ -64,8 +73,5 @@
 		transition: color 0.2s;
 	}
 
-	.headline-accent {
-		color: var(--text-muted);
-		transition: color 0.2s;
-	}
+	/* .headline-accent is defined globally in app.css — accessible in snippet slots */
 </style>
