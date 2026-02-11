@@ -34,14 +34,43 @@
 	--accent-primary-20: rgba(59, 130, 246, 0.2);
 	--accent-primary-30: rgba(59, 130, 246, 0.3);
 
+	/* Secondary Accent — Purple (used for "goal/target" states in charts) */
+	--accent-secondary: #a855f7;
+	--accent-secondary-light: #c084fc;
+
+	/* Chart-specific surface tokens */
+	--chart-grid: #d1d5db;      /* Light mode: gray-300 — visible on white */
+	--chart-dot-fill: #ffffff;  /* Dot center — white on light, overridden in dark */
+	--chart-label: #9ca3af;     /* Light mode: gray-400 */
+
 	/* Status Colors */
 	--status-success: #10b981;
 	--status-warning: #fbbf24;
 	--status-error: #ef4444;
 
-	/* Typography */
-	--font-sans: "Geist Sans", system-ui, -apple-system, sans-serif;
-	--font-mono: "Geist Mono", "Courier New", monospace;
+	/* ==========================================================================
+	   Spacing Scale
+	   Base unit: 4px (0.25rem). Named for intent, not pixel value.
+	   Use these for section padding, gaps, and layout rhythm.
+	   ========================================================================== */
+	--space-1:  0.25rem;   /*  4px — icon nudges, fine-grained alignment */
+	--space-2:  0.5rem;    /*  8px — tight internal padding (badge, tag) */
+	--space-3:  0.75rem;   /* 12px — compact gaps (ticker item margin) */
+	--space-4:  1rem;      /* 16px — base unit: inline padding, small gaps */
+	--space-5:  1.5rem;    /* 24px — component internal spacing */
+	--space-6:  2rem;      /* 32px — card/panel padding */
+	--space-8:  3rem;      /* 48px — section header bottom margin */
+	--space-10: 4rem;      /* 64px — navbar scroll-margin, mid section padding */
+	--space-12: 6rem;      /* 96px — standard section vertical padding */
+	--space-16: 8rem;      /* 128px — generous section padding (work section) */
+
+	/* Scrollbar tokens — used by both WebKit and Firefox paths */
+	--scrollbar-track-light: #f1f5f9;
+	--scrollbar-thumb-light: #cbd5e1;
+	--scrollbar-thumb-light-hover: #94a3b8;
+	--scrollbar-track-dark: #0a0a0a;
+	--scrollbar-thumb-dark: #262626;
+	--scrollbar-thumb-dark-hover: #404040;
 }
 
 .dark {
@@ -51,6 +80,11 @@
 	--text-secondary: #d1d5db;
 	--text-muted: #9ca3af;
 	--border-color: rgba(255, 255, 255, 0.1);
+
+	/* Chart tokens — dark mode: grid stays dark, dot becomes dark bg */
+	--chart-grid: #404040;
+	--chart-dot-fill: #111827;
+	--chart-label: #737373;
 }
 
 /* ==========================================================================
@@ -58,9 +92,8 @@
    ========================================================================== */
 
 :global(html) {
-	/* DIAGNOSTIC: Disabled smooth scroll to test if it's causing jumping */
+	/* Smooth scroll disabled: browser adjusts scroll position on height changes (e.g. navbar). */
 	scroll-behavior: auto;
-	/* scroll-behavior: smooth; */
 }
 
 :global(body) {
@@ -98,43 +131,43 @@
 
 /* Light mode scrollbar */
 :global(html:not(.dark)) ::-webkit-scrollbar-track {
-	background: #f1f5f9; /* Light gray track */
+	background: var(--scrollbar-track-light);
 }
 
 :global(html:not(.dark)) ::-webkit-scrollbar-thumb {
-	background-color: #cbd5e1; /* Medium gray thumb */
-	border: 2px solid #f1f5f9; /* Creates padding effect */
-	border-radius: 999px; /* Pill shape */
+	background-color: var(--scrollbar-thumb-light);
+	border: 2px solid var(--scrollbar-track-light);
+	border-radius: 999px;
 }
 
 :global(html:not(.dark)) ::-webkit-scrollbar-thumb:hover {
-	background-color: #94a3b8; /* Darker gray on hover */
+	background-color: var(--scrollbar-thumb-light-hover);
 }
 
 /* Dark mode scrollbar */
 :global(.dark) ::-webkit-scrollbar-track {
-	background: #0a0a0a; /* Matches bg-neutral-950 */
+	background: var(--scrollbar-track-dark);
 }
 
 :global(.dark) ::-webkit-scrollbar-thumb {
-	background-color: #262626; /* Matches bg-neutral-800 */
-	border: 2px solid #0a0a0a; /* Creates padding effect */
-	border-radius: 999px; /* Pill shape */
+	background-color: var(--scrollbar-thumb-dark);
+	border: 2px solid var(--scrollbar-track-dark);
+	border-radius: 999px;
 }
 
 :global(.dark) ::-webkit-scrollbar-thumb:hover {
-	background-color: #404040; /* Lighter grey on hover */
+	background-color: var(--scrollbar-thumb-dark-hover);
 }
 
 /* --- Firefox Scrollbar Support --- */
 :global(html:not(.dark)) {
 	scrollbar-width: thin;
-	scrollbar-color: #cbd5e1 #f1f5f9;
+	scrollbar-color: var(--scrollbar-thumb-light) var(--scrollbar-track-light);
 }
 
 :global(html.dark) {
 	scrollbar-width: thin;
-	scrollbar-color: #262626 #0a0a0a;
+	scrollbar-color: var(--scrollbar-thumb-dark) var(--scrollbar-track-dark);
 }
 
 /* ==========================================================================
@@ -152,4 +185,64 @@
 :global(.dark) ::selection {
 	background-color: rgba(59, 130, 246, 0.2); /* Blue-500 at 20% opacity */
 	color: #60a5fa; /* Blue-400 text */
+}
+
+/* ==========================================================================
+   Focus Visible — Keyboard Navigation
+   Only shows on keyboard nav (not mouse clicks) via :focus-visible.
+   Uses accent-primary ring so it's on-brand and unmissable.
+   ========================================================================== */
+
+:global(:focus-visible) {
+	outline: 2px solid var(--accent-primary);
+	outline-offset: 3px;
+	border-radius: 4px;
+}
+
+/* Tighter ring for inline elements (links inside prose) */
+:global(a:focus-visible) {
+	outline-offset: 2px;
+}
+
+/* Remove default outline — we own the focus style entirely */
+:global(:focus:not(:focus-visible)) {
+	outline: none;
+}
+
+/* ==========================================================================
+   Shared Layout Utilities
+   Patterns repeated across every section component.
+   Use these classes instead of re-declaring the same properties.
+   ========================================================================== */
+
+/* Standard section surface — bg + border-bottom + theme transitions */
+:global(.section-surface) {
+	background-color: var(--bg-primary);
+	border-bottom: 1px solid var(--border-color);
+	color: var(--text-primary);
+	transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* Standard section padding rhythm */
+:global(.section-padding) {
+	padding: var(--space-12) var(--space-6);
+}
+
+@media (max-width: 767px) {
+	:global(.section-padding) {
+		padding: var(--space-10) var(--space-5);
+	}
+}
+
+/* Centered max-width container */
+:global(.section-container) {
+	max-width: 75rem; /* 1200px */
+	margin: 0 auto;
+	width: 100%;
+}
+
+/* Muted accent text for section headlines — used inside SectionHeader snippet slots */
+:global(.headline-accent) {
+	color: var(--text-muted);
+	transition: color 0.2s;
 }

@@ -156,7 +156,7 @@
 		padding: 6rem 2rem;
 		background: var(--bg-primary);
 		transition: background-color 0.2s;
-		border-bottom: 1px solid var(--border-color, #262626);
+		border-bottom: 1px solid var(--border-color);
 	}
 
 	.skills-container {
@@ -240,7 +240,7 @@
 	}
 
 	.highlight-purple {
-		color: #c084fc;
+		color: var(--accent-secondary-light);
 	}
 
 	.highlight-text {
@@ -318,14 +318,14 @@
 	}
 
 	.chart-max {
-		fill: rgba(20, 20, 20, 0.5);
-		stroke: #404040;
+		fill: var(--bg-secondary);
+		stroke: var(--chart-grid);
 		stroke-width: 1;
 	}
 
 	.chart-mid {
 		fill: transparent;
-		stroke: #404040;
+		stroke: var(--chart-grid);
 		stroke-width: 1;
 		stroke-dasharray: 4, 4;
 		opacity: 0.5;
@@ -339,20 +339,20 @@
 
 	.chart-goal {
 		fill: transparent;
-		stroke: #a855f7;
+		stroke: var(--accent-secondary);
 		stroke-width: 2;
 		stroke-dasharray: 4, 4;
 		opacity: 0.8;
 	}
 
 	.chart-dot {
-		fill: #ffffff;
-		stroke: #3b82f6;
+		fill: var(--chart-dot-fill);
+		stroke: var(--accent-primary);
 		stroke-width: 1px;
 	}
 
 	.chart-label {
-		fill: #737373;
+		fill: var(--chart-label);
 		font-size: 10px;
 		font-family: var(--font-mono);
 		text-transform: uppercase;
@@ -388,7 +388,7 @@
 	}
 
 	.legend-goal {
-		border: 1px dashed #a855f7;
+		border: 1px dashed var(--accent-secondary);
 		background: transparent;
 	}
 
@@ -397,7 +397,7 @@
 	}
 
 	.legend-item:last-child .legend-text {
-		color: #c084fc;
+		color: var(--accent-secondary-light);
 	}
 
 	@media (min-width: 768px) {
