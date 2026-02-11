@@ -21,11 +21,10 @@
 </script>
 
 <section id="work" class="work-section" bind:this={workSection}>
-	<SectionHeader
-		badge="Selected Architecture"
-		headline="Systems that handle the <br />"
-		accentText="pulse of the market."
-	/>
+	<SectionHeader badge="Selected Architecture">
+		Systems that handle the<br />
+		<span class="headline-accent">pulse of the market.</span>
+	</SectionHeader>
 
 	{#if sectionVisible}
 		<div class="projects-container" transition:fade={{ duration: 600 }}>
