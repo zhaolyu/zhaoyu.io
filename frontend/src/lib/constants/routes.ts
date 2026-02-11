@@ -7,7 +7,8 @@ export const ROUTES = {
 	ABOUT: '/about',
 	BLOG: '/blog',
 	API_DEMO: '/api-demo',
-	COMPARISON: '/comparison'
+	COMPARISON: '/comparison',
+	AI_MANIFESTO: '/ai-manifesto'
 } as const;
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
