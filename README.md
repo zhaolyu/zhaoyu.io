@@ -87,9 +87,17 @@ git remote set-url origin https://zhaolyu:YOUR_PERSONAL_PAT@github.com/zhaolyu/z
 
 Project documentation is available in the [`docs/`](docs/) directory:
 
+### Infrastructure & Features
+- **[Cost-Guard Integration](docs/cost-guard/)** - PGlite + ElectricSQL infrastructure cost dashboard
+
+### Technical Guides
 - [GitHub Authentication](docs/GITHUB_AUTHENTICATION.md) - Multi-account setup, SAML SSO, troubleshooting
 - [Deployment Recommendation](docs/DEPLOYMENT_RECOMMENDATION.md) - Cloudflare Pages deployment guide
-- [Project Summary](docs/PROJECT_SUMMARY.md) - Project overview and status
 - [MCP Browser Diagnostic](docs/MCP_BROWSER_DIAGNOSTIC.md) - Cursor IDE browser integration troubleshooting
+
+### Architecture
+- [ANTIGRAVITY.md](docs/ANTIGRAVITY.md) - Architecture philosophy
+- [CLAUDE.md](CLAUDE.md) - Principal Architect Framework (coding standards)
+- [Project Summary](docs/PROJECT_SUMMARY.md) - Project overview and status
 
 For frontend-specific documentation, see [`frontend/docs/`](frontend/docs/).
