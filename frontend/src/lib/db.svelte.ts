@@ -1,7 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { electricSync } from '@electric-sql/pglite-sync';
 import { browser } from '$app/environment';
-import { ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
+import { ELECTRIC_API_SECRET, ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
 
 export class CostDB {
 	#db = $state<PGlite | null>(null);
@@ -25,13 +25,19 @@ export class CostDB {
 
 		await Promise.all([
 			pg.electric.syncShapeToTable({
-				shape: { url: shapeUrl, params: { table: 'cost_snapshots' } },
+				shape: {
+					url: shapeUrl,
+					params: { table: 'cost_snapshots', api_secret: ELECTRIC_API_SECRET }
+				},
 				table: 'cost_snapshots',
 				primaryKey: ['id'],
 				shapeKey: 'cost_snapshots'
 			}),
 			pg.electric.syncShapeToTable({
-				shape: { url: shapeUrl, params: { table: 'cost_items' } },
+				shape: {
+					url: shapeUrl,
+					params: { table: 'cost_items', api_secret: ELECTRIC_API_SECRET }
+				},
 				table: 'cost_items',
 				primaryKey: ['id'],
 				shapeKey: 'cost_items'
