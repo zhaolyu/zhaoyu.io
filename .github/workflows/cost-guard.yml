@@ -1,0 +1,58 @@
+name: Cost Guard - Report Infrastructure Costs
+
+on:
+  push:
+    branches: [main, infra-page]
+
+concurrency:
+  group: cost-guard-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  report-costs:
+    runs-on: ubuntu-latest
+    name: Send Cost Snapshot
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Send cost snapshot to Cost-Guard
+        env:
+          COST_GUARD_SECRET: ${{ secrets.COST_GUARD_SECRET }}
+          INGESTION_URL: https://ingestion-api-240dd81-538316597788.us-central1.run.app/v1/ingest
+        run: |
+          BODY=$(cat <<EOF
+          {
+            "org_id": "4915feab-e474-439a-823f-9f2b914ca447",
+            "project_id": "zhaoyu-io",
+            "commit_hash": "${{ github.sha }}",
+            "total_monthly_estimate": 0,
+            "costs": []
+          }
+          EOF
+          )
+          # Compact the JSON (remove whitespace)
+          BODY=$(echo "$BODY" | jq -c .)
+
+          # Generate HMAC-SHA256 signature
+          SIGNATURE="sha256=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "$COST_GUARD_SECRET" | cut -d' ' -f2)"
+
+          # Send to ingestion API
+          HTTP_STATUS=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -X POST "$INGESTION_URL" \
+            -H "Content-Type: application/json" \
+            -H "X-Hub-Signature-256: $SIGNATURE" \
+            -d "$BODY")
+
+          echo "HTTP Status: $HTTP_STATUS"
+          cat /tmp/response.json
+
+          if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+            echo "::error::Cost-Guard ingestion failed with status $HTTP_STATUS"
+            exit 1
+          fi
+
+          echo "✅ Cost snapshot sent successfully"

@@ -1,0 +1,10 @@
+# Agent and AI tooling
+.agent/
+.claude/worktrees/
+
+# Documentation (local reference only)
+docs/
+
+# OS files
+.DS_Store
+Thumbs.db

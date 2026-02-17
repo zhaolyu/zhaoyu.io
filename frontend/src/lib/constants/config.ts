@@ -28,3 +28,11 @@ export const ANIMATION_CONFIG = {
 		min: 44 // pixels - minimum touch target size
 	}
 } as const;
+
+/**
+ * Cost-Guard ElectricSQL sync configuration
+ */
+export const ELECTRIC_SYNC_URL =
+	'https://electric-sync-604f87f-538316597788.us-central1.run.app';
+
+export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard';
