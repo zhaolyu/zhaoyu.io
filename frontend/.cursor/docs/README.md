@@ -51,12 +51,14 @@ src/
 ### Workflow Checklist
 
 Before completing any code task:
+
 1. ✅ Check utilities first (DRY principle)
 2. ✅ Write tests if applicable (90% coverage required)
 3. ✅ Run tests: `npm run test`
 4. ✅ Run lint: `npm run lint` (fix all issues)
 5. ✅ Verify code follows [Coding Conventions](CODING_CONVENTIONS.md)
 6. ✅ Ensure theme support (light & dark modes) using CSS variables
+
 ---
 
 ## Documentation Index
@@ -64,6 +66,7 @@ Before completing any code task:
 ### [File Organization](FILE_ORGANIZATION.md)
 
 Directory structure and organization patterns:
+
 - Complete directory tree
 - Purpose of each directory
 - File naming conventions
@@ -76,6 +79,7 @@ Directory structure and organization patterns:
 ### [Coding Conventions](CODING_CONVENTIONS.md)
 
 Code style and conventions:
+
 - ESLint configuration and rules
 - Prettier formatting rules
 - TypeScript conventions
@@ -89,6 +93,7 @@ Code style and conventions:
 ### [Development Workflow](DEVELOPMENT_WORKFLOW.md)
 
 Setup and development process:
+
 - Prerequisites and installation
 - Environment configuration
 - Running the development server
@@ -101,6 +106,7 @@ Setup and development process:
 ### [Patterns](PATTERNS.md)
 
 Common code patterns and practices:
+
 - Svelte component pattern
 - Store pattern
 - Data fetching patterns
@@ -113,6 +119,7 @@ Common code patterns and practices:
 ### [Testing](TESTING.md)
 
 Comprehensive testing guide:
+
 - Test framework setup (Vitest, Svelte Testing Library)
 - Test file conventions and organization
 - Testing patterns for components, utilities, and stores
@@ -124,6 +131,7 @@ Comprehensive testing guide:
 ### [Quick Reference](QUICK_REFERENCE.md)
 
 Quick lookup guide:
+
 - Common file paths
 - Development commands
 - Links to detailed documentation
@@ -133,6 +141,7 @@ Quick lookup guide:
 ### [Intersection Observer Utilities](INTERSECTION_OBSERVER_UTILITIES.md)
 
 Comprehensive guide to scroll-triggered visibility and animation utilities:
+
 - Core utilities (`intersection-core.ts`)
 - Section observers (`section-observer.ts`)
 - When to use which utility
@@ -177,10 +186,11 @@ This documentation follows these principles:
 ## About This Directory (`.cursor/`)
 
 This `.cursor/` directory contains:
+
 - **`docs/`** - Human-readable documentation (`.md` files) for developers and AI assistants
 - **`rules/`** - AI agent rules (`.mdc` files) that guide code generation and quality
 - **`commands/`** - Cursor-specific command documentation
-**⚠️ IMPORTANT**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
+  **⚠️ IMPORTANT**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
 - **`.md` files**: Standard Markdown format
 - **`.mdc` files**: Markdown with frontmatter metadata (see `commands/generate-cursor-rules.md`)
 

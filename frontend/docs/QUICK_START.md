@@ -90,7 +90,7 @@ Change the port in `vite.config.js`:
 
 ```javascript
 server: {
-  port: 3000  // Change to available port
+  port: 3000; // Change to available port
 }
 ```
 

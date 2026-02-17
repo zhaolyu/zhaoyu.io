@@ -13,24 +13,25 @@ Quick lookup guide for common paths, commands, and links to detailed documentati
 
 ## Common File Paths
 
-| Path | Purpose |
-|------|---------|
-| `src/routes/` | File-based routing (pages) |
-| `src/lib/components/` | Reusable components |
-| `src/routes/+layout.svelte` | Root layout component |
-| `src/app.css` | Global styles |
-| `static/` | Static public assets |
-| `src/lib/utils/` | Utility functions |
-| `src/lib/stores/` | Svelte stores |
-| `src/lib/services/` | API clients and services |
-| `src/lib/types/` | TypeScript type definitions |
-| `src/lib/constants/` | Shared constants |
+| Path                        | Purpose                     |
+| --------------------------- | --------------------------- |
+| `src/routes/`               | File-based routing (pages)  |
+| `src/lib/components/`       | Reusable components         |
+| `src/routes/+layout.svelte` | Root layout component       |
+| `src/app.css`               | Global styles               |
+| `static/`                   | Static public assets        |
+| `src/lib/utils/`            | Utility functions           |
+| `src/lib/stores/`           | Svelte stores               |
+| `src/lib/services/`         | API clients and services    |
+| `src/lib/types/`            | TypeScript type definitions |
+| `src/lib/constants/`        | Shared constants            |
 
 See [File Organization](FILE_ORGANIZATION.md) for complete directory structure and navigation guide.
 
 ## Development Commands
 
 ### Development
+
 ```bash
 npm run dev          # Start development server
 npm run build        # Build for production
@@ -38,6 +39,7 @@ npm run preview      # Preview production build
 ```
 
 ### Code Quality
+
 ```bash
 npm run check        # Run type check
 npm run lint         # Run lint (MANDATORY - must pass before completing code)
@@ -46,6 +48,7 @@ npm run format       # Format code
 ```
 
 ### Testing
+
 ```bash
 npm run test         # Run tests (MANDATORY - must pass before completing code)
 npm run test:watch   # Run tests in watch mode
@@ -59,10 +62,10 @@ See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for detailed setup and workf
 
 ## File-Based Routing
 
-| File | Route |
-|------|-------|
-| `src/routes/+page.svelte` | `/` |
-| `src/routes/about/+page.svelte` | `/about` |
+| File                                  | Route          |
+| ------------------------------------- | -------------- |
+| `src/routes/+page.svelte`             | `/`            |
+| `src/routes/about/+page.svelte`       | `/about`       |
 | `src/routes/blog/[slug]/+page.svelte` | `/blog/[slug]` |
 
 See [File Organization](FILE_ORGANIZATION.md) for complete routing information.
@@ -70,6 +73,7 @@ See [File Organization](FILE_ORGANIZATION.md) for complete routing information.
 ## Common Patterns
 
 For complete code examples and patterns, see:
+
 - [Patterns](PATTERNS.md) - Svelte components, stores, data fetching, layouts, styling, API routes
 - [Coding Conventions](CODING_CONVENTIONS.md) - Component structure, naming, imports
 
@@ -88,20 +92,23 @@ For complete code examples and patterns, see:
 
 ```svelte
 <style>
-	.component {
-		background: var(--bg-primary);
-		color: var(--text-primary);
-		border: 1px solid var(--border-color);
-		transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-	}
+  .component {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
 
-	.component:hover {
-		background: var(--bg-secondary);
-	}
+  .component:hover {
+    background: var(--bg-secondary);
+  }
 
-	:global(.dark) .component {
-		/* Theme-specific overrides only if absolutely necessary */
-	}
+  :global(.dark) .component {
+    /* Theme-specific overrides only if absolutely necessary */
+  }
 </style>
 ```
 
@@ -109,31 +116,29 @@ For complete code examples and patterns, see:
 
 ```svelte
 <!-- ❌ WRONG: Hardcoded colors -->
-<div class="bg-white dark:bg-neutral-950 text-black dark:text-white">
-	Content
-</div>
+<div class="bg-white dark:bg-neutral-950 text-black dark:text-white">Content</div>
 
 <!-- ✅ CORRECT: CSS variables -->
-<div class="component">
-	Content
-</div>
+<div class="component">Content</div>
 
 <style>
-	.component {
-		background: var(--bg-primary);
-		color: var(--text-primary);
-	}
+  .component {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
 </style>
 ```
 
 ### Available CSS Variables
 
 **Theme Variables:**
+
 - `--bg-primary`, `--bg-secondary`
 - `--text-primary`, `--text-secondary`, `--text-muted`
 - `--border-color`
 
 **Font Variables:**
+
 - `--font-sans`: Geist Sans (default for all text)
 - `--font-mono`: Geist Mono (for code, badges, etc.)
 
@@ -142,18 +147,22 @@ See [Patterns](PATTERNS.md) for complete theme support and font usage examples.
 ## Troubleshooting
 
 ### Port Already in Use
+
 ```bash
 npm run dev -- --port 3000
 ```
 
 ### Build Errors
+
 1. Check TypeScript: `npm run check`
 2. Check lint: `npm run lint` (must pass)
 3. Check tests: `npm run test` (must pass)
 4. Review error messages
 
 ### Before Completing Code
+
 **MANDATORY**: Run these commands and ensure both pass:
+
 ```bash
 npm run test  # Must pass
 npm run lint  # Must pass with zero errors
