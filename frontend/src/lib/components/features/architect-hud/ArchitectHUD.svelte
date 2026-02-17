@@ -3,75 +3,100 @@
   import { fade } from 'svelte/transition';
 </script>
 
-<aside class="hud-panel" in:fade>
-  <div class="flex items-center gap-2 mb-3">
-    <div class="pulse-indicator" class:live={hud.status === 'live'}></div>
-    <span class="mono">SYSTEM_STATUS: {hud.status.toUpperCase()}</span>
-  </div>
-
-  <div class="grid grid-cols-3 gap-4 mb-3">
-    <div>
-      <span class="hud-label">QUERY_LATENCY</span>
-      <span class="mono">{hud.latency}ms</span>
+<aside class="hud-strip" in:fade>
+  <div class="hud-row">
+    <div class="hud-cell">
+      <span class="hud-label">STATUS</span>
+      <span class="hud-value hud-status">
+        <span class="pulse-dot" class:live={hud.status === 'live'}></span>
+        {hud.status.toUpperCase()}
+      </span>
     </div>
-    <div>
-      <span class="hud-label">LOCAL_DB_SIZE</span>
-      <span class="mono">{hud.dbSize}</span>
+    <div class="hud-cell">
+      <span class="hud-label">LATENCY</span>
+      <span class="hud-value">{hud.latency}ms</span>
     </div>
-    <div>
-      <span class="hud-label">LAST_WAL_FLUSH</span>
-      <span class="mono">{hud.lastSyncAt?.toLocaleTimeString() ?? 'NEVER'}</span>
+    <div class="hud-cell">
+      <span class="hud-label">LOCAL DB</span>
+      <span class="hud-value">{hud.dbSize}</span>
     </div>
-  </div>
-
-  <div class="flex items-center gap-1 pt-2 border-t border-[#00ff41]/20">
-    <span class="cursor">_</span>
-    <span class="mono">REPLICATING_VIA_ELECTRIC_SYNC...</span>
+    <div class="hud-cell">
+      <span class="hud-label">LAST SYNC</span>
+      <span class="hud-value">{hud.lastSyncAt?.toLocaleTimeString() ?? '—'}</span>
+    </div>
+    <div class="hud-cell hud-trailing">
+      <span class="hud-label">SYNC</span>
+      <span class="hud-value">ELECTRIC</span>
+    </div>
   </div>
 </aside>
 
 <style>
-  .hud-panel {
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    border-radius: 4px;
-    color: #00ff41;
-    font-family: 'Fira Code', ui-monospace, monospace;
+  .hud-strip {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono);
     font-size: 0.75rem;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+
+  .hud-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .hud-cell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .hud-trailing {
+    margin-left: auto;
   }
 
   .hud-label {
-    display: block;
-    font-size: 0.65rem;
-    color: rgba(0, 255, 65, 0.6);
+    font-size: 0.6rem;
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
   }
 
-  .mono {
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  /* Values: text-primary for readability — accent reserved for status indicator */
+  .hud-value {
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
   }
 
-  .pulse-indicator {
-    width: 8px;
-    height: 8px;
-    background: #666;
+  /* Status cell gets the accent — it's the one value that means something at a glance */
+  .hud-status {
+    color: var(--accent-infra);
+  }
+
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--text-muted);
     border-radius: 50%;
-    display: inline-block;
     flex-shrink: 0;
   }
 
-  .pulse-indicator.live {
-    background: #00ff41;
-    box-shadow: 0 0 8px #00ff41;
+  .pulse-dot.live {
+    background: var(--accent-infra);
+    box-shadow: 0 0 6px var(--accent-infra-20);
     animation: pulse 2s infinite;
-  }
-
-  .cursor {
-    animation: blink 1s step-end infinite;
   }
 
   @keyframes pulse {
@@ -80,17 +105,17 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.3;
+      opacity: 0.4;
     }
   }
 
-  @keyframes blink {
-    0%,
-    100% {
-      opacity: 1;
+  @media (max-width: 640px) {
+    .hud-row {
+      gap: var(--space-4);
     }
-    50% {
-      opacity: 0;
+
+    .hud-trailing {
+      margin-left: 0;
     }
   }
 </style>
