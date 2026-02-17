@@ -1,7 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { electricSync } from '@electric-sql/pglite-sync';
 import { browser } from '$app/environment';
-import { ELECTRIC_API_SECRET, ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
+import { ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
 
 export class CostDB {
   #db = $state<PGlite | null>(null);
@@ -55,7 +55,7 @@ export class CostDB {
           cost_snapshots: {
             shape: {
               url: shapeUrl,
-              params: { table: 'cost_snapshots', secret: ELECTRIC_API_SECRET },
+              params: { table: 'cost_snapshots' },
             },
             table: 'cost_snapshots',
             primaryKey: ['id'],
@@ -63,7 +63,7 @@ export class CostDB {
           cost_items: {
             shape: {
               url: shapeUrl,
-              params: { table: 'cost_items', secret: ELECTRIC_API_SECRET },
+              params: { table: 'cost_items' },
             },
             table: 'cost_items',
             primaryKey: ['id'],
