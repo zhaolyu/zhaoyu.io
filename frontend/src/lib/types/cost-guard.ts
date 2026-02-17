@@ -3,6 +3,7 @@ export interface CostSnapshot {
   org_id: string;
   project_id: string;
   commit_hash: string | null;
+  source: string | null;
   total_monthly_estimate: number;
   created_at: string;
 }

@@ -1,7 +1,7 @@
 import { PGlite } from '@electric-sql/pglite';
 import { electricSync } from '@electric-sql/pglite-sync';
 import { browser } from '$app/environment';
-import { ELECTRIC_API_SECRET, ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
+import { ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
 
 export class CostDB {
   #db = $state<PGlite | null>(null);
@@ -30,6 +30,7 @@ export class CostDB {
 					org_id TEXT NOT NULL,
 					project_id TEXT NOT NULL,
 					commit_hash TEXT,
+					source TEXT,
 					total_monthly_estimate NUMERIC NOT NULL DEFAULT 0,
 					created_at TEXT NOT NULL
 				);
@@ -44,7 +45,7 @@ export class CostDB {
 				);
 			`);
 
-      const shapeUrl = `${ELECTRIC_SYNC_URL}/v1/shape`;
+      const shapeUrl = `${ELECTRIC_SYNC_URL}/electric/v1/shape`;
 
       // Set db immediately so components can render loading state
       this.#db = pg;
@@ -55,7 +56,7 @@ export class CostDB {
           cost_snapshots: {
             shape: {
               url: shapeUrl,
-              params: { table: 'cost_snapshots', secret: ELECTRIC_API_SECRET },
+              params: { table: 'cost_snapshots' },
             },
             table: 'cost_snapshots',
             primaryKey: ['id'],
@@ -63,7 +64,7 @@ export class CostDB {
           cost_items: {
             shape: {
               url: shapeUrl,
-              params: { table: 'cost_items', secret: ELECTRIC_API_SECRET },
+              params: { table: 'cost_items' },
             },
             table: 'cost_items',
             primaryKey: ['id'],
@@ -73,6 +74,12 @@ export class CostDB {
           this.#isSynced = true;
         },
         onError: (err) => {
+          // Stale shape handle (409) — wipe IDB and retry once
+          if (err.message.includes('409') && !this.#retried) {
+            this.#retried = true;
+            pg.close().then(() => this.#wipeAndRetry());
+            return;
+          }
           this.#error = err.message;
         },
       });
@@ -92,17 +99,24 @@ export class CostDB {
       // Corrupted IDB — wipe and retry once
       if (msg.includes('Invalid FS bundle size') && !this.#retried) {
         this.#retried = true;
-        const dbs = await indexedDB.databases();
-        for (const db of dbs) {
-          if (db.name?.startsWith('zhaoyu-cost-guard')) {
-            indexedDB.deleteDatabase(db.name);
-          }
-        }
-        return this.init();
+        return this.#wipeAndRetry();
       }
 
       this.#error = msg;
     }
+  }
+
+  async #wipeAndRetry(): Promise<void> {
+    this.#db = null;
+    this.#isSynced = false;
+    this.#error = null;
+    const dbs = await indexedDB.databases();
+    for (const db of dbs) {
+      if (db.name?.startsWith('zhaoyu-cost-guard')) {
+        indexedDB.deleteDatabase(db.name);
+      }
+    }
+    return this.init();
   }
 
   get instance() {
