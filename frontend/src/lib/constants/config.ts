@@ -32,13 +32,9 @@ export const ANIMATION_CONFIG = {
 /**
  * Cost-Guard ElectricSQL sync configuration
  */
-export const ELECTRIC_SYNC_URL = 'https://electric-sync-604f87f-538316597788.us-central1.run.app';
+export const ELECTRIC_SYNC_URL = 'https://ingestion-api-240dd81-qwkzwahg3q-uc.a.run.app';
 
 export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard';
-
-// Read-only API secret for ElectricSQL shape sync (public, client-side only)
-export const ELECTRIC_API_SECRET =
-  'f750a12f5407ef20b9250b5b3eea0ced2bf958948ee10e21496c1df82570c1dc';
 
 /**
  * Cost Simulator configuration
