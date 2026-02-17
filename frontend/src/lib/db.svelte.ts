@@ -73,6 +73,12 @@ export class CostDB {
           this.#isSynced = true;
         },
         onError: (err) => {
+          // Stale shape handle (409) — wipe IDB and retry once
+          if (err.message.includes('409') && !this.#retried) {
+            this.#retried = true;
+            pg.close().then(() => this.#wipeAndRetry());
+            return;
+          }
           this.#error = err.message;
         },
       });
@@ -92,17 +98,24 @@ export class CostDB {
       // Corrupted IDB — wipe and retry once
       if (msg.includes('Invalid FS bundle size') && !this.#retried) {
         this.#retried = true;
-        const dbs = await indexedDB.databases();
-        for (const db of dbs) {
-          if (db.name?.startsWith('zhaoyu-cost-guard')) {
-            indexedDB.deleteDatabase(db.name);
-          }
-        }
-        return this.init();
+        return this.#wipeAndRetry();
       }
 
       this.#error = msg;
     }
+  }
+
+  async #wipeAndRetry(): Promise<void> {
+    this.#db = null;
+    this.#isSynced = false;
+    this.#error = null;
+    const dbs = await indexedDB.databases();
+    for (const db of dbs) {
+      if (db.name?.startsWith('zhaoyu-cost-guard')) {
+        indexedDB.deleteDatabase(db.name);
+      }
+    }
+    return this.init();
   }
 
   get instance() {
