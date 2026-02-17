@@ -109,6 +109,7 @@ npm run build
 ```
 
 **Recommended Platforms:**
+
 - Vercel
 - Netlify
 - GitHub Pages

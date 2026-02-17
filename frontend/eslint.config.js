@@ -6,57 +6,60 @@ import svelteParser from 'svelte-eslint-parser';
 import globals from 'globals';
 
 export default [
-	js.configs.recommended,
-	{
-		files: ['**/*.{js,ts}'],
-		languageOptions: {
-			parser: tsParser,
-			parserOptions: {
-				ecmaVersion: 'latest',
-				sourceType: 'module'
-			},
-			globals: {
-				...globals.browser,
-				...globals.node,
-				...globals.es2021
-			}
-		},
-		plugins: {
-			'@typescript-eslint': tsPlugin
-		},
-		rules: {
-			'no-console': 'warn',
-			semi: ['error', 'always'],
-			'@typescript-eslint/no-unused-vars': ['warn', { 
-				argsIgnorePattern: '^_',
-				varsIgnorePattern: '^_'
-			}],
-			'no-unused-vars': 'off', // Use TypeScript version instead
-			'no-undef': 'off' // TypeScript handles this
-		}
-	},
-	{
-		files: ['**/*.svelte'],
-		languageOptions: {
-			parser: svelteParser,
-			parserOptions: {
-				parser: tsParser
-			},
-			globals: {
-				...globals.browser,
-				...globals.node
-			}
-		},
-		plugins: {
-			svelte: sveltePlugin
-		},
-		rules: {
-			...sveltePlugin.configs.recommended.rules,
-			'svelte/no-at-html-tags': 'warn',
-			'no-undef': 'off' // TypeScript handles this
-		}
-	},
-	{
-		ignores: ['build/**', '.svelte-kit/**', 'node_modules/**', 'dist/**', '**/*.svelte']
-	}
+  js.configs.recommended,
+  {
+    files: ['**/*.{js,ts}'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2021,
+      },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
+    rules: {
+      'no-console': 'warn',
+      semi: ['error', 'always'],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      'no-unused-vars': 'off', // Use TypeScript version instead
+      'no-undef': 'off', // TypeScript handles this
+    },
+  },
+  {
+    files: ['**/*.svelte'],
+    languageOptions: {
+      parser: svelteParser,
+      parserOptions: {
+        parser: tsParser,
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    plugins: {
+      svelte: sveltePlugin,
+    },
+    rules: {
+      ...sveltePlugin.configs.recommended.rules,
+      'svelte/no-at-html-tags': 'warn',
+      'no-undef': 'off', // TypeScript handles this
+    },
+  },
+  {
+    ignores: ['build/**', '.svelte-kit/**', 'node_modules/**', 'dist/**', '**/*.svelte'],
+  },
 ];

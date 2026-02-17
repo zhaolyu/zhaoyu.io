@@ -62,10 +62,10 @@ SvelteKit uses **file-based routing** where the file structure determines the UR
 
 ### Route Examples
 
-| File Path | URL |
-|-----------|-----|
-| `src/routes/+page.svelte` | `/` |
-| `src/routes/about/+page.svelte` | `/about` |
+| File Path                        | URL         |
+| -------------------------------- | ----------- |
+| `src/routes/+page.svelte`        | `/`         |
+| `src/routes/about/+page.svelte`  | `/about`    |
 | `src/routes/api/test/+server.ts` | `/api/test` |
 
 ### Layout Hierarchy
@@ -102,11 +102,13 @@ Components are organized in a hierarchical structure:
 ### Layout Component
 
 `src/routes/+layout.svelte` provides:
+
 - Persistent navigation bar (via `Navbar` component)
 - Global styling
 - Wrapper for all page content
 
 **Key Features:**
+
 - Sticky navigation
 - Backdrop blur effect
 - Responsive design
@@ -167,6 +169,7 @@ export const GET: RequestHandler = async () => {
 ### Type Safety
 
 SvelteKit generates types automatically:
+
 - `RequestHandler` type from `./$types`
 - Request/Response types
 - Route parameter types
@@ -179,10 +182,11 @@ Using Tailwind CSS v4 with the Vite plugin:
 
 ```css
 /* app.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 ```
 
 **Benefits:**
+
 - No separate config file needed
 - CSS-first configuration
 - Automatic optimization
@@ -191,6 +195,7 @@ Using Tailwind CSS v4 with the Vite plugin:
 ### Component Styles
 
 Svelte components can use:
+
 - `<style>` blocks (scoped by default)
 - Tailwind utility classes
 - CSS modules (if needed)
@@ -198,6 +203,7 @@ Svelte components can use:
 ### Global Styles
 
 `app.css` contains:
+
 - Tailwind imports
 - Base typography
 - Global resets
@@ -211,7 +217,7 @@ Svelte's reactive state:
 ```svelte
 <script>
   let count = 0;
-  
+
   function increment() {
     count++;
   }
@@ -226,7 +232,7 @@ Use `+page.ts` or `+page.server.ts` for data loading:
 // +page.server.ts
 export async function load() {
   return {
-    data: await fetchData()
+    data: await fetchData(),
   };
 }
 ```
@@ -242,9 +248,11 @@ export const theme = createThemeStore();
 ```
 
 **Current Stores:**
+
 - `theme` - Theme management (light/dark mode)
 
 **Usage:**
+
 ```typescript
 import { theme } from '$lib/stores';
 ```
@@ -252,20 +260,24 @@ import { theme } from '$lib/stores';
 ### Utilities and Services
 
 **Utilities** (`lib/utils/`):
+
 - Pure functions with no side effects
 - Date formatting, text formatting, validation
 - Examples: `formatDate()`, `truncate()`, `isValidEmail()`
 
 **Services** (`lib/services/`):
+
 - API clients and external service integrations
 - Base `ApiClient` class for HTTP requests
 - Endpoint definitions
 
 **Types** (`lib/types/`):
+
 - Shared TypeScript type definitions
 - API response types, common types
 
 **Constants** (`lib/constants/`):
+
 - Route paths, app configuration
 - Prevents hardcoding values throughout the app
 
@@ -289,6 +301,7 @@ import { theme } from '$lib/stores';
 ### SPA Mode
 
 With `adapter-static` and `fallback: 'index.html'`:
+
 - All routes pre-rendered
 - Single `index.html` entry point
 - Client-side routing handles navigation
@@ -299,6 +312,7 @@ With `adapter-static` and `fallback: 'index.html'`:
 ### Type Generation
 
 SvelteKit generates types in `.svelte-kit/types/`:
+
 - Route types
 - Page data types
 - Request handler types
@@ -315,6 +329,7 @@ SvelteKit generates types in `.svelte-kit/types/`:
 ### Code Splitting
 
 SvelteKit automatically:
+
 - Splits routes into separate chunks
 - Lazy loads components
 - Prefetches linked pages
@@ -361,22 +376,24 @@ Runtime:
 
 ### Key Differences
 
-| Aspect | Astro | SvelteKit |
-|--------|-------|-----------|
-| **Routing** | File-based (pages/) | File-based (routes/) |
-| **SPA Mode** | Opt-in (View Transitions) | Built-in (default) |
-| **API Routes** | `src/pages/api/*.ts` | `src/routes/api/*/+server.ts` |
-| **Layouts** | Import components | Nested `+layout.svelte` |
-| **Build** | SSG/SSR | SPA/SSR/SSG |
+| Aspect         | Astro                     | SvelteKit                     |
+| -------------- | ------------------------- | ----------------------------- |
+| **Routing**    | File-based (pages/)       | File-based (routes/)          |
+| **SPA Mode**   | Opt-in (View Transitions) | Built-in (default)            |
+| **API Routes** | `src/pages/api/*.ts`      | `src/routes/api/*/+server.ts` |
+| **Layouts**    | Import components         | Nested `+layout.svelte`       |
+| **Build**      | SSG/SSR                   | SPA/SSR/SSG                   |
 
 ### When to Use Each
 
 **Astro:**
+
 - Content-heavy sites
 - Maximum performance (islands)
 - Minimal JavaScript
 
 **SvelteKit:**
+
 - Interactive applications
 - SPA experience required
 - Backend integration needed
@@ -384,6 +401,7 @@ Runtime:
 ## Future Enhancements
 
 Potential additions:
+
 - Authentication system
 - Database integration
 - Form handling

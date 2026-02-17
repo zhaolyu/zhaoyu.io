@@ -6,9 +6,9 @@ import type { RequestHandler } from './$types';
  * Placeholder for future blog functionality
  */
 export const GET: RequestHandler = async () => {
-	// TODO: Implement blog listing
-	return json({
-		posts: [],
-		message: 'Blog API endpoint - coming soon'
-	});
+  // TODO: Implement blog listing
+  return json({
+    posts: [],
+    message: 'Blog API endpoint - coming soon',
+  });
 };

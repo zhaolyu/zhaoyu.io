@@ -93,11 +93,10 @@ Create a new directory in `src/routes/` with a `+page.svelte` file:
 ```svelte
 <!-- src/routes/about/+page.svelte -->
 <script lang="ts">
-	// Page script
+  // Page script
 </script>
 
-<h1>About Me</h1>
-<p>Welcome to my portfolio!</p>
+<h1>About Me</h1><p>Welcome to my portfolio!</p>
 ```
 
 The page will be available at `/about`.
@@ -109,21 +108,21 @@ The page will be available at `/about`.
 ```svelte
 <!-- src/lib/components/Welcome.svelte -->
 <script lang="ts">
-	interface Props {
-		name: string;
-	}
+  interface Props {
+    name: string;
+  }
 
-	let { name }: Props = $props();
+  let { name }: Props = $props();
 </script>
 
 <div class="welcome">
-	<h2>Welcome, {name}!</h2>
+  <h2>Welcome, {name}!</h2>
 </div>
 
 <style>
-	.welcome {
-		padding: 1rem;
-	}
+  .welcome {
+    padding: 1rem;
+  }
 </style>
 ```
 
@@ -131,7 +130,7 @@ Use in a page:
 
 ```svelte
 <script lang="ts">
-	import Welcome from '$lib/components/Welcome.svelte';
+  import Welcome from '$lib/components/Welcome.svelte';
 </script>
 
 <Welcome name="John" />
@@ -143,7 +142,7 @@ Use in a page:
 
 ```svelte
 <div class="flex items-center justify-between p-4 bg-white rounded-lg">
-	<h2 class="text-2xl font-bold">Title</h2>
+  <h2 class="text-2xl font-bold">Title</h2>
 </div>
 ```
 
@@ -151,10 +150,10 @@ Use in a page:
 
 ```svelte
 <style>
-	.card {
-		padding: 1rem;
-		border: 1px solid #ccc;
-	}
+  .card {
+    padding: 1rem;
+    border: 1px solid #ccc;
+  }
 </style>
 ```
 
@@ -164,11 +163,11 @@ Add to `src/app.css`:
 
 ```css
 :root {
-	--color-primary: #3b82f6;
+  --color-primary: #3b82f6;
 }
 
 body {
-	font-family: system-ui, sans-serif;
+  font-family: system-ui, sans-serif;
 }
 ```
 
@@ -177,7 +176,7 @@ Import in layout:
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
-	import '../app.css';
+  import '../app.css';
 </script>
 ```
 
@@ -195,27 +194,27 @@ SvelteKit uses file-based routing:
 ```svelte
 <!-- src/routes/projects/[slug]/+page.svelte -->
 <script lang="ts">
-	interface PageData {
-		project: Project;
-	}
+  interface PageData {
+    project: Project;
+  }
 
-	let { data }: { data: PageData } = $props();
-	const { project } = data;
+  let { data }: { data: PageData } = $props();
+  const { project } = data;
 </script>
 
 <article>
-	<h1>{project.title}</h1>
-	<p>{project.description}</p>
+  <h1>{project.title}</h1>
+  <p>{project.description}</p>
 </article>
 ```
 
 ```typescript
 // src/routes/projects/[slug]/+page.ts
 export async function load({ params }) {
-	const project = await fetchProject(params.slug);
-	return {
-		project
-	};
+  const project = await fetchProject(params.slug);
+  return {
+    project,
+  };
 }
 ```
 
@@ -227,15 +226,15 @@ Use Svelte's built-in reactivity for interactivity:
 
 ```svelte
 <script lang="ts">
-	let count = $state(0);
+  let count = $state(0);
 
-	function increment() {
-		count++;
-	}
+  function increment() {
+    count++;
+  }
 </script>
 
 <button on:click={increment}>
-	Clicked {count} times
+  Clicked {count} times
 </button>
 ```
 
@@ -245,15 +244,13 @@ For shared state across components:
 
 ```svelte
 <script lang="ts">
-	import { theme } from '$lib/stores/theme';
+  import { theme } from '$lib/stores/theme';
 
-	// Auto-subscribe with $ prefix
-	$: isDark = $theme === 'dark';
+  // Auto-subscribe with $ prefix
+  $: isDark = $theme === 'dark';
 </script>
 
-<div class:dark={isDark}>
-	Content
-</div>
+<div class:dark={isDark}>Content</div>
 ```
 
 ## Testing
@@ -279,10 +276,10 @@ import { render, screen } from '@testing-library/svelte';
 import Button from './Button.svelte';
 
 describe('Button', () => {
-	it('should render correctly', () => {
-		render(Button, { props: { label: 'Click me' } });
-		expect(screen.getByText('Click me')).toBeInTheDocument();
-	});
+  it('should render correctly', () => {
+    render(Button, { props: { label: 'Click me' } });
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
 });
 ```
 
@@ -291,6 +288,7 @@ describe('Button', () => {
 ### Browser DevTools
 
 Use browser DevTools to inspect:
+
 - Component rendering
 - Network requests
 - Console errors
@@ -316,7 +314,7 @@ This starts the SvelteKit development server, typically at `http://localhost:517
 Use browser DevTools to test your components at different viewport sizes:
 
 1. **Open DevTools**: Press `F12` or right-click → Inspect
-2. **Enable Responsive Design Mode**: 
+2. **Enable Responsive Design Mode**:
    - Chrome/Edge: Press `Ctrl+Shift+M` (Windows/Linux) or `Cmd+Shift+M` (Mac)
    - Firefox: Press `Ctrl+Shift+M` (Windows/Linux) or `Cmd+Shift+M` (Mac)
 3. **Test Viewport Sizes**:
@@ -367,11 +365,13 @@ If MCP browser extension tools are available:
 If browser tools are not available:
 
 1. **Check Server Status**:
+
    ```bash
    lsof -ti:5173  # Verify dev server is running
    ```
 
 2. **Fetch HTML**:
+
    ```bash
    curl -s http://localhost:5173 | grep -i "component-class"
    ```
@@ -391,6 +391,7 @@ Before marking UI work complete:
 - [ ] Content/data is present in rendered HTML
 
 **Note**: See [Browser Testing Rule](../rules/browser-testing.mdc) for detailed guidelines.
+
 - ✅ Interactive elements (buttons, links) are functional
 - ✅ Typography scales appropriately (using `clamp()` where applicable)
 
@@ -401,6 +402,7 @@ Before marking UI work complete:
 ### Build and Deploy
 
 1. Build the project:
+
    ```bash
    npm run build
    ```
@@ -420,6 +422,7 @@ For production, set environment variables in your hosting provider's dashboard.
 ### Port Already in Use
 
 If port 5173 is in use:
+
 ```bash
 npm run dev -- --port 3000
 ```

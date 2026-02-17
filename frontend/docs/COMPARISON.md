@@ -14,6 +14,7 @@ This document provides a comparison between Astro and SvelteKit approaches:
 ### SPA Experience
 
 #### Astro
+
 - ✅ View Transitions (opt-in via config)
 - ✅ Smooth page transitions
 - ⚠️ Requires explicit configuration
@@ -21,12 +22,13 @@ This document provides a comparison between Astro and SvelteKit approaches:
 - ⚠️ Navigation requires View Transitions setup
 
 **Configuration:**
+
 ```javascript
 // astro.config.mjs
 export default defineConfig({
   experimental: {
-    viewTransitions: true
-  }
+    viewTransitions: true,
+  },
 });
 ```
 
@@ -36,6 +38,7 @@ export default defineConfig({
 ```
 
 #### SvelteKit
+
 - ✅ Built-in SPA mode (default behavior)
 - ✅ True client-side routing
 - ✅ Persistent layouts automatically
@@ -43,11 +46,13 @@ export default defineConfig({
 - ✅ No configuration needed
 
 **Configuration:**
+
 ```javascript
 // svelte.config.js
-adapter: adapter-static({
-  fallback: 'index.html'  // Enables SPA mode
-})
+adapter: adapter -
+  static({
+    fallback: 'index.html', // Enables SPA mode
+  });
 ```
 
 **Winner**: SvelteKit (built-in, no setup required)
@@ -57,6 +62,7 @@ adapter: adapter-static({
 ### Performance
 
 #### Astro
+
 - ⭐⭐⭐⭐⭐ Islands architecture (minimal JS)
 - ⭐⭐⭐⭐⭐ Zero JS by default
 - ⭐⭐⭐⭐⭐ Fastest initial load
@@ -64,11 +70,13 @@ adapter: adapter-static({
 - ⭐⭐⭐⭐ Excellent for content sites
 
 **Bundle Sizes:**
+
 - Minimal JavaScript shipped
 - Only interactive components load JS
 - Static content is pure HTML
 
 #### SvelteKit
+
 - ⭐⭐⭐⭐⭐ Compiled (no virtual DOM)
 - ⭐⭐⭐⭐ Small bundle sizes
 - ⭐⭐⭐⭐ Fast runtime
@@ -76,6 +84,7 @@ adapter: adapter-static({
 - ⭐⭐⭐⭐ Good for interactive apps
 
 **Bundle Sizes:**
+
 - Svelte compiler optimizes code
 - Automatic code splitting
 - Tree shaking enabled
@@ -88,6 +97,7 @@ adapter: adapter-static({
 ### Backend/DevOps Learning
 
 #### Astro
+
 - ✅ API routes (`src/pages/api/*.ts`)
 - ✅ SSR adapters (Node, Vercel, Netlify)
 - ✅ Multiple deployment options
@@ -95,19 +105,20 @@ adapter: adapter-static({
 - ⚠️ Simpler API structure
 
 **API Route Example:**
+
 ```typescript
 // src/pages/api/test.ts
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async () => {
-  return new Response(
-    JSON.stringify({ message: 'Hello' }),
-    { headers: { 'Content-Type': 'application/json' } }
-  );
+  return new Response(JSON.stringify({ message: 'Hello' }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 };
 ```
 
 #### SvelteKit
+
 - ✅ Server endpoints (`+server.ts`)
 - ✅ Form actions (built-in)
 - ✅ Multiple adapters
@@ -115,6 +126,7 @@ export const GET: APIRoute = async () => {
 - ✅ Better for full-stack learning
 
 **API Route Example:**
+
 ```typescript
 // src/routes/api/test/+server.ts
 import { json } from '@sveltejs/kit';
@@ -132,6 +144,7 @@ export const GET: RequestHandler = async () => {
 ### Developer Experience
 
 #### Astro
+
 - ✅ Simple setup
 - ✅ Framework-agnostic (use React, Vue, Svelte)
 - ✅ Great for content sites
@@ -139,15 +152,18 @@ export const GET: RequestHandler = async () => {
 - ⚠️ SPA features require setup
 
 **Pros:**
+
 - Easy to learn
 - Minimal configuration
 - Great documentation
 
 **Cons:**
+
 - SPA mode not default
 - Less interactive features
 
 #### SvelteKit
+
 - ✅ Excellent DX
 - ✅ Built-in SPA features
 - ✅ TypeScript first-class
@@ -155,11 +171,13 @@ export const GET: RequestHandler = async () => {
 - ✅ Active development
 
 **Pros:**
+
 - SPA out of the box
 - Rich feature set
 - Great TypeScript support
 
 **Cons:**
+
 - More concepts to learn
 - Svelte-specific (can't use React/Vue)
 
@@ -172,6 +190,7 @@ export const GET: RequestHandler = async () => {
 ### Navigation
 
 #### Astro
+
 ```astro
 ---
 import { ViewTransitions } from 'astro:transitions';
@@ -185,6 +204,7 @@ import { ViewTransitions } from 'astro:transitions';
 ```
 
 #### SvelteKit
+
 ```svelte
 <nav>
   <a href="/">Home</a>
@@ -196,22 +216,21 @@ import { ViewTransitions } from 'astro:transitions';
 ### API Routes
 
 #### Astro
+
 ```typescript
 // src/pages/api/test.ts
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request }) => {
-  return new Response(
-    JSON.stringify({ data: 'test' }),
-    {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    }
-  );
+  return new Response(JSON.stringify({ data: 'test' }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
 };
 ```
 
 #### SvelteKit
+
 ```typescript
 // src/routes/api/test/+server.ts
 import { json } from '@sveltejs/kit';
@@ -225,6 +244,7 @@ export const GET: RequestHandler = async ({ request }) => {
 ### Data Fetching
 
 #### Astro
+
 ```astro
 ---
 // Server-side only
@@ -236,16 +256,17 @@ const json = await data.json();
 ```
 
 #### SvelteKit
+
 ```svelte
 <script>
   // Client-side
   let data;
-  
+
   async function loadData() {
     const res = await fetch('/api/data');
     data = await res.json();
   }
-  
+
   // Or server-side
   // +page.server.ts
 </script>
@@ -296,11 +317,13 @@ const json = await data.json();
 ### Bundle Sizes (Estimated)
 
 **Astro:**
+
 - Initial HTML: ~5-10 KB
 - JavaScript: ~0-50 KB (only interactive components)
 - Total: Very small
 
 **SvelteKit:**
+
 - Initial HTML: ~10-20 KB
 - JavaScript: ~50-100 KB (framework + app)
 - Total: Small to medium
@@ -308,11 +331,13 @@ const json = await data.json();
 ### Load Times
 
 **Astro:**
+
 - First Contentful Paint: ~0.5-1s
 - Time to Interactive: ~1-2s
 - Excellent for content
 
 **SvelteKit:**
+
 - First Contentful Paint: ~0.8-1.5s
 - Time to Interactive: ~1.5-3s
 - Good for apps
@@ -324,16 +349,19 @@ const json = await data.json();
 ### From Astro to SvelteKit
 
 **Easy:**
+
 - Static content pages
 - Basic routing
 - API routes
 
 **Moderate:**
+
 - Component structure
 - Styling approach
 - Build configuration
 
 **Challenging:**
+
 - Islands architecture patterns
 - Multi-framework usage
 - View Transitions setup
@@ -341,16 +369,19 @@ const json = await data.json();
 ### From SvelteKit to Astro
 
 **Easy:**
+
 - Static content
 - Basic pages
 - API routes
 
 **Moderate:**
+
 - SPA features (need View Transitions)
 - Client-side state
 - Interactive components
 
 **Challenging:**
+
 - SPA routing (not default)
 - Form handling
 - Real-time features
@@ -373,6 +404,7 @@ const json = await data.json();
 8. ✅ **Multiple Deployment (8A)**: Many adapters available
 
 **Astro is still great if:**
+
 - Content-first approach is priority
 - Maximum performance for static content
 - Want to use multiple frameworks

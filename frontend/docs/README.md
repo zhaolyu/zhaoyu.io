@@ -5,18 +5,23 @@ This directory contains documentation for the SvelteKit frontend implementation.
 ## Available Documentation
 
 ### [Quick Start](QUICK_START.md)
+
 Get started with the project in minutes. Includes installation, basic setup, and running the development server.
 
 ### [Setup Guide](SETUP.md)
+
 Detailed setup and configuration instructions. Covers environment setup, dependencies, and project configuration.
 
 ### [Architecture](ARCHITECTURE.md)
+
 Comprehensive overview of the project structure, patterns, and architectural decisions. Essential reading for understanding the codebase.
 
 ### [Deployment](DEPLOYMENT.md)
+
 Complete guide for deploying to Cloudflare Pages using GitHub Actions CI/CD. Includes production and preview environment setup.
 
 ### [Comparison](COMPARISON.md)
+
 Detailed comparison between Astro and SvelteKit implementations, including feature analysis and decision rationale.
 
 ## Related Documentation

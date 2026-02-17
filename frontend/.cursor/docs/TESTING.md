@@ -28,6 +28,7 @@ Coverage metrics are a byproduct of thorough behavior testing, not the primary g
 ## Test Framework Setup
 
 **Note**: Test dependencies (Vitest, Svelte Testing Library) need to be installed before running tests. Install with:
+
 ```bash
 npm install -D vitest @testing-library/svelte @testing-library/jest-dom @vitest/ui jsdom
 ```
@@ -77,25 +78,25 @@ Organize tests using `describe` blocks:
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('ComponentName', () => {
-	beforeEach(() => {
-		// Setup
-	});
+  beforeEach(() => {
+    // Setup
+  });
 
-	afterEach(() => {
-		// Cleanup
-	});
+  afterEach(() => {
+    // Cleanup
+  });
 
-	describe('Rendering', () => {
-		it('should render correctly', () => {
-			// Test
-		});
-	});
+  describe('Rendering', () => {
+    it('should render correctly', () => {
+      // Test
+    });
+  });
 
-	describe('User Interactions', () => {
-		it('should handle click events', () => {
-			// Test
-		});
-	});
+  describe('User Interactions', () => {
+    it('should handle click events', () => {
+      // Test
+    });
+  });
 });
 ```
 
@@ -114,19 +115,19 @@ import '@testing-library/jest-dom';
 import Button from './Button.svelte';
 
 describe('Button', () => {
-	it('should render with label', () => {
-		render(Button, { props: { label: 'Click me' } });
-		expect(screen.getByText('Click me')).toBeInTheDocument();
-	});
+  it('should render with label', () => {
+    render(Button, { props: { label: 'Click me' } });
+    expect(screen.getByText('Click me')).toBeInTheDocument();
+  });
 
-	it('should handle click events', async () => {
-		const handleClick = vi.fn();
-		render(Button, { props: { label: 'Click me', onClick: handleClick } });
+  it('should handle click events', async () => {
+    const handleClick = vi.fn();
+    render(Button, { props: { label: 'Click me', onClick: handleClick } });
 
-		await fireEvent.click(screen.getByText('Click me'));
+    await fireEvent.click(screen.getByText('Click me'));
 
-		expect(handleClick).toHaveBeenCalledTimes(1);
-	});
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
 });
 ```
 
@@ -139,14 +140,14 @@ import { describe, it, expect } from 'vitest';
 import { formatDate } from '$lib/utils/date';
 
 describe('formatDate', () => {
-	it('should format date correctly', () => {
-		const date = new Date('2024-01-01');
-		expect(formatDate(date, 'MM/DD/YYYY')).toBe('01/01/2024');
-	});
+  it('should format date correctly', () => {
+    const date = new Date('2024-01-01');
+    expect(formatDate(date, 'MM/DD/YYYY')).toBe('01/01/2024');
+  });
 
-	it('should handle invalid dates', () => {
-		expect(() => formatDate('invalid' as any, 'MM/DD/YYYY')).toThrow();
-	});
+  it('should handle invalid dates', () => {
+    expect(() => formatDate('invalid' as any, 'MM/DD/YYYY')).toThrow();
+  });
 });
 ```
 
@@ -160,14 +161,14 @@ import { get } from 'svelte/store';
 import { count } from '$lib/stores/counter';
 
 describe('count store', () => {
-	beforeEach(() => {
-		count.set(0);
-	});
+  beforeEach(() => {
+    count.set(0);
+  });
 
-	it('should increment', () => {
-		count.update((n) => n + 1);
-		expect(get(count)).toBe(1);
-	});
+  it('should increment', () => {
+    count.update((n) => n + 1);
+    expect(get(count)).toBe(1);
+  });
 });
 ```
 
@@ -181,7 +182,7 @@ Use `vi.mock()` for entire modules:
 import { vi } from 'vitest';
 
 vi.mock('$lib/utils/api', () => ({
-	fetchData: vi.fn(() => Promise.resolve({ data: 'test' }))
+  fetchData: vi.fn(() => Promise.resolve({ data: 'test' })),
 }));
 ```
 
@@ -194,9 +195,9 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 
 const server = setupServer(
-	rest.get('/api/data', (req, res, ctx) => {
-		return res(ctx.json({ data: 'test' }));
-	})
+  rest.get('/api/data', (req, res, ctx) => {
+    return res(ctx.json({ data: 'test' }));
+  }),
 );
 
 beforeAll(() => server.listen());
@@ -208,10 +209,10 @@ afterAll(() => server.close());
 
 ```typescript
 const localStorageMock = {
-	getItem: vi.fn(),
-	setItem: vi.fn(),
-	removeItem: vi.fn(),
-	clear: vi.fn()
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
 };
 
 global.localStorage = localStorageMock as any;
@@ -246,12 +247,14 @@ npm test -- Button.test.ts
 ## Coverage Requirements
 
 Aim for **at least 90% coverage** for:
+
 - Statements
 - Branches
 - Functions
 - Lines
 
 Check coverage:
+
 ```bash
 npm test -- --coverage
 ```
@@ -274,12 +277,12 @@ it('should handle async operations', async () => {
 
 ```typescript
 it('should update input value', () => {
-	render(Form);
-	const input = screen.getByLabelText('Name');
+  render(Form);
+  const input = screen.getByLabelText('Name');
 
-	fireEvent.change(input, { target: { value: 'John' } });
+  fireEvent.change(input, { target: { value: 'John' } });
 
-	expect(input).toHaveValue('John');
+  expect(input).toHaveValue('John');
 });
 ```
 
@@ -287,10 +290,10 @@ it('should update input value', () => {
 
 ```typescript
 it('should update when store changes', () => {
-	const { component } = render(Component);
-	
-	theme.set('dark');
-	
-	expect(screen.getByText('Dark mode')).toBeInTheDocument();
+  const { component } = render(Component);
+
+  theme.set('dark');
+
+  expect(screen.getByText('Dark mode')).toBeInTheDocument();
 });
 ```
