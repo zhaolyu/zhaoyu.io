@@ -43,6 +43,13 @@
   --chart-dot-fill: #ffffff; /* Dot center — white on light, overridden in dark */
   --chart-label: #9ca3af; /* Light mode: gray-400 */
 
+  /* Infra Accent — Cyan (used for /infra ops dashboard) */
+  --accent-infra: #06b6d4;
+  --accent-infra-light: #22d3ee;
+  --accent-infra-dark: #0891b2;
+  --accent-infra-10: rgba(6, 182, 212, 0.1);
+  --accent-infra-20: rgba(6, 182, 212, 0.2);
+
   /* Status Colors */
   --status-success: #10b981;
   --status-warning: #fbbf24;

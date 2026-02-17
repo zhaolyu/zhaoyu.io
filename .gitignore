@@ -1,6 +1,6 @@
 # Agent and AI tooling
 .agent/
-.claude/worktrees/
+.claude/
 
 # Documentation (local reference only)
 docs/

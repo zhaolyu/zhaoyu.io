@@ -16,3 +16,12 @@ export interface CostItem {
   change_type: 'added' | 'modified' | 'removed' | 'unchanged';
   metadata: Record<string, unknown> | null;
 }
+
+export type CostCategory = 'compute' | 'storage' | 'fixed';
+
+export interface CostBaseline {
+  compute: number;
+  storage: number;
+  fixed: number;
+  total: number;
+}

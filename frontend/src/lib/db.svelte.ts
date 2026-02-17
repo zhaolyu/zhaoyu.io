@@ -77,9 +77,15 @@ export class CostDB {
         },
       });
 
-      // Always mark as synced once the promise resolves — data is either
-      // fresh (onInitialSync fired) or already persisted in IDB from a prior session.
-      this.#isSynced = true;
+      // If onInitialSync already fired, we're done. Otherwise check for
+      // data persisted in IDB from a prior session (onInitialSync won't
+      // fire again for cached data).
+      if (!this.#isSynced) {
+        const check = await pg.query<{ cnt: string }>('SELECT count(*) as cnt FROM cost_snapshots');
+        if (Number(check.rows[0].cnt) > 0) {
+          this.#isSynced = true;
+        }
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
 
