@@ -27,6 +27,7 @@ npm install
 ```
 
 This will install:
+
 - `@sveltejs/kit` - SvelteKit framework
 - `@sveltejs/adapter-static` - Static adapter for SPA mode
 - `svelte` - Svelte compiler
@@ -68,16 +69,18 @@ Main SvelteKit configuration:
 
 ```javascript
 {
-  adapter: adapter-static({
-    pages: 'build',
-    assets: 'build',
-    fallback: 'index.html',  // Required for SPA mode
-    strict: true
-  })
+  adapter: adapter -
+    static({
+      pages: 'build',
+      assets: 'build',
+      fallback: 'index.html', // Required for SPA mode
+      strict: true,
+    });
 }
 ```
 
 **Key Settings:**
+
 - `adapter-static`: Enables SPA mode
 - `fallback: 'index.html'`: Allows client-side routing
 - `prerender`: All routes are pre-rendered at build time
@@ -90,8 +93,8 @@ Vite configuration with Tailwind CSS:
 {
   plugins: [
     sveltekit(),
-    tailwindcss()  // Tailwind CSS v4 plugin
-  ]
+    tailwindcss(), // Tailwind CSS v4 plugin
+  ];
 }
 ```
 
@@ -108,6 +111,7 @@ npm run build
 ```
 
 This will:
+
 1. Type-check the code
 2. Compile Svelte components
 3. Bundle JavaScript
@@ -140,11 +144,13 @@ Starts a local server to preview the production build.
 This project is configured for automated deployment to Cloudflare Pages via GitHub Actions CI/CD.
 
 **Quick Start:**
+
 1. See the comprehensive [Deployment Guide](DEPLOYMENT.md) for step-by-step instructions
 2. Configure GitHub secrets (`CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`)
 3. Push to `main` branch to trigger automatic deployment
 
 **Features:**
+
 - ✅ Automated CI/CD via GitHub Actions
 - ✅ Custom domain support (`zhaoyu.io`)
 - ✅ SPA routing configured
@@ -182,6 +188,7 @@ Or drag and drop the `build/` folder to Netlify's dashboard.
 #### Other Platforms
 
 Any static file server can host the `build/` directory:
+
 - AWS S3 + CloudFront
 - Azure Static Web Apps
 - Firebase Hosting
@@ -211,8 +218,8 @@ If port 5173 is already in use, modify `vite.config.js`:
 ```javascript
 export default defineConfig({
   server: {
-    port: 3000  // Change to available port
-  }
+    port: 3000, // Change to available port
+  },
 });
 ```
 
@@ -237,7 +244,7 @@ Fix any TypeScript errors before building.
 Ensure `app.css` imports Tailwind:
 
 ```css
-@import "tailwindcss";
+@import 'tailwindcss';
 ```
 
 And that it's imported in `+layout.svelte`:

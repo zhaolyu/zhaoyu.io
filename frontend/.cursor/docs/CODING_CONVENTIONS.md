@@ -32,6 +32,7 @@ This document outlines the coding standards and conventions used in the zhaoyu.i
 ### Usage
 
 Run Prettier to format code:
+
 ```bash
 npm run format  # or npm run lint:fix
 ```
@@ -90,6 +91,7 @@ import { formatDate } from '../lib/utils/date';
 ### Import Order
 
 While not strictly enforced, typical order:
+
 1. Svelte imports (for `.svelte` files)
 2. Third-party libraries
 3. Application imports (components, utils, stores) using `$lib` alias
@@ -99,10 +101,10 @@ While not strictly enforced, typical order:
 ```svelte
 <!-- Svelte component example -->
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { theme } from '$lib/stores/theme';
-	import Button from '$lib/components/Button.svelte';
-	import '../app.css';
+  import { onMount } from 'svelte';
+  import { theme } from '$lib/stores/theme';
+  import Button from '$lib/components/Button.svelte';
+  import '../app.css';
 </script>
 ```
 
@@ -112,26 +114,26 @@ While not strictly enforced, typical order:
 
 ```svelte
 <script lang="ts">
-	// Component script (TypeScript)
-	interface Props {
-		title: string;
-		description?: string;
-	}
+  // Component script (TypeScript)
+  interface Props {
+    title: string;
+    description?: string;
+  }
 
-	let { title, description }: Props = $props();
+  let { title, description }: Props = $props();
 </script>
 
 <article class="card">
-	<h2>{title}</h2>
-	{#if description}
-		<p>{description}</p>
-	{/if}
+  <h2>{title}</h2>
+  {#if description}
+    <p>{description}</p>
+  {/if}
 </article>
 
 <style>
-	.card {
-		padding: 1rem;
-	}
+  .card {
+    padding: 1rem;
+  }
 </style>
 ```
 
@@ -139,15 +141,15 @@ While not strictly enforced, typical order:
 
 ```svelte
 <script lang="ts">
-	let count = $state(0);
+  let count = $state(0);
 
-	function increment() {
-		count++;
-	}
+  function increment() {
+    count++;
+  }
 </script>
 
 <button on:click={increment} class="btn btn-primary">
-	Clicked {count} times
+  Clicked {count} times
 </button>
 ```
 
@@ -173,16 +175,18 @@ While not strictly enforced, typical order:
  * @returns Formatted date string
  */
 const formatDate = (date: Date | string, format: string): string => {
-	// Implementation
+  // Implementation
 };
 ```
 
 **Avoid:**
+
 - Redundant comments that restate what the code does
 - Commented-out code (remove it instead)
 - Excessive inline explanations for straightforward code
 
 **Prefer:**
+
 - Clear variable and function names
 - JSDoc/TSDoc for exported functions and components
 - Brief comments only for complex business logic or non-obvious behavior
@@ -204,6 +208,7 @@ Follow SOLID principles for maintainable code:
 **CRITICAL**: All components MUST support both light and dark modes using CSS variables. Never hardcode colors.
 
 **Required CSS Variables**:
+
 - `var(--bg-primary)` - Main background
 - `var(--bg-secondary)` - Secondary background
 - `var(--text-primary)` - Main text color
@@ -220,27 +225,29 @@ Use Tailwind utility classes for layout and spacing, but **ALWAYS use CSS variab
 ```svelte
 <!-- ✅ CORRECT: Use Tailwind for layout, CSS variables for colors -->
 <div class="flex items-center justify-between p-4 rounded-lg shadow-md card">
-	<h2 class="text-2xl font-bold card-title">Title</h2>
+  <h2 class="text-2xl font-bold card-title">Title</h2>
 </div>
 
 <style>
-	.card {
-		background: var(--bg-primary);
-		border: 1px solid var(--border-color);
-		transition: background-color 0.2s, border-color 0.2s;
-	}
+  .card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
+  }
 
-	.card-title {
-		color: var(--text-primary);
-		transition: color 0.2s;
-	}
+  .card-title {
+    color: var(--text-primary);
+    transition: color 0.2s;
+  }
 </style>
 ```
 
 ```svelte
 <!-- ❌ INCORRECT: Hardcoded colors -->
 <div class="flex items-center justify-between p-4 bg-white dark:bg-neutral-950 rounded-lg">
-	<h2 class="text-2xl font-bold text-gray-900 dark:text-white">Title</h2>
+  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Title</h2>
 </div>
 ```
 
@@ -248,15 +255,15 @@ Use Tailwind utility classes for layout and spacing, but **ALWAYS use CSS variab
 
 ```svelte
 <style>
-	.card {
-		padding: 1rem;
-		border: 1px solid #ccc;
-		border-radius: 8px;
-	}
+  .card {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
 
-	.card:hover {
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
+  .card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
 </style>
 ```
 

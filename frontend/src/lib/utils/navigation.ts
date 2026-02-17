@@ -13,24 +13,24 @@ import { browser } from '$app/environment';
  * @param href - The href value (should start with '/#' for anchor links)
  */
 export function handleAnchorNavigation(e: MouseEvent, href: string): void {
-	if (!browser) return;
+  if (!browser) return;
 
-	// Check if it's an anchor link
-	if (href.startsWith('/#')) {
-		e.preventDefault();
-		e.stopPropagation();
-		const targetId = href.substring(2); // Remove '/#'
-		const targetElement = document.getElementById(targetId);
+  // Check if it's an anchor link
+  if (href.startsWith('/#')) {
+    e.preventDefault();
+    e.stopPropagation();
+    const targetId = href.substring(2); // Remove '/#'
+    const targetElement = document.getElementById(targetId);
 
-		if (targetElement) {
-			// Use scrollIntoView which respects scroll-margin-top automatically
-			// The smooth behavior will be slower due to CSS scroll-behavior: smooth
-			targetElement.scrollIntoView({
-				behavior: 'smooth',
-				block: 'start'
-			});
-		}
-	}
+    if (targetElement) {
+      // Use scrollIntoView which respects scroll-margin-top automatically
+      // The smooth behavior will be slower due to CSS scroll-behavior: smooth
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }
 }
 
 /**
@@ -40,15 +40,15 @@ export function handleAnchorNavigation(e: MouseEvent, href: string): void {
  * @param e - Mouse event from click handler
  */
 export function scrollToTop(e: MouseEvent): void {
-	if (!browser) return;
+  if (!browser) return;
 
-	// Check if we're already on the home page
-	if (window.location.pathname === '/') {
-		e.preventDefault();
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth'
-		});
-	}
-	// Otherwise, let the default navigation happen (href="/" will navigate)
+  // Check if we're already on the home page
+  if (window.location.pathname === '/') {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+  // Otherwise, let the default navigation happen (href="/" will navigate)
 }

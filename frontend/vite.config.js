@@ -3,8 +3,11 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-	plugins: [sveltekit(), tailwindcss()],
-	server: {
-		port: 5173
-	}
+  plugins: [sveltekit(), tailwindcss()],
+  server: {
+    port: 5173,
+  },
+  optimizeDeps: {
+    exclude: ['@electric-sql/pglite'],
+  },
 });
