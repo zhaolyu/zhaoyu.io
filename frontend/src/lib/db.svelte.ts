@@ -44,7 +44,7 @@ export class CostDB {
 				);
 			`);
 
-      const shapeUrl = `${ELECTRIC_SYNC_URL}/v1/shape`;
+      const shapeUrl = `${ELECTRIC_SYNC_URL}/electric/v1/shape`;
 
       // Set db immediately so components can render loading state
       this.#db = pg;
