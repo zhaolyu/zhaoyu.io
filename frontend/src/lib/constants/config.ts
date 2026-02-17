@@ -39,3 +39,35 @@ export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard';
 // Read-only API secret for ElectricSQL shape sync (public, client-side only)
 export const ELECTRIC_API_SECRET =
   'f750a12f5407ef20b9250b5b3eea0ced2bf958948ee10e21496c1df82570c1dc';
+
+/**
+ * Cost Simulator configuration
+ */
+import type { CostCategory } from '$lib/types';
+
+export const RESOURCE_TYPE_CATEGORY_MAP: Record<string, CostCategory> = {
+  // Compute
+  aws_instance: 'compute',
+  aws_lambda_function: 'compute',
+  google_compute_instance: 'compute',
+  google_cloud_run_service: 'compute',
+  google_cloud_run_v2_service: 'compute',
+  // Storage
+  aws_s3_bucket: 'storage',
+  aws_rds_cluster: 'storage',
+  google_storage_bucket: 'storage',
+  google_sql_database_instance: 'storage',
+  // Fixed
+  aws_route53_zone: 'fixed',
+  aws_cloudfront_distribution: 'fixed',
+  google_dns_managed_zone: 'fixed',
+};
+
+export const DEFAULT_COST_CATEGORY: CostCategory = 'compute';
+
+export const SIMULATOR_LIMITS = {
+  trafficMultiplier: { min: 1, max: 100, default: 1, step: 1 },
+  storageGrowthGB: { min: 0, max: 1000, default: 0, step: 10 },
+} as const;
+
+export const STORAGE_COST_PER_GB = 0.023;

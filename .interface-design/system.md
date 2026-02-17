@@ -57,6 +57,16 @@ Used exclusively for "goal/target" states in the skills chart and related legend
 --accent-secondary-light: #c084fc  (Purple-400)
 ```
 
+### Accent — Infra (Cyan)
+Used exclusively for the `/infra` ops dashboard. Distinguishes the infra surface from the portfolio's blue accent while sharing all structural tokens.
+```
+--accent-infra:       #06b6d4   (Cyan-500)
+--accent-infra-light: #22d3ee   (Cyan-400)
+--accent-infra-dark:  #0891b2   (Cyan-600)
+--accent-infra-10:    rgba(6, 182, 212, 0.1)  — badge bg, projection bg
+--accent-infra-20:    rgba(6, 182, 212, 0.2)  — pulse glow
+```
+
 ### Status
 ```
 --status-success: #10b981  (Green-500)
@@ -243,3 +253,85 @@ $lib/components             → Re-exports ui + layout only
 3. Apply `section-surface` + `section-padding` global classes (or equivalent token-based styles)
 4. Add nav link to `Navbar.svelte` navLinks array using `/path` mono format
 5. Import and place in `src/routes/(main)/+page.svelte`
+
+---
+
+## Infra Dashboard Patterns (`/infra`)
+
+The infra route is a **hybrid surface** — it shares all structural tokens (surfaces, spacing, typography, depth) with the portfolio but uses `--accent-infra` (cyan) instead of `--accent-primary` (blue) to create a distinct ops-dashboard feel.
+
+### Composition & Rhythm
+The page uses **variable spacing** to create visual hierarchy — not uniform gaps:
+- **Chrome zone** (header + HUD): tight `space-3` gap — they're metadata, not content
+- **Chrome → content break**: `space-8` margin — breathing room before the working area
+- **Content cards**: `space-5` gap — standard working density
+
+### Infra Page Layout
+```
+.infra-page       — min-height: 100vh, bg-primary, theme transitions
+.infra-container  — max-width: 64rem, no uniform gap (rhythm via chrome/main structure)
+.infra-chrome     — flex column, space-3 gap, space-8 margin-bottom (tight header+HUD group)
+.infra-header     — flex row: badge + title + theme toggle (pushed right)
+.infra-main       — flex column, space-5 gap for working cards
+```
+
+### Infra Badge
+Same pattern as Tags/Chips but using infra accent:
+```css
+font-family: var(--font-mono);
+font-size: 0.625rem;
+font-weight: 600;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(--accent-infra);
+background: var(--accent-infra-10);
+padding: 0.25rem 0.625rem;
+border-radius: 0.25rem;
+```
+
+### Telemetry Strip (ArchitectHUD)
+Horizontal row of labeled metric cells on a `bg-secondary` surface:
+- Labels: `0.6rem / 400 / uppercase / muted`
+- Values: `0.75rem / 500 / text-primary` (restrained — not all cyan)
+- **Status cell only** gets `accent-infra` color — it's the one value that means something at a glance
+- Pulse dot: `6px`, `accent-infra` with `accent-infra-20` glow when live
+- Wraps on mobile, trailing cell pushes right with `margin-left: auto`
+- All gaps on 4px grid: cell gap `space-1` (4px), value icon gap `space-2` (8px)
+
+### Hero Metric Card
+The focal point of the dashboard — distinguished from other cards:
+```css
+background: var(--bg-secondary);
+border: 1px solid var(--border-color);
+border-top: 2px solid var(--accent-infra);  /* accent top border draws the eye */
+border-radius: 0.75rem;
+padding: var(--space-6);
+gap: var(--space-1);  /* tight label-to-value spacing */
+```
+- Label: stat label pattern (`0.65rem / uppercase / muted`) — "Monthly Spend" not "Est. Monthly Spend"
+- Value: `clamp(2rem, 5vw, 3rem) / 700 / text-primary / mono / line-height: 1`
+- Context line: `0.7rem / text-muted / mono` — e.g. "3 snapshots tracked"
+
+### Table Card
+```css
+background: var(--bg-secondary);
+border: 1px solid var(--border-color);
+border-radius: 0.75rem;
+overflow: hidden;
+```
+- Header row: title (sans 0.875rem/600) + record count (mono 0.65rem/muted)
+- `thead`: `bg-primary` background, `0.65rem / uppercase / muted` headers
+- `tbody`: `text-secondary` cells, `border-color` row dividers, hover to `bg-primary`
+- Commit hashes: `accent-infra` color
+- Cost values: `text-primary / 600` weight, right-aligned
+
+### Cost Simulator
+Card with `bg-secondary` surface, `0.75rem` radius. Contains:
+- Header: sans title + cyan `WHAT-IF` tag chip
+- Baseline grid: 3-column stat cells, `space-1` (4px) label-to-value gap
+- Sliders: 16px `accent-infra` thumbs on `border-color` track, `space-2` top margin
+  - Hover: `accent-infra-light` + `accent-infra-10` ring (4px spread)
+  - Active: `accent-infra-dark` + `accent-infra-20` ring
+- Projection callout: `accent-infra-10` bg + `3px` cyan left border
+- Delta: `text-muted` when neutral, `status-error` on increase, `status-success` on decrease
+- Reset: ghost button, right-aligned in footer, hover/active to `accent-infra`/`accent-infra-dark`
