@@ -30,6 +30,7 @@ export class CostDB {
 					org_id TEXT NOT NULL,
 					project_id TEXT NOT NULL,
 					commit_hash TEXT,
+					source TEXT,
 					total_monthly_estimate NUMERIC NOT NULL DEFAULT 0,
 					created_at TEXT NOT NULL
 				);
