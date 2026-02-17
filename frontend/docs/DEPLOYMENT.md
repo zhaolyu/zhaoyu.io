@@ -26,7 +26,7 @@ Before deploying, ensure you have:
 2. Go to **My Profile** → **API Tokens**
 3. Click **Create Token**
 4. Use the **Edit Cloudflare Workers** template or create a custom token with:
-   - **Permissions**: 
+   - **Permissions**:
      - `Account` → `Cloudflare Pages` → `Edit`
    - **Account Resources**: Include your account
 5. Click **Continue to summary** → **Create Token**
@@ -67,7 +67,8 @@ Before deploying, ensure you have:
 6. You can skip the upload for now - GitHub Actions will handle deployments
 7. Click **Create project**
 
-**Note**: 
+**Note**:
+
 - Make sure you're creating a **Pages** project, not a Workers project
 - The project name must match exactly: `zhaoyu-io`
 - After creating, the first deployment will happen when you push to `main` branch via GitHub Actions
@@ -104,6 +105,7 @@ If you need to configure DNS manually:
    - **Proxy status**: Proxied (orange cloud)
 
 For `www` subdomain:
+
 - **Name**: `www`
 - **Target**: `zhaoyu-io.pages.dev`
 - **Proxy status**: Proxied
@@ -117,10 +119,12 @@ The project uses a two-stage CI/CD pipeline:
 ### Stage 1: CI - Quality Checks and Build
 
 The CI workflow (`.github/workflows/ci.yml`) runs automatically on:
+
 - Push to **all branches** (enables feature branch deployments)
 - Pull requests targeting `main` or `develop`
 
 **Quality Checks (run in parallel):**
+
 1. **Type Check** - Validates TypeScript types (includes SvelteKit sync)
 2. **Lint** - Checks code style with ESLint
 3. **Test** - Runs unit/integration tests (includes SvelteKit sync)
@@ -129,6 +133,7 @@ The CI workflow (`.github/workflows/ci.yml`) runs automatically on:
 ### Stage 2: Deploy to Cloudflare Pages
 
 The deploy workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
+
 1. **Checks** for duplicate deployments (prevents duplicate `workflow_run` and `push` triggers)
 2. **Polls CI status** (for push events, waits up to 5 minutes for CI to complete)
 3. **Builds** directly (no artifact download needed)
@@ -136,6 +141,7 @@ The deploy workflow (`.github/workflows/cloudflare-pages.yml`) automatically:
 5. **Deploys** to Cloudflare Pages using the `cloudflare/pages-action`
 
 **Triggers:**
+
 - **Primary:** `workflow_run` - After successful CI on any branch
 - **Fallback:** `push` - Direct push to feature branches (with CI status check)
 - **Manual:** `workflow_dispatch` - Manual trigger (with optional CI check skip)
@@ -162,12 +168,14 @@ This project is configured with **two deployment environments**:
 **Trigger:** Push to `main` branch
 
 **Deployment:**
+
 - Deploys to **Production** environment
 - Available at: `https://zhaoyu-io.pages.dev`
 - Custom domain: `https://zhaoyu.io` (when configured)
 - Used for live, production-ready code
 
 **Configuration:**
+
 - Branch: `main`
 - Environment: Production
 - Custom domain: `zhaoyu.io`
@@ -177,6 +185,7 @@ This project is configured with **two deployment environments**:
 **Trigger:** Push to any feature branch (automatic after CI passes)
 
 **Deployment:**
+
 - Deploys as **Preview** deployment
 - Available at: `{branch-name}.zhaoyu-io.pages.dev` (slashes replaced with hyphens)
 - Hash-based URLs: `{hash}.zhaoyu-io.pages.dev` (also available from Cloudflare dashboard)
@@ -204,6 +213,7 @@ The workflow automatically determines the deployment type:
 4. Cloudflare will automatically configure DNS
 
 **Result:**
+
 - Production deployments accessible at `https://zhaoyu.io`
 - Also available at `https://zhaoyu-io.pages.dev`
 
@@ -232,17 +242,20 @@ This file is automatically copied to the build output and tells Cloudflare Pages
 If you prefer to deploy manually without CI/CD:
 
 1. Build the project locally:
+
    ```bash
    cd frontend
    npm run build
    ```
 
 2. Install Wrangler CLI:
+
    ```bash
    npm install -g wrangler
    ```
 
 3. Authenticate:
+
    ```bash
    wrangler login
    ```
@@ -335,20 +348,24 @@ After deployment, verify:
 ### Preview Deployments
 
 **Automatic Preview Deployments:**
+
 - Every push to non-`main` branches creates a preview deployment
 - Each branch gets a unique preview URL
 - Preview URLs are automatically generated based on branch name
 
 **Accessing Preview Deployments:**
+
 1. Cloudflare Pages dashboard → Your project → **Deployments** tab
 2. Find your branch deployment
 3. Click the preview URL to view the deployment
 
 **Preview URL Format:**
+
 - Branch alias: `{branch-name}.zhaoyu-io.pages.dev`
 - Hash-based: `{commit-hash}.zhaoyu-io.pages.dev`
 
 **Example:**
+
 - Push to `develop` branch → `develop.zhaoyu-io.pages.dev`
 - Push to `feature/new-feature` → `feature-new-feature.zhaoyu-io.pages.dev`
 
@@ -369,6 +386,7 @@ After deployment, verify:
 - **Deployment**: Automatic on push to any non-`main` branch
 
 **Workflow:**
+
 1. Create feature branch: `git checkout -b feature/new-feature`
 2. Make changes and push: `git push origin feature/new-feature`
 3. Automatic preview deployment created
@@ -385,6 +403,7 @@ You can set different environment variables for production and preview:
    - **Preview**: Used for all other branch deployments
 
 **Example:**
+
 - Production: `PUBLIC_API_URL=https://api.zhaoyu.io`
 - Preview: `PUBLIC_API_URL=https://api-dev.zhaoyu.io`
 
@@ -409,13 +428,13 @@ You can set different environment variables for production and preview:
 
 This project uses **Cloudflare Pages** (not Workers directly), but understanding the difference helps:
 
-| Feature | Cloudflare Pages | Cloudflare Workers |
-|---------|-----------------|-------------------|
-| **Purpose** | Static site hosting | Serverless functions at the edge |
-| **Best For** | Frontend applications, static sites | Dynamic server-side logic, API endpoints |
-| **Deployment** | Static files (HTML, CSS, JS) | JavaScript/WASM code |
-| **Execution** | Serves pre-built files | Runs code on every request |
-| **Use Case** | Your SvelteKit frontend | Backend logic, middleware, transformations |
+| Feature        | Cloudflare Pages                    | Cloudflare Workers                         |
+| -------------- | ----------------------------------- | ------------------------------------------ |
+| **Purpose**    | Static site hosting                 | Serverless functions at the edge           |
+| **Best For**   | Frontend applications, static sites | Dynamic server-side logic, API endpoints   |
+| **Deployment** | Static files (HTML, CSS, JS)        | JavaScript/WASM code                       |
+| **Execution**  | Serves pre-built files              | Runs code on every request                 |
+| **Use Case**   | Your SvelteKit frontend             | Backend logic, middleware, transformations |
 
 ### Common Use Cases for Workers
 
@@ -467,10 +486,11 @@ You can enhance your Cloudflare Pages project with Workers in several ways:
 **Location**: Create a `functions/` directory in your Pages project root.
 
 **Example**: Create `functions/api/hello.ts`:
+
 ```typescript
 export async function onRequest() {
-  return new Response(JSON.stringify({ message: "Hello from Pages Functions!" }), {
-    headers: { "Content-Type": "application/json" },
+  return new Response(JSON.stringify({ message: 'Hello from Pages Functions!' }), {
+    headers: { 'Content-Type': 'application/json' },
   });
 }
 ```

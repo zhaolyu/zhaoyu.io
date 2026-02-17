@@ -3,100 +3,97 @@
  */
 
 type RequestOptions = RequestInit & {
-	params?: Record<string, string | number | boolean>;
+  params?: Record<string, string | number | boolean>;
 };
 
 /**
  * Base API client class
  */
 export class ApiClient {
-	private baseUrl: string;
+  private baseUrl: string;
 
-	constructor(baseUrl: string = '') {
-		this.baseUrl = baseUrl;
-	}
+  constructor(baseUrl: string = '') {
+    this.baseUrl = baseUrl;
+  }
 
-	/**
-	 * Build URL with query parameters
-	 */
-	private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
-		const url = new URL(endpoint, this.baseUrl || window.location.origin);
-		
-		if (params) {
-			Object.entries(params).forEach(([key, value]) => {
-				url.searchParams.append(key, String(value));
-			});
-		}
+  /**
+   * Build URL with query parameters
+   */
+  private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
+    const url = new URL(endpoint, this.baseUrl || window.location.origin);
 
-		return url.toString();
-	}
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        url.searchParams.append(key, String(value));
+      });
+    }
 
-	/**
-	 * Make a fetch request with error handling
-	 */
-	private async request<T>(
-		endpoint: string,
-		options: RequestOptions = {}
-	): Promise<T> {
-		const { params, ...fetchOptions } = options;
-		const url = this.buildUrl(endpoint, params);
+    return url.toString();
+  }
 
-		const response = await fetch(url, {
-			...fetchOptions,
-			headers: {
-				'Content-Type': 'application/json',
-				...fetchOptions.headers
-			}
-		});
+  /**
+   * Make a fetch request with error handling
+   */
+  private async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { params, ...fetchOptions } = options;
+    const url = this.buildUrl(endpoint, params);
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+    const response = await fetch(url, {
+      ...fetchOptions,
+      headers: {
+        'Content-Type': 'application/json',
+        ...fetchOptions.headers,
+      },
+    });
 
-		return response.json();
-	}
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-	/**
-	 * GET request
-	 */
-	async get<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-		return this.request<T>(endpoint, {
-			...options,
-			method: 'GET'
-		});
-	}
+    return response.json();
+  }
 
-	/**
-	 * POST request
-	 */
-	async post<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
-		return this.request<T>(endpoint, {
-			...options,
-			method: 'POST',
-			body: data ? JSON.stringify(data) : undefined
-		});
-	}
+  /**
+   * GET request
+   */
+  async get<T>(endpoint: string, options?: RequestOptions): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'GET',
+    });
+  }
 
-	/**
-	 * PUT request
-	 */
-	async put<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
-		return this.request<T>(endpoint, {
-			...options,
-			method: 'PUT',
-			body: data ? JSON.stringify(data) : undefined
-		});
-	}
+  /**
+   * POST request
+   */
+  async post<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
 
-	/**
-	 * DELETE request
-	 */
-	async delete<T>(endpoint: string, options?: RequestOptions): Promise<T> {
-		return this.request<T>(endpoint, {
-			...options,
-			method: 'DELETE'
-		});
-	}
+  /**
+   * PUT request
+   */
+  async put<T>(endpoint: string, data?: unknown, options?: RequestOptions): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  /**
+   * DELETE request
+   */
+  async delete<T>(endpoint: string, options?: RequestOptions): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'DELETE',
+    });
+  }
 }
 
 /**
