@@ -1,103 +1,90 @@
 # zhaoyu.io
 
-Personal website repository built with SvelteKit, deployed to Cloudflare Pages.
+**Principal Engineering Portfolio & R&D Playground.**
 
-## Git Configuration
+This repository hosts the personal site of Zhao Yu, a Principal Engineer specializing in high-scale media architecture and local-first systems. It serves two purposes:
 
-### Using Personal Access Token (PAT) for Authentication
+- **Portfolio:** A high-performance, Edge-rendered showcase of my work.
+- **R&D Sandbox:** A production implementation of the "Synthesis Strategy"—combining serverless ingestion with local-first state management.
 
-This repository is configured to use a Personal Access Token (PAT) from your personal GitHub account for push/pull operations.
+---
 
-#### Option 1: Store PAT in Credential Helper (Recommended)
+## 🏗 System Architecture
 
-This method stores your PAT securely in macOS Keychain, keeping the remote URL clean.
+This is not just a static site. It is a **Hybrid Edge Application** that bridges the gap between global CDN performance and local-first interactivity.
 
-**Steps:**
-1. Generate a Personal Access Token from your personal GitHub account (`zhaolyu`):
-   - Go to: https://github.com/settings/tokens
-   - Click "Generate new token" → "Generate new token (classic)"
-   - Give it a name (e.g., "zhaoyu.io repo")
-   - Select the `repo` scope
-   - Generate and copy the token
+### The Data Flow
 
-2. Configure credential helper and store your PAT:
-   ```bash
-   # Set credential helper to use macOS Keychain
-   git config --local credential.helper osxkeychain
-   
-   # Store your personal account credentials
-   git credential-osxkeychain store <<EOF
-   protocol=https
-   host=github.com
-   username=zhaolyu
-   password=YOUR_PERSONAL_PAT
-   EOF
-   ```
+1. **Ingestion (The Harvester):** Infrastructure changes trigger a GitHub Action that sends Terraform plans to a GCP Cloud Run service.
+2. **Normalization:** Data is cleaned, cost-mapped, and stored in Cloud SQL (Postgres 16) with `REPLICA IDENTITY FULL`.
+3. **Sync Engine:** ElectricSQL streams the Write-Ahead Log (WAL) to authenticated clients via a persistent shape subscription.
+4. **Local-First Client:** The `/infra` route initializes PGlite (WASM Postgres) in the browser, hydrating a persistent IndexedDB store.
+5. **Reactive UI:** Svelte 5 Runes drive the dashboard, enabling 60fps filtering and cost projections without network latency.
 
-3. Ensure remote URL is clean (no token embedded):
-   ```bash
-   git remote set-url origin https://github.com/zhaolyu/zhaoyu.io.git
-   ```
+---
 
-4. Verify it works:
-   ```bash
-   git ls-remote origin
-   ```
+## 🛠 Tech Stack
 
-**Note:** If you previously had work account credentials cached, clear them first:
-   ```bash
-   git credential-osxkeychain erase <<EOF
-   protocol=https
-   host=github.com
-   EOF
-   ```
+| Layer | Technology | Rationale |
+|-------|-----------|-----------|
+| Frontend | SvelteKit 2 (Svelte 5) | Runes provide fine-grained reactivity for high-frequency data updates. |
+| Edge Hosting | Cloudflare Pages | Zero-cold-start delivery for static portfolio pages via global CDN. |
+| Local Database | PGlite (WASM) | Runs a full Postgres instance in the browser for zero-latency queries. |
+| Sync Protocol | ElectricSQL | WAL-based replication that handles offline state and shape subscriptions. |
+| Backend | GCP Cloud Run | Scalable, containerized ingestion of infrastructure metrics (us-central1). |
+| CI/CD | GitHub Actions | HMAC-signed push to ingestion API on every qualifying commit. |
 
-**Benefits:**
-- PAT stored securely in macOS Keychain
-- Clean remote URL (no credentials visible)
-- Automatic authentication for push/pull operations
-- More secure than embedding token in URL
+---
 
-#### Option 2: Use PAT Directly in Remote URL
+## ⚡ Key Features
 
-To configure the remote URL with your personal GitHub PAT:
+### Zero-Latency Infrastructure HUD (`/infra`)
+
+A public-facing dashboard that tracks the real-time cost of this architecture.
+
+- **Offline-Ready:** Works without a network connection thanks to IndexedDB persistence across sessions.
+- **Live Sync:** A "Pulse" indicator visualizes WAL events arriving from ElectricSQL in real-time.
+- **Local SQL Engine:** All filtering and aggregation runs as SQL directly against PGlite in the browser—no round-trips.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 24+
+
+### Local Development
 
 ```bash
-git remote set-url origin https://zhaolyu:YOUR_PERSONAL_PAT@github.com/zhaolyu/zhaoyu.io.git
+# 1. Install dependencies (including WASM binaries)
+npm install
+
+# 2. Run the development server
+cd frontend && npm run dev
 ```
 
-**Steps:**
-1. Generate a Personal Access Token from your personal GitHub account (`zhaolyu`):
-   - Go to: https://github.com/settings/tokens
-   - Click "Generate new token" → "Generate new token (classic)"
-   - Give it a name (e.g., "zhaoyu.io repo")
-   - Select the `repo` scope
-   - Generate and copy the token
+The `/infra` dashboard requires environment variables for the ElectricSQL sync endpoint and HMAC secret. See [`frontend/src/lib/constants/config.ts`](frontend/src/lib/constants/config.ts) for the expected variable names.
 
-2. Replace `YOUR_PERSONAL_PAT` in the command above with your actual token
+### Deployment
 
-3. Verify the remote is configured:
-   ```bash
-   git remote -v
-   ```
+The frontend deploys to Cloudflare Pages on push to `main`. The GCP backend (ingestion + sync) runs on Cloud Run and is managed separately.
 
-**Note:** This method embeds the PAT in the remote URL. For better security, use Option 1 (credential storage) instead, which stores the PAT securely in macOS Keychain.
+---
 
-## Documentation
+## 📚 Documentation
 
-Project documentation is available in the [`docs/`](docs/) directory:
-
-### Infrastructure & Features
-- **[Cost-Guard Integration](docs/cost-guard/)** - PGlite + ElectricSQL infrastructure cost dashboard
-
-### Technical Guides
-- [GitHub Authentication](docs/GITHUB_AUTHENTICATION.md) - Multi-account setup, SAML SSO, troubleshooting
-- [Deployment Recommendation](docs/DEPLOYMENT_RECOMMENDATION.md) - Cloudflare Pages deployment guide
-- [MCP Browser Diagnostic](docs/MCP_BROWSER_DIAGNOSTIC.md) - Cursor IDE browser integration troubleshooting
-
-### Architecture
-- [ANTIGRAVITY.md](docs/ANTIGRAVITY.md) - Architecture philosophy
-- [CLAUDE.md](CLAUDE.md) - Principal Architect Framework (coding standards)
-- [Project Summary](docs/PROJECT_SUMMARY.md) - Project overview and status
+- **[Cost-Guard Integration](docs/cost-guard/)** — PGlite + ElectricSQL infrastructure cost dashboard
+- **[Architecture Philosophy](docs/ANTIGRAVITY.md)** — The "Antigravity" design principles
+- **[Deployment Guide](docs/DEPLOYMENT_RECOMMENDATION.md)** — Cloudflare Pages setup
+- **[GitHub Authentication](docs/GITHUB_AUTHENTICATION.md)** — Multi-account setup and troubleshooting
 
 For frontend-specific documentation, see [`frontend/docs/`](frontend/docs/).
+
+---
+
+## 📜 License
+
+MIT © 2026 Zhao Yu.
+
+Data visualization components and cost-ingestion pipeline logic are open-source. Please attribute if used in production.
