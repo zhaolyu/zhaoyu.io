@@ -128,6 +128,7 @@
 
 <svelte:head>
   <title>Manifesto — zhaoyu.io</title>
+  <meta name="description" content="A personal manifesto on AI-augmented engineering — principles for building with large language models as a Principal Engineer." />
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:wght@300;400;600;700&display=swap"
     rel="stylesheet"
@@ -255,11 +256,39 @@
 </div>
 
 <style>
-  :root {
+  /* Light mode (default) */
+  .manifesto-root {
+    --m-bg: #f5f5f8;
+    --m-surface: #ffffff;
+    --m-surface-hover: #ededf2;
+    --m-border: #e0e0e8;
+    --m-border-strong: #b8b8c8;
+    --m-text: #1a1a2e;
+    --m-text-dim: #6b6b88;
+    --m-accent: #e04020;
+    --m-accent-glow: rgba(224, 64, 32, 0.08);
+    --m-green: #28a060;
+    --m-green-dim: rgba(40, 160, 96, 0.1);
+    --m-amber: #b07010;
+
+    background: var(--m-bg);
+    color: var(--m-text);
+    font-family: 'Source Sans 3', sans-serif;
+    min-height: calc(100vh - 64px); /* account for navbar height */
+    overflow-x: hidden;
+    position: relative;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  /* Dark mode */
+  :global(html.dark) .manifesto-root {
     --m-bg: #0a0a0c;
     --m-surface: #111114;
     --m-surface-hover: #18181c;
     --m-border: #222228;
+    --m-border-strong: #444456;
     --m-text: #e8e8ec;
     --m-text-dim: #8888a0;
     --m-accent: #f05030;
@@ -267,15 +296,6 @@
     --m-green: #30c870;
     --m-green-dim: rgba(48, 200, 112, 0.12);
     --m-amber: #e8a020;
-  }
-
-  .manifesto-root {
-    background: var(--m-bg);
-    color: var(--m-text);
-    font-family: 'Source Sans 3', sans-serif;
-    min-height: calc(100vh - 64px); /* account for navbar height */
-    overflow-x: hidden;
-    position: relative;
   }
 
   .grain {
@@ -318,7 +338,7 @@
     font-weight: 400;
     line-height: 1.1;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #fff 30%, var(--m-accent) 100%);
+    background: linear-gradient(135deg, var(--m-text) 30%, var(--m-accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -415,7 +435,7 @@
 
   .principle:hover {
     background: var(--m-surface-hover);
-    border-color: #333340;
+    border-color: var(--m-border-strong);
     transform: translateX(4px);
   }
 
@@ -484,7 +504,7 @@
   .checkbox {
     width: 22px;
     height: 22px;
-    border: 2px solid #444;
+    border: 2px solid var(--m-border-strong);
     border-radius: 5px;
     flex-shrink: 0;
     display: flex;
@@ -579,7 +599,7 @@
     content: '—';
     position: absolute;
     left: 0;
-    color: #444;
+    color: var(--m-text-dim);
   }
 
   /* Quote */
