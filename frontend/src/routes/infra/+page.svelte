@@ -12,6 +12,7 @@
   let isDark = $state(false);
 
   onMount(() => {
+    costDB.start();
     theme.init();
     const unsubscribe = theme.subscribe((value) => {
       isDark = value === 'dark';
@@ -43,6 +44,11 @@
     }
   });
 </script>
+
+<svelte:head>
+  <title>Infrastructure Pulse - zhaoyu.io</title>
+  <meta name="robots" content="noindex" />
+</svelte:head>
 
 <div class="infra-page">
   <div class="infra-container">
