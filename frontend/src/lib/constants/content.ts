@@ -166,8 +166,8 @@ export const notesData: NotesData = {
       date: 'Feb 2026',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
       content: [
-        'The engineers pulling ahead in 2026 share one trait: they treat AI as a <strong>core engineering primitive</strong>, not an optional add-on. They use it for code generation, architecture review, spec drafting, test scaffolding, and exploratory prototyping. They build the muscle of AI-native workflows as seriously as they once built the muscle of debugging.',
-        'The compound effect is real. Every hour invested in learning how to work <em>with</em> the model pays dividends across every future project. I\'ve stopped asking "should I use AI for this?" and started asking "what\'s the fastest path from idea to production?" That shift in framing changes everything.',
+        'I built most of this site using Claude Code. Not as a novelty — as a deliberate workflow. The components you\'re reading, the type errors that blocked deployment, the engineering notes you\'re reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.',
+        'The thing I didn\'t expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the "is this worth building?" stage. You just build. The compounding isn\'t in the individual tasks — it\'s in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn\'t change what you can build; it changes how many times you can try.',
       ],
     },
     {
@@ -175,8 +175,8 @@ export const notesData: NotesData = {
       date: 'Jan 2026',
       tags: ['Architecture', 'Edge Computing', 'Independence'],
       content: [
-        'Most engineers treat edge computing as an optimization technique — a way to shave a few hundred milliseconds off TTFB. I treat it as a <strong>design philosophy for resilience</strong>. When your application logic runs at the edge, you are not dependent on a single origin region, a single cloud provider, or a single point of failure.',
-        'The same principle applies beyond systems architecture. Building skills that let you operate independently — full-stack capability, local-first tooling, personal infrastructure — is the engineering equivalent of maintaining optionality. You want to be able to move. Edge architecture, both literal and metaphorical, is how I think about building systems that survive disruption.',
+        'The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn\'t panic — it degrades gracefully.',
+        'I\'ve started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently — full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.',
       ],
     },
     {
@@ -184,8 +184,8 @@ export const notesData: NotesData = {
       date: 'Jan 2026',
       tags: ['Backend', 'API Design', 'Reliability'],
       content: [
-        'As I expand into backend architecture, the most critical concept I\'ve embraced is <strong>Idempotency</strong>. In a distributed system (like the microservices powering CNBC), network failures are inevitable. A client might send a "Purchase" request, the server processes it, but the acknowledgement fails.',
-        "Without idempotency keys, the client retries, and the user gets charged twice. Designing APIs that can safely handle the exact same request <code>N</code> times without changing the result is not a feature—it's a requirement for resilience at scale.",
+        'Working on live news infrastructure taught me that <strong>failures are not exceptional — they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" — it\'s "what happens when it does?"',
+        'Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn\'t finished. This matters even more in event-driven systems where the cost of double-processing — a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event — compounds faster than the failure that triggered the retry.',
       ],
     },
     {
