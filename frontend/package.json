@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "prepare": "husky install || true"
+    "prepare": "git -C .. config core.hooksPath frontend/.husky || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
