@@ -17,12 +17,10 @@ export interface IntersectionObserverOptions {
   debounceMs?: number; // Optional debouncing for mobile to prevent flickering
 }
 
-/* eslint-disable no-unused-vars */
 export type IntersectionObserverCallback = (
   entry: IntersectionObserverEntry,
   isIntersecting: boolean,
 ) => void;
-/* eslint-enable no-unused-vars */
 
 // Cache mobile viewport result to avoid repeated checks
 let cachedIsMobile: boolean | null = null;

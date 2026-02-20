@@ -87,25 +87,29 @@ describe('handleAnchorNavigation', () => {
     it('should handle missing target element gracefully', () => {
       handleAnchorNavigation(mockEvent, '/#non-existent');
 
-      // Should still prevent default
-      expect(mockPreventDefault).toHaveBeenCalledTimes(1);
-      expect(mockStopPropagation).toHaveBeenCalledTimes(1);
+      // Should NOT prevent default — let browser navigate to /#non-existent naturally
+      expect(mockPreventDefault).not.toHaveBeenCalled();
+      expect(mockStopPropagation).not.toHaveBeenCalled();
 
-      // But should not scroll (element doesn't exist)
+      // Should not scroll (element doesn't exist)
       expect(mockScrollIntoView).not.toHaveBeenCalled();
     });
   });
 
   describe('Regression prevention', () => {
-    it('should always prevent default for anchor links', () => {
-      // Would catch if preventDefault is removed or conditionally called
-      const anchorLinks = ['/#section1', '/#section2', '/#about-me'];
+    it('should only prevent default when target element exists on page', () => {
+      // Elements that exist → intercept; elements that don't → let browser navigate
+      document.body.innerHTML = '<div id="section1">S1</div>';
+      const el = document.getElementById('section1')!;
+      el.scrollIntoView = vi.fn();
 
-      anchorLinks.forEach((href) => {
-        const event = createMockEvent();
-        handleAnchorNavigation(event, href);
-        expect(event.preventDefault).toHaveBeenCalled();
-      });
+      const existingEvent = createMockEvent();
+      handleAnchorNavigation(existingEvent, '/#section1');
+      expect(existingEvent.preventDefault).toHaveBeenCalled();
+
+      const missingEvent = createMockEvent();
+      handleAnchorNavigation(missingEvent, '/#about-me');
+      expect(missingEvent.preventDefault).not.toHaveBeenCalled();
     });
 
     it('should use correct scrollIntoView options', () => {
