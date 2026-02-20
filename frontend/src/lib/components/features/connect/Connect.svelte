@@ -4,6 +4,7 @@
   let copied = $state(false);
   const email = 'zhaolyu@gmail.com';
   const linkedinUrl = 'https://linkedin.com/in/zhaolyu';
+  const githubUrl = 'https://github.com/zhaolyu';
 
   async function copyEmail() {
     if (!browser) return;
@@ -32,8 +33,11 @@
           ></path>
         </svg>
       </div>
-      <h2 class="section-title">Ready to Scale?</h2>
-      <p class="section-subtitle">Initialize a handshake protocol.</p>
+      <h2 class="section-title">Let's Build Something.</h2>
+      <p class="section-subtitle">
+        Interested in AI-augmented engineering, high-scale architecture, or building independent
+        leverage as an engineer? I want to hear from you.
+      </p>
     </div>
 
     <div class="terminal-window">
@@ -49,7 +53,7 @@
       <div class="terminal-content">
         <div class="flex gap-3 mb-6 flex-wrap">
           <span class="prompt flex-shrink-0">➜</span>
-          <span class="command break-words min-w-0">./initiate_contact.sh --method=direct</span>
+          <span class="command break-words min-w-0">./connect.sh --intent=build-together</span>
         </div>
 
         <div class="terminal-output">
@@ -72,6 +76,23 @@
             </div>
             <a
               href={linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="external-link-mobile"
+            >
+              OPEN ↗
+            </a>
+          </div>
+
+          <div class="flex flex-row items-center justify-between gap-2">
+            <div class="flex items-baseline gap-4 flex-1 min-w-0">
+              <span class="output-label shrink-0 w-20">GitHub:</span>
+              <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="output-link">
+                /zhaolyu
+              </a>
+            </div>
+            <a
+              href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               class="external-link-mobile"

@@ -128,7 +128,10 @@
 
 <svelte:head>
   <title>Manifesto — zhaoyu.io</title>
-  <meta name="description" content="A personal manifesto on AI-augmented engineering — principles for building with large language models as a Principal Engineer." />
+  <meta
+    name="description"
+    content="A personal manifesto on AI-augmented engineering — principles for building with large language models as a Principal Engineer."
+  />
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:wght@300;400;600;700&display=swap"
     rel="stylesheet"

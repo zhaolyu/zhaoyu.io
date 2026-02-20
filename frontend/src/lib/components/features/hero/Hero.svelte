@@ -9,8 +9,8 @@
     heroContent.bio
       .replace(/Zhao Yu/g, '<strong class="bio-name font-semibold">Zhao Yu</strong>')
       .replace(
-        /shaving milliseconds off a render/g,
-        '<strong class="bio-emphasis font-normal">shaving milliseconds off a render</strong>',
+        /leverage, optionality, and AI-augmented engineering/g,
+        '<strong class="bio-emphasis font-normal">leverage, optionality, and AI-augmented engineering</strong>',
       )
       .replace(
         /sub-1:25 half-marathon/g,
@@ -77,8 +77,7 @@
         {heroContent.cta.primary}
       </a>
       <a
-        href="/#notes"
-        onclick={(e) => handleAnchorNavigation(e, '/#notes')}
+        href="/ai-manifesto"
         class="px-8 py-3 border border-neutral-300 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-neutral-900 dark:hover:text-white transition-colors w-full md:w-auto"
       >
         {heroContent.cta.secondary}
