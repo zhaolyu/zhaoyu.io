@@ -270,8 +270,10 @@
     --m-text-dim: #6b6b88;
     --m-accent: #e04020;
     --m-accent-glow: rgba(224, 64, 32, 0.08);
+    --m-accent-border: rgba(224, 64, 32, 0.2);
     --m-green: #28a060;
     --m-green-dim: rgba(40, 160, 96, 0.1);
+    --m-green-border: rgba(40, 160, 96, 0.2);
     --m-amber: #b07010;
 
     background: var(--m-bg);
@@ -288,16 +290,18 @@
   /* Dark mode */
   :global(html.dark) .manifesto-root {
     --m-bg: #0a0a0c;
-    --m-surface: #111114;
-    --m-surface-hover: #18181c;
-    --m-border: #222228;
-    --m-border-strong: #444456;
+    --m-surface: #17171c;
+    --m-surface-hover: #1e1e26;
+    --m-border: #2d2d3a;
+    --m-border-strong: #52527a;
     --m-text: #e8e8ec;
     --m-text-dim: #8888a0;
     --m-accent: #f05030;
     --m-accent-glow: rgba(240, 80, 48, 0.15);
+    --m-accent-border: rgba(240, 80, 48, 0.25);
     --m-green: #30c870;
     --m-green-dim: rgba(48, 200, 112, 0.12);
+    --m-green-border: rgba(48, 200, 112, 0.2);
     --m-amber: #e8a020;
   }
 
@@ -365,7 +369,7 @@
   .epigraph {
     text-align: center;
     font-size: 17px;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7;
     color: var(--m-text-dim);
     max-width: 600px;
@@ -469,7 +473,7 @@
     font-size: 14px;
     line-height: 1.6;
     color: var(--m-text-dim);
-    font-weight: 300;
+    font-weight: 400;
   }
 
   /* Checklist */
@@ -501,7 +505,7 @@
   }
 
   .check-item.checked {
-    opacity: 0.5;
+    opacity: 0.65;
   }
 
   .checkbox {
@@ -560,12 +564,12 @@
 
   .reality-card.hype {
     background: linear-gradient(135deg, var(--m-accent-glow), transparent);
-    border-color: rgba(240, 80, 48, 0.2);
+    border-color: var(--m-accent-border);
   }
 
   .reality-card.ground {
     background: linear-gradient(135deg, var(--m-green-dim), transparent);
-    border-color: rgba(48, 200, 112, 0.2);
+    border-color: var(--m-green-border);
   }
 
   .reality-card h4 {
@@ -661,7 +665,7 @@
   .streak-sub {
     font-size: 13px;
     color: var(--m-text-dim);
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .streak-reset {
@@ -694,7 +698,7 @@
   .footer p {
     font-size: 13px;
     color: var(--m-text-dim);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7;
   }
 
