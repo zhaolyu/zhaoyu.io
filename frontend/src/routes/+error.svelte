@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { page } from '$app/stores';
+  import { page } from '$app/state';
 
-  const error: App.Error | null = $page.error;
-  const status: number = $page.status;
+  const error: App.Error | null = page.error;
+  const status: number = page.status;
 </script>
 
 <svelte:head>
@@ -24,7 +24,7 @@
     {/if}
     <div class="error-actions">
       <a href="/" class="btn">Go Home</a>
-      <button on:click={() => window.location.reload()} class="btn btn-secondary">
+      <button onclick={() => window.location.reload()} class="btn btn-secondary">
         Reload Page
       </button>
     </div>
