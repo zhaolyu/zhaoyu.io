@@ -162,33 +162,6 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
-      title: 'Decoupling State from Render in LLM Streaming',
-      date: 'Oct 2025',
-      tags: ['React Performance', 'HCI', '60fps'],
-      content: [
-        'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
-        "<strong>This is a performance trap.</strong> Triggering a reconciliation cycle on every single token blows through the browser's 16ms frame budget. The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously, then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit to the DOM only when the browser was ready to paint.",
-      ],
-    },
-    {
-      title: 'The URL is the Source of Truth',
-      date: 'Dec 2025',
-      tags: ['Architecture', 'State Management', 'UX'],
-      content: [
-        'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
-        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition.',
-      ],
-    },
-    {
-      title: 'Idempotency in Distributed Systems',
-      date: 'Jan 2026',
-      tags: ['Backend', 'API Design', 'Reliability'],
-      content: [
-        'As I expand into backend architecture, the most critical concept I\'ve embraced is <strong>Idempotency</strong>. In a distributed system (like the microservices powering CNBC), network failures are inevitable. A client might send a "Purchase" request, the server processes it, but the acknowledgement fails.',
-        "Without idempotency keys, the client retries, and the user gets charged twice. Designing APIs that can safely handle the exact same request <code>N</code> times without changing the result is not a feature—it's a requirement for resilience at scale.",
-      ],
-    },
-    {
       title: 'Building with AI: The Compound Advantage',
       date: 'Feb 2026',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
@@ -204,6 +177,33 @@ export const notesData: NotesData = {
       content: [
         'Most engineers treat edge computing as an optimization technique — a way to shave a few hundred milliseconds off TTFB. I treat it as a <strong>design philosophy for resilience</strong>. When your application logic runs at the edge, you are not dependent on a single origin region, a single cloud provider, or a single point of failure.',
         'The same principle applies beyond systems architecture. Building skills that let you operate independently — full-stack capability, local-first tooling, personal infrastructure — is the engineering equivalent of maintaining optionality. You want to be able to move. Edge architecture, both literal and metaphorical, is how I think about building systems that survive disruption.',
+      ],
+    },
+    {
+      title: 'Idempotency in Distributed Systems',
+      date: 'Jan 2026',
+      tags: ['Backend', 'API Design', 'Reliability'],
+      content: [
+        'As I expand into backend architecture, the most critical concept I\'ve embraced is <strong>Idempotency</strong>. In a distributed system (like the microservices powering CNBC), network failures are inevitable. A client might send a "Purchase" request, the server processes it, but the acknowledgement fails.',
+        "Without idempotency keys, the client retries, and the user gets charged twice. Designing APIs that can safely handle the exact same request <code>N</code> times without changing the result is not a feature—it's a requirement for resilience at scale.",
+      ],
+    },
+    {
+      title: 'The URL is the Source of Truth',
+      date: 'Dec 2025',
+      tags: ['Architecture', 'State Management', 'UX'],
+      content: [
+        'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
+        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition.',
+      ],
+    },
+    {
+      title: 'Decoupling State from Render in LLM Streaming',
+      date: 'Oct 2025',
+      tags: ['React Performance', 'HCI', '60fps'],
+      content: [
+        'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
+        "<strong>This is a performance trap.</strong> Triggering a reconciliation cycle on every single token blows through the browser's 16ms frame budget. The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously, then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit to the DOM only when the browser was ready to paint.",
       ],
     },
   ],
