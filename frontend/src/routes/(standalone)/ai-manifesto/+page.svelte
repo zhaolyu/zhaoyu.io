@@ -1,9 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import '@fontsource/dm-serif-display';
+  import '@fontsource/jetbrains-mono/400.css';
+  import '@fontsource/jetbrains-mono/600.css';
+  import '@fontsource/source-sans-3/300.css';
+  import '@fontsource/source-sans-3/400.css';
+  import '@fontsource/source-sans-3/600.css';
+  import '@fontsource/source-sans-3/700.css';
 
   const STORAGE_CHECKS = 'manifesto-checks';
   const STORAGE_STREAK = 'manifesto-streak';
   const STORAGE_DATE = 'manifesto-streak-date';
+  const STORAGE_CHECK_DATE = 'manifesto-check-date';
 
   const principles = [
     {
@@ -73,10 +81,17 @@
 
     // Load persisted state
     try {
-      const savedChecks = localStorage.getItem(STORAGE_CHECKS);
-      if (savedChecks) {
-        checkState = JSON.parse(savedChecks);
+      const todayIso = now.toISOString().split('T')[0];
+      const checkDate = localStorage.getItem(STORAGE_CHECK_DATE);
+
+      // Only restore checks if they were saved today — auto-reset on new day
+      if (checkDate === todayIso) {
+        const savedChecks = localStorage.getItem(STORAGE_CHECKS);
+        if (savedChecks) {
+          checkState = JSON.parse(savedChecks);
+        }
       }
+
       const savedStreak = localStorage.getItem(STORAGE_STREAK);
       if (savedStreak) {
         streak = parseInt(savedStreak, 10) || 0;
@@ -89,7 +104,9 @@
   function toggleCheck(key: string) {
     checkState = { ...checkState, [key]: !checkState[key] };
     try {
+      const todayIso = new Date().toISOString().split('T')[0];
       localStorage.setItem(STORAGE_CHECKS, JSON.stringify(checkState));
+      localStorage.setItem(STORAGE_CHECK_DATE, todayIso);
     } catch {
       // ignore
     }
@@ -120,6 +137,7 @@
       localStorage.removeItem(STORAGE_CHECKS);
       localStorage.removeItem(STORAGE_STREAK);
       localStorage.removeItem(STORAGE_DATE);
+      localStorage.removeItem(STORAGE_CHECK_DATE);
     } catch {
       // ignore
     }
@@ -131,10 +149,6 @@
   <meta
     name="description"
     content="A personal manifesto on AI-augmented engineering — principles for building with large language models as a Principal Engineer."
-  />
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:wght@300;400;600;700&display=swap"
-    rel="stylesheet"
   />
 </svelte:head>
 
