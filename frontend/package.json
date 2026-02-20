@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "prepare": "husky install || true"
+    "prepare": "git -C .. config core.hooksPath frontend/.husky || true"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
@@ -36,7 +36,7 @@
     "prettier": "^3.3.0",
     "prettier-plugin-svelte": "^3.2.0",
     "svelte": "^5.0.0",
-    "svelte-check": "^3.6.0",
+    "svelte-check": "^4.4.1",
     "svelte-eslint-parser": "^0.40.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.5.0",
@@ -52,7 +52,10 @@
   "dependencies": {
     "@electric-sql/pglite": "^0.3.15",
     "@electric-sql/pglite-sync": "^0.4.1",
+    "@fontsource/dm-serif-display": "^5.2.8",
     "@fontsource/geist-mono": "^5.2.7",
-    "@fontsource/geist-sans": "^5.2.5"
+    "@fontsource/geist-sans": "^5.2.5",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/source-sans-3": "^5.2.9"
   }
 }

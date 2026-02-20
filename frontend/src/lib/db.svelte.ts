@@ -8,11 +8,17 @@ export class CostDB {
   #isSynced = $state(false);
   #error = $state<string | null>(null);
   #retried = false;
+  #started = false;
 
-  constructor() {
-    if (browser) {
-      this.init();
-    }
+  /**
+   * Kick off PGlite initialization. Safe to call multiple times — only the
+   * first call has any effect. Callers should invoke this from onMount / $effect
+   * so the page skeleton renders before the ~3 MB WASM blob downloads.
+   */
+  start(): void {
+    if (this.#started || !browser) return;
+    this.#started = true;
+    this.init();
   }
 
   async init(): Promise<void> {
@@ -24,6 +30,11 @@ export class CostDB {
         },
       });
 
+      // TODO(security): resource_name and metadata may contain sensitive infra
+      // identifiers (bucket names, instance IDs, region config). The harvester
+      // (Cloud Run, outside this repo) should strip or redact these fields
+      // before they reach Electric. Until then, raw values are synced into the
+      // browser's IndexedDB and are visible via DevTools.
       await pg.exec(`
 				CREATE TABLE IF NOT EXISTS cost_snapshots (
 					id TEXT PRIMARY KEY,

@@ -1,17 +1,24 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
   import { costDB } from '$lib/db.svelte';
   import { ArchitectHUD } from '$lib/components/features/architect-hud';
   import { CostSimulator } from '$lib/components/features/cost-simulator';
+  import { CostTrendChart } from '$lib/components/features/cost-chart';
+  import { CostFilter } from '$lib/components/features/cost-filter';
   import { simulator } from '$lib/simulator.svelte';
   import { theme } from '$lib/stores';
-  import type { CostSnapshot } from '$lib/types';
+  import { snapshotLabel, snapshotRef, snapshotProject } from '$lib/types';
+  import type { CostSnapshot, SnapshotSource } from '$lib/types';
 
   let snapshots = $state<CostSnapshot[]>([]);
+  let filterSources = $state<SnapshotSource[]>([]);
+  let filterProjects = $state<string[]>([]);
   let error = $state<string | null>(null);
   let isDark = $state(false);
 
   onMount(() => {
+    costDB.start();
     theme.init();
     const unsubscribe = theme.subscribe((value) => {
       isDark = value === 'dark';
@@ -19,15 +26,40 @@
     return unsubscribe;
   });
 
-  let totalMonthlySpend = $derived(
-    snapshots.reduce((acc, s) => acc + Number(s.total_monthly_estimate), 0),
+  // Unique sources and projects for filter chips
+  let allSources = $derived([...new Set(snapshots.map((s) => s.source))] as SnapshotSource[]);
+  let allProjects = $derived([...new Set(snapshots.map((s) => s.project_id))]);
+
+  // Filtered view — in-memory, no re-query needed for ≤ 50 rows
+  let filteredSnapshots = $derived(
+    snapshots.filter(
+      (s) =>
+        (filterSources.length === 0 || filterSources.includes(s.source)) &&
+        (filterProjects.length === 0 || filterProjects.includes(s.project_id)),
+    ),
   );
+
+  // Metric totals — always unfiltered so the cards show global numbers
+  let gcpActual = $derived(
+    snapshots
+      .filter((s) => s.source === 'gcp-billing')
+      .reduce((acc, s) => acc + parseFloat(s.total_monthly_estimate), 0),
+  );
+
+  let iaCEstimate = $derived(
+    snapshots
+      .filter((s) => s.source === 'github')
+      .reduce((acc, s) => acc + parseFloat(s.total_monthly_estimate), 0),
+  );
+
+  let gcpCount = $derived(snapshots.filter((s) => s.source === 'gcp-billing').length);
+  let githubCount = $derived(snapshots.filter((s) => s.source === 'github').length);
 
   $effect(() => {
     const db = costDB.instance;
     const status = costDB.status;
     if (db && status === 'Live') {
-      db.query<CostSnapshot>('SELECT * FROM cost_snapshots ORDER BY created_at DESC LIMIT 10')
+      db.query<CostSnapshot>('SELECT * FROM cost_snapshots ORDER BY created_at DESC LIMIT 50')
         .then((res) => {
           snapshots = res.rows;
         })
@@ -43,6 +75,11 @@
     }
   });
 </script>
+
+<svelte:head>
+  <title>Infrastructure Pulse - zhaoyu.io</title>
+  <meta name="robots" content="noindex" />
+</svelte:head>
 
 <div class="infra-page">
   <div class="infra-container">
@@ -100,47 +137,93 @@
     {/if}
 
     <main class="infra-main">
+      <!-- Summary metrics (always unfiltered) -->
       <div class="infra-metric-card">
-        <span class="metric-label">Monthly Spend</span>
-        <span class="metric-value">${totalMonthlySpend.toFixed(2)}</span>
-        <span class="metric-context">
-          {snapshots.length} snapshot{snapshots.length !== 1 ? 's' : ''} tracked
-        </span>
+        <div class="metric-col">
+          <span class="metric-label">GCP Actual</span>
+          <span class="metric-value metric-value-gcp">${gcpActual.toFixed(2)}</span>
+          <span class="metric-context">
+            {gcpCount} snapshot{gcpCount !== 1 ? 's' : ''}
+          </span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-col">
+          <span class="metric-label">IaC Estimate</span>
+          <span class="metric-value metric-value-iac">${iaCEstimate.toFixed(2)}</span>
+          <span class="metric-context">
+            {githubCount} snapshot{githubCount !== 1 ? 's' : ''}
+          </span>
+        </div>
       </div>
 
+      <!-- Trend chart (respects active filters) -->
+      <CostTrendChart snapshots={filteredSnapshots} />
+
+      <!-- Table with inline filter bar -->
       <div class="infra-table-card">
         <div class="table-header-row">
           <span class="table-title">Cost Snapshots</span>
-          <span class="table-count">{snapshots.length} records</span>
+          <span class="table-count">{filteredSnapshots.length} records</span>
         </div>
+
+        <CostFilter
+          sources={allSources}
+          projects={allProjects}
+          bind:selectedSources={filterSources}
+          bind:selectedProjects={filterProjects}
+        />
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Commit</th>
+                <th>Source</th>
                 <th>Project</th>
-                <th class="text-right">Cost</th>
+                <th>Ref</th>
+                <th class="text-right">Total</th>
               </tr>
             </thead>
             <tbody>
-              {#if snapshots.length === 0}
+              {#if filteredSnapshots.length === 0}
                 <tr>
-                  <td colspan="4" class="table-empty">
+                  <td colspan="5" class="table-empty">
                     {#if costDB.status === 'Syncing'}
                       Syncing data...
+                    {:else if snapshots.length > 0}
+                      No snapshots match the current filters
                     {:else}
                       No cost snapshots found
                     {/if}
                   </td>
                 </tr>
               {:else}
-                {#each snapshots as snapshot}
-                  <tr>
-                    <td>{new Date(snapshot.created_at).toLocaleDateString()}</td>
-                    <td class="commit-cell">{snapshot.commit_hash?.slice(0, 7) ?? '—'}</td>
-                    <td>{snapshot.project_id}</td>
-                    <td class="cost-cell">${Number(snapshot.total_monthly_estimate).toFixed(2)}</td>
+                {#each filteredSnapshots as snapshot (snapshot.id)}
+                  <tr
+                    class={snapshot.source === 'gcp-billing' ? 'row-gcp' : 'row-github'}
+                    in:fly={{ y: 6, duration: 150 }}
+                  >
+                    <td>
+                      {new Date(snapshot.created_at).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </td>
+                    <td>
+                      <span
+                        class="source-badge"
+                        class:badge-gcp={snapshot.source === 'gcp-billing'}
+                        class:badge-github={snapshot.source === 'github'}
+                      >
+                        {snapshotLabel(snapshot)}
+                      </span>
+                    </td>
+                    <td class="project-cell">{snapshotProject(snapshot)}</td>
+                    <td class="ref-cell">{snapshotRef(snapshot)}</td>
+                    <td class="cost-cell">
+                      ${parseFloat(snapshot.total_monthly_estimate).toFixed(2)}
+                    </td>
                   </tr>
                 {/each}
               {/if}
@@ -245,7 +328,7 @@
     gap: var(--space-5);
   }
 
-  /* Hero metric — the focal point of the dashboard */
+  /* Hero metric — side-by-side GCP Actual vs IaC Estimate */
   .infra-metric-card {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -253,11 +336,25 @@
     border-radius: 0.75rem;
     padding: var(--space-6);
     display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
+    align-items: stretch;
+    gap: 0;
     transition:
       background-color 0.2s,
       border-color 0.2s;
+  }
+
+  .metric-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .metric-divider {
+    width: 1px;
+    background: var(--border-color);
+    margin: 0 var(--space-6);
+    align-self: stretch;
   }
 
   .metric-label {
@@ -271,11 +368,18 @@
 
   .metric-value {
     font-family: var(--font-mono);
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 700;
-    color: var(--text-primary);
     letter-spacing: -0.02em;
     line-height: 1;
+  }
+
+  .metric-value-gcp {
+    color: var(--status-success);
+  }
+
+  .metric-value-iac {
+    color: var(--accent-infra);
   }
 
   .metric-context {
@@ -363,12 +467,52 @@
     background-color: var(--bg-primary);
   }
 
+  /* Source-specific row accent via left border on first td */
+  .row-gcp td:first-child {
+    border-left: 2px solid var(--status-success);
+    padding-left: calc(var(--space-5) - 2px);
+  }
+
+  .row-github td:first-child {
+    border-left: 2px solid var(--accent-infra);
+    padding-left: calc(var(--space-5) - 2px);
+  }
+
+  /* Source badges */
+  .source-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .badge-gcp {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--status-success);
+  }
+
+  .badge-github {
+    background: var(--accent-infra-10);
+    color: var(--accent-infra);
+  }
+
   .text-right {
     text-align: right;
   }
 
-  .commit-cell {
-    color: var(--accent-infra);
+  .project-cell {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .ref-cell {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
   }
 
   .cost-cell {
@@ -390,6 +534,17 @@
 
     .infra-chrome {
       margin-bottom: var(--space-5);
+    }
+
+    .infra-metric-card {
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    .metric-divider {
+      width: auto;
+      height: 1px;
+      margin: 0;
     }
   }
 </style>
