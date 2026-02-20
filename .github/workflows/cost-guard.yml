@@ -2,7 +2,7 @@ name: Cost Guard - Report Infrastructure Costs
 
 on:
   push:
-    branches: [main, infra-page]
+    branches: [main]
 
 concurrency:
   group: cost-guard-${{ github.sha }}

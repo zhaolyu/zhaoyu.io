@@ -32,7 +32,7 @@ export const ANIMATION_CONFIG = {
 /**
  * Cost-Guard ElectricSQL sync configuration
  */
-export const ELECTRIC_SYNC_URL = 'https://ingestion-api-240dd81-qwkzwahg3q-uc.a.run.app';
+export const ELECTRIC_SYNC_URL = 'https://ingestion-api-240dd81-538316597788.us-central1.run.app';
 
 export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard';
 
