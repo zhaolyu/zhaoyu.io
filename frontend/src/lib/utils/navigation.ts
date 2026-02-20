@@ -17,19 +17,19 @@ export function handleAnchorNavigation(e: MouseEvent, href: string): void {
 
   // Check if it's an anchor link
   if (href.startsWith('/#')) {
-    e.preventDefault();
-    e.stopPropagation();
     const targetId = href.substring(2); // Remove '/#'
     const targetElement = document.getElementById(targetId);
 
     if (targetElement) {
-      // Use scrollIntoView which respects scroll-margin-top automatically
-      // The smooth behavior will be slower due to CSS scroll-behavior: smooth
+      // Element exists on this page — intercept and smooth scroll
+      e.preventDefault();
+      e.stopPropagation();
       targetElement.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
     }
+    // Otherwise let the browser navigate to /#id naturally
   }
 }
 

@@ -1,9 +1,17 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import '@fontsource/dm-serif-display';
+  import '@fontsource/jetbrains-mono/400.css';
+  import '@fontsource/jetbrains-mono/600.css';
+  import '@fontsource/source-sans-3/300.css';
+  import '@fontsource/source-sans-3/400.css';
+  import '@fontsource/source-sans-3/600.css';
+  import '@fontsource/source-sans-3/700.css';
 
   const STORAGE_CHECKS = 'manifesto-checks';
   const STORAGE_STREAK = 'manifesto-streak';
   const STORAGE_DATE = 'manifesto-streak-date';
+  const STORAGE_CHECK_DATE = 'manifesto-check-date';
 
   const principles = [
     {
@@ -73,10 +81,17 @@
 
     // Load persisted state
     try {
-      const savedChecks = localStorage.getItem(STORAGE_CHECKS);
-      if (savedChecks) {
-        checkState = JSON.parse(savedChecks);
+      const todayIso = now.toISOString().split('T')[0];
+      const checkDate = localStorage.getItem(STORAGE_CHECK_DATE);
+
+      // Only restore checks if they were saved today — auto-reset on new day
+      if (checkDate === todayIso) {
+        const savedChecks = localStorage.getItem(STORAGE_CHECKS);
+        if (savedChecks) {
+          checkState = JSON.parse(savedChecks);
+        }
       }
+
       const savedStreak = localStorage.getItem(STORAGE_STREAK);
       if (savedStreak) {
         streak = parseInt(savedStreak, 10) || 0;
@@ -89,7 +104,9 @@
   function toggleCheck(key: string) {
     checkState = { ...checkState, [key]: !checkState[key] };
     try {
+      const todayIso = new Date().toISOString().split('T')[0];
       localStorage.setItem(STORAGE_CHECKS, JSON.stringify(checkState));
+      localStorage.setItem(STORAGE_CHECK_DATE, todayIso);
     } catch {
       // ignore
     }
@@ -120,6 +137,7 @@
       localStorage.removeItem(STORAGE_CHECKS);
       localStorage.removeItem(STORAGE_STREAK);
       localStorage.removeItem(STORAGE_DATE);
+      localStorage.removeItem(STORAGE_CHECK_DATE);
     } catch {
       // ignore
     }
@@ -128,9 +146,9 @@
 
 <svelte:head>
   <title>Manifesto — zhaoyu.io</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;600&family=Source+Sans+3:wght@300;400;600;700&display=swap"
-    rel="stylesheet"
+  <meta
+    name="description"
+    content="A personal manifesto on AI-augmented engineering — principles for building with large language models as a Principal Engineer."
   />
 </svelte:head>
 
@@ -255,27 +273,50 @@
 </div>
 
 <style>
-  :root {
-    --m-bg: #0a0a0c;
-    --m-surface: #111114;
-    --m-surface-hover: #18181c;
-    --m-border: #222228;
-    --m-text: #e8e8ec;
-    --m-text-dim: #8888a0;
-    --m-accent: #f05030;
-    --m-accent-glow: rgba(240, 80, 48, 0.15);
-    --m-green: #30c870;
-    --m-green-dim: rgba(48, 200, 112, 0.12);
-    --m-amber: #e8a020;
-  }
-
+  /* Light mode (default) */
   .manifesto-root {
+    --m-bg: #f5f5f8;
+    --m-surface: #ffffff;
+    --m-surface-hover: #ededf2;
+    --m-border: #e0e0e8;
+    --m-border-strong: #b8b8c8;
+    --m-text: #1a1a2e;
+    --m-text-dim: #6b6b88;
+    --m-accent: #e04020;
+    --m-accent-glow: rgba(224, 64, 32, 0.08);
+    --m-accent-border: rgba(224, 64, 32, 0.2);
+    --m-green: #28a060;
+    --m-green-dim: rgba(40, 160, 96, 0.1);
+    --m-green-border: rgba(40, 160, 96, 0.2);
+    --m-amber: #b07010;
+
     background: var(--m-bg);
     color: var(--m-text);
     font-family: 'Source Sans 3', sans-serif;
     min-height: calc(100vh - 64px); /* account for navbar height */
     overflow-x: hidden;
     position: relative;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+
+  /* Dark mode */
+  :global(html.dark) .manifesto-root {
+    --m-bg: #0a0a0c;
+    --m-surface: #17171c;
+    --m-surface-hover: #1e1e26;
+    --m-border: #2d2d3a;
+    --m-border-strong: #52527a;
+    --m-text: #e8e8ec;
+    --m-text-dim: #8888a0;
+    --m-accent: #f05030;
+    --m-accent-glow: rgba(240, 80, 48, 0.15);
+    --m-accent-border: rgba(240, 80, 48, 0.25);
+    --m-green: #30c870;
+    --m-green-dim: rgba(48, 200, 112, 0.12);
+    --m-green-border: rgba(48, 200, 112, 0.2);
+    --m-amber: #e8a020;
   }
 
   .grain {
@@ -318,7 +359,7 @@
     font-weight: 400;
     line-height: 1.1;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #fff 30%, var(--m-accent) 100%);
+    background: linear-gradient(135deg, var(--m-text) 30%, var(--m-accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -342,7 +383,7 @@
   .epigraph {
     text-align: center;
     font-size: 17px;
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7;
     color: var(--m-text-dim);
     max-width: 600px;
@@ -415,7 +456,7 @@
 
   .principle:hover {
     background: var(--m-surface-hover);
-    border-color: #333340;
+    border-color: var(--m-border-strong);
     transform: translateX(4px);
   }
 
@@ -446,7 +487,7 @@
     font-size: 14px;
     line-height: 1.6;
     color: var(--m-text-dim);
-    font-weight: 300;
+    font-weight: 400;
   }
 
   /* Checklist */
@@ -478,13 +519,13 @@
   }
 
   .check-item.checked {
-    opacity: 0.5;
+    opacity: 0.65;
   }
 
   .checkbox {
     width: 22px;
     height: 22px;
-    border: 2px solid #444;
+    border: 2px solid var(--m-border-strong);
     border-radius: 5px;
     flex-shrink: 0;
     display: flex;
@@ -537,12 +578,12 @@
 
   .reality-card.hype {
     background: linear-gradient(135deg, var(--m-accent-glow), transparent);
-    border-color: rgba(240, 80, 48, 0.2);
+    border-color: var(--m-accent-border);
   }
 
   .reality-card.ground {
     background: linear-gradient(135deg, var(--m-green-dim), transparent);
-    border-color: rgba(48, 200, 112, 0.2);
+    border-color: var(--m-green-border);
   }
 
   .reality-card h4 {
@@ -579,7 +620,7 @@
     content: '—';
     position: absolute;
     left: 0;
-    color: #444;
+    color: var(--m-text-dim);
   }
 
   /* Quote */
@@ -638,7 +679,7 @@
   .streak-sub {
     font-size: 13px;
     color: var(--m-text-dim);
-    font-weight: 300;
+    font-weight: 400;
   }
 
   .streak-reset {
@@ -671,7 +712,7 @@
   .footer p {
     font-size: 13px;
     color: var(--m-text-dim);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.7;
   }
 

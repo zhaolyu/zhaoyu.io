@@ -14,6 +14,7 @@
     { name: '/latency', href: '/#latency' },
     { name: '/manifesto', href: '/#manifesto' },
     { name: '/notes', href: '/#notes' },
+    { name: '/ai-thesis', href: '/ai-manifesto' },
     { name: '/contact', href: '/#connect' },
   ];
 

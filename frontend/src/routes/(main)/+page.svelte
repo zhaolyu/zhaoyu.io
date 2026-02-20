@@ -5,6 +5,7 @@
   import { Skills } from '$lib/components/features/skills';
   import { CareerChart } from '$lib/components/features/career-chart';
   import { WorkSection } from '$lib/components/features/work';
+  import { BuilderWorkbench } from '$lib/components/features/builder';
   import { LatencySim } from '$lib/components/features/latency-sim';
   import { CodeManifesto } from '$lib/components/features/code-manifesto';
   import { EngineeringNotes } from '$lib/components/features/notes';
@@ -20,24 +21,30 @@
 </script>
 
 <svelte:head>
-  <title>Zhao Yu | Principal Engineer & Architect</title>
+  <title>Zhao Yu | Principal Engineer & Independent Builder</title>
   <meta
     name="description"
-    content="Principal Software Engineer specializing in High-Performance UI, React Architecture, and Systems at Scale."
+    content="Principal Engineer specializing in high-scale media architecture and AI-augmented engineering. Building distributed systems by day, shipping side projects by night."
   />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://zhaoyu.io/" />
-  <meta property="og:title" content="Zhao Yu - Built for Speed. Engineered for Scale." />
+  <meta
+    property="og:title"
+    content="Zhao Yu — Systems Architect by Day. Building the Next Thing by Night."
+  />
   <meta
     property="og:description"
-    content="Interactive portfolio of a Principal Engineer. Latency simulations, architectural decisions, and career velocity."
+    content="Principal Engineer at the intersection of high-scale architecture, AI-native engineering, and independent building. Latency simulations, architectural decisions, and career velocity."
   />
   <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/" />
-  <meta property="twitter:title" content="Zhao Yu - Principal Engineer" />
-  <meta property="twitter:description" content="Built for Speed. Engineered for Scale." />
+  <meta property="twitter:title" content="Zhao Yu — Principal Engineer & Independent Builder" />
+  <meta
+    property="twitter:description"
+    content="Systems Architect by Day. Building the Next Thing by Night."
+  />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
 </svelte:head>
 
@@ -47,6 +54,7 @@
   <Skills />
   <CareerChart />
   <WorkSection />
+  <BuilderWorkbench />
   <LatencySim />
   <CodeManifesto />
   <EngineeringNotes />

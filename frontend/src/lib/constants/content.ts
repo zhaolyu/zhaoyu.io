@@ -32,17 +32,17 @@ export interface SkillsData {
 }
 
 export const heroContent: HeroContent = {
-  badge: 'SYSTEMS ARCHITECT & ATHLETE',
+  badge: 'PRINCIPAL ENGINEER & INDEPENDENT BUILDER',
   headline: {
-    primary: 'Built for Speed.',
-    accent: 'Engineered for Scale.',
+    primary: 'Systems Architect by Day.',
+    accent: 'Building the Next Thing by Night.',
   },
-  bio: "I am Zhao Yu, a Principal Engineer architecting high-scale media platforms. Whether I'm shaving milliseconds off a render or chasing a sub-1:25 half-marathon, I am driven by precision, metrics, and the relentless pursuit of speed.",
+  bio: 'I am Zhao Yu — a Principal Engineer who designs high-scale media platforms serving millions, and an independent builder obsessed with leverage, optionality, and AI-augmented engineering. The same discipline that drives a sub-1:25 half-marathon drives every system I ship.',
   cta: {
     primary: 'View Architecture',
-    secondary: 'Read My Philosophy',
+    secondary: 'Read My AI Thesis',
   },
-  motto: ['Low Latency', 'Type Safe', 'Deep Focus'],
+  motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
 };
 
 export const skillsData: SkillsData = {
@@ -135,10 +135,16 @@ export const experienceData: ExperienceData = {
     { name: 'TAILWIND', type: 'tech' },
 
     // --- THE PERFORMANCE & DATA LAYER (The "Principal" Edge) ---
-    { name: 'SVELTE', type: 'tech' }, // Performance
-    { name: 'NODE.JS', type: 'tech' }, // Backend
-    { name: 'GRAPHQL', type: 'tech' }, // API Architecture
-    { name: 'MONGODB', type: 'tech' }, // Persistence
+    { name: 'SVELTE', type: 'tech' },
+    { name: 'NODE.JS', type: 'tech' },
+    { name: 'GRAPHQL', type: 'tech' },
+    { name: 'MONGODB', type: 'tech' },
+
+    // --- AI & BUILDER SIGNALS ---
+    { name: 'CURSOR', type: 'tech' },
+    { name: 'CLAUDE CODE', type: 'tech' },
+    { name: 'PGLITE', type: 'tech' },
+    { name: 'PYTHON', type: 'tech' },
   ],
 };
 
@@ -156,12 +162,30 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
-      title: 'Decoupling State from Render in LLM Streaming',
-      date: 'Oct 2025',
-      tags: ['React Performance', 'HCI', '60fps'],
+      title: 'Building with AI: The Compound Advantage',
+      date: 'Feb 2026',
+      tags: ['AI Engineering', 'Productivity', 'Meta'],
       content: [
-        'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
-        "<strong>This is a performance trap.</strong> Triggering a reconciliation cycle on every single token blows through the browser's 16ms frame budget. The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously, then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit to the DOM only when the browser was ready to paint.",
+        'I built most of this site using Claude Code. Not as a novelty — as a deliberate workflow. The components you\'re reading, the type errors that blocked deployment, the engineering notes you\'re reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.',
+        'The thing I didn\'t expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the "is this worth building?" stage. You just build. The compounding isn\'t in the individual tasks — it\'s in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn\'t change what you can build; it changes how many times you can try.',
+      ],
+    },
+    {
+      title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
+      date: 'Jan 2026',
+      tags: ['Architecture', 'Edge Computing', 'Independence'],
+      content: [
+        'The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn\'t panic — it degrades gracefully.',
+        'I\'ve started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently — full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.',
+      ],
+    },
+    {
+      title: 'Idempotency in Distributed Systems',
+      date: 'Jan 2026',
+      tags: ['Backend', 'API Design', 'Reliability'],
+      content: [
+        'Working on live news infrastructure taught me that <strong>failures are not exceptional — they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" — it\'s "what happens when it does?"',
+        'Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn\'t finished. This matters even more in event-driven systems where the cost of double-processing — a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event — compounds faster than the failure that triggered the retry.',
       ],
     },
     {
@@ -174,12 +198,12 @@ export const notesData: NotesData = {
       ],
     },
     {
-      title: 'Idempotency in Distributed Systems',
-      date: 'Jan 2026',
-      tags: ['Backend', 'API Design', 'Reliability'],
+      title: 'Decoupling State from Render in LLM Streaming',
+      date: 'Oct 2025',
+      tags: ['React Performance', 'HCI', '60fps'],
       content: [
-        'As I expand into backend architecture, the most critical concept I\'ve embraced is <strong>Idempotency</strong>. In a distributed system (like the microservices powering CNBC), network failures are inevitable. A client might send a "Purchase" request, the server processes it, but the acknowledgement fails.',
-        "Without idempotency keys, the client retries, and the user gets charged twice. Designing APIs that can safely handle the exact same request <code>N</code> times without changing the result is not a feature—it's a requirement for resilience at scale.",
+        'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
+        "<strong>This is a performance trap.</strong> Triggering a reconciliation cycle on every single token blows through the browser's 16ms frame budget. The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously, then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit to the DOM only when the browser was ready to paint.",
       ],
     },
   ],
@@ -203,9 +227,61 @@ export const careerHistory: CareerHistory = {
     { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
     { year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },
     { year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
-    { year: 2026, impact: 100, role: 'Full Stack Architect', company: 'Projected' },
+    { year: 2027, impact: 100, role: 'Architect + Builder', company: 'Dual Track' },
   ],
 };
+
+export interface BuilderProject {
+  title: string;
+  category: 'professional' | 'independent' | 'experiment';
+  description: string;
+  stack: string[];
+  status: 'shipped' | 'in-progress' | 'exploring';
+  metrics?: Array<{ label: string; value: string }>;
+}
+
+export const builderProjects: BuilderProject[] = [
+  {
+    title: 'Large-Scale Architecture Redesign',
+    category: 'professional',
+    description:
+      'Leading a comprehensive platform migration for a major media property. Coordinating across teams to modernize distributed rendering, caching layers, and API contracts.',
+    stack: ['React', 'Edge Computing', 'GraphQL', 'Node.js'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'Scale', value: 'Millions DAU' },
+      { label: 'LCP', value: '[redacted]' },
+    ],
+  },
+  {
+    title: 'AI-Augmented Chat Interface',
+    category: 'independent',
+    description:
+      'Full-stack conversational UI with streaming token rendering, citation management, and latency masking. Built entirely with AI-assisted tooling on personal hardware.',
+    stack: ['SvelteKit', 'Cursor', 'SSE', 'Edge Functions'],
+    status: 'in-progress',
+  },
+  {
+    title: 'Quantitative Decision Engine',
+    category: 'independent',
+    description:
+      'Data ingestion pipeline with NLP sentiment analysis, probabilistic position sizing, and calibration tracking. Exploring the intersection of macro thesis and automated decision-making.',
+    stack: ['Python', 'NLP', 'Time Series', 'Kelly Criterion'],
+    status: 'exploring',
+  },
+  {
+    title: 'Local-First Infrastructure Dashboard',
+    category: 'experiment',
+    description:
+      'Cost monitoring tool using PGlite + ElectricSQL for local-first sync, zero-latency reads, and what-if simulations. Built as a personal infra observability layer.',
+    stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'TypeScript'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'Sync', value: 'Real-time' },
+      { label: 'Storage', value: 'Local-first' },
+    ],
+  },
+];
 
 export interface CodeStandard {
   key: string;
