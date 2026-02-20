@@ -32,17 +32,17 @@ export interface SkillsData {
 }
 
 export const heroContent: HeroContent = {
-  badge: 'SYSTEMS ARCHITECT & ATHLETE',
+  badge: 'PRINCIPAL ENGINEER & INDEPENDENT BUILDER',
   headline: {
-    primary: 'Built for Speed.',
-    accent: 'Engineered for Scale.',
+    primary: 'Systems Architect by Day.',
+    accent: 'Building the Next Thing by Night.',
   },
-  bio: "I am Zhao Yu, a Principal Engineer architecting high-scale media platforms. Whether I'm shaving milliseconds off a render or chasing a sub-1:25 half-marathon, I am driven by precision, metrics, and the relentless pursuit of speed.",
+  bio: 'I am Zhao Yu — a Principal Engineer who designs high-scale media platforms serving millions, and an independent builder obsessed with leverage, optionality, and AI-augmented engineering. The same discipline that drives a sub-1:25 half-marathon drives every system I ship.',
   cta: {
     primary: 'View Architecture',
-    secondary: 'Read My Philosophy',
+    secondary: 'Read My AI Thesis',
   },
-  motto: ['Low Latency', 'Type Safe', 'Deep Focus'],
+  motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
 };
 
 export const skillsData: SkillsData = {
@@ -135,10 +135,16 @@ export const experienceData: ExperienceData = {
     { name: 'TAILWIND', type: 'tech' },
 
     // --- THE PERFORMANCE & DATA LAYER (The "Principal" Edge) ---
-    { name: 'SVELTE', type: 'tech' }, // Performance
-    { name: 'NODE.JS', type: 'tech' }, // Backend
-    { name: 'GRAPHQL', type: 'tech' }, // API Architecture
-    { name: 'MONGODB', type: 'tech' }, // Persistence
+    { name: 'SVELTE', type: 'tech' },
+    { name: 'NODE.JS', type: 'tech' },
+    { name: 'GRAPHQL', type: 'tech' },
+    { name: 'MONGODB', type: 'tech' },
+
+    // --- AI & BUILDER SIGNALS ---
+    { name: 'CURSOR', type: 'tech' },
+    { name: 'CLAUDE CODE', type: 'tech' },
+    { name: 'PGLITE', type: 'tech' },
+    { name: 'PYTHON', type: 'tech' },
   ],
 };
 
@@ -182,6 +188,24 @@ export const notesData: NotesData = {
         "Without idempotency keys, the client retries, and the user gets charged twice. Designing APIs that can safely handle the exact same request <code>N</code> times without changing the result is not a feature—it's a requirement for resilience at scale.",
       ],
     },
+    {
+      title: 'Building with AI: The Compound Advantage',
+      date: 'Feb 2026',
+      tags: ['AI Engineering', 'Productivity', 'Meta'],
+      content: [
+        'The engineers pulling ahead in 2026 share one trait: they treat AI as a <strong>core engineering primitive</strong>, not an optional add-on. They use it for code generation, architecture review, spec drafting, test scaffolding, and exploratory prototyping. They build the muscle of AI-native workflows as seriously as they once built the muscle of debugging.',
+        'The compound effect is real. Every hour invested in learning how to work <em>with</em> the model pays dividends across every future project. I\'ve stopped asking "should I use AI for this?" and started asking "what\'s the fastest path from idea to production?" That shift in framing changes everything.',
+      ],
+    },
+    {
+      title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
+      date: 'Jan 2026',
+      tags: ['Architecture', 'Edge Computing', 'Independence'],
+      content: [
+        'Most engineers treat edge computing as an optimization technique — a way to shave a few hundred milliseconds off TTFB. I treat it as a <strong>design philosophy for resilience</strong>. When your application logic runs at the edge, you are not dependent on a single origin region, a single cloud provider, or a single point of failure.',
+        'The same principle applies beyond systems architecture. Building skills that let you operate independently — full-stack capability, local-first tooling, personal infrastructure — is the engineering equivalent of maintaining optionality. You want to be able to move. Edge architecture, both literal and metaphorical, is how I think about building systems that survive disruption.',
+      ],
+    },
   ],
 };
 
@@ -203,9 +227,61 @@ export const careerHistory: CareerHistory = {
     { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
     { year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },
     { year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
-    { year: 2026, impact: 100, role: 'Full Stack Architect', company: 'Projected' },
+    { year: 2027, impact: 100, role: 'Architect + Builder', company: 'Dual Track' },
   ],
 };
+
+export interface BuilderProject {
+  title: string;
+  category: 'professional' | 'independent' | 'experiment';
+  description: string;
+  stack: string[];
+  status: 'shipped' | 'in-progress' | 'exploring';
+  metrics?: Array<{ label: string; value: string }>;
+}
+
+export const builderProjects: BuilderProject[] = [
+  {
+    title: 'Large-Scale Architecture Redesign',
+    category: 'professional',
+    description:
+      'Leading a comprehensive platform migration for a major media property. Coordinating across teams to modernize distributed rendering, caching layers, and API contracts.',
+    stack: ['React', 'Edge Computing', 'GraphQL', 'Node.js'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'Scale', value: 'Millions DAU' },
+      { label: 'LCP', value: '[redacted]' },
+    ],
+  },
+  {
+    title: 'AI-Augmented Chat Interface',
+    category: 'independent',
+    description:
+      'Full-stack conversational UI with streaming token rendering, citation management, and latency masking. Built entirely with AI-assisted tooling on personal hardware.',
+    stack: ['SvelteKit', 'Cursor', 'SSE', 'Edge Functions'],
+    status: 'in-progress',
+  },
+  {
+    title: 'Quantitative Decision Engine',
+    category: 'independent',
+    description:
+      'Data ingestion pipeline with NLP sentiment analysis, probabilistic position sizing, and calibration tracking. Exploring the intersection of macro thesis and automated decision-making.',
+    stack: ['Python', 'NLP', 'Time Series', 'Kelly Criterion'],
+    status: 'exploring',
+  },
+  {
+    title: 'Local-First Infrastructure Dashboard',
+    category: 'experiment',
+    description:
+      'Cost monitoring tool using PGlite + ElectricSQL for local-first sync, zero-latency reads, and what-if simulations. Built as a personal infra observability layer.',
+    stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'TypeScript'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'Sync', value: 'Real-time' },
+      { label: 'Storage', value: 'Local-first' },
+    ],
+  },
+];
 
 export interface CodeStandard {
   key: string;
