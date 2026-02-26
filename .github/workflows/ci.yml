@@ -1,11 +1,11 @@
 # GitHub Actions workflow for CI checks and deployment on pull requests
-# 
+#
 # This workflow:
 # - Triggers on pull request creation (opened), reopening (reopened), and new commits (synchronize)
 # - Runs type checking, linting, testing, and build verification in parallel
 # - Deploys to Cloudflare Pages after successful build
 # - Ensures code quality before merging
-# 
+#
 # Optimizations:
 # - Parallel job execution for faster feedback (~2-3 min vs ~4-5 min sequential)
 # - All jobs include SvelteKit sync step for consistency
@@ -83,24 +83,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Sync SvelteKit
         working-directory: frontend
-        run: npm run sync
+        run: pnpm run sync
 
       - name: Type check
         working-directory: frontend
-        run: npm run check
+        run: pnpm run check
         continue-on-error: false
 
   lint:
@@ -117,20 +122,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint
         working-directory: frontend
-        run: npm run lint
+        run: pnpm run lint
         continue-on-error: false
 
   test:
@@ -147,24 +157,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Sync SvelteKit
         working-directory: frontend
-        run: npm run sync
+        run: pnpm run sync
 
       - name: Run tests
         working-directory: frontend
-        run: npm run test
+        run: pnpm run test
         continue-on-error: false
 
   build:
@@ -181,24 +196,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Sync SvelteKit
         working-directory: frontend
-        run: npm run sync
+        run: pnpm run sync
 
       - name: Build
         working-directory: frontend
-        run: npm run build
+        run: pnpm run build
         continue-on-error: false
 
       - name: Verify build output
@@ -237,24 +257,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24.13.0'
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Sync SvelteKit
         working-directory: frontend
-        run: npm run sync
+        run: pnpm run sync
 
       - name: Build
         working-directory: frontend
-        run: npm run build
+        run: pnpm run build
         continue-on-error: false
 
       - name: Verify build output
@@ -277,7 +302,7 @@ jobs:
         run: |
           # Get the PR head branch (source branch)
           BRANCH="${{ github.event.pull_request.head.ref }}"
-          
+
           if [ "${{ github.event.pull_request.base.ref }}" = "main" ]; then
             echo "environment=preview" >> $GITHUB_OUTPUT
             echo "branch=$BRANCH" >> $GITHUB_OUTPUT
@@ -298,13 +323,13 @@ jobs:
           directory: frontend/build
           branch: ${{ steps.deployment.outputs.branch }}
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
-        
+
       - name: Check deployment status
         if: steps.deploy.outcome == 'success'
         run: |
           echo "✅ Deployment completed successfully!"
           echo "Deployment may take a few moments to propagate."
-      
+
       - name: Output Deployment URLs
         if: steps.deploy.outcome == 'success'
         run: |
@@ -318,7 +343,7 @@ jobs:
           echo "   1. Wait 1-2 minutes for deployment to propagate"
           echo "   2. Check Cloudflare Pages dashboard → Deployments tab"
           echo "   3. Verify the deployment status is 'Success'"
-      
+
       - name: Extract deployment URLs
         if: |
           steps.deployment.outputs.environment == 'preview' &&
@@ -328,12 +353,12 @@ jobs:
           echo "Extracting deployment URLs from Cloudflare Pages action..."
           ATOMIC_URL="${{ steps.deploy.outputs.url }}"
           ALIAS_URL="${{ steps.deploy.outputs.alias }}"
-          
+
           if [ -z "$ATOMIC_URL" ]; then
             echo "❌ ERROR: Atomic URL is empty!"
             exit 1
           fi
-          
+
           if [ -n "$ALIAS_URL" ] && [ "$ALIAS_URL" != "$ATOMIC_URL" ]; then
             echo "preview_url=$ALIAS_URL" >> $GITHUB_OUTPUT
           else
@@ -341,7 +366,7 @@ jobs:
           fi
           echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
           echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
-      
+
       - name: Comment Preview URL on PR
         if: |
           steps.deployment.outputs.environment == 'preview' &&
@@ -352,61 +377,61 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const branch = '${{ steps.deployment.outputs.branch }}';
-            
+
             console.log('✅ Found PR #' + prNumber + ' for branch: ' + branch);
-            
+
             // Get URLs from extract-urls step
             const previewUrl = '${{ steps.extract-urls.outputs.preview_url }}'.trim();
             const atomicUrl = '${{ steps.extract-urls.outputs.atomic_url }}'.trim();
-            
+
             console.log('Deployment URLs:', {
               previewUrl: previewUrl || '(empty)',
               atomicUrl: atomicUrl || '(empty)',
               branch: branch
             });
-            
+
             // Validate URL
             if (!previewUrl || previewUrl === '' || previewUrl === '${{ steps.extract-urls.outputs.preview_url }}') {
               console.error('❌ Preview URL is empty or not set!');
               console.error('Check the "Extract deployment URLs" step logs for details.');
               return;
             }
-            
+
             console.log('Using preview URL:', previewUrl);
-            
+
             // Format the URL as a clickable link
             const urlLink = '[' + previewUrl + '](' + previewUrl + ')';
-            
+
             let comment = '## 🌐 Preview Deployment\n\n';
             comment += '**Branch:** `' + branch + '`\n';
             comment += '**Preview URL:** ' + urlLink + '\n';
-            
+
             // Show atomic URL if different from preview URL
             if (atomicUrl && atomicUrl !== previewUrl) {
               const atomicLink = '[' + atomicUrl + '](' + atomicUrl + ')';
               comment += '**Atomic URL:** ' + atomicLink + ' (specific deployment)\n';
             }
-            
+
             comment += '\n';
             comment += '> ⚠️ **Note:** The preview URL may take 1-2 minutes to become active. If you see "Nothing is here yet" or a Cloudflare Access login, wait a moment and refresh.\n';
             comment += '> \n';
             comment += '> You can also check the [Cloudflare Pages dashboard](https://dash.cloudflare.com/) for deployment status.';
-            
+
             // Check if we've already commented on this PR
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber
             });
-            
+
             // Look for existing comment from this workflow
             // Match by "Preview Deployment" header and branch name
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('Preview Deployment') &&
               comment.body.includes('`' + branch + '`')
             );
-            
+
             try {
               if (botComment) {
                 // Update existing comment
@@ -470,14 +495,14 @@ jobs:
               return 1
             fi
           }
-          
+
           FAILED=0
           check_job "${{ needs.type-check.result }}" "Type check" || FAILED=1
           check_job "${{ needs.lint.result }}" "Lint" || FAILED=1
           check_job "${{ needs.test.result }}" "Test" || FAILED=1
           check_job "${{ needs.build.result }}" "Build" || FAILED=1
           check_job "${{ needs.deploy.result }}" "Deploy" || FAILED=1
-          
+
           if [ $FAILED -eq 1 ]; then
             echo ""
             echo "❌ One or more CI checks failed"

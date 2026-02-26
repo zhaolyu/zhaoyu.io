@@ -7,14 +7,17 @@
   // Memoize formatted bio to avoid re-processing on every render
   const formattedBio = $derived(
     heroContent.bio
-      .replace(/Zhao Yu/g, '<strong class="bio-name font-semibold">Zhao Yu</strong>')
       .replace(
-        /leverage, optionality, and AI-augmented engineering/g,
-        '<strong class="bio-emphasis font-normal">leverage, optionality, and AI-augmented engineering</strong>',
+        /Isomorphic Akamai Edge Architecture/g,
+        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge Architecture</strong>',
       )
       .replace(
-        /sub-1:25 half-marathon/g,
-        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">sub-1:25 half-marathon</span>',
+        /50M\+ monthly users/g,
+        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">[redacted] monthly users</span>',
+      )
+      .replace(
+        /governed AI integration/g,
+        '<strong class="bio-name font-semibold">governed AI integration</strong>',
       ),
   );
 </script>
@@ -35,13 +38,13 @@
   <div class="relative z-10 text-center px-4 max-w-5xl mx-auto hero-content">
     <div
       in:fly={{ y: -20, duration: 800, delay: 0 }}
-      class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/20 dark:bg-blue-900/20 border border-blue-500/20 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs md:text-sm font-mono mb-8 backdrop-blur-sm transition-colors"
+      class="hero-badge inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs md:text-sm font-mono mb-8 backdrop-blur-sm"
     >
       <span class="relative flex h-2 w-2">
         <span
-          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 dark:bg-blue-400 opacity-75"
+          class="badge-ping animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
         ></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-600 dark:bg-blue-500"></span>
+        <span class="badge-ping relative inline-flex rounded-full h-2 w-2"></span>
       </span>
       {heroContent.badge}
     </div>
@@ -88,9 +91,7 @@
       in:fade={{ duration: 1000, delay: 1000 }}
       class="hero-motto hero-motto-spacing flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em]"
     >
-      <span
-        class="flex items-center gap-2 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-default"
-      >
+      <span class="motto-item flex items-center gap-2 cursor-default">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           ><path
             stroke-linecap="round"
@@ -102,9 +103,7 @@
         {heroContent.motto[0]}
       </span>
       <span class="hidden md:inline text-neutral-300 dark:text-neutral-800">•</span>
-      <span
-        class="flex items-center gap-2 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-default"
-      >
+      <span class="motto-item flex items-center gap-2 cursor-default">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           ><path
             stroke-linecap="round"
@@ -116,9 +115,7 @@
         {heroContent.motto[1]}
       </span>
       <span class="hidden md:inline text-neutral-300 dark:text-neutral-800">•</span>
-      <span
-        class="flex items-center gap-2 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-default"
-      >
+      <span class="motto-item flex items-center gap-2 cursor-default">
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           ><path
             stroke-linecap="round"
@@ -140,6 +137,28 @@
     transition:
       background-color 0.2s,
       border-color 0.2s;
+  }
+
+  .hero-badge {
+    background: var(--accent-primary-10);
+    border: 1px solid var(--accent-primary-20);
+    color: var(--accent-primary-light);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+
+  .badge-ping {
+    background: var(--accent-primary);
+  }
+
+  .motto-item {
+    transition: color 0.2s;
+  }
+
+  .motto-item:hover {
+    color: var(--accent-primary-light);
   }
 
   .radial-overlay {
