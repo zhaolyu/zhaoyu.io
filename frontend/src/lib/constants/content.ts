@@ -16,50 +16,34 @@ export interface HeroContent {
   motto: string[];
 }
 
-export interface Skill {
-  name: string;
-  value: number;
-  goal?: number;
-}
-
-export interface SkillsData {
-  skills: Skill[];
-  stats: {
-    yearsExp: string;
-    lighthouse: string;
-    halfMarathon: string;
-  };
-}
-
 export const heroContent: HeroContent = {
-  badge: 'PRINCIPAL ENGINEER & INDEPENDENT BUILDER',
+  badge: 'PRINCIPAL ENGINEER · CNBC',
   headline: {
-    primary: 'Systems Architect by Day.',
-    accent: 'Building the Next Thing by Night.',
+    primary: 'Full Stack Engineer at CNBC.',
+    accent: 'UI Focus & AI Integration Lead.',
   },
-  bio: 'I am Zhao Yu — a Principal Engineer who designs high-scale media platforms serving millions, and an independent builder obsessed with leverage, optionality, and AI-augmented engineering. The same discipline that drives a sub-1:25 half-marathon drives every system I ship.',
+  bio: 'Principal Engineer at CNBC. Leading the migration to Isomorphic Akamai Edge Architecture for 50M+ monthly users. Architecting high-scale systems that achieve 1.1s LCP through performance-first engineering and governed AI integration.',
   cta: {
-    primary: 'View Architecture',
+    primary: 'View Selected Work',
     secondary: 'Read My AI Thesis',
   },
   motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
 };
 
-export const skillsData: SkillsData = {
-  skills: [
-    { name: 'UI Architecture', value: 98, goal: 98 },
-    { name: 'Tech Strategy', value: 85, goal: 90 },
-    { name: 'System Design', value: 75, goal: 85 },
-    { name: 'Backend / API', value: 45, goal: 75 },
-    { name: 'DevOps / Infra', value: 40, goal: 70 },
-    { name: 'Team Leadership', value: 85, goal: 90 },
-  ],
-  stats: {
-    yearsExp: '9+',
-    lighthouse: 'Top 1%',
-    halfMarathon: '<1:25',
-  },
-};
+export interface PerformanceMetric {
+  label: string;
+  value: string;
+  sublabel: string;
+}
+
+export const performanceMetrics: PerformanceMetric[] = [
+  { label: 'LCP', value: '1.1s', sublabel: 'CNBC.com · Top 1%' },
+  { label: 'Monthly Users', value: '50M+', sublabel: 'CNBC Reach' },
+  { label: 'Akamai TTFB', value: '<300ms', sublabel: 'EdgeWorkers · Global' },
+  { label: 'Cache Hit Rate', value: '98.4%', sublabel: 'Akamai Edge Layer' },
+  { label: 'Production Years', value: '9+', sublabel: 'Shipped at Scale' },
+  { label: 'Core Web Vitals', value: 'Top 1%', sublabel: 'Lighthouse Score' },
+];
 
 export interface Project {
   title: string;
@@ -79,37 +63,29 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC.com Next-Gen Migration',
       description:
-        'Architected the complete migration of CNBC.com from a legacy monolith to a distributed custom isomorphic React app. The goal: handle millions of concurrent users during market-moving events with zero downtime.',
-      tags: ['Custom Isomorphic React', 'Edge Computing', 'High Scale', 'Performance'],
+        'Architected the migration of CNBC.com from a legacy client-side monolith to a high-performance Isomorphic Akamai Edge architecture. Business and rendering logic moved to Akamai EdgeWorkers — executing at the network edge, not origin. The result: <300ms global TTFB and a 1.1s LCP during market-moving events with 50M+ concurrent users and zero downtime.',
+      tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
       metrics: [
         { label: 'LCP (TOP 1%)', value: '1.1s' },
-        { label: 'EDGE TTFB', value: '300ms' },
+        { label: 'AKAMAI TTFB', value: '<300ms' },
       ],
       image: 'migration-ui',
       diagram: 'migration-arch',
     },
     {
-      title: 'Generative AI Interface',
+      title: 'CNBC AI Insight Engine',
       description:
-        "Engineered the frontend architecture for CNBC's first consumer-facing AI tool. Solved complex HCI challenges including latency masking for token streaming, real-time citation rendering, and accessible state management for non-deterministic outputs.",
-      tags: ['React', 'Streaming UI', 'Accessibility', 'HCI'],
+        "Non-deterministic output requires deterministic UI. Engineered the frontend architecture for CNBC's first consumer-facing AI tool — solving the HCI paradox of maintaining user trust when data is streaming and non-deterministic. Built a latency masking layer for token rendering at 60fps and a real-time citation engine that maps AI-generated tokens to verified CNBC sources.",
+      tags: ['React', 'Akamai Edge', 'Generative AI', 'HCI'],
       metrics: [
-        { label: 'Interaction', value: 'Real-time' },
-        { label: 'User Trust', value: 'Verified Sources' },
+        { label: 'LATENCY MASKING', value: '60 FPS' },
+        { label: 'CITATION ENGINE', value: 'Real-time' },
       ],
       image: 'ai-ui',
       diagram: 'ai-state-machine',
     },
   ],
 };
-
-/**
- * Get projects to display on the landing page
- * Filters out projects that should not be shown (e.g., work in progress)
- */
-export function getDisplayProjects(): Project[] {
-  return projectsData.projects.filter((p) => p.title !== 'Generative AI Interface');
-}
 
 export interface ExperienceItem {
   name: string;
@@ -135,6 +111,7 @@ export const experienceData: ExperienceData = {
     { name: 'TAILWIND', type: 'tech' },
 
     // --- THE PERFORMANCE & DATA LAYER (The "Principal" Edge) ---
+    { name: 'AKAMAI', type: 'tech' },
     { name: 'SVELTE', type: 'tech' },
     { name: 'NODE.JS', type: 'tech' },
     { name: 'GRAPHQL', type: 'tech' },
@@ -242,43 +219,89 @@ export interface BuilderProject {
 
 export const builderProjects: BuilderProject[] = [
   {
-    title: 'Large-Scale Architecture Redesign',
+    title: 'CNBC UI Factory Initiative',
     category: 'professional',
     description:
-      'Leading a comprehensive platform migration for a major media property. Coordinating across teams to modernize distributed rendering, caching layers, and API contracts.',
-    stack: ['React', 'Edge Computing', 'GraphQL', 'Node.js'],
+      'Architecting CNBC\'s next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 200+ page templates serving a global newsroom.',
+    stack: ['React', 'Akamai EdgeWorkers', 'GraphQL', 'Node.js'],
     status: 'in-progress',
     metrics: [
-      { label: 'Scale', value: 'Millions DAU' },
+      { label: 'Templates', value: '200+' },
       { label: 'LCP', value: 'Top 1%' },
     ],
   },
   {
-    title: 'AI-Augmented Chat Interface',
-    category: 'independent',
+    title: 'CNBC AI Integration',
+    category: 'professional',
     description:
-      'Full-stack conversational UI with streaming token rendering, citation management, and latency masking. Built entirely with AI-assisted tooling on personal hardware.',
-    stack: ['SvelteKit', 'Cursor', 'SSE', 'Edge Functions'],
+      'Driving AI feature adoption at CNBC: streaming UI patterns, token rendering at 60fps, citation management, and the HCI principles that make non-deterministic outputs trustworthy for financial news consumers.',
+    stack: ['React', 'SSE', 'Streaming UI', 'HCI'],
     status: 'in-progress',
+    metrics: [
+      { label: 'Interaction', value: 'Real-time' },
+      { label: 'Frame Rate', value: '60 FPS' },
+    ],
   },
   {
-    title: 'Quantitative Decision Engine',
-    category: 'independent',
-    description:
-      'Data ingestion pipeline with NLP sentiment analysis, probabilistic position sizing, and calibration tracking. Exploring the intersection of macro thesis and automated decision-making.',
-    stack: ['Python', 'NLP', 'Time Series', 'Kelly Criterion'],
-    status: 'exploring',
-  },
-  {
-    title: 'Local-First Infrastructure Dashboard',
+    title: 'Cost-Guard: Infra Dashboard',
     category: 'experiment',
     description:
-      'Cost monitoring tool using PGlite + ElectricSQL for local-first sync, zero-latency reads, and what-if simulations. Built as a personal infra observability layer.',
+      'Local-first cloud cost monitoring using PGlite + ElectricSQL. Zero-latency reads, real-time sync, and what-if simulations for infrastructure spend. Personal observability tooling built with AI-assisted development.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'TypeScript'],
     status: 'in-progress',
     metrics: [
       { label: 'Sync', value: 'Real-time' },
       { label: 'Storage', value: 'Local-first' },
+    ],
+  },
+];
+
+export interface NarrativeBio {
+  title: string;
+  paragraphs: string[];
+}
+
+export const narrativeBio: NarrativeBio = {
+  title: 'The Modernizer',
+  paragraphs: [
+    'My career began as a web developer intern at CNBC, and over the last nine years I have evolved into a Principal Software Engineer overseeing the architecture of one of the world\'s most prominent financial news platforms. I am currently driving the strategic engineering build for the new CNBC.com frontend framework, navigating a high-stakes roadmap toward a September 2026 launch.',
+    'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
+    'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
+  ],
+};
+
+export interface PersonaItem {
+  title: string;
+  body: string[];
+}
+
+export const personaData: PersonaItem[] = [
+  {
+    title: 'The Engineering Philosophy',
+    body: [
+      'Latency is the enemy of trust. Whether it\'s a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt. Every millisecond removed is a unit of confidence restored.',
+      'The UI Factory model is the operational expression of this: treat UI production like manufacturing, not craftsmanship. Standards, budgets, and repeatability over one-off heroics.',
+    ],
+  },
+  {
+    title: 'The Bridge',
+    body: [
+      'I operate at the intersection of Product and Engineering. I don\'t build to spec — I partner with product leaders to define what is technically possible at scale.',
+      'I translate Akamai EdgeWorker configurations into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong.',
+    ],
+  },
+  {
+    title: 'Endurance Engineering',
+    body: [
+      'Off the clock, I trade latency metrics for endurance miles. I apply the same optimization mindset to running as I do to code: instrument everything, reduce friction, compound marginal gains.',
+      'Sub-1:25 half-marathon. 50K ultra finish. The discipline carries.',
+    ],
+  },
+  {
+    title: 'The Search for the Gold Standard',
+    body: [
+      'I\'m drawn to systems that prioritize precision and craft. In NYC, that means chasing the best Japanese food — Omakase, Kaiseki, the obsession with quality over volume.',
+      'In markets, it means studying equity structures and the secondary dynamics of Pokémon TCG as a lens for value, scarcity, and liquidity. I enjoy the game theory of high-value systems wherever I find them.',
     ],
   },
 ];
@@ -373,6 +396,55 @@ export default async function Dashboard() {
 }
 // No useEffect. No spinners. No client JS.`,
       note: 'Shift the heavy lifting to the server. Send HTML, not JSON.',
+    },
+    latency: {
+      key: 'latency',
+      title: 'LATENCY > TRUST',
+      bad: `// ❌ The Performance Afterthought
+// "We'll optimize it later." Nobody ships "later."
+
+const Page = async () => {
+  const hero   = await fetchHeroImage();    // 800ms
+  const ticker = await fetchMarketData();   // 600ms
+  const news   = await fetchTopStories();   // 400ms
+  // Total: 1800ms. On a slow network: 3s+.
+  return <Layout hero={hero} ticker={ticker} news={news} />;
+};`,
+      good: `// ✅ Parallel at the Edge
+// Every blocking ms costs user trust. Eliminate it.
+
+const Page = async () => {
+  const [hero, ticker, news] = await Promise.all([
+    fetchHeroImage(),    // All three
+    fetchMarketData(),   // fire at
+    fetchTopStories(),   // the same time.
+  ]);
+  // Total: 800ms (the slowest one). Not 1800ms.
+  return <Layout hero={hero} ticker={ticker} news={news} />;
+};`,
+      note: 'If the UI stutters, the user disengages. Latency is not a technical problem — it is a trust problem.',
+    },
+    ai: {
+      key: 'ai',
+      title: 'PLAN-FIRST AI',
+      bad: `// ❌ The Vibe Coder
+// 1. Code doesn't work.
+// 2. Paste error into Claude.
+// 3. Accept whatever it generates.
+// 4. Hope it doesn't break prod.
+// 5. Repeat.
+
+// This is not AI-augmented engineering.
+// This is technical debt generation at scale.`,
+      good: `// ✅ The Orchestrator
+// 1. Define the spec (types, contracts, edge cases).
+// 2. Prompt with full context, not just the error.
+// 3. Review every line. Understand every diff.
+// 4. Run tests. Check coverage. Verify intent.
+
+// Rule: If you can't explain what it wrote,
+// you don't own the code — it does.`,
+      note: "AI is a force multiplier, not a replacement for taste. Every AI-assisted commit must pass the same review bar as a human-written one.",
     },
   },
 };

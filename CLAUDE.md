@@ -40,14 +40,14 @@ Always use `$lib/...` aliases — never relative `../../` paths.
 ## Commands
 
 ```bash
-npm run dev          # dev server
-npm run check        # type-check
-npm run lint         # lint
-npm run lint:fix     # lint + autofix
-npm run format       # prettier
-npm test             # all tests
-npx vitest run src/lib/utils/date.test.ts  # single file
-npm run build        # build
+pnpm dev             # dev server
+pnpm check           # type-check
+pnpm lint            # lint
+pnpm lint:fix        # lint + autofix
+pnpm format          # prettier
+pnpm test            # all tests
+pnpm vitest run src/lib/utils/date.test.ts  # single file
+pnpm build           # build
 ```
 
 ---

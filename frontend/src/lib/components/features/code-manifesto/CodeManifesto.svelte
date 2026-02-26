@@ -15,6 +15,8 @@
       state: 'single-source-of-truth.ts',
       dry: 'avoid-hasty-abstractions.tsx',
       server: 'edge-first-architecture.ts',
+      latency: 'performance-is-trust.ts',
+      ai: 'plan-first-ai.ts',
     };
     return fileMap[tab] || 'philosophy.ts';
   };
@@ -79,17 +81,11 @@
     border-bottom: 1px solid var(--border-color);
     background: var(--bg-primary);
     color: var(--text-primary);
+    scroll-margin-top: 4rem;
     transition:
       background-color 0.2s,
       color 0.2s,
       border-color 0.2s;
-    min-height: 400px;
-    display: block;
-    visibility: visible;
-    opacity: 1;
-    position: relative;
-    width: 100%;
-    z-index: 1;
   }
 
   .manifesto-container {
@@ -117,16 +113,16 @@
   }
 
   .section-badge {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-family: var(--font-mono);
     color: var(--accent-primary-light);
-    letter-spacing: 0.2em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 0.5rem;
   }
 
   .section-title {
-    font-size: clamp(1.875rem, 4vw, 2.25rem);
+    font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.2;
@@ -170,7 +166,6 @@
   .tab-button.active {
     background: var(--bg-primary);
     color: var(--text-primary);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     transition:
       background-color 0.2s,
       color 0.2s;
@@ -187,9 +182,6 @@
     overflow: hidden;
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
     transition:
       background-color 0.2s,
       border-color 0.2s;
@@ -306,7 +298,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    opacity: 0.4;
+    opacity: 0.65;
     transition: opacity 0.2s;
   }
 
