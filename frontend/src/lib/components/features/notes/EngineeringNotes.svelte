@@ -42,11 +42,12 @@
 
 <style>
   .engineering-notes {
-    padding: 8rem 1rem;
+    padding: 8rem 1.5rem;
     max-width: 72rem;
     margin: 0 auto;
     background: var(--bg-primary);
     color: var(--text-primary);
+    scroll-margin-top: 4rem;
     transition:
       background-color 0.2s,
       color 0.2s;
@@ -70,7 +71,7 @@
 
   @media (max-width: 768px) {
     .engineering-notes {
-      padding: 4rem 1rem;
+      padding: 4rem 1.5rem;
     }
   }
 </style>

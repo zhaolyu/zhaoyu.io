@@ -1,229 +1,213 @@
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { browser } from '$app/environment';
-
-  let latency = $state<number | null>(null);
-  let time = $state(new Date());
-
-  onMount(() => {
-    if (!browser) return;
-
-    // 1. Clock
-    const timer = setInterval(() => {
-      time = new Date();
-    }, 1000);
-
-    // 2. Latency Check
-    const start = performance.now();
-    fetch(window.location.href, { method: 'HEAD' })
-      .then(() => {
-        latency = Math.round(performance.now() - start);
-      })
-      .catch(() => {
-        // Silently fail if latency check fails
-      });
-
-    return () => clearInterval(timer);
-  });
-</script>
-
-<footer class="telemetry-footer">
+<footer class="terminal-footer">
   <div class="footer-container">
-    <div class="footer-left">
-      <div class="status-indicator">
-        <span class="status-dot"></span>
-        <span class="status-text">All Systems Operational</span>
+    <div class="manifesto-grid">
+      <div class="manifesto-item">
+        <h4>LATENCY IS THE ENEMY OF TRUST</h4>
+        <p>
+          Performance is a feature, not an afterthought. I architect for a 1.1s LCP at a global
+          scale of 50M+ users.
+        </p>
       </div>
-
-      <div class="footer-metric">
-        <span class="metric-label">Latency:</span>
-        <span
-          class="metric-value"
-          class:good={latency !== null && latency < 100}
-          class:warning={latency !== null && latency >= 100}
-        >
-          {latency ? `${latency}ms` : '---'}
-        </span>
+      <div class="manifesto-item">
+        <h4>URL &gt; STORE</h4>
+        <p>
+          The URL is the only reliable single source of truth. I prefer URL-driven state to
+          eliminate desynchronization bugs.
+        </p>
       </div>
-
-      <div class="footer-metric">
-        <span class="metric-label">Local Time:</span>
-        <span class="metric-value">
-          {time.toLocaleTimeString('en-US', { hour12: false })}
-        </span>
+      <div class="manifesto-item">
+        <h4>WET &gt; DRY</h4>
+        <p>
+          I value strategic duplication over premature, leaky abstractions. Clarity and composition
+          beat complex "God Components."
+        </p>
+      </div>
+      <div class="manifesto-item">
+        <h4>SERVER &gt; CLIENT</h4>
+        <p>
+          I leverage SvelteKit and Akamai EdgeWorkers to ship HTML, not just JSON. I optimize for
+          the browser's critical rendering path.
+        </p>
       </div>
     </div>
 
-    <div class="footer-right">
-      <a href="https://github.com/zhaolyu" class="footer-link">Source</a>
-      <span class="footer-separator">//</span>
-      <span class="footer-copyright">© 2026 Zhao Yu</span>
+    <div class="status-bar">
+      <div class="status-group">
+        <div class="status-item">
+          <span class="s-label">ENGINEERING</span>
+          <span class="s-value">Principal @ CNBC</span>
+        </div>
+        <div class="status-item">
+          <span class="s-label">SCALE</span>
+          <span class="s-value">50M+ Monthly Uniques</span>
+        </div>
+      </div>
+      <div class="status-group">
+        <div class="status-item">
+          <span class="s-label">MARATHON_PR</span>
+          <span class="s-value">3:07:45</span>
+        </div>
+        <div class="status-item">
+          <span class="s-label">HALF_PR</span>
+          <span class="s-value">1:31:49</span>
+        </div>
+        <div class="status-item">
+          <span class="s-label">NEXT_TARGET</span>
+          <span class="s-value accent">Sub-1:25 HM</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar">
+      <div class="social-links">
+        <a href="https://linkedin.com/in/zhaolyu" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/zhaolyu" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="copyright">
+        © 2026 Zhao Yu —
+        <span>Hand-coded with Svelte. Deployed to Cloudflare Edge.</span>
+      </p>
     </div>
   </div>
 </footer>
 
 <style>
-  .telemetry-footer {
+  .terminal-footer {
     width: 100%;
-    border-top: 1px solid var(--border-color);
-    background: var(--bg-primary);
-    padding: 1rem 0;
-    margin-top: auto;
-    transition:
-      background-color 0.2s,
-      border-color 0.2s;
+    padding: 5rem 1.25rem 2.5rem;
+    background: #050505;
+    border-top: 1px solid #1a1a1a;
+    font-family: 'JetBrains Mono', 'IBM Plex Mono', var(--font-mono), monospace;
+    color: #888;
   }
 
   .footer-container {
-    max-width: 80rem;
+    max-width: 72rem;
     margin: 0 auto;
-    padding: 0 1.5rem;
+  }
+
+  /* ── Manifesto grid ── */
+
+  .manifesto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 5rem;
+  }
+
+  .manifesto-item h4 {
+    font-size: 0.6875rem;
+    color: #0077d5;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.75rem;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(0, 119, 213, 0.3);
+    text-transform: uppercase;
+  }
+
+  .manifesto-item p {
+    font-size: 0.8125rem;
+    line-height: 1.7;
+    color: #aaa;
+  }
+
+  /* ── Status bar ── */
+
+  .status-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 1.875rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2px;
+    margin-bottom: 3.75rem;
+  }
+
+  .status-group {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .status-item {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.25rem;
   }
 
-  @media (min-width: 768px) {
-    .footer-container {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-    }
+  .s-label {
+    font-size: 0.5625rem;
+    color: #444;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
-  .footer-left {
+  .s-value {
+    font-size: 0.6875rem;
+    color: #e0e0e0;
+    font-weight: 500;
+  }
+
+  .s-value.accent {
+    color: #0077d5;
+  }
+
+  /* ── Bottom bar ── */
+
+  .bottom-bar {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  @media (min-width: 768px) {
-    .footer-left {
-      flex-direction: row;
-      align-items: center;
-      gap: 1.5rem;
-      margin-bottom: 0;
-    }
-  }
-
-  .status-indicator {
-    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    padding-top: 2.5rem;
   }
 
-  .status-dot {
-    position: relative;
+  .social-links {
     display: flex;
-    height: 0.5rem;
-    width: 0.5rem;
+    gap: 1.5rem;
   }
 
-  .status-dot::before {
-    content: '';
-    position: absolute;
-    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
-    background: #10b981;
-    opacity: 0.75;
-  }
-
-  .status-dot::after {
-    content: '';
-    position: relative;
-    display: inline-flex;
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
-    background: #10b981;
-  }
-
-  @keyframes ping {
-    75%,
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
-  }
-
-  .status-text {
-    font-size: 0.625rem;
-    font-family: var(--font-mono);
-    color: #10b981;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .footer-metric {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .metric-label {
-    font-size: 0.625rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .metric-value {
-    font-size: 0.625rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .metric-value.good {
-    color: #10b981;
-  }
-
-  .metric-value.warning {
-    color: #fbbf24;
-  }
-
-  .footer-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .footer-link {
-    font-size: 0.625rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  .social-links a {
+    font-size: 0.75rem;
+    color: #666;
     text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     transition: color 0.2s;
   }
 
-  .footer-link:hover {
-    color: var(--text-primary);
+  .social-links a:hover {
+    color: #0077d5;
   }
 
-  .footer-separator {
-    font-size: 0.625rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
+  .copyright {
+    font-size: 0.6875rem;
+    color: #444;
   }
 
-  .footer-copyright {
-    font-size: 0.625rem;
-    font-family: var(--font-mono);
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+  .copyright span {
+    opacity: 0.5;
   }
 
   @media (max-width: 767px) {
-    .footer-metric {
-      display: none;
+    .status-bar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .status-group {
+      gap: 1.25rem;
+    }
+
+    .bottom-bar {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 </style>

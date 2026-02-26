@@ -157,7 +157,7 @@
       background-color 0.2s,
       color 0.2s,
       border-color 0.2s;
-    scroll-margin-top: 0;
+    scroll-margin-top: 4rem;
     position: relative;
     overflow: visible;
     margin-bottom: 2rem;

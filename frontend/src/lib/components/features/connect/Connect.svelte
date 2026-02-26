@@ -35,9 +35,20 @@
       </div>
       <h2 class="section-title">Let's Build Something.</h2>
       <p class="section-subtitle">
-        Interested in AI-augmented engineering, high-scale architecture, or building independent
-        leverage as an engineer? I want to hear from you.
+        I work at the intersection of UI performance, AI integration, and high-scale news media.
+        If you have strong opinions on any of the above — reach out.
       </p>
+
+      <div class="status-block">
+        <div class="status-row">
+          <span class="status-key">Currently:</span>
+          <span class="status-value">Principal Engineer at CNBC.</span>
+        </div>
+        <div class="status-row">
+          <span class="status-key">Thinking about:</span>
+          <span class="status-value">The UI Factory, Akamai EdgeWorkers, and sub-1:25 half-marathon splits.</span>
+        </div>
+      </div>
     </div>
 
     <div class="terminal-window">
@@ -62,7 +73,7 @@
               <span class="output-label shrink-0 w-20">Email:</span>
               <span class="output-value select-all font-bold">{email}</span>
             </div>
-            <button onclick={copyEmail} class="copy-button-mobile" class:copied>
+            <button onclick={copyEmail} class="copy-button" class:copied>
               {copied ? 'COPIED' : 'COPY'}
             </button>
           </div>
@@ -78,7 +89,7 @@
               href={linkedinUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="external-link-mobile"
+              class="external-link"
             >
               OPEN ↗
             </a>
@@ -95,7 +106,7 @@
               href={githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              class="external-link-mobile"
+              class="external-link"
             >
               OPEN ↗
             </a>
@@ -153,7 +164,7 @@
   }
 
   .section-title {
-    font-size: clamp(1.875rem, 4vw, 2.25rem);
+    font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 0.5rem;
@@ -164,6 +175,43 @@
     font-size: 1rem;
     color: var(--text-muted);
     transition: color 0.2s;
+    margin-bottom: 1.5rem;
+  }
+
+  .status-block {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: var(--bg-secondary);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    margin-bottom: 2rem;
+    text-align: left;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s;
+  }
+
+  .status-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .status-key {
+    color: var(--accent-primary-light);
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.03em;
+  }
+
+  .status-value {
+    color: var(--text-secondary);
+    transition: color 0.2s;
   }
 
   .terminal-window {
@@ -173,30 +221,20 @@
     overflow: hidden;
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
     transition:
       background-color 0.2s,
-      border-color 0.2s,
-      box-shadow 0.2s;
+      border-color 0.2s;
   }
 
   /* Light mode terminal styles */
   :global(html:not(.dark)) .terminal-window {
-    background: #f8f9fa;
+    background: var(--bg-secondary);
     border-color: rgba(0, 0, 0, 0.12);
-    box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06);
   }
 
   :global(.dark) .terminal-window {
     background: #0d0d0d;
     border-color: rgba(255, 255, 255, 0.1);
-    box-shadow:
-      0 20px 25px -5px rgba(0, 0, 0, 0.3),
-      0 10px 10px -5px rgba(0, 0, 0, 0.2);
   }
 
   .terminal-header {
@@ -304,11 +342,11 @@
 
   /* Light mode terminal output border */
   :global(html:not(.dark)) .terminal-output {
-    border-left-color: rgba(59, 130, 246, 0.3);
+    border-left-color: var(--accent-primary-20);
   }
 
   :global(.dark) .terminal-output {
-    border-left-color: rgba(59, 130, 246, 0.4);
+    border-left-color: var(--accent-primary-20);
   }
 
   .output-label {
@@ -331,7 +369,7 @@
     text-decoration: underline;
   }
 
-  .copy-button-mobile {
+  .copy-button {
     font-size: 0.625rem;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
@@ -347,19 +385,19 @@
     flex-shrink: 0;
   }
 
-  .copy-button-mobile:hover {
+  .copy-button:hover {
     background: var(--bg-primary);
     color: var(--text-primary);
     border-color: var(--accent-primary-20);
   }
 
-  .copy-button-mobile.copied {
+  .copy-button.copied {
     background: var(--accent-primary-10);
     color: var(--accent-primary-light);
     border-color: var(--accent-primary-20);
   }
 
-  .external-link-mobile {
+  .external-link {
     font-size: 0.625rem;
     color: var(--text-muted);
     text-decoration: none;
@@ -371,7 +409,7 @@
     flex-shrink: 0;
   }
 
-  .external-link-mobile:hover {
+  .external-link:hover {
     color: var(--text-primary);
   }
 

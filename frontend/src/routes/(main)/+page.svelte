@@ -5,7 +5,7 @@
   import { Skills } from '$lib/components/features/skills';
   import { CareerChart } from '$lib/components/features/career-chart';
   import { WorkSection } from '$lib/components/features/work';
-  import { BuilderWorkbench } from '$lib/components/features/builder';
+  import { PersonaSection } from '$lib/components/features/persona';
   import { LatencySim } from '$lib/components/features/latency-sim';
   import { CodeManifesto } from '$lib/components/features/code-manifesto';
   import { EngineeringNotes } from '$lib/components/features/notes';
@@ -21,29 +21,29 @@
 </script>
 
 <svelte:head>
-  <title>Zhao Yu | Principal Engineer & Independent Builder</title>
+  <title>Zhao Yu | Principal Engineer at CNBC</title>
   <meta
     name="description"
-    content="Principal Engineer specializing in high-scale media architecture and AI-augmented engineering. Building distributed systems by day, shipping side projects by night."
+    content="Principal Engineer at CNBC architecting high-performance media systems for 50M+ users. UI Factory and AI Integration at scale."
   />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://zhaoyu.io/" />
   <meta
     property="og:title"
-    content="Zhao Yu — Systems Architect by Day. Building the Next Thing by Night."
+    content="Zhao Yu — Principal Engineer at CNBC. Full Stack with UI Focus."
   />
   <meta
     property="og:description"
-    content="Principal Engineer at the intersection of high-scale architecture, AI-native engineering, and independent building. Latency simulations, architectural decisions, and career velocity."
+    content="Principal Engineer at CNBC. 1.1s LCP, 50M+ users, UI Factory and AI Integration. Opinionated on latency, streaming interfaces, and production AI."
   />
   <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/" />
-  <meta property="twitter:title" content="Zhao Yu — Principal Engineer & Independent Builder" />
+  <meta property="twitter:title" content="Zhao Yu — Principal Engineer at CNBC" />
   <meta
     property="twitter:description"
-    content="Systems Architect by Day. Building the Next Thing by Night."
+    content="Principal Engineer at CNBC. UI Factory and AI Integration at scale."
   />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
 </svelte:head>
@@ -54,7 +54,7 @@
   <Skills />
   <CareerChart />
   <WorkSection />
-  <BuilderWorkbench />
+  <PersonaSection />
   <LatencySim />
   <CodeManifesto />
   <EngineeringNotes />
