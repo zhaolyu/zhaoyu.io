@@ -65,7 +65,7 @@
       </div>
       <p class="copyright">
         © 2026 Zhao Yu —
-        <span>Hand-coded with Svelte. Deployed to the Akamai Edge.</span>
+        <span>Hand-coded with Svelte. Deployed to Cloudflare Edge.</span>
       </p>
     </div>
   </div>
