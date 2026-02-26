@@ -49,6 +49,10 @@
     ]
   },
   "type": "module",
+  "packageManager": "pnpm@10.30.2",
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  },
   "dependencies": {
     "@electric-sql/pglite": "^0.3.15",
     "@electric-sql/pglite-sync": "^0.4.1",

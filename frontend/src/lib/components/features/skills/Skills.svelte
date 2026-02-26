@@ -1,62 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
-  import { fade } from 'svelte/transition';
-  import { skillsData } from '$lib/constants/content';
-  import { createSectionObserver } from '$lib/utils/section-observer';
+  import { fade, fly } from 'svelte/transition';
+  import { performanceMetrics } from '$lib/constants/content';
+  import { observeSection } from '$lib/utils/section-observer';
 
   let sectionVisible = $state(false);
-  let animationKey = $state(0); // Counter for forcing transition re-trigger
   let skillsContainer: HTMLElement;
 
-  const progress = tweened(0, {
-    duration: 3000,
-    easing: cubicOut,
-  });
-
-  function triggerAnimation() {
-    sectionVisible = true;
-    animationKey++; // Increment key to force remount and re-trigger transitions
-    progress.set(0);
-    setTimeout(() => {
-      progress.set(1);
-    }, 100);
-  }
-
   onMount(() => {
-    return createSectionObserver(skillsContainer, {
-      enableReanimation: true,
+    return observeSection(skillsContainer, {
       onVisible: () => {
-        triggerAnimation();
+        sectionVisible = true;
       },
-      threshold: 0.1, // Trigger when 10% visible
+      threshold: 0.1,
     });
   });
-
-  function getPoint(index: number, total: number, value: number): string {
-    const angle = (Math.PI * 2 * index) / total - Math.PI / 2;
-    const radius = (value / 100) * 120;
-    const x = Math.cos(angle) * radius + 200;
-    const y = Math.sin(angle) * radius + 200;
-    return `${x},${y}`;
-  }
-
-  const currentPoints = $derived(
-    skillsData.skills
-      .map((skill, i) => getPoint(i, skillsData.skills.length, skill.value * $progress))
-      .join(' '),
-  );
-
-  const goalPoints = $derived(
-    skillsData.skills
-      .map((skill, i) => getPoint(i, skillsData.skills.length, skill.goal ?? skill.value))
-      .join(' '),
-  );
-
-  const maxPoints = $derived(
-    skillsData.skills.map((_, i) => getPoint(i, skillsData.skills.length, 100)).join(' '),
-  );
 </script>
 
 <section id="skills" class="skills" bind:this={skillsContainer}>
@@ -66,91 +24,30 @@
         <div class="skills-text">
           <div class="skills-badge">
             <span class="badge-dot"></span>
-            <h2 class="badge-text">The T-Shaped Engineer</h2>
+            <h2 class="badge-text">Impact at Scale</h2>
           </div>
           <h3 class="skills-headline">
-            Authority in <span class="highlight-blue">UI</span>.<br />
-            Expanding to <span class="highlight-purple">Full Stack</span>.
+            The numbers behind<br />
+            <span class="highlight-blue">the system.</span>
           </h3>
           <p class="skills-description">
-            I specialize in high-performance frontend architecture. In 2026, I am actively closing
-            the gap between client and server, bringing my <span class="highlight-text"
-              >discipline and metrics</span
-            > to the backend.
+            These are production metrics from CNBC.com — not synthetic benchmarks.
+            Shipped at this scale,
+            <span class="highlight-text">consistently</span>.
           </p>
-
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-value">{skillsData.stats.yearsExp}</div>
-              <div class="stat-label">Years Exp</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">{skillsData.stats.lighthouse}</div>
-              <div class="stat-label">Lighthouse</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-value">{skillsData.stats.halfMarathon}</div>
-              <div class="stat-label">Half Marathon</div>
-            </div>
-          </div>
-
-          <div class="legend">
-            <div class="legend-item">
-              <span class="legend-indicator legend-current"></span>
-              <span class="legend-text">Current</span>
-            </div>
-            <div class="legend-item">
-              <span class="legend-indicator legend-goal"></span>
-              <span class="legend-text">2026 Target</span>
-            </div>
-          </div>
         </div>
 
-        <div class="skills-chart">
-          <div class="chart-glow"></div>
-          <svg viewBox="0 0 400 400" class="chart-svg">
-            <polygon points={maxPoints} class="chart-max" />
-            <polygon
-              points={skillsData.skills
-                .map((_, i) => getPoint(i, skillsData.skills.length, 50))
-                .join(' ')}
-              class="chart-mid"
-            />
-
-            {#if $progress > 0}
-              {#key animationKey}
-                <polygon
-                  transition:fade={{ duration: 1500, delay: 500 }}
-                  points={goalPoints}
-                  class="chart-goal"
-                />
-                <polygon
-                  transition:fade={{ duration: 1000 }}
-                  points={currentPoints}
-                  class="chart-fill"
-                />
-                {#each skillsData.skills as skill, i}
-                  {@const coords = getPoint(i, skillsData.skills.length, skill.value * $progress)
-                    .split(',')
-                    .map(Number)}
-                  <circle cx={coords[0]} cy={coords[1]} r="4" class="chart-dot" />
-                {/each}
-              {/key}
-            {/if}
-
-            {#each skillsData.skills as skill, i}
-              {@const coords = getPoint(i, skillsData.skills.length, 135).split(',').map(Number)}
-              <text
-                x={coords[0]}
-                y={coords[1]}
-                text-anchor="middle"
-                dominant-baseline="middle"
-                class="chart-label"
-              >
-                {skill.name}
-              </text>
-            {/each}
-          </svg>
+        <div class="metrics-grid">
+          {#each performanceMetrics as metric, i}
+            <div
+              class="metric-card"
+              in:fly={{ y: 16, duration: 400, delay: i * 80 }}
+            >
+              <div class="metric-value">{metric.value}</div>
+              <div class="metric-label">{metric.label}</div>
+              <div class="metric-sublabel">{metric.sublabel}</div>
+            </div>
+          {/each}
         </div>
       </div>
     {/if}
@@ -164,6 +61,7 @@
     background: var(--bg-primary);
     transition: background-color 0.2s;
     border-bottom: 1px solid var(--border-color);
+    scroll-margin-top: 4rem;
   }
 
   .skills-container {
@@ -174,24 +72,21 @@
   .skills-content {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
     gap: 3rem;
   }
 
   .skills-text {
     max-width: 32rem;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--space-5);
   }
 
   .skills-badge {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 0.5rem;
   }
 
   .badge-dot {
@@ -210,18 +105,6 @@
     }
     50% {
       opacity: 0.5;
-    }
-  }
-
-  @keyframes deep-pulse {
-    0%,
-    100% {
-      opacity: 0.8;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 1;
-      transform: scale(1.05);
     }
   }
 
@@ -246,10 +129,6 @@
     color: var(--accent-primary-light);
   }
 
-  .highlight-purple {
-    color: var(--accent-secondary-light);
-  }
-
   .highlight-text {
     color: var(--text-primary);
     font-weight: 600;
@@ -262,192 +141,83 @@
     font-weight: 300;
   }
 
-  .stats-grid {
+  .metrics-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding-top: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    width: 100%;
   }
 
-  .stat-card {
-    padding: 1rem 0.5rem;
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-    border-radius: 0.5rem;
-    background: var(--bg-secondary, rgba(255, 255, 255, 0.03));
+  .metric-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    background: var(--bg-secondary);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 0.25rem;
     transition:
-      transform 0.2s,
-      border-color 0.2s;
+      border-color 0.3s,
+      background-color 0.3s,
+      transform 0.3s;
   }
 
-  .stat-card:hover {
-    border-color: var(--accent-primary);
+  .metric-card:hover {
+    border-color: var(--text-muted);
+    background: var(--bg-primary);
     transform: translateY(-2px);
   }
 
-  .stat-value {
-    font-size: 1.25rem;
-    font-weight: 700;
+  .metric-value {
+    font-size: 1.75rem;
+    font-weight: 800;
     color: var(--text-primary);
-    margin-bottom: 0.25rem;
     font-family: var(--font-mono);
+    letter-spacing: -0.02em;
+    line-height: 1;
   }
 
-  .stat-label {
-    font-size: 0.65rem;
+  .metric-label {
+    font-size: 0.7rem;
     font-family: var(--font-mono);
     text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+
+  .metric-sublabel {
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
     letter-spacing: 0.05em;
-  }
-
-  .skills-chart {
-    position: relative;
-    width: 300px;
-    height: 300px;
-  }
-
-  .chart-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-    border-radius: 50%;
-    filter: blur(40px);
-    pointer-events: none;
-    animation: deep-pulse 4s ease-in-out infinite;
-  }
-
-  .chart-svg {
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.1));
-  }
-
-  .chart-max {
-    fill: var(--bg-secondary);
-    stroke: var(--chart-grid);
-    stroke-width: 1;
-  }
-
-  .chart-mid {
-    fill: transparent;
-    stroke: var(--chart-grid);
-    stroke-width: 1;
-    stroke-dasharray: 4, 4;
-    opacity: 0.5;
-  }
-
-  .chart-fill {
-    fill: var(--accent-primary-10);
-    stroke: var(--accent-primary);
-    stroke-width: 2;
-  }
-
-  .chart-goal {
-    fill: transparent;
-    stroke: var(--accent-secondary);
-    stroke-width: 2;
-    stroke-dasharray: 4, 4;
-    opacity: 0.8;
-  }
-
-  .chart-dot {
-    fill: var(--chart-dot-fill);
-    stroke: var(--accent-primary);
-    stroke-width: 1px;
-  }
-
-  .chart-label {
-    fill: var(--chart-label);
-    font-size: 10px;
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-weight: 500;
-  }
-
-  .legend {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-    font-size: 0.625rem;
-    text-transform: uppercase;
-    font-family: var(--font-mono);
-    letter-spacing: 0.1em;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .legend-indicator {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 0.125rem;
-  }
-
-  .legend-current {
-    background: var(--accent-primary-20);
-    border: 1px solid var(--accent-primary);
-  }
-
-  .legend-goal {
-    border: 1px dashed var(--accent-secondary);
-    background: transparent;
-  }
-
-  .legend-text {
-    color: var(--text-secondary);
-  }
-
-  .legend-item:last-child .legend-text {
-    color: var(--accent-secondary-light);
+    color: var(--accent-primary-light);
+    opacity: 0.7;
   }
 
   @media (min-width: 768px) {
     .skills-content {
       flex-direction: row;
+      align-items: center;
       gap: 6rem;
     }
 
-    .skills-chart {
-      width: 450px;
-      height: 450px;
+    .skills-text {
+      flex-shrink: 0;
     }
 
-    .chart-label {
-      font-size: 11px;
-    }
-
-    .stats-grid {
+    .metrics-grid {
       grid-template-columns: repeat(3, 1fr);
     }
 
-    .stat-value {
-      font-size: 1.5rem;
+    .metric-value {
+      font-size: 2rem;
     }
   }
 
   @media (max-width: 767px) {
     .skills {
       padding: 4rem 1.5rem;
-    }
-
-    .skills-content {
-      gap: 3rem;
-    }
-
-    .stats-grid {
-      gap: 0.5rem;
-    }
-
-    .stat-label {
-      font-size: 0.6rem;
     }
   }
 </style>

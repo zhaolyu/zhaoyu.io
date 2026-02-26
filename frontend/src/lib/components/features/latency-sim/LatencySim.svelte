@@ -172,6 +172,7 @@
     color: var(--text-primary);
     position: relative;
     overflow: hidden;
+    scroll-margin-top: 4rem;
     transition:
       background-color 0.2s,
       color 0.2s,

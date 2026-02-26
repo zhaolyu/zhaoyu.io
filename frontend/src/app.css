@@ -34,15 +34,6 @@
   --accent-primary-20: rgba(59, 130, 246, 0.2);
   --accent-primary-30: rgba(59, 130, 246, 0.3);
 
-  /* Secondary Accent — Purple (used for "goal/target" states in charts) */
-  --accent-secondary: #a855f7;
-  --accent-secondary-light: #c084fc;
-
-  /* Chart-specific surface tokens */
-  --chart-grid: #d1d5db; /* Light mode: gray-300 — visible on white */
-  --chart-dot-fill: #ffffff; /* Dot center — white on light, overridden in dark */
-  --chart-label: #9ca3af; /* Light mode: gray-400 */
-
   /* Infra Accent — Cyan (used for /infra ops dashboard) */
   --accent-infra: #06b6d4;
   --accent-infra-light: #22d3ee;
@@ -88,10 +79,6 @@
   --text-muted: #9ca3af;
   --border-color: rgba(255, 255, 255, 0.1);
 
-  /* Chart tokens — dark mode: grid stays dark, dot becomes dark bg */
-  --chart-grid: #404040;
-  --chart-dot-fill: #111827;
-  --chart-label: #737373;
 }
 
 /* ==========================================================================
