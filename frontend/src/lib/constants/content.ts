@@ -264,7 +264,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    'My career began as a web developer intern at CNBC, and over the last nine years I have evolved into a Principal Software Engineer overseeing the architecture of one of the world\'s most prominent financial news platforms. I am currently driving the strategic engineering build for the new CNBC.com frontend framework, navigating a high-stakes roadmap toward a September 2026 launch.',
+    'My career began as a web developer intern at CNBC, and over the last nine years I have evolved into a Principal Software Engineer overseeing the architecture of one of the world\'s most prominent financial news platforms.',
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
