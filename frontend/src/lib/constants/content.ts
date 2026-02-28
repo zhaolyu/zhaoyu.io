@@ -264,7 +264,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    'My career began as a Software Engineer at CNBC in 2016, and over the last nine years I have evolved into a Principal Software Engineer — currently co-leading a 20-engineer team on the ground-up 2026 rebuild of CNBC.com. The platform we are building is the technical foundation for 170K+ premium subscribers generating $50–55M ARR, designed to unlock subscriber growth targets through 2027.',
+    'My career began as a web developer intern at CNBC in 2016, and over the last nine years I have evolved into a Principal Software Engineer — currently co-leading a 20-engineer team on the ground-up 2026 rebuild of CNBC.com. The platform we are building is the technical foundation for 170K+ premium subscribers generating $50–55M ARR, designed to unlock subscriber growth targets through 2027.',
     'Beyond the platform rebuild, I created the AI Integration Lead role and served as the sole frontend engineer and product bridge for CNBC\'s first user-facing AI product — a multi-agent financial assistant for premium subscribers, shipped in four months. I govern AI-assisted development across 20+ engineers on three teams, enforcing a plan-first approach that treats tools like Cursor and Claude as disciplined velocity multipliers with strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50K ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
