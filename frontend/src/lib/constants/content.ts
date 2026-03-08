@@ -17,17 +17,17 @@ export interface HeroContent {
 }
 
 export const heroContent: HeroContent = {
-  badge: 'PRINCIPAL ENGINEER · VERSANT / CNBC',
+  badge: 'PRINCIPAL ENGINEER · CNBC',
   headline: {
-    primary: "Building CNBC's Next Platform.",
-    accent: 'AI Product Architect & Team Lead.',
+    primary: 'Full Stack Engineer at CNBC.',
+    accent: 'UI Focus & AI Integration Lead.',
   },
-  bio: "Principal Engineer co-leading 20 engineers on the ground-up 2026 rebuild of CNBC.com. Sole frontend engineer for CNBC's first AI product — a multi-agent financial assistant shipped in four months. Governing AI-assisted development across 3 teams with 25% faster velocity.",
+  bio: 'Principal Engineer at CNBC. Leading the migration to Isomorphic Akamai Edge Architecture for 50M+ monthly users. Architecting high-scale systems that achieve 1.1s LCP through performance-first engineering and governed AI integration.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read My AI Thesis',
   },
-  motto: ['Think in Systems', 'Ship in Weeks', 'AI as Infrastructure'],
+  motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
 };
 
 export interface PerformanceMetric {
@@ -37,12 +37,12 @@ export interface PerformanceMetric {
 }
 
 export const performanceMetrics: PerformanceMetric[] = [
-  { label: 'Engineers Led', value: '20+', sublabel: 'CNBC Platform Rebuild' },
-  { label: 'Premium Subscribers', value: '170K+', sublabel: 'CNBC PRO Platform' },
-  { label: 'Platform Revenue', value: '$50–55M', sublabel: 'ARR · CNBC PRO' },
-  { label: 'Velocity Gain', value: '+25%', sublabel: 'AI-Governed Teams' },
-  { label: 'Time to Ship', value: '4 months', sublabel: 'CNBC AI Product' },
+  { label: 'LCP', value: '1.1s', sublabel: 'CNBC.com · Top 1%' },
+  { label: 'Monthly Users', value: '50M+', sublabel: 'CNBC Reach' },
+  { label: 'Akamai TTFB', value: '<300ms', sublabel: 'EdgeWorkers · Global' },
+  { label: 'Cache Hit Rate', value: '98.4%', sublabel: 'Akamai Edge Layer' },
   { label: 'Production Years', value: '9+', sublabel: 'Shipped at Scale' },
+  { label: 'Core Web Vitals', value: 'Top 1%', sublabel: 'Lighthouse Score' },
 ];
 
 export interface Project {
@@ -61,25 +61,25 @@ export interface ProjectsData {
 export const projectsData: ProjectsData = {
   projects: [
     {
-      title: 'CNBC.com 2026 Platform Rebuild',
+      title: 'CNBC.com Next-Gen Migration',
       description:
-        "Co-leading 20 engineers to architect CNBC.com's next-generation Micro-Frontend framework from scratch — the technical foundation for 170K+ premium subscribers generating $50–55M ARR. This is a ground-up rebuild replacing a legacy architecture with a composable, independently-deployable component system designed to unlock CNBC's subscriber growth targets through 2027.",
-      tags: ['Micro-Frontend', 'TypeScript', 'Composable UI', 'Platform Architecture'],
+        'Architected the migration of CNBC.com from a legacy client-side monolith to a high-performance Isomorphic Akamai Edge architecture. Business and rendering logic moved to Akamai EdgeWorkers — executing at the network edge, not origin. The result: <300ms global TTFB and a 1.1s LCP during market-moving events with 50M+ concurrent users and zero downtime.',
+      tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
       metrics: [
-        { label: 'PREMIUM SUBSCRIBERS', value: '170K+' },
-        { label: 'PLATFORM REVENUE', value: '$50–55M' },
+        { label: 'LCP (TOP 1%)', value: '1.1s' },
+        { label: 'AKAMAI TTFB', value: '<300ms' },
       ],
       image: 'migration-ui',
       diagram: 'migration-arch',
     },
     {
-      title: 'CNBC Financial Assistant',
+      title: 'CNBC AI Insight Engine',
       description:
-        "Sole frontend engineer and product bridge for CNBC's first user-facing AI product — a financial assistant for premium subscribers. Architected the full UI and spec'd the agentic pipeline with the backend team, translating product requirements into architectural decisions across both surfaces.",
-      tags: ['Multi-Agent AI', 'MCP', 'React', 'HCI'],
+        "Non-deterministic output requires deterministic UI. Engineered the frontend architecture for CNBC's first consumer-facing AI tool — solving the HCI paradox of maintaining user trust when data is streaming and non-deterministic. Built a latency masking layer for token rendering at 60fps and a real-time citation engine that maps AI-generated tokens to verified CNBC sources.",
+      tags: ['React', 'Akamai Edge', 'Generative AI', 'HCI'],
       metrics: [
-        { label: 'TIME TO SHIP', value: '4 months' },
-        { label: 'BETA USERS', value: '200+' },
+        { label: 'LATENCY MASKING', value: '60 FPS' },
+        { label: 'CITATION ENGINE', value: 'Real-time' },
       ],
       image: 'ai-ui',
       diagram: 'ai-state-machine',
@@ -111,7 +111,7 @@ export const experienceData: ExperienceData = {
     { name: 'TAILWIND', type: 'tech' },
 
     // --- THE PERFORMANCE & DATA LAYER (The "Principal" Edge) ---
-    { name: 'MCP', type: 'tech' },
+    { name: 'AKAMAI', type: 'tech' },
     { name: 'SVELTE', type: 'tech' },
     { name: 'NODE.JS', type: 'tech' },
     { name: 'GRAPHQL', type: 'tech' },
@@ -120,7 +120,7 @@ export const experienceData: ExperienceData = {
     // --- AI & BUILDER SIGNALS ---
     { name: 'CURSOR', type: 'tech' },
     { name: 'CLAUDE CODE', type: 'tech' },
-    { name: 'PULUMI', type: 'tech' },
+    { name: 'PGLITE', type: 'tech' },
     { name: 'PYTHON', type: 'tech' },
   ],
 };
@@ -219,35 +219,35 @@ export interface BuilderProject {
 
 export const builderProjects: BuilderProject[] = [
   {
-    title: 'CNBC.com 2026 Rebuild',
+    title: 'CNBC UI Factory Initiative',
     category: 'professional',
     description:
-      "Co-leading 20 engineers to architect CNBC.com's next-generation Micro-Frontend platform from scratch — the technical foundation for 170K+ premium subscribers generating $50–55M ARR. Architecting for composability, independent deployability, and subscriber growth through 2027.",
-    stack: ['Micro-Frontend', 'TypeScript', 'React', 'Node.js'],
+      'Architecting CNBC\'s next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 200+ page templates serving a global newsroom.',
+    stack: ['React', 'Akamai EdgeWorkers', 'GraphQL', 'Node.js'],
     status: 'in-progress',
     metrics: [
-      { label: 'Engineers', value: '20+' },
-      { label: 'ARR', value: '$50–55M' },
+      { label: 'Templates', value: '200+' },
+      { label: 'LCP', value: 'Top 1%' },
     ],
   },
   {
-    title: 'CNBC Financial Assistant',
+    title: 'CNBC AI Integration',
     category: 'professional',
     description:
-      "Sole frontend engineer and product bridge for CNBC's first user-facing AI product. Built the entire UI and spec'd the multi-step agentic pipeline (MCP) with the backend team. Shipped in four months — currently in beta with 200 subscribers, scaling to 170K.",
-    stack: ['React', 'MCP', 'Multi-Agent AI', 'HCI'],
+      'Driving AI feature adoption at CNBC: streaming UI patterns, token rendering at 60fps, citation management, and the HCI principles that make non-deterministic outputs trustworthy for financial news consumers.',
+    stack: ['React', 'SSE', 'Streaming UI', 'HCI'],
     status: 'in-progress',
     metrics: [
-      { label: 'Time to Ship', value: '4 months' },
-      { label: 'Beta Users', value: '200+' },
+      { label: 'Interaction', value: 'Real-time' },
+      { label: 'Frame Rate', value: '60 FPS' },
     ],
   },
   {
     title: 'Cost-Guard: Infra Dashboard',
     category: 'experiment',
     description:
-      'Cloud cost governance platform on GCP that shifts spend accountability into the development workflow. Correlates estimated IaC costs from GitHub Actions with actual BigQuery spend data, using ElectricSQL for real-time local-first sync. Built with Cloud Run, Pub/Sub, and Pulumi.',
-    stack: ['GCP', 'Cloud Run', 'Pulumi', 'ElectricSQL'],
+      'Local-first cloud cost monitoring using PGlite + ElectricSQL. Zero-latency reads, real-time sync, and what-if simulations for infrastructure spend. Personal observability tooling built with AI-assisted development.',
+    stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'TypeScript'],
     status: 'in-progress',
     metrics: [
       { label: 'Sync', value: 'Real-time' },
@@ -264,9 +264,9 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    'My career began as a web developer intern at CNBC in 2016, and over the last nine years I have evolved into a Principal Software Engineer — currently co-leading a 20-engineer team on the ground-up 2026 rebuild of CNBC.com. The platform we are building is the technical foundation for 170K+ premium subscribers generating $50–55M ARR, designed to unlock subscriber growth targets through 2027.',
-    'Beyond the platform rebuild, I created the AI Integration Lead role and served as the sole frontend engineer and product bridge for CNBC\'s first user-facing AI product — a multi-agent financial assistant for premium subscribers, shipped in four months. I govern AI-assisted development across 20+ engineers on three teams, enforcing a plan-first approach that treats tools like Cursor and Claude as disciplined velocity multipliers with strict security and compliance guardrails.',
-    'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50K ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
+    'My career began as a web developer intern at CNBC, and over the last nine years I have evolved into a Principal Software Engineer overseeing the architecture of one of the world\'s most prominent financial news platforms.',
+    'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
+    'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
 };
 
@@ -280,14 +280,14 @@ export const personaData: PersonaItem[] = [
     title: 'The Engineering Philosophy',
     body: [
       'Latency is the enemy of trust. Whether it\'s a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt. Every millisecond removed is a unit of confidence restored.',
-      'The platform rebuild is the operational expression of this: a composable, standards-driven Micro-Frontend architecture where every component has a performance budget, not just a design spec.',
+      'The UI Factory model is the operational expression of this: treat UI production like manufacturing, not craftsmanship. Standards, budgets, and repeatability over one-off heroics.',
     ],
   },
   {
     title: 'The Bridge',
     body: [
       'I operate at the intersection of Product and Engineering. I don\'t build to spec — I partner with product leaders to define what is technically possible at scale.',
-      'I translate multi-agent pipeline architectures into product decisions, connect subscriber growth targets to technical tradeoffs, and push back when the roadmap is wrong.',
+      'I translate Akamai EdgeWorker configurations into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong.',
     ],
   },
   {

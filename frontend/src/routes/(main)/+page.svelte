@@ -21,29 +21,29 @@
 </script>
 
 <svelte:head>
-  <title>Zhao Yu | Principal Engineer at Versant / CNBC</title>
+  <title>Zhao Yu | Principal Engineer at CNBC</title>
   <meta
     name="description"
-    content="Principal Engineer co-leading the 2026 rebuild of CNBC.com. AI product architect, team lead for 20 engineers, and AI governance across 3 teams."
+    content="Principal Engineer at CNBC architecting high-performance media systems for 50M+ users. UI Factory and AI Integration at scale."
   />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://zhaoyu.io/" />
   <meta
     property="og:title"
-    content="Zhao Yu — Principal Engineer. Building CNBC's Next Platform."
+    content="Zhao Yu — Principal Engineer at CNBC. Full Stack with UI Focus."
   />
   <meta
     property="og:description"
-    content="Co-leading 20 engineers on the ground-up 2026 rebuild of CNBC.com. Shipped CNBC's first AI product in four months. AI governance at scale."
+    content="Principal Engineer at CNBC. 1.1s LCP, 50M+ users, UI Factory and AI Integration. Opinionated on latency, streaming interfaces, and production AI."
   />
   <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/" />
-  <meta property="twitter:title" content="Zhao Yu — Principal Engineer at Versant / CNBC" />
+  <meta property="twitter:title" content="Zhao Yu — Principal Engineer at CNBC" />
   <meta
     property="twitter:description"
-    content="Building CNBC's next platform. AI product architect and team lead."
+    content="Principal Engineer at CNBC. UI Factory and AI Integration at scale."
   />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
 </svelte:head>
