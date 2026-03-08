@@ -42,11 +42,11 @@
       <div class="status-block">
         <div class="status-row">
           <span class="status-key">Currently:</span>
-          <span class="status-value">Principal Engineer at Versant / CNBC.</span>
+          <span class="status-value">Principal Engineer at CNBC.</span>
         </div>
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
-          <span class="status-value">The CNBC.com rebuild, AI-governed teams, and sub-1:25 half-marathon splits.</span>
+          <span class="status-value">The UI Factory, Akamai EdgeWorkers, and sub-1:25 half-marathon splits.</span>
         </div>
       </div>
     </div>
