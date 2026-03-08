@@ -31,8 +31,9 @@
             <span class="highlight-blue">the system.</span>
           </h3>
           <p class="skills-description">
-            Nine years of impact at CNBC / NBCNews — from platform revenue to engineering velocity. Real
-            numbers, <span class="highlight-text">consistently delivered</span>.
+            These are production metrics from CNBC.com — not synthetic benchmarks.
+            Shipped at this scale,
+            <span class="highlight-text">consistently</span>.
           </p>
         </div>
 
