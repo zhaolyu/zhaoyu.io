@@ -8,16 +8,16 @@
   const formattedBio = $derived(
     heroContent.bio
       .replace(
-        /ground-up 2026 rebuild of CNBC\.com/g,
-        '<strong class="bio-emphasis font-normal">ground-up 2026 rebuild of CNBC.com</strong>',
+        /Isomorphic Akamai Edge Architecture/g,
+        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge Architecture</strong>',
       )
       .replace(
-        /multi-agent financial assistant/g,
-        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">multi-agent financial assistant</span>',
+        /50M\+ monthly users/g,
+        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">[redacted] monthly users</span>',
       )
       .replace(
-        /25% faster velocity/g,
-        '<strong class="bio-name font-semibold">25% faster velocity</strong>',
+        /governed AI integration/g,
+        '<strong class="bio-name font-semibold">governed AI integration</strong>',
       ),
   );
 </script>
