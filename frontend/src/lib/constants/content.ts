@@ -361,6 +361,31 @@ export const personaData: PersonaItem[] = [
   },
 ];
 
+export interface FooterManifestoItem {
+  title: string;
+  body: string;
+}
+
+/** Footer manifesto blurbs — the single source for TelemetryFooter's grid. */
+export const footerManifesto: FooterManifestoItem[] = [
+  {
+    title: 'Latency Is the Enemy of Trust',
+    body: 'Performance is a feature, not an afterthought. I architect for a 1.1s LCP at a global scale of 50M+ users.',
+  },
+  {
+    title: 'URL > Store',
+    body: 'The URL is the only reliable single source of truth. I prefer URL-driven state to eliminate desynchronization bugs.',
+  },
+  {
+    title: 'WET > DRY',
+    body: 'I value strategic duplication over premature, leaky abstractions. Clarity and composition beat complex "God Components."',
+  },
+  {
+    title: 'Server > Client',
+    body: "I leverage SvelteKit and Akamai EdgeWorkers to ship HTML, not just JSON. I optimize for the browser's critical rendering path.",
+  },
+];
+
 export interface CodeStandard {
   key: string;
   title: string;

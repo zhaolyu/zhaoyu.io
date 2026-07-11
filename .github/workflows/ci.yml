@@ -268,16 +268,15 @@ jobs:
             echo "Deploying to PREVIEW (feature branch)"
           fi
 
+      # wrangler-action replaces the deprecated cloudflare/pages-action@v1.
+      # Outputs: deployment-url (atomic) and pages-deployment-alias-url (branch alias).
       - name: Deploy to Cloudflare Pages
         id: deploy
-        uses: cloudflare/pages-action@f0a1cd58cd66095dee69bfa18fa5efd1dde93bca # v1
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: zhaoyu-io
-          directory: frontend/build
-          branch: ${{ steps.deployment.outputs.branch }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy frontend/build --project-name=zhaoyu-io --branch=${{ steps.deployment.outputs.branch }}
 
       - name: Check deployment status
         if: steps.deploy.outcome == 'success'
@@ -291,8 +290,8 @@ jobs:
           echo "🌐 Deployment completed successfully!"
           echo ""
           echo "**Preview Deployment URLs:**"
-          echo "  - Atomic URL: ${{ steps.deploy.outputs.url }}"
-          echo "  - Branch Alias: ${{ steps.deploy.outputs.alias }}"
+          echo "  - Atomic URL: ${{ steps.deploy.outputs.deployment-url }}"
+          echo "  - Branch Alias: ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
           echo ""
           echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
           echo "   1. Wait 1-2 minutes for deployment to propagate"
@@ -306,8 +305,8 @@ jobs:
         id: extract-urls
         run: |
           echo "Extracting deployment URLs from Cloudflare Pages action..."
-          ATOMIC_URL="${{ steps.deploy.outputs.url }}"
-          ALIAS_URL="${{ steps.deploy.outputs.alias }}"
+          ATOMIC_URL="${{ steps.deploy.outputs.deployment-url }}"
+          ALIAS_URL="${{ steps.deploy.outputs.pages-deployment-alias-url }}"
 
           if [ -z "$ATOMIC_URL" ]; then
             echo "❌ ERROR: Atomic URL is empty!"
