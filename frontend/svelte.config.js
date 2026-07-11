@@ -12,11 +12,12 @@ const config = {
     adapter: adapter({
       pages: 'build',
       assets: 'build',
-      // 200.html (not index.html) so the SPA fallback doesn't overwrite the
-      // prerendered '/' page. Cloudflare Pages does NOT serve 200.html on its
-      // own — without a rule it falls back to the prerendered homepage for
-      // unmatched routes — so static/_redirects rewrites /* to /200.html.
-      fallback: '200.html',
+      // 404.html (not index.html) so the SPA fallback doesn't overwrite the
+      // prerendered '/' page. Cloudflare Pages natively serves 404.html for
+      // unmatched paths (with a correct 404 status), so no _redirects rule is
+      // needed — a /* -> /200.html rewrite loops, because Pages 308-redirects
+      // *.html URLs to their extensionless form, which matches /* again.
+      fallback: '404.html',
       precompress: false,
       strict: true,
     }),

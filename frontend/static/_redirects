@@ -1,6 +1,0 @@
-# SPA fallback: route unmatched URLs to the empty app shell (200.html),
-# NOT to /index.html — index.html is the prerendered homepage with the
-# home page's title/meta/OG tags baked in. Without this rule, Cloudflare
-# Pages' default SPA behavior serves the homepage document for every
-# unknown path (soft 404s with the wrong metadata for crawlers).
-/* /200.html 200
