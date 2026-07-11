@@ -22,7 +22,7 @@ export const heroContent: HeroContent = {
     primary: 'Full Stack Engineer at CNBC.',
     accent: 'UI Focus & AI Integration Lead.',
   },
-  bio: 'Principal Engineer at CNBC. Leading the migration to Isomorphic Akamai Edge Architecture for 50M+ monthly users. Architecting high-scale systems that achieve 1.1s LCP through performance-first engineering and governed AI integration.',
+  bio: 'Principal Engineer at CNBC. Leading the migration to Isomorphic Akamai Edge Architecture for 50M+ monthly users. Architecting high-scale systems that achieve 1.1s LCP through performance-first engineering and governed AI integration — and shipping independent systems with the same production discipline outside of assigned work.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read My AI Thesis',
@@ -139,6 +139,26 @@ export interface NotesData {
 
 export const notesData: NotesData = {
   notes: [
+    {
+      slug: 'why-i-made-this-site-readable-by-machines-not-just-humans',
+      title: 'Why I Made This Site Readable by Machines, Not Just Humans',
+      date: 'Jul 2026',
+      tags: ['AI Engineering', 'SEO', 'Structured Data'],
+      content: [
+        'Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root — a plain-text summary of who I am and what I\'ve built, structured for a language model\'s context window rather than a browser\'s rendering engine — JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.',
+        'The more interesting find while doing this wasn\'t a feature, it was a bug. My static-site adapter\'s SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write — silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site\'s build output is not implied by its source — verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.',
+      ],
+    },
+    {
+      slug: 'the-three-tiers-of-using-ai-and-why-only-two-matter-now',
+      title: 'The Three Tiers of Using AI, and Why Only Two of Them Still Differentiate You',
+      date: 'Jul 2026',
+      tags: ['AI Engineering', 'Agent Architecture', 'Career'],
+      content: [
+        'There\'s a real difference between using AI as a faster typist — autocomplete, chat-assisted edits, "fix this bug for me" — and delegating a bounded unit of work to an agent that plans, executes across multiple files, and hands you a diff to review. The first tier is now table stakes; every engineer I work with has a model open in a side pane, and it stopped being a differentiator the moment it became the default. The tiers above it — an agent working a scoped task end-to-end, or several agents running in parallel with their own permission boundaries — are where the actual leverage still lives, because almost nobody has restructured how they delegate work to get there.',
+        'As the person who sets AI-adoption standards for my org, I spend almost none of my time on prompting technique. I spend it on the guardrails: what an agent can touch unsupervised, what requires a human review gate before it ships, and what "done" has to prove before I believe it. This site\'s agent-readable rewrite — the notes, the structured data, the build-output bug above — was built the same way: scoped to specific files, verified against the existing type-check, lint, test, and build gates before anything shipped, with the plan surfaced for review rather than pushed silently. <strong>"I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and a review bar — instead of still typing every line yourself — is the one that\'s left.</strong>',
+      ],
+    },
     {
       slug: 'building-with-ai-the-compound-advantage',
       title: 'Building with AI: The Compound Advantage',

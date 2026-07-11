@@ -24,7 +24,7 @@
   <title>Zhao Yu | Principal Engineer at CNBC</title>
   <meta
     name="description"
-    content="Principal Engineer at CNBC architecting high-performance media systems for 50M+ users. UI Factory and AI Integration at scale."
+    content="Principal Engineer at CNBC architecting high-performance media systems for 50M+ users. AI Integration Lead and independent builder shipping production-grade systems."
   />
 
   <meta property="og:type" content="website" />
@@ -35,7 +35,7 @@
   />
   <meta
     property="og:description"
-    content="Principal Engineer at CNBC. 1.1s LCP, 50M+ users, UI Factory and AI Integration. Opinionated on latency, streaming interfaces, and production AI."
+    content="Principal Engineer at CNBC. 1.1s LCP, 50M+ users, AI Integration Lead, independent builder. Opinionated on latency, streaming interfaces, and production AI."
   />
   <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
   <meta property="twitter:card" content="summary_large_image" />
@@ -43,7 +43,7 @@
   <meta property="twitter:title" content="Zhao Yu — Principal Engineer at CNBC" />
   <meta
     property="twitter:description"
-    content="Principal Engineer at CNBC. UI Factory and AI Integration at scale."
+    content="Principal Engineer at CNBC. AI Integration Lead and independent builder, shipping at scale."
   />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
 
