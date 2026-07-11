@@ -277,11 +277,11 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC UI Factory Initiative',
     category: 'professional',
     description:
-      "Architecting CNBC's next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 200+ page templates serving a global newsroom.",
+      "Architecting CNBC's next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 50+ page templates serving a global newsroom.",
     stack: ['React', 'Akamai EdgeWorkers', 'GraphQL', 'Node.js'],
     status: 'in-progress',
     metrics: [
-      { label: 'Templates', value: '200+' },
+      { label: 'Templates', value: '50+' },
       { label: 'LCP', value: 'Top 1%' },
     ],
   },
