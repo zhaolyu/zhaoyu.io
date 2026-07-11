@@ -17,12 +17,12 @@ export interface HeroContent {
 }
 
 export const heroContent: HeroContent = {
-  badge: 'PRINCIPAL ENGINEER · CNBC',
+  badge: 'SENIOR MANAGER · CORE WEB · CNBC',
   headline: {
-    primary: 'Full Stack Engineer at CNBC.',
-    accent: 'UI Focus & AI Integration Lead.',
+    primary: 'Leading Core Web at CNBC.',
+    accent: 'Player-Coach: Architecture & AI Integration.',
   },
-  bio: 'Principal Engineer at CNBC. Leading the migration to Isomorphic Akamai Edge Architecture for 50M+ monthly users. Architecting high-scale systems that achieve 1.1s LCP through performance-first engineering and governed AI integration — and shipping independent systems with the same production discipline outside of assigned work.',
+  bio: 'Senior Manager of Core Web for CNBC.com — leading a team of 8 engineers and 2 QE, in lockstep with dedicated product partners, while staying hands-on in the architecture. Nine years of performance-first engineering behind it: Isomorphic Akamai Edge for 50M+ monthly users, 1.1s LCP, governed AI integration, and independent systems shipped with the same production discipline.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read My AI Thesis',
@@ -230,7 +230,7 @@ export const careerHistory: CareerHistory = {
     { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
     { year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },
     { year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
-    { year: 2027, impact: 100, role: 'Architect + Builder', company: 'Dual Track' },
+    { year: 2026, impact: 100, role: 'Senior Manager, Core Web', company: 'CNBC' },
   ],
 };
 
@@ -290,7 +290,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    'My career began as a web developer intern at CNBC, and over the last nine years I have evolved into a Principal Software Engineer overseeing the architecture of one of the world\'s most prominent financial news platforms.',
+    'My career began as a web developer intern at CNBC, and over the last nine years I have grown from web developer to Principal Engineer to Senior Manager of Core Web for CNBC.com. It is a player-coach role by design: I manage the team that owns the platform\'s core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them.',
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
