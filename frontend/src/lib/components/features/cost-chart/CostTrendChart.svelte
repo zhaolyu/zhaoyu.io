@@ -38,7 +38,9 @@
       pts.length === 0
         ? ''
         : pts
-            .map((p, i) => `${i === 0 ? 'M' : 'L'}${px(p.created_at)},${py(p.total_monthly_estimate)}`)
+            .map(
+              (p, i) => `${i === 0 ? 'M' : 'L'}${px(p.created_at)},${py(p.total_monthly_estimate)}`,
+            )
             .join(' ');
 
     const buildArea = (pts: CostSnapshot[]) => {

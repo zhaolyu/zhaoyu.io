@@ -31,18 +31,15 @@
             <span class="highlight-blue">the system.</span>
           </h3>
           <p class="skills-description">
-            These are production metrics from CNBC.com — not synthetic benchmarks.
-            Shipped at this scale,
+            These are production metrics from CNBC.com — not synthetic benchmarks. Shipped at this
+            scale,
             <span class="highlight-text">consistently</span>.
           </p>
         </div>
 
         <div class="metrics-grid">
           {#each performanceMetrics as metric, i}
-            <div
-              class="metric-card"
-              in:fly={{ y: 16, duration: 400, delay: i * 80 }}
-            >
+            <div class="metric-card" in:fly={{ y: 16, duration: 400, delay: i * 80 }}>
               <div class="metric-value">{metric.value}</div>
               <div class="metric-label">{metric.label}</div>
               <div class="metric-sublabel">{metric.sublabel}</div>

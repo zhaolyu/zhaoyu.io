@@ -14,10 +14,11 @@ function urlEntry(path: string, changefreq: string, priority: string): string {
 }
 
 export function GET() {
+  // /infra is deliberately excluded: the page sets <meta name="robots" content="noindex">,
+  // and a sitemap entry would contradict that signal.
   const staticEntries = [
     urlEntry(ROUTES.HOME, 'weekly', '1.0'),
     urlEntry(ROUTES.AI_MANIFESTO, 'monthly', '0.5'),
-    urlEntry(ROUTES.INFRA, 'weekly', '0.5'),
   ];
 
   const blogEntries = notesData.notes.map((note) =>

@@ -16,53 +16,62 @@
   const principles = [
     {
       num: '01',
-      title: 'The Water Is Rising',
-      body: 'This is not a drill, not a fad, not hype. The technology works, it improves predictably, and the wealthiest institutions in history are committing trillions. Act like it.',
+      title: 'The Spec Is the Artifact',
+      body: 'When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description. The specification becomes the primary engineering artifact; the codebase is a derivative — closer to a build output than to source.',
     },
     {
       num: '02',
-      title: 'Kill Your Old Experience',
-      body: "If you tried AI in 2023 or early 2024 and were unimpressed — that's ancient history. The models today are unrecognizable. Never evaluate the present with yesterday's experience.",
+      title: 'Fix the Loop, Not the Model',
+      body: 'Agent failures are ambiguity failures of the loop, not intelligence failures of the agent. Smartness cannot supply a fact that was never specified. A real run has a goal, a boundary, tools, artifacts, and receipts — miss one and you made a wish, not a delegation.',
     },
     {
       num: '03',
-      title: 'Have No Ego About It',
-      body: 'The people who will struggle most are the ones who refuse to engage — who dismiss it as a fad, who feel using AI diminishes their expertise, who assume their field is immune. No field is.',
+      title: '"Done" Requires a Receipt',
+      body: 'An agent declaring success is self-attestation by the party with the strongest incentive to call the job done. No diff, no test run, no artifact — no "done." The same review bar applies whether the author was a human or a machine.',
     },
     {
       num: '04',
-      title: "Push, Don't Browse",
-      body: "Don't treat AI like Google. Feed it your actual work. Give it the hard stuff. The people getting ahead aren't using AI casually — they're automating what used to take hours.",
+      title: 'Deterministic Shells, Non-Deterministic Cores',
+      body: 'Non-deterministic output demands a deterministic, accessible interface as its stability layer. The UI is a contract, not a display — that is what makes streaming AI trustworthy enough for 50M+ monthly users on a financial news platform.',
     },
     {
       num: '05',
-      title: 'Adapt as Identity',
-      body: "The specific tools don't matter as much as the muscle of learning new ones quickly. Get comfortable being a beginner repeatedly. Adaptability is the only durable advantage.",
+      title: 'AI Is a Motorcycle, Not an Equalizer',
+      body: 'AI equalizes execution speed — but execution was already cheap. What it amplifies is specification quality, which is a direct function of domain depth. It makes experts more productive faster than it makes novices competent. Keep earning the depth.',
     },
   ];
 
   const checkItems = [
-    { key: 'check-1', text: 'Spend 1 hour experimenting with AI on something new' },
-    { key: 'check-2', text: 'Push AI into a task I assumed was "too hard" for it' },
+    {
+      key: 'check-1',
+      text: 'Delegate one bounded task to an agent end-to-end — boundary and review bar, not keystrokes',
+    },
+    {
+      key: 'check-2',
+      text: 'Write the spec before the prompt: goal, boundary, tools, artifacts, receipts',
+    },
     { key: 'check-3', text: 'Use the best model available, not the default' },
-    { key: 'check-4', text: 'Identify one part of my work that AI could handle — and test it' },
-    { key: 'check-5', text: 'Learn something new about how a model or tool works' },
+    {
+      key: 'check-4',
+      text: 'Reject one "done" that arrived without a receipt — the diff, the test run, the artifact',
+    },
+    { key: 'check-5', text: 'Capture one claim, pattern, or tension into the vault' },
   ];
 
   const rememberItems = [
-    'AI capability is doubling every 4–7 months',
-    'AI is now helping build the next AI',
-    'The smartest people in the room are not dismissing this',
-    'Nothing done on a screen is safe in the medium term',
-    'The window to be early is closing',
+    'Casual AI use is already table stakes — only the delegation tiers differentiate',
+    'Reliability is engineered into the loop, not summoned from the model',
+    'AI makes experts more productive faster than it makes novices competent',
+    'Memory and context architecture beat model selection',
+    'English is now a programming language — write it with an engineer’s precision',
   ];
 
   const butAlsoItems = [
-    'Timelines are estimates, not guarantees',
-    'Adoption lags capability — regulation, inertia, trust',
-    'Relationships, presence, and judgment still matter',
-    'Hype cycles overshoot before correcting',
-    'Your worth is not your productivity',
+    'Some engineering decisions only emerge from contact with the code',
+    'A brownfield system is its own specification — respect what running code encodes',
+    'AI-expanded scope carries errors you may not be qualified to catch',
+    'Single-trial outcomes cannot grade a decision process',
+    'Your worth is not your throughput',
   ];
 
   let checkState = $state<Record<string, boolean>>({});
@@ -145,10 +154,10 @@
 </script>
 
 <svelte:head>
-  <title>Manifesto — zhaoyu.io</title>
+  <title>AI Thesis — Zhao Yu</title>
   <meta
     name="description"
-    content="A personal manifesto on AI-augmented engineering — principles for building with large language models as an engineering leader."
+    content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
   />
 </svelte:head>
 
@@ -159,8 +168,8 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <span class="tag">Daily Manifesto</span>
-      <h1>Something Big<br />Is Happening</h1>
+      <span class="tag">Working Thesis</span>
+      <h1>The Factory<br />Is Going Dark</h1>
       <div class="date">{todayDate}</div>
     </div>
 
@@ -168,9 +177,13 @@
 
     <!-- Epigraph -->
     <p class="epigraph">
-      "The gap between what I've been saying and what is actually happening has gotten far too big."
+      Software is heading toward the dark factory: agents doing the implementation, humans holding
+      the two endpoints.
       <br /><br />
-      Your job: <strong>close the gap between perception and reality every single day.</strong>
+      My job:
+      <strong
+        >write specifications an agent cannot misread, and demand receipts it cannot fake.</strong
+      >
     </p>
 
     <!-- CORE PRINCIPLES -->
@@ -238,11 +251,10 @@
     <section class="section">
       <div class="quote-block">
         <p>
-          The person who walks into a meeting and says "I used AI to do this analysis in an hour
-          instead of three days" is going to be the most valuable person in the room. Not
-          eventually. Right now.
+          "I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and
+          a review bar — instead of still typing every line yourself — is the one that's left.
         </p>
-        <span class="attr">— Matt Shumer</span>
+        <span class="attr">— from my claim vault, on where the leverage moved</span>
       </div>
     </section>
 
@@ -259,14 +271,17 @@
     <!-- FOOTER -->
     <footer class="footer">
       <p>
-        Based on <a
+        These are my operating principles, argued from nine years of production systems and tested
+        daily against real work.
+        <br />
+        Influences worth reading in full:
+        <a
           href="https://x.com/mattshumer_/status/2021256989876109403"
           target="_blank"
-          rel="noopener noreferrer">Something Big Is Happening</a
+          rel="noopener noreferrer">Matt Shumer's "Something Big Is Happening"</a
         >
-        by Matt Shumer
-        <br />
-        "The future is already here. It just hasn't knocked on your door yet. It's about to."
+        on urgency, and Kleppmann's <em>Designing Data-Intensive Applications</em> on why the loop patterns
+        are older than the agents.
       </p>
     </footer>
   </div>
