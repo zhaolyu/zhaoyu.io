@@ -19,6 +19,7 @@ describe('sitemap.xml GET', () => {
     expect(body).toContain('<?xml version="1.0" encoding="UTF-8"?>');
     expect(body).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
     expect(body).toContain('<loc>https://zhaoyu.io/</loc>');
+    expect(body).toContain('<loc>https://zhaoyu.io/blog</loc>');
     expect(body).toContain('<loc>https://zhaoyu.io/ai-manifesto</loc>');
   });
 
@@ -27,6 +28,23 @@ describe('sitemap.xml GET', () => {
     for (const note of notesData.notes) {
       expect(body).toContain(`<loc>https://zhaoyu.io/blog/${note.slug}</loc>`);
     }
+  });
+
+  it('stamps note entries with a lastmod from their publication date', async () => {
+    const { body } = await fetchSitemap();
+    for (const note of notesData.notes) {
+      expect(body).toContain(`<lastmod>${note.dateISO}</lastmod>`);
+    }
+  });
+
+  it('stamps the home and blog index entries with the newest note date', async () => {
+    const { body } = await fetchSitemap();
+    const newest = notesData.notes.reduce(
+      (max, note) => (note.dateISO > max ? note.dateISO : max),
+      '',
+    );
+    const homeEntry = body.slice(body.indexOf('<url>'), body.indexOf('</url>'));
+    expect(homeEntry).toContain(`<lastmod>${newest}</lastmod>`);
   });
 
   it('excludes /infra because that page is noindex', async () => {
