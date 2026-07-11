@@ -321,6 +321,33 @@ jobs:
           echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
           echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
 
+      - name: Record GitHub deployment (View deployment button)
+        if: |
+          steps.deploy.outcome == 'success' &&
+          steps.extract-urls.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const previewUrl = '${{ steps.extract-urls.outputs.preview_url }}'.trim();
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+              environment: 'preview',
+              transient_environment: true,
+              auto_merge: false,
+              required_contexts: [],
+            });
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.id,
+              state: 'success',
+              environment_url: previewUrl,
+              auto_inactivate: true,
+            });
+            console.log('✅ Deployment record created:', previewUrl);
+
       - name: Comment Preview URL on PR
         if: |
           steps.deployment.outputs.environment == 'preview' &&
@@ -344,8 +371,9 @@ jobs:
               branch: branch
             });
 
-            // Validate URL
-            if (!previewUrl || previewUrl === '' || previewUrl === '${{ steps.extract-urls.outputs.preview_url }}') {
+            // Validate URL (note: comparing against a '${{ }}' literal is
+            // impossible here — expressions interpolate inside this script too)
+            if (!previewUrl) {
               console.error('❌ Preview URL is empty or not set!');
               console.error('Check the "Extract deployment URLs" step logs for details.');
               return;

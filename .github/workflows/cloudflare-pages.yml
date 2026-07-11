@@ -133,6 +133,35 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy frontend/build --project-name=zhaoyu-io --branch=${{ steps.deployment.outputs.branch }}
 
+      - name: Record GitHub deployment
+        if: steps.deploy.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const isProd = '${{ steps.deployment.outputs.environment }}' === 'production';
+            const url = isProd
+              ? 'https://zhaoyu.io'
+              : '${{ steps.deploy.outputs.deployment-url }}'.trim();
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: isProd ? 'production' : 'preview',
+              transient_environment: !isProd,
+              production_environment: isProd,
+              auto_merge: false,
+              required_contexts: [],
+            });
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.id,
+              state: 'success',
+              environment_url: url,
+              auto_inactivate: true,
+            });
+            console.log('✅ Deployment record created:', url);
+
       - name: Check deployment status
         if: steps.deploy.outcome == 'success'
         run: |
