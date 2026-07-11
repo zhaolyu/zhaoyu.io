@@ -1,7 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-
-type Theme = 'light' | 'dark';
+import type { Theme } from '$lib/types';
 
 function getInitialTheme(): Theme {
   if (!browser) return 'light';

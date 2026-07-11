@@ -108,28 +108,32 @@ describe('isMobileViewport', () => {
 
 describe('createIntersectionObserver', () => {
   let mockObserver: {
-    observe: ReturnType<typeof vi.fn>;
-    disconnect: ReturnType<typeof vi.fn>;
-    takeRecords: ReturnType<typeof vi.fn>;
+    observe: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+    disconnect: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+    takeRecords: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   };
-  let mockCallback: ReturnType<typeof vi.fn>;
+  let mockCallback: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   let mockIntersectionObserver: typeof IntersectionObserver;
 
   beforeEach(() => {
     vi.useFakeTimers();
 
-    mockCallback = vi.fn();
+    mockCallback = vi.fn<(...args: any[]) => any>();
     mockObserver = {
-      observe: vi.fn(),
-      disconnect: vi.fn(),
-      takeRecords: vi.fn(),
+      observe: vi.fn<(...args: any[]) => any>(),
+      disconnect: vi.fn<(...args: any[]) => any>(),
+      takeRecords: vi.fn<(...args: any[]) => any>(),
     };
 
-    mockIntersectionObserver = vi.fn().mockImplementation((callback) => {
-      // Store callback for triggering
-      (mockObserver as any).callback = callback;
-      return mockObserver;
-    }) as any;
+    // Regular function (not arrow): Vitest 4 mocks honor construct semantics,
+    // so the implementation must be constructable for `new IntersectionObserver()`
+    mockIntersectionObserver = vi
+      .fn<(...args: any[]) => any>()
+      .mockImplementation(function (callback) {
+        // Store callback for triggering
+        (mockObserver as any).callback = callback;
+        return mockObserver;
+      }) as any;
 
     global.IntersectionObserver = mockIntersectionObserver as any;
   });
@@ -402,8 +406,8 @@ describe('isScrolledPast', () => {
 });
 
 describe('checkInitialVisibility', () => {
-  let mockRAF: ReturnType<typeof vi.fn>;
-  let mockCallback: ReturnType<typeof vi.fn>;
+  let mockRAF: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+  let mockCallback: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   let mockElement: HTMLElement;
 
   beforeEach(() => {
@@ -414,7 +418,7 @@ describe('checkInitialVisibility', () => {
     });
     global.requestAnimationFrame = mockRAF as any;
 
-    mockCallback = vi.fn();
+    mockCallback = vi.fn<(...args: any[]) => any>();
     mockElement = document.createElement('div');
     document.body.appendChild(mockElement);
   });

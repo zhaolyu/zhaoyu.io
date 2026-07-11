@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import { slide, fade } from 'svelte/transition';
   import ThemeToggle from './ThemeToggle.svelte';
   import { handleAnchorNavigation, scrollToTop } from '$lib/utils/navigation';
@@ -6,6 +7,8 @@
 
   let isMenuOpen = $state(false);
   let lastScrollY = $state(0);
+  let menuEl = $state<HTMLElement | null>(null);
+  let hamburgerEl = $state<HTMLElement | null>(null);
 
   const navLinks = [
     { name: '/skills', href: '/#skills' },
@@ -23,16 +26,49 @@
     // Height changes cause browser to adjust scroll position to maintain visual alignment
     const baseClasses =
       'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b header-nav py-4';
-    const scrolledClasses = isScrolled ? 'backdrop-blur-md header-scrolled' : 'border-transparent';
+    const scrolledClasses = $isScrolled ? 'backdrop-blur-md header-scrolled' : 'border-transparent';
     return `${baseClasses} ${scrolledClasses}`;
   });
 
-  function toggleMenu() {
+  async function toggleMenu() {
     isMenuOpen = !isMenuOpen;
+    if (isMenuOpen) {
+      // Move focus into the dialog once it has rendered
+      await tick();
+      menuFocusables()[0]?.focus();
+    }
   }
 
   function closeMenu() {
+    if (!isMenuOpen) return;
     isMenuOpen = false;
+    // Return focus to the control that opened the dialog
+    hamburgerEl?.focus();
+  }
+
+  function menuFocusables(): HTMLElement[] {
+    if (!menuEl) return [];
+    return Array.from(menuEl.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+  }
+
+  // Keep Tab / Shift+Tab cycling inside the open dialog
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    const focusables = menuFocusables();
+    if (focusables.length === 0) return;
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+    const inside = active !== null && menuEl !== null && menuEl.contains(active);
+
+    if (e.shiftKey && (!inside || active === first)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (!inside || active === last)) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   function handleNavClick(e: MouseEvent, href: string) {
@@ -119,7 +155,7 @@
     </a>
 
     <nav class="hidden md:flex items-center gap-6">
-      {#each navLinks as link}
+      {#each navLinks as link (link.href)}
         <a
           href={link.href}
           onclick={(e) => handleAnchorNavigation(e, link.href)}
@@ -139,6 +175,7 @@
       <a
         href="https://github.com/zhaolyu"
         target="_blank"
+        rel="noopener noreferrer"
         class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
       >
         <span class="sr-only">GitHub</span>
@@ -154,6 +191,7 @@
       <a
         href="https://linkedin.com/in/zhaolyu"
         target="_blank"
+        rel="noopener noreferrer"
         class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
       >
         <span class="sr-only">LinkedIn</span>
@@ -168,20 +206,20 @@
 
       <ThemeToggle />
 
-      <!-- Hamburger Menu Button (Mobile Only) -->
-      {#if !isMenuOpen}
-        <button
-          onclick={toggleMenu}
-          class="md:hidden hamburger-button"
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-          type="button"
-        >
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-      {/if}
+      <!-- Hamburger Menu Button (Mobile Only) — stays mounted so aria-expanded
+           actually reflects state instead of always reading false -->
+      <button
+        bind:this={hamburgerEl}
+        onclick={toggleMenu}
+        class="md:hidden hamburger-button"
+        aria-label="Toggle menu"
+        aria-expanded={isMenuOpen}
+        type="button"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </div>
   </div>
 </header>
@@ -197,6 +235,7 @@
     transition:fade={{ duration: 200 }}
   >
     <div
+      bind:this={menuEl}
       class="mobile-menu"
       role="dialog"
       aria-modal="true"
@@ -205,7 +244,9 @@
       onkeydown={(e) => {
         if (e.key === 'Escape') {
           closeMenu();
+          return;
         }
+        trapFocus(e);
       }}
       transition:slide={{ axis: 'x', duration: 300 }}
     >
@@ -224,7 +265,7 @@
       </div>
 
       <div class="mobile-menu-links">
-        {#each navLinks as link}
+        {#each navLinks as link (link.href)}
           <a
             href={link.href}
             onclick={(e) => handleNavClick(e, link.href)}

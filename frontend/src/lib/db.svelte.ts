@@ -124,7 +124,14 @@ export class CostDB {
     const dbs = await indexedDB.databases();
     for (const db of dbs) {
       if (db.name?.startsWith('zhaoyu-cost-guard')) {
-        indexedDB.deleteDatabase(db.name);
+        // Await completion — firing deleteDatabase without waiting can leave the
+        // deletion blocked against the connection init() opens next.
+        await new Promise<void>((resolve) => {
+          const req = indexedDB.deleteDatabase(db.name!);
+          req.onsuccess = () => resolve();
+          req.onerror = () => resolve();
+          req.onblocked = () => resolve();
+        });
       }
     }
     return this.init();

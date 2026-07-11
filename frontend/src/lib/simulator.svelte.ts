@@ -4,8 +4,10 @@ import { SIMULATOR_LIMITS } from '$lib/constants/config';
 import { buildBaseline, projectCost } from '$lib/utils/cost-projection';
 
 export class CostSimulator {
-  trafficMultiplier = $state(SIMULATOR_LIMITS.trafficMultiplier.default);
-  storageGrowthGB = $state(SIMULATOR_LIMITS.storageGrowthGB.default);
+  // Explicit number annotations: SIMULATOR_LIMITS is `as const`, so without
+  // them $state infers the literal types 1/0 and rejects every other value.
+  trafficMultiplier: number = $state(SIMULATOR_LIMITS.trafficMultiplier.default);
+  storageGrowthGB: number = $state(SIMULATOR_LIMITS.storageGrowthGB.default);
   baseline = $state<CostBaseline>({ compute: 0, storage: 0, fixed: 0, total: 0 });
   isLoaded = $state(false);
 

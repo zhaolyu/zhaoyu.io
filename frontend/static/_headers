@@ -1,0 +1,12 @@
+# Security headers for every response (Cloudflare Pages).
+# The full Content-Security-Policy is injected per page as a <meta> tag by
+# SvelteKit (see csp in svelte.config.js) because its script-src hashes vary
+# per page; frame-ancestors cannot be delivered via <meta>, so it lives here.
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: frame-ancestors 'none'

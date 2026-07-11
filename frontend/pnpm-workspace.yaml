@@ -1,0 +1,7 @@
+# pnpm settings (single-package workspace)
+packages:
+  - '.'
+
+# Supply-chain guard: refuse to install package versions published less than
+# 3 days ago, giving the ecosystem time to catch compromised releases.
+minimumReleaseAge: 4320

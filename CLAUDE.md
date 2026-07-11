@@ -15,25 +15,28 @@ frontend/            ← all commands run from here
         layout/      # nav, footer, wrappers
         ui/          # generic reusable primitives
       constants/     # config.ts, content.ts, routes.ts
-      services/
-        api/         # client.ts, endpoints.ts
       stores/        # scroll.ts, theme.ts
-      types/         # api.ts, common.ts
+      types/         # api.ts, common.ts, cost-guard.ts
       utils/         # pure utility functions
+      db.svelte.ts        # Cost-Guard PGlite + ElectricSQL sync engine (runes class)
+      hud.svelte.ts       # Architect HUD telemetry state (runes class)
+      simulator.svelte.ts # cost what-if simulator state (runes class)
     routes/
-      (main)/        # main layout group
-        blog/[slug]/
-        comparison/
-      api/           # SvelteKit server endpoints (+server.ts)
+      (main)/        # main layout group: landing page + blog/[slug]/
+      (standalone)/  # ai-manifesto (own layout)
+      infra/         # Cost-Guard dashboard (ssr = false)
+      sitemap.xml/   # prerendered +server.ts endpoint (the only server route)
       +layout.ts
 ```
+
+There is no backend in this repo: the site is fully static (adapter-static, SPA fallback + prerender). `sitemap.xml/+server.ts` is prerendered at build time; there are no runtime API endpoints.
 
 ### Imports
 
 Always use `$lib/...` aliases — never relative `../../` paths.
 
 - `$lib/components/...` · `$lib/stores/...` · `$lib/utils/...`
-- `$lib/constants/...` · `$lib/services/...` · `$lib/types/...`
+- `$lib/constants/...` · `$lib/types/...`
 
 ---
 
@@ -46,7 +49,7 @@ pnpm lint            # lint
 pnpm lint:fix        # lint + autofix
 pnpm format          # prettier
 pnpm test            # all tests
-pnpm vitest run src/lib/utils/date.test.ts  # single file
+pnpm vitest run src/lib/utils/navigation.test.ts  # single file
 pnpm build           # build
 ```
 
@@ -81,12 +84,12 @@ Plan (and get approval) before coding when: multi-file changes, new features tou
 
 **Check `$lib/utils/` before writing any helper.** Existing utils:
 
-- `date.ts` – date formatting/parsing
-- `format.ts` – string/number formatting
-- `navigation.ts` – routing helpers
-- `validation.ts` – input validation
+- `navigation.ts` – routing/anchor-navigation helpers
 - `intersection-core.ts` – IntersectionObserver core logic
 - `section-observer.ts` – section visibility tracking
+- `cost-projection.ts` – Cost-Guard aggregation/projection math
+- `cost-guard-display.ts` – Cost-Guard snapshot display formatting
+- `feature-flags.ts` – filters content items by `FEATURE_FLAGS` (config.ts)
 
 New utils require a colocated `*.test.ts` with ≥90% coverage.
 
@@ -107,8 +110,10 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 - Barrel export via `index.ts` in each folder.
 
 ### Security
-- No hardcoded secrets — use env vars.
-- Validate and sanitize user input in `src/routes/api/` endpoints.
+- No hardcoded secrets — this is a static site; anything in `src/` or `static/` ships to the client.
+- Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).
+- CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
+- GitHub Actions are pinned to commit SHAs; Dependabot keeps them and npm deps updated.
 - Error handling must not expose sensitive data.
 
 ---
@@ -119,7 +124,7 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 - **no-console**: warning — avoid in committed code.
 - **svelte/no-at-html-tags**: warning — avoid `{@html}` unless trusted.
 - **Unused vars**: prefix with `_` (`@typescript-eslint/no-unused-vars`).
-- Always run `npm run format` before committing.
+- Always run `pnpm format` before committing.
 
 ---
 
@@ -128,14 +133,4 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 - Framework: Vitest + jsdom, `globals: true`.
 - Colocate test files as `*.test.ts` or `*.spec.ts` next to source.
 - Use ES module `import`; no `require()`.
-- Test utils, stores, services, and server endpoints. Do not test `.svelte` files.
-
----
-
-## API Endpoints (`src/routes/api/`)
-
-- Validate all request body/params before processing.
-- Consider rate limiting for public POST endpoints.
-- Do not hardcode `Access-Control-Allow-Origin: *` — SvelteKit hooks handle CORS.
-- Return correct HTTP status codes (200, 400, 404, 500).
-- Never expose sensitive data in error responses.
+- Test utils, stores, and the `sitemap.xml` server route. Do not test `.svelte` files.

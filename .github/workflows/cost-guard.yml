@@ -1,8 +1,16 @@
 name: Cost Guard - Report Infrastructure Costs
 
+# Manual-only: this repo has no Terraform, so there is no real cost data to
+# compute here. Running on every push used to send a hardcoded $0 snapshot
+# per commit, flooding the /infra dashboard with empty "Estimate" rows.
+# Trigger manually (with a real estimate) to exercise the ingestion pipeline.
 on:
-  push:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      total_monthly_estimate:
+        description: 'Total monthly estimate (USD) for this snapshot'
+        required: true
+        default: '0'
 
 concurrency:
   group: cost-guard-${{ github.sha }}
@@ -17,7 +25,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Send cost snapshot to Cost-Guard
         env:
@@ -29,7 +37,7 @@ jobs:
             "org_id": "4915feab-e474-439a-823f-9f2b914ca447",
             "project_id": "zhaoyu-io",
             "commit_hash": "${{ github.sha }}",
-            "total_monthly_estimate": 0,
+            "total_monthly_estimate": ${{ inputs.total_monthly_estimate }},
             "costs": []
           }
           EOF

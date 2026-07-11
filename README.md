@@ -1,8 +1,8 @@
 # zhaoyu.io
 
-**Principal Engineering Portfolio & R&D Playground.**
+**Engineering Portfolio & R&D Playground.**
 
-This repository hosts the personal site of Zhao Yu, a Principal Engineer specializing in high-scale media architecture and local-first systems. It serves two purposes:
+This repository hosts the personal site of Zhao Yu — Senior Manager, Core Web at CNBC — a player-coach engineering leader specializing in high-scale media architecture, AI-augmented engineering, and local-first systems. It serves two purposes:
 
 - **Portfolio:** A high-performance, Edge-rendered showcase of my work.
 - **R&D Sandbox:** A production implementation of the "Synthesis Strategy"—combining serverless ingestion with local-first state management.
@@ -52,19 +52,20 @@ A public-facing dashboard that tracks the real-time cost of this architecture.
 
 ### Prerequisites
 
-- Node.js 24+
+- Node.js 24+ (see `frontend/.nvmrc`)
+- pnpm 10+
 
 ### Local Development
 
 ```bash
 # 1. Install dependencies (including WASM binaries)
-npm install
+cd frontend && pnpm install
 
 # 2. Run the development server
-cd frontend && npm run dev
+pnpm dev
 ```
 
-The `/infra` dashboard requires environment variables for the ElectricSQL sync endpoint and HMAC secret. See [`frontend/src/lib/constants/config.ts`](frontend/src/lib/constants/config.ts) for the expected variable names.
+The `/infra` dashboard reads from a public sync endpoint configured in [`frontend/src/lib/constants/config.ts`](frontend/src/lib/constants/config.ts) (`ELECTRIC_SYNC_URL`). The HMAC signing secret lives only in GitHub Actions secrets on the ingestion side — nothing secret ships to the client.
 
 ### Deployment
 
@@ -74,10 +75,9 @@ The frontend deploys to Cloudflare Pages on push to `main`. The GCP backend (ing
 
 ## 📚 Documentation
 
-- **[Cost-Guard Integration](docs/cost-guard/)** — PGlite + ElectricSQL infrastructure cost dashboard
-- **[Architecture Philosophy](docs/ANTIGRAVITY.md)** — The "Antigravity" design principles
 - **[Deployment Guide](docs/DEPLOYMENT_RECOMMENDATION.md)** — Cloudflare Pages setup
 - **[GitHub Authentication](docs/GITHUB_AUTHENTICATION.md)** — Multi-account setup and troubleshooting
+- **[Project Summary](docs/PROJECT_SUMMARY.md)** — High-level overview
 
 For frontend-specific documentation, see [`frontend/docs/`](frontend/docs/).
 

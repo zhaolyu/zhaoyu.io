@@ -4,11 +4,10 @@
     description: string;
     metrics: Array<{ label: string; value: string }>;
     tags: string[];
-    image: string;
     diagram?: string;
   }
 
-  let { title, description, metrics, tags, image, diagram }: Props = $props();
+  let { title, description, metrics, tags, diagram }: Props = $props();
   let isHovered = $state(false);
   let showDiagram = $state(false);
 
@@ -27,7 +26,7 @@
     <div class="card-content">
       <div class="content-inner">
         <div class="tags-container">
-          {#each tags as tag}
+          {#each tags as tag (tag)}
             <span class="tag">{tag}</span>
           {/each}
         </div>
@@ -36,7 +35,7 @@
         <p class="card-description">{description}</p>
 
         <div class="metrics-grid">
-          {#each metrics as metric}
+          {#each metrics as metric (metric.label)}
             <div class="metric-item">
               <div class="metric-value">{metric.value}</div>
               <div class="metric-label">{metric.label}</div>
@@ -134,165 +133,167 @@
             </div>
           {:else}
             <svg viewBox="0 0 600 300" class="diagram-svg" preserveAspectRatio="xMidYMid meet">
-            <defs>
-              <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
-                <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge
+              <defs>
+                <filter id="glow-green" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+                  <feMerge
+                    ><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge
+                  >
+                </filter>
+                <filter id="glow-blue" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                  <feMerge
+                    ><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge
+                  >
+                </filter>
+
+                <linearGradient id="shield-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" class="shield-stop" stop-opacity="0" />
+                  <stop offset="50%" class="shield-stop" stop-opacity="0.6" />
+                  <stop offset="100%" class="shield-stop" stop-opacity="0" />
+                </linearGradient>
+
+                <linearGradient id="trail-green" x1="100%" y1="0%" x2="0%" y2="0%">
+                  <stop offset="0%" class="trail-stop" stop-opacity="1" />
+                  <stop offset="100%" class="trail-stop" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+
+              <g class="connection-lines" stroke-width="1">
+                <line x1="50" y1="150" x2="300" y2="120" />
+                <line x1="50" y1="150" x2="300" y2="150" />
+                <line x1="50" y1="150" x2="300" y2="180" />
+                <line x1="300" y1="150" x2="500" y2="150" stroke-dasharray="4 4" />
+              </g>
+
+              <g transform="translate(500, 150)">
+                <text
+                  x="0"
+                  y="-40"
+                  text-anchor="middle"
+                  class="label-text"
+                  font-family="monospace"
+                  font-size="10"
+                  letter-spacing="2">ORIGIN</text
                 >
-              </filter>
-              <filter id="glow-blue" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
-                <feMerge><feMergeNode in="coloredBlur" /><feMergeNode in="SourceGraphic" /></feMerge
+                <g>
+                  <path class="origin-box" d="M-20 -25 L20 -25 L20 25 L-20 25 Z" stroke-width="2" />
+                  <ellipse class="origin-box" cx="0" cy="-25" rx="20" ry="6" stroke-width="2" />
+                  <circle cx="10" cy="15" r="2" class="status-indicator" opacity="0.3">
+                    <animate
+                      attributeName="opacity"
+                      values="0.3;1;0.3"
+                      dur="4s"
+                      begin="2s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </g>
+              </g>
+
+              <g transform="translate(300, 150)">
+                <text
+                  x="0"
+                  y="-80"
+                  text-anchor="middle"
+                  class="edge-label"
+                  font-family="monospace"
+                  font-size="10"
+                  letter-spacing="2"
+                  font-weight="bold">EDGE</text
                 >
-              </filter>
-
-              <linearGradient id="shield-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" class="shield-stop" stop-opacity="0" />
-                <stop offset="50%" class="shield-stop" stop-opacity="0.6" />
-                <stop offset="100%" class="shield-stop" stop-opacity="0" />
-              </linearGradient>
-
-              <linearGradient id="trail-green" x1="100%" y1="0%" x2="0%" y2="0%">
-                <stop offset="0%" class="trail-stop" stop-opacity="1" />
-                <stop offset="100%" class="trail-stop" stop-opacity="0" />
-              </linearGradient>
-            </defs>
-
-            <g class="connection-lines" stroke-width="1">
-              <line x1="50" y1="150" x2="300" y2="120" />
-              <line x1="50" y1="150" x2="300" y2="150" />
-              <line x1="50" y1="150" x2="300" y2="180" />
-              <line x1="300" y1="150" x2="500" y2="150" stroke-dasharray="4 4" />
-            </g>
-
-            <g transform="translate(500, 150)">
-              <text
-                x="0"
-                y="-40"
-                text-anchor="middle"
-                class="label-text"
-                font-family="monospace"
-                font-size="10"
-                letter-spacing="2">ORIGIN</text
-              >
-              <g>
-                <path class="origin-box" d="M-20 -25 L20 -25 L20 25 L-20 25 Z" stroke-width="2" />
-                <ellipse class="origin-box" cx="0" cy="-25" rx="20" ry="6" stroke-width="2" />
-                <circle cx="10" cy="15" r="2" class="status-indicator" opacity="0.3">
+                <rect
+                  x="-2"
+                  y="-60"
+                  width="4"
+                  height="120"
+                  fill="url(#shield-gradient)"
+                  class="pulse-slow"
+                >
                   <animate
-                    attributeName="opacity"
-                    values="0.3;1;0.3"
-                    dur="4s"
-                    begin="2s"
+                    attributeName="fill-opacity"
+                    values="0.6; 1; 0.6"
+                    dur="2s"
                     repeatCount="indefinite"
                   />
+                </rect>
+              </g>
+
+              <g transform="translate(50, 150)">
+                <text
+                  x="0"
+                  y="-40"
+                  text-anchor="middle"
+                  class="label-text"
+                  font-family="monospace"
+                  font-size="10"
+                  letter-spacing="2">CLIENT</text
+                >
+                <circle class="client-dot" cx="0" cy="0" r="4" />
+              </g>
+
+              <g>
+                <path id="path-top" d="M50 150 Q 175 120 300 120 Q 175 120 50 150" fill="none" />
+                <path id="path-mid" d="M50 150 L 300 150 L 50 150" fill="none" />
+                <path id="path-bot" d="M50 150 Q 175 180 300 180 Q 175 180 50 150" fill="none" />
+
+                <rect
+                  width="12"
+                  height="3"
+                  fill="url(#trail-green)"
+                  rx="1.5"
+                  filter="url(#glow-green)"
+                >
+                  <animateMotion dur="2s" repeatCount="indefinite" rotate="auto">
+                    <mpath href="#path-top" />
+                  </animateMotion>
+                </rect>
+
+                <rect
+                  width="12"
+                  height="3"
+                  fill="url(#trail-green)"
+                  rx="1.5"
+                  filter="url(#glow-green)"
+                >
+                  <animateMotion dur="2.3s" begin="0.5s" repeatCount="indefinite" rotate="auto">
+                    <mpath href="#path-mid" />
+                  </animateMotion>
+                </rect>
+
+                <rect
+                  width="12"
+                  height="3"
+                  fill="url(#trail-green)"
+                  rx="1.5"
+                  filter="url(#glow-green)"
+                >
+                  <animateMotion dur="1.8s" begin="0.2s" repeatCount="indefinite" rotate="auto">
+                    <mpath href="#path-bot" />
+                  </animateMotion>
+                </rect>
+              </g>
+
+              <g>
+                <path id="path-ssr" d="M50 150 L 500 150 L 50 150" fill="none" />
+
+                <circle class="ssr-circle" r="4" filter="url(#glow-blue)">
+                  <animateMotion
+                    dur="4s"
+                    repeatCount="indefinite"
+                    begin="1s"
+                    keyPoints="0;0.5;0.5;1"
+                    keyTimes="0;0.4;0.6;1"
+                  >
+                    <mpath href="#path-ssr" />
+                  </animateMotion>
                 </circle>
               </g>
-            </g>
 
-            <g transform="translate(300, 150)">
-              <text
-                x="0"
-                y="-80"
-                text-anchor="middle"
-                class="edge-label"
-                font-family="monospace"
-                font-size="10"
-                letter-spacing="2"
-                font-weight="bold">EDGE</text
-              >
-              <rect
-                x="-2"
-                y="-60"
-                width="4"
-                height="120"
-                fill="url(#shield-gradient)"
-                class="pulse-slow"
-              >
-                <animate
-                  attributeName="fill-opacity"
-                  values="0.6; 1; 0.6"
-                  dur="2s"
-                  repeatCount="indefinite"
-                />
-              </rect>
-            </g>
-
-            <g transform="translate(50, 150)">
-              <text
-                x="0"
-                y="-40"
-                text-anchor="middle"
-                class="label-text"
-                font-family="monospace"
-                font-size="10"
-                letter-spacing="2">CLIENT</text
-              >
-              <circle class="client-dot" cx="0" cy="0" r="4" />
-            </g>
-
-            <g>
-              <path id="path-top" d="M50 150 Q 175 120 300 120 Q 175 120 50 150" fill="none" />
-              <path id="path-mid" d="M50 150 L 300 150 L 50 150" fill="none" />
-              <path id="path-bot" d="M50 150 Q 175 180 300 180 Q 175 180 50 150" fill="none" />
-
-              <rect
-                width="12"
-                height="3"
-                fill="url(#trail-green)"
-                rx="1.5"
-                filter="url(#glow-green)"
-              >
-                <animateMotion dur="2s" repeatCount="indefinite" rotate="auto">
-                  <mpath href="#path-top" />
-                </animateMotion>
-              </rect>
-
-              <rect
-                width="12"
-                height="3"
-                fill="url(#trail-green)"
-                rx="1.5"
-                filter="url(#glow-green)"
-              >
-                <animateMotion dur="2.3s" begin="0.5s" repeatCount="indefinite" rotate="auto">
-                  <mpath href="#path-mid" />
-                </animateMotion>
-              </rect>
-
-              <rect
-                width="12"
-                height="3"
-                fill="url(#trail-green)"
-                rx="1.5"
-                filter="url(#glow-green)"
-              >
-                <animateMotion dur="1.8s" begin="0.2s" repeatCount="indefinite" rotate="auto">
-                  <mpath href="#path-bot" />
-                </animateMotion>
-              </rect>
-            </g>
-
-            <g>
-              <path id="path-ssr" d="M50 150 L 500 150 L 50 150" fill="none" />
-
-              <circle class="ssr-circle" r="4" filter="url(#glow-blue)">
-                <animateMotion
-                  dur="4s"
-                  repeatCount="indefinite"
-                  begin="1s"
-                  keyPoints="0;0.5;0.5;1"
-                  keyTimes="0;0.4;0.6;1"
-                >
-                  <mpath href="#path-ssr" />
-                </animateMotion>
-              </circle>
-            </g>
-
-            <g transform="translate(450, 50)" font-family="monospace" font-size="10">
-              <text x="0" y="0" class="hit-rate-text" font-weight="bold">HIT: 98.4%</text>
-            </g>
-          </svg>
+              <g transform="translate(450, 50)" font-family="monospace" font-size="10">
+                <text x="0" y="0" class="hit-rate-text" font-weight="bold">HIT: 98.4%</text>
+              </g>
+            </svg>
           {/if}
         </div>
       </div>
@@ -940,7 +941,8 @@
   }
 
   @keyframes tfb-pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.6;
       box-shadow: 0 0 14px rgba(0, 119, 213, 0.6);
     }
@@ -984,18 +986,24 @@
   }
 
   @keyframes stoken-slide {
-    from { transform: translateX(-100px); }
-    to { transform: translateX(700px); }
+    from {
+      transform: translateX(-100px);
+    }
+    to {
+      transform: translateX(700px);
+    }
   }
 
   @keyframes stoken-verify {
-    0%, 36% {
+    0%,
+    36% {
       background: var(--ts-pre-bg);
       color: var(--ts-pre-color);
       border-color: var(--ts-pre-border);
       box-shadow: none;
     }
-    44%, 100% {
+    44%,
+    100% {
       background: var(--ts-post-bg);
       color: var(--ts-post-color);
       border-color: var(--ts-post-border);
@@ -1003,12 +1011,40 @@
     }
   }
 
-  .st-1a { animation-duration: 3s, 3s; animation-delay: 0s, 0s; }
-  .st-1b { animation-duration: 3s, 3s; animation-delay: -1.5s, -1.5s; }
-  .st-2a { animation-duration: 3.6s, 3.6s; animation-delay: -0.8s, -0.8s; }
-  .st-2b { animation-duration: 3.6s, 3.6s; animation-delay: -2.4s, -2.4s; }
-  .st-3a { animation-duration: 2.8s, 2.8s; animation-delay: -0.4s, -0.4s; }
-  .st-3b { animation-duration: 2.8s, 2.8s; animation-delay: -1.8s, -1.8s; }
+  .st-1a {
+    animation-duration: 3s, 3s;
+    animation-delay: 0s, 0s;
+  }
+  .st-1b {
+    animation-duration: 3s, 3s;
+    animation-delay:
+      -1.5s,
+      -1.5s;
+  }
+  .st-2a {
+    animation-duration: 3.6s, 3.6s;
+    animation-delay:
+      -0.8s,
+      -0.8s;
+  }
+  .st-2b {
+    animation-duration: 3.6s, 3.6s;
+    animation-delay:
+      -2.4s,
+      -2.4s;
+  }
+  .st-3a {
+    animation-duration: 2.8s, 2.8s;
+    animation-delay:
+      -0.4s,
+      -0.4s;
+  }
+  .st-3b {
+    animation-duration: 2.8s, 2.8s;
+    animation-delay:
+      -1.8s,
+      -1.8s;
+  }
 
   .scitation {
     position: absolute;
@@ -1037,15 +1073,18 @@
   }
 
   @keyframes scite-pop {
-    0%, 12% {
+    0%,
+    12% {
       opacity: 0;
       transform: scale(0.85) translateY(4px);
     }
-    28%, 72% {
+    28%,
+    72% {
       opacity: 1;
       transform: scale(1) translateY(0);
     }
-    88%, 100% {
+    88%,
+    100% {
       opacity: 0;
       transform: scale(0.85) translateY(-4px);
     }
@@ -1069,5 +1108,4 @@
     border-radius: 0;
     overflow: hidden;
   }
-
 </style>

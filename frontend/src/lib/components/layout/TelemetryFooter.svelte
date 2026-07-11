@@ -1,34 +1,16 @@
+<script lang="ts">
+  import { footerManifesto } from '$lib/constants/content';
+</script>
+
 <footer class="terminal-footer">
   <div class="footer-container">
     <div class="manifesto-grid">
-      <div class="manifesto-item">
-        <h4>LATENCY IS THE ENEMY OF TRUST</h4>
-        <p>
-          Performance is a feature, not an afterthought. I architect for a 1.1s LCP at a global
-          scale of 50M+ users.
-        </p>
-      </div>
-      <div class="manifesto-item">
-        <h4>URL &gt; STORE</h4>
-        <p>
-          The URL is the only reliable single source of truth. I prefer URL-driven state to
-          eliminate desynchronization bugs.
-        </p>
-      </div>
-      <div class="manifesto-item">
-        <h4>WET &gt; DRY</h4>
-        <p>
-          I value strategic duplication over premature, leaky abstractions. Clarity and composition
-          beat complex "God Components."
-        </p>
-      </div>
-      <div class="manifesto-item">
-        <h4>SERVER &gt; CLIENT</h4>
-        <p>
-          I leverage SvelteKit and Akamai EdgeWorkers to ship HTML, not just JSON. I optimize for
-          the browser's critical rendering path.
-        </p>
-      </div>
+      {#each footerManifesto as item (item.title)}
+        <div class="manifesto-item">
+          <h4>{item.title}</h4>
+          <p>{item.body}</p>
+        </div>
+      {/each}
     </div>
 
     <div class="status-bar">
@@ -64,7 +46,7 @@
         <a href="https://github.com/zhaolyu" target="_blank" rel="noopener">GitHub</a>
       </div>
       <p class="copyright">
-        © 2026 Zhao Yu —
+        © {new Date().getFullYear()} Zhao Yu —
         <span>Hand-coded with Svelte. Deployed to Cloudflare Edge.</span>
       </p>
     </div>

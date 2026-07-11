@@ -48,12 +48,12 @@
     align-items: center;
     gap: 8px;
     text-decoration: none;
-    color: #8888a0;
+    color: var(--text-muted);
     transition: color 0.2s;
   }
 
   .back-link:hover {
-    color: #e8e8ec;
+    color: var(--text-primary);
   }
 
   .arrow {

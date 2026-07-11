@@ -8,8 +8,8 @@
   const formattedBio = $derived(
     heroContent.bio
       .replace(
-        /Isomorphic Akamai Edge Architecture/g,
-        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge Architecture</strong>',
+        /Isomorphic Akamai Edge/g,
+        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge</strong>',
       )
       .replace(
         /50M\+ monthly users/g,
@@ -65,6 +65,7 @@
       in:fly={{ y: 20, duration: 800, delay: 400 }}
       class="hero-bio text-lg md:text-2xl font-light tracking-wide max-w-4xl mx-auto leading-relaxed mb-10"
     >
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored bio from content.ts, not user input -->
       {@html formattedBio}
     </p>
 
