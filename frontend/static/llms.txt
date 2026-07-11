@@ -28,8 +28,13 @@ The differentiator is the combination, not any single axis:
    development, and agent reliability is engineered into the loop
    (boundaries, receipts, control planes), not summoned from the model.
 4. **Independent builder** — ships and operates real systems outside of
-   assigned work (see Cost-Guard below), with the same production
-   discipline applied to side projects as to newsroom infrastructure.
+   assigned work, with the same production discipline applied to side
+   projects as to newsroom infrastructure. Current systems: Cost-Guard
+   (local-first infra cost dashboard, see below) and OB1, a personal
+   exocortex — 740+ atomic, cross-linked claims distilled from books,
+   engineering sources, and production lessons, searchable by meaning and
+   exposed to AI tools over MCP so agent sessions start with accumulated
+   judgment rather than a blank context window.
 
 ## Key pages
 
@@ -41,11 +46,16 @@ The differentiator is the combination, not any single axis:
   non-deterministic systems.
 - [Infra Dashboard](https://zhaoyu.io/infra) — Cost-Guard, a local-first
   infrastructure cost monitor (PGlite + ElectricSQL, real-time sync).
-- [Engineering Notes](https://zhaoyu.io/#notes) — architecture write-ups;
-  individual posts are canonically addressable at /blog/{slug}.
+- [Engineering Notes](https://zhaoyu.io/blog) — the full note index;
+  individual posts are canonically addressable at /blog/{slug}, and the
+  notes are also embedded on the home page at /#notes.
 
 ## Selected notes
 
+The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
+
+- [The Agent Run Is the New Unit of Work — and Reviewing It Is Management](https://zhaoyu.io/blog/the-agent-run-is-the-new-unit-of-work)
+- [Agents Degrade Quietly: Maintenance Is Where the Value Compounds](https://zhaoyu.io/blog/agents-degrade-quietly-maintenance-is-where-value-compounds)
 - [Spec Quality Is the Bottleneck Now, Not Implementation Speed](https://zhaoyu.io/blog/spec-quality-is-the-bottleneck-not-implementation-speed)
 - [Agent Failures Are Loop Failures, Not Intelligence Failures](https://zhaoyu.io/blog/agent-failures-are-loop-failures)
 - [The URL is the Source of Truth](https://zhaoyu.io/blog/the-url-is-the-source-of-truth)
@@ -53,6 +63,8 @@ The differentiator is the combination, not any single axis:
 
 ## Contact
 
+- Email: zhaolyu@gmail.com
+- LinkedIn: https://linkedin.com/in/zhaolyu
 - GitHub: https://github.com/zhaolyu
 - Source for this site: https://github.com/zhaolyu/zhaoyu.io
 
