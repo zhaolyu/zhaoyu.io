@@ -1,0 +1,22 @@
+# Automated dependency updates.
+# npm updates are grouped to keep PR noise low; security updates always open
+# individual PRs immediately regardless of schedule.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
