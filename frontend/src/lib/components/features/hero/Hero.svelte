@@ -65,6 +65,7 @@
       in:fly={{ y: 20, duration: 800, delay: 400 }}
       class="hero-bio text-lg md:text-2xl font-light tracking-wide max-w-4xl mx-auto leading-relaxed mb-10"
     >
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored bio from content.ts, not user input -->
       {@html formattedBio}
     </p>
 

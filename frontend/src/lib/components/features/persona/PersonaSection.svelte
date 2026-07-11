@@ -28,18 +28,18 @@
     <div class="bio-card" in:fly={{ y: 20, duration: 400 }}>
       <h3 class="card-title">{narrativeBio.title}</h3>
       <div class="card-body">
-        {#each narrativeBio.paragraphs as paragraph}
+        {#each narrativeBio.paragraphs as paragraph (paragraph)}
           <p class="card-paragraph">{paragraph}</p>
         {/each}
       </div>
     </div>
 
     <div class="persona-grid" transition:fade={{ duration: 600, delay: 150 }}>
-      {#each personaData as item, i}
+      {#each personaData as item, i (item.title)}
         <div class="persona-card" in:fly={{ y: 20, duration: 400, delay: i * 100 }}>
           <h3 class="card-title">{item.title}</h3>
           <div class="card-body">
-            {#each item.body as paragraph}
+            {#each item.body as paragraph (paragraph)}
               <p class="card-paragraph">{paragraph}</p>
             {/each}
           </div>

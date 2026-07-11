@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { theme } from '$lib/stores';
 
-  let isDark = false;
+  let isDark = $state(false);
 
   onMount(() => {
     theme.init();
@@ -17,7 +17,7 @@
   }
 </script>
 
-<button class="theme-toggle" on:click={toggleTheme} aria-label="Toggle dark mode">
+<button class="theme-toggle" onclick={toggleTheme} aria-label="Toggle dark mode">
   {#if isDark}
     <svg
       xmlns="http://www.w3.org/2000/svg"

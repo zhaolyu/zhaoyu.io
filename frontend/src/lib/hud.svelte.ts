@@ -1,3 +1,4 @@
+import { SvelteDate } from 'svelte/reactivity';
 import { browser } from '$app/environment';
 import { costDB } from '$lib/db.svelte';
 
@@ -9,15 +10,24 @@ export class SystemHUD {
   dbSize = $state('0 KB');
   latency = $state(0);
 
-  constructor() {
-    if (browser) {
-      this.#poll();
-    }
+  #interval: ReturnType<typeof setInterval> | null = null;
+
+  /**
+   * Begin polling. Driven by the consuming component's lifecycle (ArchitectHUD)
+   * so the interval doesn't run site-wide forever after /infra is visited once.
+   * Safe to call repeatedly.
+   */
+  start(): void {
+    if (!browser || this.#interval) return;
+    void this.#update();
+    this.#interval = setInterval(() => this.#update(), POLL_INTERVAL_MS);
   }
 
-  async #poll() {
-    await this.#update();
-    setInterval(() => this.#update(), POLL_INTERVAL_MS);
+  stop(): void {
+    if (this.#interval) {
+      clearInterval(this.#interval);
+      this.#interval = null;
+    }
   }
 
   async #update() {
@@ -52,7 +62,7 @@ export class SystemHUD {
         'SELECT MAX(created_at) as latest FROM cost_snapshots',
       );
       if (res.rows[0]?.latest) {
-        this.lastSyncAt = new Date(res.rows[0].latest);
+        this.lastSyncAt = new SvelteDate(res.rows[0].latest);
       }
     } catch {
       // Table may not exist yet

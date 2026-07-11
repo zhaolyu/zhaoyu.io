@@ -29,13 +29,13 @@
 
   {#if sectionVisible}
     <div class="projects-container" transition:fade={{ duration: 600 }}>
-      {#each displayProjects as project}
+      {#each displayProjects as project (project.title)}
         <ProjectCard {...project} />
       {/each}
     </div>
 
     <div class="systems-grid" transition:fade={{ duration: 600, delay: 200 }}>
-      {#each builderProjects as project}
+      {#each builderProjects as project (project.title)}
         <BuilderCard {project} />
       {/each}
     </div>

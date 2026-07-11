@@ -32,7 +32,7 @@
         </div>
 
         <div class="tab-container">
-          {#each standardKeys as key}
+          {#each standardKeys as key (key)}
             <button
               onclick={() => (activeTab = key)}
               class="tab-button"

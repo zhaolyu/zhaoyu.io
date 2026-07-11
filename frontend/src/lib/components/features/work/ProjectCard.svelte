@@ -4,11 +4,10 @@
     description: string;
     metrics: Array<{ label: string; value: string }>;
     tags: string[];
-    image: string;
     diagram?: string;
   }
 
-  let { title, description, metrics, tags, image, diagram }: Props = $props();
+  let { title, description, metrics, tags, diagram }: Props = $props();
   let isHovered = $state(false);
   let showDiagram = $state(false);
 
@@ -27,7 +26,7 @@
     <div class="card-content">
       <div class="content-inner">
         <div class="tags-container">
-          {#each tags as tag}
+          {#each tags as tag (tag)}
             <span class="tag">{tag}</span>
           {/each}
         </div>
@@ -36,7 +35,7 @@
         <p class="card-description">{description}</p>
 
         <div class="metrics-grid">
-          {#each metrics as metric}
+          {#each metrics as metric (metric.label)}
             <div class="metric-item">
               <div class="metric-value">{metric.value}</div>
               <div class="metric-label">{metric.label}</div>

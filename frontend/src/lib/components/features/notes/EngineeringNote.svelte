@@ -19,7 +19,7 @@
       <time>{date}</time>
       <span class="separator">/</span>
       <div class="tags-container">
-        {#each tags as tag}
+        {#each tags as tag (tag)}
           <span class="tag">{tag}</span>
         {/each}
       </div>
@@ -33,7 +33,8 @@
     </svelte:element>
   </header>
   <div class="note-content">
-    {#each content as paragraph}
+    {#each content as paragraph (paragraph)}
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored note content from content.ts, not user input -->
       {@html `<p>${paragraph}</p>`}
     {/each}
   </div>

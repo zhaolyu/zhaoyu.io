@@ -20,10 +20,10 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
     # Run CI on PRs targeting any branch (including feature/... branches)
-    # Skip CI for documentation and config-only changes
+    # Skip CI for documentation-only changes. Workflow changes deliberately
+    # DO run CI — ignoring '.github/**' meant workflow edits got zero checks.
     paths-ignore:
       - '**.md'
-      - '.github/**'
       - 'docs/**'
       - '.gitignore'
       - '.prettierrc'
@@ -36,44 +36,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Check if this is a merge commit (skip CI since PR already passed)
-  # Note: This is kept for consistency but won't apply to PR opened events
-  check-merge-commit:
-    runs-on: ubuntu-latest
-    name: Check Merge Commit
-    timeout-minutes: 1
-    permissions:
-      contents: read
-    outputs:
-      is_merge_commit: 'false'
-    steps:
-      - name: Set default output
-        id: set-default
-        run: |
-          echo "is_merge_commit=false" >> $GITHUB_OUTPUT
-          echo "✅ PR opened event - CI will run normally"
-
-  # Branch protection: Prevent direct pushes to main
-  # Note: This is kept for consistency but won't apply to PR opened events
-  branch-protection:
-    runs-on: ubuntu-latest
-    name: Branch Protection Check
-    timeout-minutes: 2
-    permissions:
-      contents: read
-    needs: check-merge-commit
-    if: always()
-    steps:
-      - name: Branch protection passed
-        run: |
-          echo "✅ Branch protection check passed (PR opened event)"
-
   # Parallel quality checks for faster feedback
   type-check:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Type Check
     timeout-minutes: 10
@@ -109,10 +74,7 @@ jobs:
         continue-on-error: false
 
   lint:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Lint
     timeout-minutes: 10
@@ -144,10 +106,7 @@ jobs:
         continue-on-error: false
 
   test:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Test
     timeout-minutes: 10
@@ -183,10 +142,7 @@ jobs:
         continue-on-error: false
 
   build:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Build
     timeout-minutes: 15
@@ -241,9 +197,8 @@ jobs:
 
   # Deploy to Cloudflare Pages after successful build
   deploy:
-    needs: [check-merge-commit, branch-protection, build]
+    needs: [build]
     if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
       (needs.build.result == 'success') &&
       (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
@@ -466,17 +421,12 @@ jobs:
     timeout-minutes: 1
     permissions:
       contents: read
-    needs: [check-merge-commit, branch-protection, type-check, lint, test, build, deploy]
+    needs: [type-check, lint, test, build, deploy]
     if: always()
     steps:
       - name: Check all jobs status
         run: |
-          # Check branch protection first
-          if [ "${{ needs.branch-protection.result }}" == "failure" ]; then
-            echo "❌ Branch protection check failed - direct push to main blocked"
-            exit 1
-          fi
-          # Check other jobs (allow skipped results for draft PRs or path filtering)
+          # Check jobs (allow skipped results for draft PRs or path filtering)
           # Only fail if result is "failure", allow "success" or "skipped"
           check_job() {
             local result="$1"

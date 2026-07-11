@@ -105,6 +105,15 @@
       if (savedStreak) {
         streak = parseInt(savedStreak, 10) || 0;
       }
+
+      // A streak only survives if the last completed day was today or
+      // yesterday — anything older means the chain is broken.
+      const lastCompleted = localStorage.getItem(STORAGE_DATE);
+      const yesterdayIso = new Date(now.getTime() - 86_400_000).toISOString().split('T')[0];
+      if (streak > 0 && lastCompleted !== todayIso && lastCompleted !== yesterdayIso) {
+        streak = 0;
+        localStorage.setItem(STORAGE_STREAK, '0');
+      }
     } catch {
       // localStorage unavailable, use in-memory defaults
     }
@@ -126,14 +135,18 @@
     const allChecked = checkItems.every((item) => checkState[item.key]);
     if (!allChecked) return;
 
-    const todayIso = new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const todayIso = now.toISOString().split('T')[0];
+    const yesterdayIso = new Date(now.getTime() - 86_400_000).toISOString().split('T')[0];
     try {
       const lastDate = localStorage.getItem(STORAGE_DATE);
-      if (lastDate !== todayIso) {
-        streak = streak + 1;
-        localStorage.setItem(STORAGE_STREAK, String(streak));
-        localStorage.setItem(STORAGE_DATE, todayIso);
-      }
+      if (lastDate === todayIso) return; // already counted today
+
+      // Consecutive only if the previous completion was yesterday;
+      // a gap restarts the chain at 1 instead of silently continuing it.
+      streak = lastDate === yesterdayIso ? streak + 1 : 1;
+      localStorage.setItem(STORAGE_STREAK, String(streak));
+      localStorage.setItem(STORAGE_DATE, todayIso);
     } catch {
       streak = streak + 1;
     }
@@ -190,7 +203,7 @@
     <section class="section">
       <div class="section-label">Core Principles</div>
       <div class="principles">
-        {#each principles as p}
+        {#each principles as p (p.num)}
           <div class="principle">
             <div class="num">{p.num}</div>
             <div class="content">
@@ -206,7 +219,7 @@
     <section class="section">
       <div class="section-label">Daily Non-Negotiables</div>
       <div class="checklist">
-        {#each checkItems as item}
+        {#each checkItems as item (item.key)}
           <button
             class="check-item"
             class:checked={checkState[item.key]}
@@ -231,7 +244,7 @@
         <div class="reality-card hype">
           <h4>Remember This</h4>
           <ul>
-            {#each rememberItems as item}
+            {#each rememberItems as item (item)}
               <li>{item}</li>
             {/each}
           </ul>
@@ -239,7 +252,7 @@
         <div class="reality-card ground">
           <h4>But Also This</h4>
           <ul>
-            {#each butAlsoItems as item}
+            {#each butAlsoItems as item (item)}
               <li>{item}</li>
             {/each}
           </ul>
