@@ -23,7 +23,10 @@ The differentiator is the combination, not any single axis:
    during market-moving traffic events.
 3. **AI integration lead** — defines the standards, guardrails, and review
    bar for AI-assisted development across an organization, not just
-   personal productivity tricks.
+   personal productivity tricks. Working thesis: specification quality —
+   not implementation speed — is the bottleneck in agent-driven
+   development, and agent reliability is engineered into the loop
+   (boundaries, receipts, control planes), not summoned from the model.
 4. **Independent builder** — ships and operates real systems outside of
    assigned work (see Cost-Guard below), with the same production
    discipline applied to side projects as to newsroom infrastructure.
@@ -32,12 +35,21 @@ The differentiator is the combination, not any single axis:
 
 - [Home](https://zhaoyu.io/) — full profile: experience, skills, career
   trajectory, selected work, engineering philosophy, engineering notes.
-- [AI Manifesto](https://zhaoyu.io/ai-manifesto) — daily operating
-  principles for AI-augmented engineering.
+- [AI Thesis](https://zhaoyu.io/ai-manifesto) — working thesis and daily
+  operating principles for AI-augmented engineering: spec quality as the
+  bottleneck, agent loops and receipts, deterministic interfaces around
+  non-deterministic systems.
 - [Infra Dashboard](https://zhaoyu.io/infra) — Cost-Guard, a local-first
   infrastructure cost monitor (PGlite + ElectricSQL, real-time sync).
 - [Engineering Notes](https://zhaoyu.io/#notes) — architecture write-ups;
   individual posts are canonically addressable at /blog/{slug}.
+
+## Selected notes
+
+- [Spec Quality Is the Bottleneck Now, Not Implementation Speed](https://zhaoyu.io/blog/spec-quality-is-the-bottleneck-not-implementation-speed)
+- [Agent Failures Are Loop Failures, Not Intelligence Failures](https://zhaoyu.io/blog/agent-failures-are-loop-failures)
+- [The URL is the Source of Truth](https://zhaoyu.io/blog/the-url-is-the-source-of-truth)
+- [Decoupling State from Render in LLM Streaming](https://zhaoyu.io/blog/decoupling-state-from-render-in-llm-streaming)
 
 ## Contact
 

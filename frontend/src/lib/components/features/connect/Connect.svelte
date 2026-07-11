@@ -35,8 +35,8 @@
       </div>
       <h2 class="section-title">Let's Build Something.</h2>
       <p class="section-subtitle">
-        I work at the intersection of UI performance, AI integration, and high-scale news media.
-        If you have strong opinions on any of the above — reach out.
+        I work at the intersection of UI performance, AI integration, and high-scale news media. If
+        you have strong opinions on any of the above — reach out.
       </p>
 
       <div class="status-block">
@@ -46,7 +46,9 @@
         </div>
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
-          <span class="status-value">The UI Factory, Akamai EdgeWorkers, and sub-1:25 half-marathon splits.</span>
+          <span class="status-value"
+            >The UI Factory, Akamai EdgeWorkers, and sub-1:25 half-marathon splits.</span
+          >
         </div>
       </div>
     </div>
@@ -85,12 +87,7 @@
                 /in/zhaolyu
               </a>
             </div>
-            <a
-              href={linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="external-link"
-            >
+            <a href={linkedinUrl} target="_blank" rel="noopener noreferrer" class="external-link">
               OPEN ↗
             </a>
           </div>
@@ -102,12 +99,7 @@
                 /zhaolyu
               </a>
             </div>
-            <a
-              href={githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="external-link"
-            >
+            <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="external-link">
               OPEN ↗
             </a>
           </div>

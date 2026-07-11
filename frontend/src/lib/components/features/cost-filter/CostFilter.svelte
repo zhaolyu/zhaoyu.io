@@ -64,9 +64,7 @@
       {/if}
 
       {#if hasFilters}
-        <button class="chip-clear" onclick={clearAll} aria-label="Clear filters">
-          ✕ clear
-        </button>
+        <button class="chip-clear" onclick={clearAll} aria-label="Clear filters"> ✕ clear </button>
       {/if}
     </div>
   </div>

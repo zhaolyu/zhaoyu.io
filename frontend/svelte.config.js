@@ -13,8 +13,9 @@ const config = {
       pages: 'build',
       assets: 'build',
       // 200.html (not index.html) so the SPA fallback doesn't overwrite the
-      // prerendered '/' page. Cloudflare Pages natively serves 200.html for
-      // unmatched routes with a 200 status — no _redirects rule needed.
+      // prerendered '/' page. Cloudflare Pages does NOT serve 200.html on its
+      // own — without a rule it falls back to the prerendered homepage for
+      // unmatched routes — so static/_redirects rewrites /* to /200.html.
       fallback: '200.html',
       precompress: false,
       strict: true,

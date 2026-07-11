@@ -8,8 +8,8 @@
   const formattedBio = $derived(
     heroContent.bio
       .replace(
-        /Isomorphic Akamai Edge Architecture/g,
-        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge Architecture</strong>',
+        /Isomorphic Akamai Edge/g,
+        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge</strong>',
       )
       .replace(
         /50M\+ monthly users/g,
