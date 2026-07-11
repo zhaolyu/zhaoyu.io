@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
   import EngineeringNote from './EngineeringNote.svelte';
   import { notesData } from '$lib/constants/content';
   import { SectionHeader } from '$lib/components/ui';
@@ -26,19 +25,19 @@
     encountered in production.
   </div>
 
-  {#if sectionVisible}
-    <div class="notes-container" transition:fade={{ duration: 600 }}>
-      {#each notesData.notes as note (note.slug)}
-        <EngineeringNote
-          slug={note.slug}
-          title={note.title}
-          date={note.date}
-          tags={note.tags}
-          content={note.content}
-        />
-      {/each}
-    </div>
-  {/if}
+  <!-- Always rendered so the notes prerender; the reveal is animation-only. -->
+  <div class="notes-container reveal" class:revealed={sectionVisible}>
+    {#each notesData.notes as note (note.slug)}
+      <EngineeringNote
+        slug={note.slug}
+        title={note.title}
+        date={note.date}
+        tags={note.tags}
+        content={note.content}
+      />
+    {/each}
+    <a href="/blog" class="all-notes-link">All notes, individually addressable &rarr;</a>
+  </div>
 </section>
 
 <style>
@@ -68,6 +67,38 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+  }
+
+  .all-notes-link {
+    display: inline-block;
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent-primary-light);
+    text-decoration: none;
+  }
+
+  .all-notes-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Entrance animation only when JS runs and motion is allowed; content is
+     always in the DOM so crawlers and no-JS readers get the full section. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.6s ease,
+        transform 0.5s ease;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   @media (max-width: 768px) {

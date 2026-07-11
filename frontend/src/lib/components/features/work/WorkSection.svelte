@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
   import ProjectCard from './ProjectCard.svelte';
   import BuilderCard from '$lib/components/features/builder/BuilderCard.svelte';
   import { projectsData, builderProjects } from '$lib/constants/content';
@@ -29,19 +28,18 @@
     <span class="headline-accent">from CNBC to architectural sandboxes.</span>
   </SectionHeader>
 
-  {#if sectionVisible}
-    <div class="projects-container" transition:fade={{ duration: 600 }}>
-      {#each displayProjects as project (project.title)}
-        <ProjectCard {...project} />
-      {/each}
-    </div>
+  <!-- Always rendered so the project cards prerender; the reveal is animation-only. -->
+  <div class="projects-container reveal" class:revealed={sectionVisible}>
+    {#each displayProjects as project (project.title)}
+      <ProjectCard {...project} />
+    {/each}
+  </div>
 
-    <div class="systems-grid" transition:fade={{ duration: 600, delay: 200 }}>
-      {#each displayBuilderProjects as project (project.title)}
-        <BuilderCard {project} />
-      {/each}
-    </div>
-  {/if}
+  <div class="systems-grid reveal reveal-delayed" class:revealed={sectionVisible}>
+    {#each displayBuilderProjects as project (project.title)}
+      <BuilderCard {project} />
+    {/each}
+  </div>
 </section>
 
 <style>
@@ -74,6 +72,27 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--space-5);
+  }
+
+  /* Entrance animation only when JS runs and motion is allowed; content is
+     always in the DOM so crawlers and no-JS readers get the full section. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.6s ease,
+        transform 0.5s ease;
+    }
+
+    .reveal-delayed {
+      transition-delay: 0.2s;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   @media (max-width: 768px) {
