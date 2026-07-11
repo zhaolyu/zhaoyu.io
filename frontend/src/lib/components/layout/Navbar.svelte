@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from 'svelte';
   import { slide, fade } from 'svelte/transition';
   import ThemeToggle from './ThemeToggle.svelte';
   import { handleAnchorNavigation, scrollToTop } from '$lib/utils/navigation';
@@ -6,6 +7,8 @@
 
   let isMenuOpen = $state(false);
   let lastScrollY = $state(0);
+  let menuEl = $state<HTMLElement | null>(null);
+  let hamburgerEl = $state<HTMLElement | null>(null);
 
   const navLinks = [
     { name: '/skills', href: '/#skills' },
@@ -27,12 +30,45 @@
     return `${baseClasses} ${scrolledClasses}`;
   });
 
-  function toggleMenu() {
+  async function toggleMenu() {
     isMenuOpen = !isMenuOpen;
+    if (isMenuOpen) {
+      // Move focus into the dialog once it has rendered
+      await tick();
+      menuFocusables()[0]?.focus();
+    }
   }
 
   function closeMenu() {
+    if (!isMenuOpen) return;
     isMenuOpen = false;
+    // Return focus to the control that opened the dialog
+    hamburgerEl?.focus();
+  }
+
+  function menuFocusables(): HTMLElement[] {
+    if (!menuEl) return [];
+    return Array.from(menuEl.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+  }
+
+  // Keep Tab / Shift+Tab cycling inside the open dialog
+  function trapFocus(e: KeyboardEvent) {
+    if (e.key !== 'Tab') return;
+    const focusables = menuFocusables();
+    if (focusables.length === 0) return;
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+    const inside = active !== null && menuEl !== null && menuEl.contains(active);
+
+    if (e.shiftKey && (!inside || active === first)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (!inside || active === last)) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   function handleNavClick(e: MouseEvent, href: string) {
@@ -173,6 +209,7 @@
       <!-- Hamburger Menu Button (Mobile Only) — stays mounted so aria-expanded
            actually reflects state instead of always reading false -->
       <button
+        bind:this={hamburgerEl}
         onclick={toggleMenu}
         class="md:hidden hamburger-button"
         aria-label="Toggle menu"
@@ -198,6 +235,7 @@
     transition:fade={{ duration: 200 }}
   >
     <div
+      bind:this={menuEl}
       class="mobile-menu"
       role="dialog"
       aria-modal="true"
@@ -206,7 +244,9 @@
       onkeydown={(e) => {
         if (e.key === 'Escape') {
           closeMenu();
+          return;
         }
+        trapFocus(e);
       }}
       transition:slide={{ axis: 'x', duration: 300 }}
     >
