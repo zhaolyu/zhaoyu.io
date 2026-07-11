@@ -28,7 +28,7 @@
 
   {#if sectionVisible}
     <div class="notes-container" transition:fade={{ duration: 600 }}>
-      {#each notesData.notes as note}
+      {#each notesData.notes as note (note.slug)}
         <EngineeringNote
           slug={note.slug}
           title={note.title}

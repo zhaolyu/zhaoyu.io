@@ -36,7 +36,7 @@
 {#if sources.length > 0 || projects.length > 1}
   <div class="filter-bar">
     <div class="filter-chips">
-      {#each sources as src}
+      {#each sources as src (src)}
         <button
           class="chip"
           class:chip-gcp={src === 'gcp-billing'}
@@ -51,7 +51,7 @@
 
       {#if projects.length > 1}
         <span class="chip-divider"></span>
-        {#each projects as proj}
+        {#each projects as proj (proj)}
           <button
             class="chip chip-project"
             class:chip-active-project={selectedProjects.includes(proj)}

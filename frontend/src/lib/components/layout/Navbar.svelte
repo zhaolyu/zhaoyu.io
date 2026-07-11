@@ -23,7 +23,7 @@
     // Height changes cause browser to adjust scroll position to maintain visual alignment
     const baseClasses =
       'fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b header-nav py-4';
-    const scrolledClasses = isScrolled ? 'backdrop-blur-md header-scrolled' : 'border-transparent';
+    const scrolledClasses = $isScrolled ? 'backdrop-blur-md header-scrolled' : 'border-transparent';
     return `${baseClasses} ${scrolledClasses}`;
   });
 
@@ -119,7 +119,7 @@
     </a>
 
     <nav class="hidden md:flex items-center gap-6">
-      {#each navLinks as link}
+      {#each navLinks as link (link.href)}
         <a
           href={link.href}
           onclick={(e) => handleAnchorNavigation(e, link.href)}
@@ -139,6 +139,7 @@
       <a
         href="https://github.com/zhaolyu"
         target="_blank"
+        rel="noopener noreferrer"
         class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
       >
         <span class="sr-only">GitHub</span>
@@ -154,6 +155,7 @@
       <a
         href="https://linkedin.com/in/zhaolyu"
         target="_blank"
+        rel="noopener noreferrer"
         class="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
       >
         <span class="sr-only">LinkedIn</span>
@@ -168,20 +170,19 @@
 
       <ThemeToggle />
 
-      <!-- Hamburger Menu Button (Mobile Only) -->
-      {#if !isMenuOpen}
-        <button
-          onclick={toggleMenu}
-          class="md:hidden hamburger-button"
-          aria-label="Toggle menu"
-          aria-expanded={isMenuOpen}
-          type="button"
-        >
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-      {/if}
+      <!-- Hamburger Menu Button (Mobile Only) — stays mounted so aria-expanded
+           actually reflects state instead of always reading false -->
+      <button
+        onclick={toggleMenu}
+        class="md:hidden hamburger-button"
+        aria-label="Toggle menu"
+        aria-expanded={isMenuOpen}
+        type="button"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </div>
   </div>
 </header>
@@ -224,7 +225,7 @@
       </div>
 
       <div class="mobile-menu-links">
-        {#each navLinks as link}
+        {#each navLinks as link (link.href)}
           <a
             href={link.href}
             onclick={(e) => handleNavClick(e, link.href)}

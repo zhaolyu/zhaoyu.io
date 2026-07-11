@@ -50,7 +50,7 @@
     <div class="chart-wrapper">
       <!-- Mobile: Show data points as list -->
       <div class="mobile-points-list">
-        {#each history as point, i}
+        {#each history as point (point.year)}
           <div class="mobile-point-item">
             <div class="mobile-point-year">{point.year}</div>
             <div class="mobile-point-role">{point.role}</div>
@@ -86,7 +86,7 @@
             />
           {/key}
 
-          {#each history as point, i}
+          {#each history as point, i (point.year)}
             {@const tooltipX = getX(i) - 75}
             {@const tooltipY = getY(point.impact) - 80}
             <g class="point-group">

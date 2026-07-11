@@ -8,7 +8,7 @@
   import { CostFilter } from '$lib/components/features/cost-filter';
   import { simulator } from '$lib/simulator.svelte';
   import { theme } from '$lib/stores';
-  import { snapshotLabel, snapshotRef, snapshotProject } from '$lib/types';
+  import { snapshotLabel, snapshotRef, snapshotProject } from '$lib/utils/cost-guard-display';
   import type { CostSnapshot, SnapshotSource } from '$lib/types';
 
   let snapshots = $state<CostSnapshot[]>([]);
@@ -17,13 +17,25 @@
   let error = $state<string | null>(null);
   let isDark = $state(false);
 
+  // Bumped on an interval so the snapshot query below re-runs and picks up
+  // rows Electric synced after the initial load — without this the dashboard
+  // is frozen at whatever the first query saw until a full page reload.
+  let refreshTick = $state(0);
+  const REFRESH_INTERVAL_MS = 15_000;
+
   onMount(() => {
     costDB.start();
     theme.init();
     const unsubscribe = theme.subscribe((value) => {
       isDark = value === 'dark';
     });
-    return unsubscribe;
+    const refreshInterval = setInterval(() => {
+      refreshTick += 1;
+    }, REFRESH_INTERVAL_MS);
+    return () => {
+      clearInterval(refreshInterval);
+      unsubscribe();
+    };
   });
 
   // Unique sources and projects for filter chips
@@ -58,6 +70,7 @@
   $effect(() => {
     const db = costDB.instance;
     const status = costDB.status;
+    void refreshTick; // re-query on every tick — local PGlite reads are cheap
     if (db && status === 'Live') {
       db.query<CostSnapshot>('SELECT * FROM cost_snapshots ORDER BY created_at DESC LIMIT 50')
         .then((res) => {

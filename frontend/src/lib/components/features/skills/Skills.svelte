@@ -38,7 +38,7 @@
         </div>
 
         <div class="metrics-grid">
-          {#each performanceMetrics as metric, i}
+          {#each performanceMetrics as metric, i (metric.label)}
             <div class="metric-card" in:fly={{ y: 16, duration: 400, delay: i * 80 }}>
               <div class="metric-value">{metric.value}</div>
               <div class="metric-label">{metric.label}</div>

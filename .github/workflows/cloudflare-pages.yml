@@ -73,6 +73,20 @@ jobs:
         working-directory: frontend
         run: pnpm run sync
 
+      # Quality gates — this workflow runs on direct pushes to main, which
+      # otherwise deploy to production without any checks at all.
+      - name: Type check
+        working-directory: frontend
+        run: pnpm run check
+
+      - name: Lint
+        working-directory: frontend
+        run: pnpm run lint
+
+      - name: Test
+        working-directory: frontend
+        run: pnpm run test
+
       - name: Build
         working-directory: frontend
         run: pnpm run build

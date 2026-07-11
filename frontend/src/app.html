@@ -4,6 +4,21 @@
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      // Apply the theme before first paint to avoid a light-mode flash for
+      // dark-preference users. Mirrors the logic in $lib/stores/theme.ts.
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          document.documentElement.classList.toggle('dark', dark);
+        } catch (e) {
+          /* localStorage unavailable — default (light) applies */
+        }
+      })();
+    </script>
     %sveltekit.head%
   </head>
   <body data-sveltekit-preload-data="hover">

@@ -84,12 +84,12 @@
    Global Base Styles
    ========================================================================== */
 
-:global(html) {
+html {
   /* Smooth scroll disabled: browser adjusts scroll position on height changes (e.g. navbar). */
   scroll-behavior: auto;
 }
 
-:global(body) {
+body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition:
@@ -99,18 +99,18 @@
 }
 
 /* Account for fixed header when scrolling to anchor links */
-:global([id]) {
+[id] {
   scroll-margin-top: 4rem;
 }
 
 @media (min-width: 768px) {
-  :global([id]) {
+  [id] {
     scroll-margin-top: 5rem;
   }
 }
 
-:global(code),
-:global(pre) {
+code,
+pre {
   font-family: var(--font-mono);
 }
 
@@ -125,42 +125,42 @@
 }
 
 /* Light mode scrollbar */
-:global(html:not(.dark)) ::-webkit-scrollbar-track {
+html:not(.dark) ::-webkit-scrollbar-track {
   background: var(--scrollbar-track-light);
 }
 
-:global(html:not(.dark)) ::-webkit-scrollbar-thumb {
+html:not(.dark) ::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-thumb-light);
   border: 2px solid var(--scrollbar-track-light);
   border-radius: 999px;
 }
 
-:global(html:not(.dark)) ::-webkit-scrollbar-thumb:hover {
+html:not(.dark) ::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbar-thumb-light-hover);
 }
 
 /* Dark mode scrollbar */
-:global(.dark) ::-webkit-scrollbar-track {
+.dark ::-webkit-scrollbar-track {
   background: var(--scrollbar-track-dark);
 }
 
-:global(.dark) ::-webkit-scrollbar-thumb {
+.dark ::-webkit-scrollbar-thumb {
   background-color: var(--scrollbar-thumb-dark);
   border: 2px solid var(--scrollbar-track-dark);
   border-radius: 999px;
 }
 
-:global(.dark) ::-webkit-scrollbar-thumb:hover {
+.dark ::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbar-thumb-dark-hover);
 }
 
 /* --- Firefox Scrollbar Support --- */
-:global(html:not(.dark)) {
+html:not(.dark) {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-light) var(--scrollbar-track-light);
 }
 
-:global(html.dark) {
+html.dark {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb-dark) var(--scrollbar-track-dark);
 }
@@ -171,13 +171,13 @@
 
 /* Makes highlighted text look like a terminal selection */
 /* Light mode selection */
-:global(html:not(.dark)) ::selection {
+html:not(.dark) ::selection {
   background-color: rgba(59, 130, 246, 0.25); /* Blue-500 at 25% opacity for better visibility */
   color: #2563eb; /* Blue-600 text for better contrast */
 }
 
 /* Dark mode selection */
-:global(.dark) ::selection {
+.dark ::selection {
   background-color: rgba(59, 130, 246, 0.2); /* Blue-500 at 20% opacity */
   color: #60a5fa; /* Blue-400 text */
 }
@@ -188,19 +188,19 @@
    Uses accent-primary ring so it's on-brand and unmissable.
    ========================================================================== */
 
-:global(:focus-visible) {
+:focus-visible {
   outline: 2px solid var(--accent-primary);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
 /* Tighter ring for inline elements (links inside prose) */
-:global(a:focus-visible) {
+a:focus-visible {
   outline-offset: 2px;
 }
 
 /* Remove default outline — we own the focus style entirely */
-:global(:focus:not(:focus-visible)) {
+:focus:not(:focus-visible) {
   outline: none;
 }
 
@@ -211,7 +211,7 @@
    ========================================================================== */
 
 /* Standard section surface — bg + border-bottom + theme transitions */
-:global(.section-surface) {
+.section-surface {
   background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
   color: var(--text-primary);
@@ -222,25 +222,43 @@
 }
 
 /* Standard section padding rhythm */
-:global(.section-padding) {
+.section-padding {
   padding: var(--space-12) var(--space-6);
 }
 
 @media (max-width: 767px) {
-  :global(.section-padding) {
+  .section-padding {
     padding: var(--space-10) var(--space-5);
   }
 }
 
 /* Centered max-width container */
-:global(.section-container) {
+.section-container {
   max-width: 75rem; /* 1200px */
   margin: 0 auto;
   width: 100%;
 }
 
 /* Muted accent text for section headlines — used inside SectionHeader snippet slots */
-:global(.headline-accent) {
+.headline-accent {
   color: var(--text-muted);
   transition: color 0.2s;
+}
+
+/* ==========================================================================
+   Reduced Motion
+   Users who ask for less motion get it: kill decorative animations and
+   transitions globally. Components with auto-playing effects also gate on
+   this query via matchMedia.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

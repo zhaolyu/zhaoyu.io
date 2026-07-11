@@ -36,7 +36,7 @@
 
   {#if project.metrics}
     <div class="card-metrics">
-      {#each project.metrics as metric}
+      {#each project.metrics as metric (metric.label)}
         <div class="metric">
           <span class="metric-value">{metric.value}</span>
           <span class="metric-label">{metric.label}</span>
@@ -46,7 +46,7 @@
   {/if}
 
   <div class="card-stack">
-    {#each project.stack as tech}
+    {#each project.stack as tech (tech)}
       <span class="stack-tag">{tech}</span>
     {/each}
   </div>

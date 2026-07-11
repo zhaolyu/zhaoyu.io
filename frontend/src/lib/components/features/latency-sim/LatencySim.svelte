@@ -5,7 +5,6 @@
   let mode = $state<'naive' | 'optimized'>('optimized');
   let tokens = $state<string[]>([]);
   let isRunning = $state(false);
-  let sectionVisible = $state(false);
   let latencySection: HTMLElement;
   let displayContent: HTMLElement;
 
@@ -23,15 +22,23 @@
     }
   });
 
+  // Each start invalidates prior loops: their closures check the id and bail.
+  // Without this, switching modes leaves the old setTimeout/rAF chain running
+  // and two writers interleave tokens into the same array.
+  let runId = 0;
+  let destroyed = false;
+
   function startSim() {
-    if (isRunning) return;
+    if (isRunning || destroyed) return;
     isRunning = true;
     tokens = [];
+    const id = ++runId;
     let i = 0;
 
     if (mode === 'naive') {
       // Simulate JANK: Random heavy delays blocking the thread
       const tick = () => {
+        if (id !== runId) return; // superseded by a newer run or unmount
         if (i >= words.length) {
           isRunning = false;
           return;
@@ -46,6 +53,7 @@
 
         // Block in smaller chunks to reduce browser violation warnings
         const block = () => {
+          if (id !== runId) return;
           if (performance.now() < blockUntil) {
             const chunkStart = performance.now();
             while (performance.now() - chunkStart < chunkSize);
@@ -64,6 +72,7 @@
     } else {
       // OPTIMIZED: RAF Sync
       const tick = () => {
+        if (id !== runId) return; // superseded by a newer run or unmount
         if (i >= words.length) {
           isRunning = false;
           return;
@@ -80,7 +89,8 @@
 
   function handleModeChange(newMode: 'naive' | 'optimized') {
     mode = newMode;
-    // Reset state to allow restart
+    // Invalidate any in-flight loop, then reset state to allow restart
+    runId++;
     isRunning = false;
     tokens = [];
     // Use requestAnimationFrame instead of setTimeout to avoid violation warnings
@@ -93,22 +103,27 @@
   }
 
   onMount(() => {
-    return createSectionObserver(latencySection, {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const cleanup = createSectionObserver(latencySection, {
       enableReanimation: true,
       onVisible: () => {
-        sectionVisible = true;
-        // Auto-start animation with optimized mode
-        if (mode === 'optimized') {
+        // Auto-start animation with optimized mode — but never auto-play for
+        // users who asked for reduced motion (they can still start it manually)
+        if (mode === 'optimized' && !prefersReducedMotion) {
           // Small delay to ensure smooth entry
           setTimeout(() => {
             startSim();
           }, 300);
         }
       },
-      onHidden: () => {
-        sectionVisible = false;
-      },
     });
+
+    return () => {
+      destroyed = true;
+      runId++; // stop any loop that would outlive the component
+      cleanup();
+    };
   });
 </script>
 

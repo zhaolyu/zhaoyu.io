@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { CostSnapshot } from '$lib/types';
-  import { snapshotRef } from '$lib/types';
+  import { snapshotRef } from '$lib/utils/cost-guard-display';
 
   let { snapshots }: { snapshots: CostSnapshot[] } = $props();
 
@@ -22,10 +22,12 @@
     const gcpSorted = sorted.filter((s) => s.source === 'gcp-billing');
     const githubSorted = sorted.filter((s) => s.source === 'github');
 
-    // Time domain
+    // Time domain — pad by a day whenever the span is zero (single snapshot OR
+    // multiple snapshots sharing one created_at) so px() never divides by zero
     const times = sorted.map((s) => new Date(s.created_at).getTime());
     const minTs = Math.min(...times);
-    const maxTs = times.length > 1 ? Math.max(...times) : minTs + 86_400_000;
+    const realMax = Math.max(...times);
+    const maxTs = realMax > minTs ? realMax : minTs + 86_400_000;
 
     // Value domain — floor at 0, min range 0.01 to avoid /0
     const vals = sorted.map((s) => parseFloat(s.total_monthly_estimate));
@@ -122,7 +124,7 @@
       </defs>
 
       <!-- Y-axis gridlines + labels -->
-      {#each chart.yTicks as tick}
+      {#each chart.yTicks as tick (tick.y)}
         <line x1={PL} y1={tick.y} x2={W - PR} y2={tick.y} class="grid-line" />
         <text x={PL - 6} y={tick.y + 4} class="axis-text y-axis" text-anchor="end">
           {tick.label}
@@ -136,7 +138,7 @@
       {#if chart.gcpLine}
         <path d={chart.gcpLine} class="series-line line-gcp" fill="none" />
       {/if}
-      {#each chart.gcpPts as pt}
+      {#each chart.gcpPts as pt (pt)}
         <circle cx={pt.x} cy={pt.y} r="4" class="dot dot-gcp">
           <title>GCP Actual • ${pt.val.toFixed(2)} • {pt.label} • {pt.project}</title>
         </circle>
@@ -149,14 +151,14 @@
       {#if chart.githubLine}
         <path d={chart.githubLine} class="series-line line-github" fill="none" />
       {/if}
-      {#each chart.githubPts as pt}
+      {#each chart.githubPts as pt (pt)}
         <circle cx={pt.x} cy={pt.y} r="4" class="dot dot-github">
           <title>Estimate • ${pt.val.toFixed(2)} • {pt.label} • {pt.project}</title>
         </circle>
       {/each}
 
       <!-- X-axis labels -->
-      {#each chart.xLabels as lbl}
+      {#each chart.xLabels as lbl (lbl)}
         <text x={lbl.x} y={H - 6} class="axis-text x-axis" text-anchor="middle">
           {lbl.label}
         </text>

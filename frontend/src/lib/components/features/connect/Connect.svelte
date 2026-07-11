@@ -13,9 +13,9 @@
       await navigator.clipboard.writeText(email);
       copied = true;
       setTimeout(() => (copied = false), 2000);
-    } catch (err) {
-      // Fallback for older browsers
-      console.error('Failed to copy:', err);
+    } catch {
+      // Clipboard API unavailable (older browsers / non-secure context) —
+      // the address is select-all text, so manual copy still works.
     }
   }
 </script>

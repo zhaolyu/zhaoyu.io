@@ -50,7 +50,6 @@ export interface Project {
   description: string;
   metrics: Array<{ label: string; value: string }>;
   tags: string[];
-  image: string;
   diagram?: string;
 }
 
@@ -69,7 +68,6 @@ export const projectsData: ProjectsData = {
         { label: 'LCP (TOP 1%)', value: '1.1s' },
         { label: 'AKAMAI TTFB', value: '<300ms' },
       ],
-      image: 'migration-ui',
       diagram: 'migration-arch',
     },
     {
@@ -81,7 +79,6 @@ export const projectsData: ProjectsData = {
         { label: 'LATENCY MASKING', value: '60 FPS' },
         { label: 'CITATION ENGINE', value: 'Real-time' },
       ],
-      image: 'ai-ui',
       diagram: 'ai-state-machine',
     },
   ],
