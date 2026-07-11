@@ -6,8 +6,10 @@
   import { projectsData, builderProjects } from '$lib/constants/content';
   import { SectionHeader } from '$lib/components/ui';
   import { observeSection } from '$lib/utils/section-observer';
+  import { visibleItems } from '$lib/utils/feature-flags';
 
-  const displayProjects = projectsData.projects;
+  const displayProjects = visibleItems(projectsData.projects);
+  const displayBuilderProjects = visibleItems(builderProjects);
   let sectionVisible = $state(false);
   let workSection: HTMLElement;
 
@@ -35,7 +37,7 @@
     </div>
 
     <div class="systems-grid" transition:fade={{ duration: 600, delay: 200 }}>
-      {#each builderProjects as project (project.title)}
+      {#each displayBuilderProjects as project (project.title)}
         <BuilderCard {project} />
       {/each}
     </div>

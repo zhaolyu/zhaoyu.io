@@ -2,6 +2,8 @@
  * Content constants for landing page
  */
 
+import type { FeatureFlag } from '$lib/constants/config';
+
 export interface HeroContent {
   badge: string;
   headline: {
@@ -51,6 +53,8 @@ export interface Project {
   metrics: Array<{ label: string; value: string }>;
   tags: string[];
   diagram?: string;
+  /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
+  featureFlag?: FeatureFlag;
 }
 
 export interface ProjectsData {
@@ -80,6 +84,7 @@ export const projectsData: ProjectsData = {
         { label: 'CITATION ENGINE', value: 'Real-time' },
       ],
       diagram: 'ai-state-machine',
+      featureFlag: 'showCnbcAiWork',
     },
   ],
 };
@@ -270,6 +275,8 @@ export interface BuilderProject {
   stack: string[];
   status: 'shipped' | 'in-progress' | 'exploring';
   metrics?: Array<{ label: string; value: string }>;
+  /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
+  featureFlag?: FeatureFlag;
 }
 
 export const builderProjects: BuilderProject[] = [
@@ -296,6 +303,7 @@ export const builderProjects: BuilderProject[] = [
       { label: 'Interaction', value: 'Real-time' },
       { label: 'Frame Rate', value: '60 FPS' },
     ],
+    featureFlag: 'showCnbcAiWork',
   },
   {
     title: 'Cost-Guard: Infra Dashboard',

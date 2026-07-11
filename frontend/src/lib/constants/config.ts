@@ -1,4 +1,17 @@
 /**
+ * Feature flags — gate content that isn't ready to be public.
+ */
+export const FEATURE_FLAGS = {
+  /**
+   * CNBC's consumer AI product hasn't launched publicly yet.
+   * Flip to true to show the CNBC AI project/builder cards.
+   */
+  showCnbcAiWork: false,
+} as const;
+
+export type FeatureFlag = keyof typeof FEATURE_FLAGS;
+
+/**
  * Animation and interaction constants
  */
 export const ANIMATION_CONFIG = {
