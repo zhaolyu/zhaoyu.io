@@ -371,8 +371,9 @@ jobs:
               branch: branch
             });
 
-            // Validate URL (note: comparing against a '${{ }}' literal is
-            // impossible here — expressions interpolate inside this script too)
+            // Validate URL. Note: it is impossible to compare against a literal
+            // interpolation placeholder here — GitHub substitutes expressions
+            // inside this script block too, so such a guard always matches.
             if (!previewUrl) {
               console.error('❌ Preview URL is empty or not set!');
               console.error('Check the "Extract deployment URLs" step logs for details.');
