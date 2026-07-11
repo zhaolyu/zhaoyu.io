@@ -46,6 +46,32 @@
     content="Principal Engineer at CNBC. UI Factory and AI Integration at scale."
   />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Zhao Yu",
+      "jobTitle": "Principal Engineer",
+      "url": "https://zhaoyu.io",
+      "sameAs": ["https://github.com/zhaolyu"],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "CNBC"
+      },
+      "description": "Principal Engineer at CNBC architecting high-performance isomorphic edge systems for 50M+ monthly users. AI Integration Lead and independent builder.",
+      "knowsAbout": [
+        "Edge Computing",
+        "Akamai EdgeWorkers",
+        "Isomorphic React",
+        "SvelteKit",
+        "AI-Assisted Software Engineering",
+        "Agentic AI Workflows",
+        "Performance Engineering",
+        "Distributed Systems"
+      ]
+    }
+  </script>
 </svelte:head>
 
 <main class="main-container">

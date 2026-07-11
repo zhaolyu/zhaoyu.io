@@ -126,6 +126,7 @@ export const experienceData: ExperienceData = {
 };
 
 export interface EngineeringNote {
+  slug: string;
   title: string;
   date: string;
   tags: string[];
@@ -139,6 +140,7 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'building-with-ai-the-compound-advantage',
       title: 'Building with AI: The Compound Advantage',
       date: 'Feb 2026',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
@@ -148,6 +150,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'sovereign-resilience-why-i-over-index-on-edge-architecture',
       title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
       date: 'Jan 2026',
       tags: ['Architecture', 'Edge Computing', 'Independence'],
@@ -157,6 +160,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'idempotency-in-distributed-systems',
       title: 'Idempotency in Distributed Systems',
       date: 'Jan 2026',
       tags: ['Backend', 'API Design', 'Reliability'],
@@ -166,6 +170,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'the-url-is-the-source-of-truth',
       title: 'The URL is the Source of Truth',
       date: 'Dec 2025',
       tags: ['Architecture', 'State Management', 'UX'],
@@ -175,6 +180,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'decoupling-state-from-render-in-llm-streaming',
       title: 'Decoupling State from Render in LLM Streaming',
       date: 'Oct 2025',
       tags: ['React Performance', 'HCI', '60fps'],
