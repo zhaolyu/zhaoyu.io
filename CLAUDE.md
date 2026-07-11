@@ -111,6 +111,8 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 ### Security
 - No hardcoded secrets — this is a static site; anything in `src/` or `static/` ships to the client.
 - Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).
+- CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
+- GitHub Actions are pinned to commit SHAs; Dependabot keeps them and npm deps updated.
 - Error handling must not expose sensitive data.
 
 ---
