@@ -11,7 +11,7 @@
   <div class="fade-right"></div>
 
   <div class="ticker-container">
-    {#each tickerItems as item}
+    {#each tickerItems as item, i (i)}
       <div class="ticker-item">
         <div
           class="status-dot"

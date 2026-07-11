@@ -12,6 +12,8 @@
   import { Connect } from '$lib/components/features/connect';
 
   onMount(() => {
+    // Deliberate easter egg for devtools visitors — the one sanctioned console.log
+    // eslint-disable-next-line no-console
     console.log(
       `%c Interested in the architecture? \n%c Check out the source: https://github.com/zhaolyu/zhaoyu.io `,
       'font-weight: bold; font-size: 16px; color: #3b82f6;',

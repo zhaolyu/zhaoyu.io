@@ -6,25 +6,25 @@ import { ANIMATION_CONFIG } from '../constants/config';
 // Mock intersection-core module
 vi.mock('./intersection-core', () => {
   const mockObserver = {
-    observe: vi.fn(),
-    disconnect: vi.fn(),
-    takeRecords: vi.fn(),
+    observe: vi.fn<(...args: any[]) => any>(),
+    disconnect: vi.fn<(...args: any[]) => any>(),
+    takeRecords: vi.fn<(...args: any[]) => any>(),
   };
 
   return {
     createIntersectionObserver: vi.fn(() => mockObserver),
-    checkInitialVisibility: vi.fn(),
-    isScrolledPast: vi.fn(),
+    checkInitialVisibility: vi.fn<(...args: any[]) => any>(),
+    isScrolledPast: vi.fn<(...args: any[]) => any>(),
     isMobileViewport: vi.fn(() => false),
   };
 });
 
 describe('observeSection', () => {
   let mockElement: HTMLElement;
-  let mockOnVisible: ReturnType<typeof vi.fn>;
+  let mockOnVisible: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   let mockObserver: {
-    observe: ReturnType<typeof vi.fn>;
-    disconnect: ReturnType<typeof vi.fn>;
+    observe: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+    disconnect: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   };
 
   beforeEach(() => {
@@ -32,10 +32,10 @@ describe('observeSection', () => {
     mockElement = document.createElement('div');
     document.body.appendChild(mockElement);
 
-    mockOnVisible = vi.fn();
+    mockOnVisible = vi.fn<(...args: any[]) => any>();
     mockObserver = {
-      observe: vi.fn(),
-      disconnect: vi.fn(),
+      observe: vi.fn<(...args: any[]) => any>(),
+      disconnect: vi.fn<(...args: any[]) => any>(),
     };
 
     (intersectionCore.createIntersectionObserver as any).mockReturnValue(mockObserver);
@@ -194,12 +194,12 @@ describe('observeSection', () => {
 
 describe('createSectionObserver', () => {
   let mockElement: HTMLElement;
-  let mockOnVisible: ReturnType<typeof vi.fn>;
-  let mockOnHidden: ReturnType<typeof vi.fn>;
-  let mockOnScrolledPast: ReturnType<typeof vi.fn>;
+  let mockOnVisible: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+  let mockOnHidden: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+  let mockOnScrolledPast: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   let mockObserver: {
-    observe: ReturnType<typeof vi.fn>;
-    disconnect: ReturnType<typeof vi.fn>;
+    observe: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+    disconnect: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   };
 
   beforeEach(() => {
@@ -207,12 +207,12 @@ describe('createSectionObserver', () => {
     mockElement = document.createElement('div');
     document.body.appendChild(mockElement);
 
-    mockOnVisible = vi.fn();
-    mockOnHidden = vi.fn();
-    mockOnScrolledPast = vi.fn();
+    mockOnVisible = vi.fn<(...args: any[]) => any>();
+    mockOnHidden = vi.fn<(...args: any[]) => any>();
+    mockOnScrolledPast = vi.fn<(...args: any[]) => any>();
     mockObserver = {
-      observe: vi.fn(),
-      disconnect: vi.fn(),
+      observe: vi.fn<(...args: any[]) => any>(),
+      disconnect: vi.fn<(...args: any[]) => any>(),
     };
 
     (intersectionCore.createIntersectionObserver as any).mockReturnValue(mockObserver);

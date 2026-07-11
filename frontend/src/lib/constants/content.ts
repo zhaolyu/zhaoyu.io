@@ -2,6 +2,8 @@
  * Content constants for landing page
  */
 
+import type { FeatureFlag } from '$lib/constants/config';
+
 export interface HeroContent {
   badge: string;
   headline: {
@@ -50,8 +52,9 @@ export interface Project {
   description: string;
   metrics: Array<{ label: string; value: string }>;
   tags: string[];
-  image: string;
   diagram?: string;
+  /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
+  featureFlag?: FeatureFlag;
 }
 
 export interface ProjectsData {
@@ -69,7 +72,6 @@ export const projectsData: ProjectsData = {
         { label: 'LCP (TOP 1%)', value: '1.1s' },
         { label: 'AKAMAI TTFB', value: '[redacted]' },
       ],
-      image: 'migration-ui',
       diagram: 'migration-arch',
     },
     {
@@ -81,8 +83,8 @@ export const projectsData: ProjectsData = {
         { label: 'LATENCY MASKING', value: '60 FPS' },
         { label: 'CITATION ENGINE', value: 'Real-time' },
       ],
-      image: 'ai-ui',
       diagram: 'ai-state-machine',
+      featureFlag: 'showCnbcAiWork',
     },
   ],
 };
@@ -128,7 +130,10 @@ export const experienceData: ExperienceData = {
 export interface EngineeringNote {
   slug: string;
   title: string;
+  /** Display date, e.g. "Jul 2026" */
   date: string;
+  /** ISO 8601 date (YYYY-MM) for schema.org datePublished */
+  dateISO: string;
   tags: string[];
   content: string[];
 }
@@ -140,19 +145,43 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'spec-quality-is-the-bottleneck-not-implementation-speed',
+      title: 'Spec Quality Is the Bottleneck Now, Not Implementation Speed',
+      date: 'Jul 2026',
+      dateISO: '2026-07',
+      tags: ['AI Engineering', 'Agent Architecture', 'Specification'],
+      content: [
+        "The industry is measuring AI-assisted development with the wrong unit of analysis. Code-generation speed is the vanity metric; the METR result everyone cites — experienced developers who <em>felt</em> 20% faster while measuring slower — isn't evidence that AI doesn't work, it's evidence that implementation speed was never the constraint. When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description itself. StrongDM's autonomous pipeline runs on 6,000+ lines of behavioral specification — and that corpus, not the generated code, is the engineering artifact. <strong>The specification becomes the primary artifact; the codebase is a derivative</strong> — closer to a build output than to source.",
+        'Building production systems with Cursor and Claude Code has restructured where my own hours go. My leverage stopped correlating with how fast I can type and started correlating with how precisely I can state three things: the goal, the boundary, and what "done" has to prove. The human stays at the two endpoints — specification in, satisfaction judgment out — and everything between is increasingly the machine\'s. This also explains why AI amplifies experts instead of equalizing them: it equalizes execution speed, but execution was already cheap. What it amplifies is specification quality, and specification quality is a direct function of domain depth. If the agent keeps disappointing you, the uncomfortable first question is no longer about the model — it\'s whether you actually specified the thing you wanted.',
+      ],
+    },
+    {
+      slug: 'agent-failures-are-loop-failures',
+      title: 'Agent Failures Are Loop Failures, Not Intelligence Failures',
+      date: 'Jul 2026',
+      dateISO: '2026-07',
+      tags: ['Agent Architecture', 'Reliability', 'Distributed Systems'],
+      content: [
+        "Every agent failure I've debugged this year decomposes the same way. The agent didn't lack intelligence — the loop lacked definition. It wandered out of scope because no boundary was stated. It \"finished\" without finishing because nothing defined what done has to prove. Two agents double-executed the same task because nothing marked it claimed. These are Tuesday failures, and none of them are fixed by a smarter model, because <strong>smartness cannot supply a fact that was never specified</strong>. A run an agent can actually be held to has five parts: a goal, a boundary, tools, artifacts, and receipts. Miss one and you haven't delegated work — you've made a wish.",
+        'The good news: distributed systems solved these coordination problems decades ago, we just have to notice the mapping. A visible <code>CLAIMED</code> state on a task is a lease, revalidated when the worker returns. "Done" without an attached receipt is self-attestation by the party with the strongest incentive to declare success — so the receipt (the diff, the test run, the artifact link) is non-negotiable, the same way you require an acknowledgement instead of trusting a fire-and-forget write. And the issue tracker you already run is the natural control plane: it has owners, statuses, comments, links, and history built in. <strong>Reliability is engineered into the loop, not summoned from the model.</strong> Make the loop less ambiguous before you ask for a smarter agent.',
+      ],
+    },
+    {
       slug: 'why-i-made-this-site-readable-by-machines-not-just-humans',
       title: 'Why I Made This Site Readable by Machines, Not Just Humans',
       date: 'Jul 2026',
+      dateISO: '2026-07',
       tags: ['AI Engineering', 'SEO', 'Structured Data'],
       content: [
-        'Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root — a plain-text summary of who I am and what I\'ve built, structured for a language model\'s context window rather than a browser\'s rendering engine — JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.',
-        'The more interesting find while doing this wasn\'t a feature, it was a bug. My static-site adapter\'s SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write — silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site\'s build output is not implied by its source — verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.',
+        "Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root — a plain-text summary of who I am and what I've built, structured for a language model's context window rather than a browser's rendering engine — JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.",
+        "The more interesting find while doing this wasn't a feature, it was a bug. My static-site adapter's SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write — silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site's build output is not implied by its source — verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.",
       ],
     },
     {
       slug: 'the-three-tiers-of-using-ai-and-why-only-two-matter-now',
       title: 'The Three Tiers of Using AI, and Why Only Two of Them Still Differentiate You',
       date: 'Jul 2026',
+      dateISO: '2026-07',
       tags: ['AI Engineering', 'Agent Architecture', 'Career'],
       content: [
         'There\'s a real difference between using AI as a faster typist — autocomplete, chat-assisted edits, "fix this bug for me" — and delegating a bounded unit of work to an agent that plans, executes across multiple files, and hands you a diff to review. The first tier is now table stakes; every engineer I work with has a model open in a side pane, and it stopped being a differentiator the moment it became the default. The tiers above it — an agent working a scoped task end-to-end, or several agents running in parallel with their own permission boundaries — are where the actual leverage still lives, because almost nobody has restructured how they delegate work to get there.',
@@ -163,46 +192,51 @@ export const notesData: NotesData = {
       slug: 'building-with-ai-the-compound-advantage',
       title: 'Building with AI: The Compound Advantage',
       date: 'Feb 2026',
+      dateISO: '2026-02',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
       content: [
-        'I built most of this site using Claude Code. Not as a novelty — as a deliberate workflow. The components you\'re reading, the type errors that blocked deployment, the engineering notes you\'re reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.',
-        'The thing I didn\'t expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the "is this worth building?" stage. You just build. The compounding isn\'t in the individual tasks — it\'s in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn\'t change what you can build; it changes how many times you can try.',
+        "I built most of this site using Claude Code. Not as a novelty — as a deliberate workflow. The components you're reading, the type errors that blocked deployment, the engineering notes you're reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.",
+        "The thing I didn't expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the \"is this worth building?\" stage. You just build. The compounding isn't in the individual tasks — it's in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn't change what you can build; it changes how many times you can try.",
       ],
     },
     {
       slug: 'sovereign-resilience-why-i-over-index-on-edge-architecture',
       title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
       date: 'Jan 2026',
+      dateISO: '2026-01',
       tags: ['Architecture', 'Edge Computing', 'Independence'],
       content: [
-        'The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn\'t panic — it degrades gracefully.',
-        'I\'ve started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently — full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.',
+        "The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn't panic — it degrades gracefully.",
+        "I've started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently — full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.",
       ],
     },
     {
       slug: 'idempotency-in-distributed-systems',
       title: 'Idempotency in Distributed Systems',
       date: 'Jan 2026',
+      dateISO: '2026-01',
       tags: ['Backend', 'API Design', 'Reliability'],
       content: [
         'Working on live news infrastructure taught me that <strong>failures are not exceptional — they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" — it\'s "what happens when it does?"',
-        'Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn\'t finished. This matters even more in event-driven systems where the cost of double-processing — a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event — compounds faster than the failure that triggered the retry.',
+        "Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn't finished. This matters even more in event-driven systems where the cost of double-processing — a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event — compounds faster than the failure that triggered the retry.",
       ],
     },
     {
       slug: 'the-url-is-the-source-of-truth',
       title: 'The URL is the Source of Truth',
       date: 'Dec 2025',
+      dateISO: '2025-12',
       tags: ['Architecture', 'State Management', 'UX'],
       content: [
         'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
-        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition.',
+        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Nine years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication — one authoritative writer, every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
       ],
     },
     {
       slug: 'decoupling-state-from-render-in-llm-streaming',
       title: 'Decoupling State from Render in LLM Streaming',
       date: 'Oct 2025',
+      dateISO: '2025-10',
       tags: ['React Performance', 'HCI', '60fps'],
       content: [
         'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
@@ -241,6 +275,8 @@ export interface BuilderProject {
   stack: string[];
   status: 'shipped' | 'in-progress' | 'exploring';
   metrics?: Array<{ label: string; value: string }>;
+  /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
+  featureFlag?: FeatureFlag;
 }
 
 export const builderProjects: BuilderProject[] = [
@@ -248,11 +284,11 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC UI Factory Initiative',
     category: 'professional',
     description:
-      'Architecting CNBC\'s next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 200+ page templates serving a global newsroom.',
+      "Architecting CNBC's next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 50+ page templates serving a global newsroom.",
     stack: ['React', 'Akamai EdgeWorkers', 'GraphQL', 'Node.js'],
     status: 'in-progress',
     metrics: [
-      { label: 'Templates', value: '200+' },
+      { label: 'Templates', value: '50+' },
       { label: 'LCP', value: '[redacted]' },
     ],
   },
@@ -267,6 +303,7 @@ export const builderProjects: BuilderProject[] = [
       { label: 'Interaction', value: 'Real-time' },
       { label: 'Frame Rate', value: '60 FPS' },
     ],
+    featureFlag: 'showCnbcAiWork',
   },
   {
     title: 'Cost-Guard: Infra Dashboard',
@@ -290,7 +327,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    'My career began as a web developer intern at CNBC, and over the last nine years I have grown from web developer to Principal Engineer to Senior Manager of Core Web for CNBC.com. It is a player-coach role by design: I manage the team that owns the platform\'s core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them.',
+    "My career began as a web developer intern at CNBC, and over the last nine years I have grown from web developer to Principal Engineer to Senior Manager of Core Web for CNBC.com. It is a player-coach role by design: I manage the team that owns the platform's core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them.",
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
@@ -305,14 +342,14 @@ export const personaData: PersonaItem[] = [
   {
     title: 'The Engineering Philosophy',
     body: [
-      'Latency is the enemy of trust. Whether it\'s a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt. Every millisecond removed is a unit of confidence restored.',
+      "Latency is the enemy of trust. Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt. Every millisecond removed is a unit of confidence restored.",
       'The UI Factory model is the operational expression of this: treat UI production like manufacturing, not craftsmanship. Standards, budgets, and repeatability over one-off heroics.',
     ],
   },
   {
     title: 'The Bridge',
     body: [
-      'I operate at the intersection of Product and Engineering. I don\'t build to spec — I partner with product leaders to define what is technically possible at scale.',
+      "I operate at the intersection of Product and Engineering. I don't build to spec — I partner with product leaders to define what is technically possible at scale.",
       'I translate Akamai EdgeWorker configurations into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong.',
     ],
   },
@@ -320,15 +357,40 @@ export const personaData: PersonaItem[] = [
     title: 'Endurance Engineering',
     body: [
       'Off the clock, I trade latency metrics for endurance miles. I apply the same optimization mindset to running as I do to code: instrument everything, reduce friction, compound marginal gains.',
-      'Sub-1:25 half-marathon. 50K ultra finish. The discipline carries.',
+      'A 3:07 marathon, a 50K ultra finish, and a sub-1:25 half in the crosshairs. The discipline carries.',
     ],
   },
   {
     title: 'The Search for the Gold Standard',
     body: [
-      'I\'m drawn to systems that prioritize precision and craft. In NYC, that means chasing the best Japanese food — Omakase, Kaiseki, the obsession with quality over volume.',
+      "I'm drawn to systems that prioritize precision and craft. In NYC, that means chasing the best Japanese food — Omakase, Kaiseki, the obsession with quality over volume.",
       'In markets, it means studying equity structures and the secondary dynamics of Pokémon TCG as a lens for value, scarcity, and liquidity. I enjoy the game theory of high-value systems wherever I find them.',
     ],
+  },
+];
+
+export interface FooterManifestoItem {
+  title: string;
+  body: string;
+}
+
+/** Footer manifesto blurbs — the single source for TelemetryFooter's grid. */
+export const footerManifesto: FooterManifestoItem[] = [
+  {
+    title: 'Latency Is the Enemy of Trust',
+    body: 'Performance is a feature, not an afterthought. I architect for a [redacted] at a global scale of [redacted] users.',
+  },
+  {
+    title: 'URL > Store',
+    body: 'The URL is the only reliable single source of truth. I prefer URL-driven state to eliminate desynchronization bugs.',
+  },
+  {
+    title: 'WET > DRY',
+    body: 'I value strategic duplication over premature, leaky abstractions. Clarity and composition beat complex "God Components."',
+  },
+  {
+    title: 'Server > Client',
+    body: "I leverage SvelteKit and Akamai EdgeWorkers to ship HTML, not just JSON. I optimize for the browser's critical rendering path.",
   },
 ];
 
@@ -470,7 +532,7 @@ const Page = async () => {
 
 // Rule: If you can't explain what it wrote,
 // you don't own the code — it does.`,
-      note: "AI is a force multiplier, not a replacement for taste. Every AI-assisted commit must pass the same review bar as a human-written one.",
+      note: 'AI is a force multiplier, not a replacement for taste. Every AI-assisted commit must pass the same review bar as a human-written one.',
     },
   },
 };

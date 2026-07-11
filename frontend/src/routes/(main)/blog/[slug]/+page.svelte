@@ -6,19 +6,22 @@
   let note = $derived(data.note);
 
   let canonicalUrl = $derived(`https://zhaoyu.io/blog/${note.slug}`);
-  let description = $derived(
-    (note.content[0] ?? note.title).replace(/<[^>]+>/g, '').slice(0, 160),
-  );
+  let description = $derived((note.content[0] ?? note.title).replace(/<[^>]+>/g, '').slice(0, 160));
   let jsonLd = $derived(
     JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'TechArticle',
       headline: note.title,
-      datePublished: note.date,
+      datePublished: note.dateISO,
       author: { '@type': 'Person', name: 'Zhao Yu', url: 'https://zhaoyu.io' },
       url: canonicalUrl,
       keywords: note.tags.join(', '),
     }),
+  );
+  // Tag assembled from split parts: a literal script open/close token anywhere
+  // in this component (even in a string or comment) ends the surrounding block.
+  let jsonLdScript = $derived(
+    '<scr' + 'ipt type="application/ld+json">' + jsonLd + '</scr' + 'ipt>',
   );
 </script>
 
@@ -38,12 +41,18 @@
   <link rel="canonical" href={canonicalUrl} />
 
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->
-  {@html `<script type="application/ld+json">${jsonLd}</script>`}
+  {@html jsonLdScript}
 </svelte:head>
 
 <main class="blog-post">
   <a href="/#notes" class="back-link">&larr; All notes</a>
-  <EngineeringNote title={note.title} date={note.date} tags={note.tags} content={note.content} />
+  <EngineeringNote
+    title={note.title}
+    date={note.date}
+    tags={note.tags}
+    content={note.content}
+    headingLevel="h1"
+  />
 </main>
 
 <style>

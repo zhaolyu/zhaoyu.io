@@ -20,10 +20,10 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
     # Run CI on PRs targeting any branch (including feature/... branches)
-    # Skip CI for documentation and config-only changes
+    # Skip CI for documentation-only changes. Workflow changes deliberately
+    # DO run CI — ignoring '.github/**' meant workflow edits got zero checks.
     paths-ignore:
       - '**.md'
-      - '.github/**'
       - 'docs/**'
       - '.gitignore'
       - '.prettierrc'
@@ -36,44 +36,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Check if this is a merge commit (skip CI since PR already passed)
-  # Note: This is kept for consistency but won't apply to PR opened events
-  check-merge-commit:
-    runs-on: ubuntu-latest
-    name: Check Merge Commit
-    timeout-minutes: 1
-    permissions:
-      contents: read
-    outputs:
-      is_merge_commit: 'false'
-    steps:
-      - name: Set default output
-        id: set-default
-        run: |
-          echo "is_merge_commit=false" >> $GITHUB_OUTPUT
-          echo "✅ PR opened event - CI will run normally"
-
-  # Branch protection: Prevent direct pushes to main
-  # Note: This is kept for consistency but won't apply to PR opened events
-  branch-protection:
-    runs-on: ubuntu-latest
-    name: Branch Protection Check
-    timeout-minutes: 2
-    permissions:
-      contents: read
-    needs: check-merge-commit
-    if: always()
-    steps:
-      - name: Branch protection passed
-        run: |
-          echo "✅ Branch protection check passed (PR opened event)"
-
   # Parallel quality checks for faster feedback
   type-check:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Type Check
     timeout-minutes: 10
@@ -81,15 +46,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -109,10 +74,7 @@ jobs:
         continue-on-error: false
 
   lint:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Lint
     timeout-minutes: 10
@@ -120,15 +82,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -144,10 +106,7 @@ jobs:
         continue-on-error: false
 
   test:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Test
     timeout-minutes: 10
@@ -155,15 +114,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -183,10 +142,7 @@ jobs:
         continue-on-error: false
 
   build:
-    needs: [check-merge-commit, branch-protection]
-    if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
-      (github.event.pull_request.draft == false)
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     name: Build
     timeout-minutes: 15
@@ -194,15 +150,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -241,9 +197,8 @@ jobs:
 
   # Deploy to Cloudflare Pages after successful build
   deploy:
-    needs: [check-merge-commit, branch-protection, build]
+    needs: [build]
     if: |
-      (needs.branch-protection.result == 'success' || needs.branch-protection.result == 'skipped') &&
       (needs.build.result == 'success') &&
       (github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
@@ -255,15 +210,15 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -313,16 +268,15 @@ jobs:
             echo "Deploying to PREVIEW (feature branch)"
           fi
 
+      # wrangler-action replaces the deprecated cloudflare/pages-action@v1.
+      # Outputs: deployment-url (atomic) and pages-deployment-alias-url (branch alias).
       - name: Deploy to Cloudflare Pages
         id: deploy
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: zhaoyu-io
-          directory: frontend/build
-          branch: ${{ steps.deployment.outputs.branch }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy frontend/build --project-name=zhaoyu-io --branch=${{ steps.deployment.outputs.branch }}
 
       - name: Check deployment status
         if: steps.deploy.outcome == 'success'
@@ -336,8 +290,8 @@ jobs:
           echo "🌐 Deployment completed successfully!"
           echo ""
           echo "**Preview Deployment URLs:**"
-          echo "  - Atomic URL: ${{ steps.deploy.outputs.url }}"
-          echo "  - Branch Alias: ${{ steps.deploy.outputs.alias }}"
+          echo "  - Atomic URL: ${{ steps.deploy.outputs.deployment-url }}"
+          echo "  - Branch Alias: ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
           echo ""
           echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"
           echo "   1. Wait 1-2 minutes for deployment to propagate"
@@ -351,8 +305,8 @@ jobs:
         id: extract-urls
         run: |
           echo "Extracting deployment URLs from Cloudflare Pages action..."
-          ATOMIC_URL="${{ steps.deploy.outputs.url }}"
-          ALIAS_URL="${{ steps.deploy.outputs.alias }}"
+          ATOMIC_URL="${{ steps.deploy.outputs.deployment-url }}"
+          ALIAS_URL="${{ steps.deploy.outputs.pages-deployment-alias-url }}"
 
           if [ -z "$ATOMIC_URL" ]; then
             echo "❌ ERROR: Atomic URL is empty!"
@@ -367,12 +321,39 @@ jobs:
           echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
           echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
 
+      - name: Record GitHub deployment (View deployment button)
+        if: |
+          steps.deploy.outcome == 'success' &&
+          steps.extract-urls.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const previewUrl = '${{ steps.extract-urls.outputs.preview_url }}'.trim();
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.payload.pull_request.head.sha,
+              environment: 'preview',
+              transient_environment: true,
+              auto_merge: false,
+              required_contexts: [],
+            });
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.id,
+              state: 'success',
+              environment_url: previewUrl,
+              auto_inactivate: true,
+            });
+            console.log('✅ Deployment record created:', previewUrl);
+
       - name: Comment Preview URL on PR
         if: |
           steps.deployment.outputs.environment == 'preview' &&
           steps.deploy.outcome == 'success' &&
           steps.extract-urls.outcome == 'success'
-        uses: actions/github-script@v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
@@ -390,8 +371,10 @@ jobs:
               branch: branch
             });
 
-            // Validate URL
-            if (!previewUrl || previewUrl === '' || previewUrl === '${{ steps.extract-urls.outputs.preview_url }}') {
+            // Validate URL. Note: it is impossible to compare against a literal
+            // interpolation placeholder here — GitHub substitutes expressions
+            // inside this script block too, so such a guard always matches.
+            if (!previewUrl) {
               console.error('❌ Preview URL is empty or not set!');
               console.error('Check the "Extract deployment URLs" step logs for details.');
               return;
@@ -466,17 +449,12 @@ jobs:
     timeout-minutes: 1
     permissions:
       contents: read
-    needs: [check-merge-commit, branch-protection, type-check, lint, test, build, deploy]
+    needs: [type-check, lint, test, build, deploy]
     if: always()
     steps:
       - name: Check all jobs status
         run: |
-          # Check branch protection first
-          if [ "${{ needs.branch-protection.result }}" == "failure" ]; then
-            echo "❌ Branch protection check failed - direct push to main blocked"
-            exit 1
-          fi
-          # Check other jobs (allow skipped results for draft PRs or path filtering)
+          # Check jobs (allow skipped results for draft PRs or path filtering)
           # Only fail if result is "failure", allow "success" or "skipped"
           check_job() {
             local result="$1"

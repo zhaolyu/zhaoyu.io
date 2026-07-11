@@ -1,6 +1,12 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { hud } from '$lib/hud.svelte';
   import { fade } from 'svelte/transition';
+
+  onMount(() => {
+    hud.start();
+    return () => hud.stop();
+  });
 </script>
 
 <aside class="hud-strip" in:fade>

@@ -15,14 +15,14 @@ const mockLocation = (pathname: string) => {
 // Test helper: Create a mock mouse event
 const createMockEvent = () =>
   ({
-    preventDefault: vi.fn(),
-    stopPropagation: vi.fn(),
+    preventDefault: vi.fn<(...args: any[]) => any>(),
+    stopPropagation: vi.fn<(...args: any[]) => any>(),
   }) as unknown as MouseEvent;
 
 describe('handleAnchorNavigation', () => {
-  let mockPreventDefault: ReturnType<typeof vi.fn>;
-  let mockStopPropagation: ReturnType<typeof vi.fn>;
-  let mockScrollIntoView: ReturnType<typeof vi.fn>;
+  let mockPreventDefault: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+  let mockStopPropagation: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+  let mockScrollIntoView: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   let mockEvent: MouseEvent;
   let mockElement: HTMLElement;
 
@@ -32,12 +32,12 @@ describe('handleAnchorNavigation', () => {
 
     // Create mock element
     mockElement = document.getElementById('test-section')!;
-    mockScrollIntoView = vi.fn();
+    mockScrollIntoView = vi.fn<(...args: any[]) => any>();
     mockElement.scrollIntoView = mockScrollIntoView;
 
     // Create mock event
-    mockPreventDefault = vi.fn();
-    mockStopPropagation = vi.fn();
+    mockPreventDefault = vi.fn<(...args: any[]) => any>();
+    mockStopPropagation = vi.fn<(...args: any[]) => any>();
     mockEvent = {
       preventDefault: mockPreventDefault,
       stopPropagation: mockStopPropagation,
@@ -68,7 +68,7 @@ describe('handleAnchorNavigation', () => {
     it('should extract target ID correctly from href', () => {
       document.body.innerHTML = '<div id="my-section">Section</div>';
       const element = document.getElementById('my-section')!;
-      element.scrollIntoView = vi.fn();
+      element.scrollIntoView = vi.fn<(...args: any[]) => any>();
 
       handleAnchorNavigation(mockEvent, '/#my-section');
 
@@ -101,7 +101,7 @@ describe('handleAnchorNavigation', () => {
       // Elements that exist → intercept; elements that don't → let browser navigate
       document.body.innerHTML = '<div id="section1">S1</div>';
       const el = document.getElementById('section1')!;
-      el.scrollIntoView = vi.fn();
+      el.scrollIntoView = vi.fn<(...args: any[]) => any>();
 
       const existingEvent = createMockEvent();
       handleAnchorNavigation(existingEvent, '/#section1');
@@ -130,8 +130,8 @@ describe('handleAnchorNavigation', () => {
 
       const section1 = document.getElementById('section1')!;
       const section2 = document.getElementById('section2')!;
-      section1.scrollIntoView = vi.fn();
-      section2.scrollIntoView = vi.fn();
+      section1.scrollIntoView = vi.fn<(...args: any[]) => any>();
+      section2.scrollIntoView = vi.fn<(...args: any[]) => any>();
 
       handleAnchorNavigation(mockEvent, '/#section1');
       expect(section1.scrollIntoView).toHaveBeenCalledTimes(1);
@@ -161,14 +161,14 @@ describe('handleAnchorNavigation', () => {
 });
 
 describe('scrollToTop', () => {
-  let mockPreventDefault: ReturnType<typeof vi.fn>;
-  let mockScrollTo: ReturnType<typeof vi.fn>;
+  let mockPreventDefault: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
+  let mockScrollTo: ReturnType<typeof vi.fn<(...args: any[]) => any>>;
   let mockEvent: MouseEvent;
   let originalPathname: string;
 
   beforeEach(() => {
-    mockPreventDefault = vi.fn();
-    mockScrollTo = vi.fn();
+    mockPreventDefault = vi.fn<(...args: any[]) => any>();
+    mockScrollTo = vi.fn<(...args: any[]) => any>();
     mockEvent = createMockEvent() as any;
     mockEvent.preventDefault = mockPreventDefault;
 
@@ -253,7 +253,7 @@ describe('scrollToTop', () => {
       testCases.forEach(({ pathname, shouldScroll }) => {
         mockLocation(pathname);
         const event = createMockEvent();
-        const scrollToSpy = vi.fn();
+        const scrollToSpy = vi.fn<(...args: any[]) => any>();
         window.scrollTo = scrollToSpy;
 
         scrollToTop(event);

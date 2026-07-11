@@ -49,17 +49,17 @@ jobs:
           echo "Using ref: $REF"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           ref: ${{ steps.branch-info.outputs.ref || github.ref }}
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -72,6 +72,20 @@ jobs:
       - name: Sync SvelteKit
         working-directory: frontend
         run: pnpm run sync
+
+      # Quality gates — this workflow runs on direct pushes to main, which
+      # otherwise deploy to production without any checks at all.
+      - name: Type check
+        working-directory: frontend
+        run: pnpm run check
+
+      - name: Lint
+        working-directory: frontend
+        run: pnpm run lint
+
+      - name: Test
+        working-directory: frontend
+        run: pnpm run test
 
       - name: Build
         working-directory: frontend
@@ -109,16 +123,44 @@ jobs:
             echo "Deploying to PREVIEW (dev environment)"
           fi
 
+      # wrangler-action replaces the deprecated cloudflare/pages-action@v1.
+      # Outputs: deployment-url (atomic) and pages-deployment-alias-url (branch alias).
       - name: Deploy to Cloudflare Pages
         id: deploy
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: zhaoyu-io
-          directory: frontend/build
-          branch: ${{ steps.deployment.outputs.branch }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          command: pages deploy frontend/build --project-name=zhaoyu-io --branch=${{ steps.deployment.outputs.branch }}
+
+      - name: Record GitHub deployment
+        if: steps.deploy.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        with:
+          script: |
+            const isProd = '${{ steps.deployment.outputs.environment }}' === 'production';
+            const url = isProd
+              ? 'https://zhaoyu.io'
+              : '${{ steps.deploy.outputs.deployment-url }}'.trim();
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: isProd ? 'production' : 'preview',
+              transient_environment: !isProd,
+              production_environment: isProd,
+              auto_merge: false,
+              required_contexts: [],
+            });
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: deployment.id,
+              state: 'success',
+              environment_url: url,
+              auto_inactivate: true,
+            });
+            console.log('✅ Deployment record created:', url);
 
       - name: Check deployment status
         if: steps.deploy.outcome == 'success'
@@ -133,11 +175,11 @@ jobs:
           echo ""
           if [ "${{ steps.deployment.outputs.environment }}" = "preview" ]; then
             echo "**Preview Deployment URLs:**"
-            echo "  - Atomic URL: ${{ steps.deploy.outputs.url }}"
-            echo "  - Branch Alias: ${{ steps.deploy.outputs.alias }}"
+            echo "  - Atomic URL: ${{ steps.deploy.outputs.deployment-url }}"
+            echo "  - Branch Alias: ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
           else
             echo "**Production Deployment:**"
-            echo "  - URL: ${{ steps.deploy.outputs.url }}"
+            echo "  - URL: ${{ steps.deploy.outputs.deployment-url }}"
           fi
           echo ""
           echo "⚠️  If you see 'Nothing is here yet' when visiting the URL:"

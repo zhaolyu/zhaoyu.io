@@ -1,12 +1,15 @@
 /**
- * Application configuration constants
+ * Feature flags — gate content that isn't ready to be public.
  */
-
-export const APP_CONFIG = {
-  name: 'zhaoyu.io',
-  description: 'Personal website and learning playground',
-  version: '0.0.1',
+export const FEATURE_FLAGS = {
+  /**
+   * CNBC's consumer AI product hasn't launched publicly yet.
+   * Flip to true to show the CNBC AI project/builder cards.
+   */
+  showCnbcAiWork: false,
 } as const;
+
+export type FeatureFlag = keyof typeof FEATURE_FLAGS;
 
 /**
  * Animation and interaction constants

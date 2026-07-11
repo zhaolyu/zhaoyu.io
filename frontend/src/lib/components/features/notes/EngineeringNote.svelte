@@ -6,9 +6,11 @@
     content: string[];
     /** When provided, the title links to its canonical /blog/{slug} page. */
     slug?: string;
+    /** 'h1' on standalone /blog pages where the note is the document's top heading. */
+    headingLevel?: 'h1' | 'h3';
   }
 
-  let { title, date, tags, content, slug }: Props = $props();
+  let { title, date, tags, content, slug, headingLevel = 'h3' }: Props = $props();
 </script>
 
 <article class="engineering-note">
@@ -17,21 +19,22 @@
       <time>{date}</time>
       <span class="separator">/</span>
       <div class="tags-container">
-        {#each tags as tag}
+        {#each tags as tag (tag)}
           <span class="tag">{tag}</span>
         {/each}
       </div>
     </div>
-    <h3 class="note-title">
+    <svelte:element this={headingLevel} class="note-title">
       {#if slug}
         <a href="/blog/{slug}">{title}</a>
       {:else}
         {title}
       {/if}
-    </h3>
+    </svelte:element>
   </header>
   <div class="note-content">
-    {#each content as paragraph}
+    {#each content as paragraph (paragraph)}
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored note content from content.ts, not user input -->
       {@html `<p>${paragraph}</p>`}
     {/each}
   </div>
