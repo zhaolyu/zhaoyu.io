@@ -30,6 +30,7 @@
     <div class="notes-container" transition:fade={{ duration: 600 }}>
       {#each notesData.notes as note}
         <EngineeringNote
+          slug={note.slug}
           title={note.title}
           date={note.date}
           tags={note.tags}

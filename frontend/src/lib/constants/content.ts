@@ -17,12 +17,12 @@ export interface HeroContent {
 }
 
 export const heroContent: HeroContent = {
-  badge: 'PRINCIPAL ENGINEER · CNBC',
+  badge: 'SENIOR MANAGER · CORE WEB · CNBC',
   headline: {
-    primary: 'Full Stack Engineer at CNBC.',
-    accent: 'UI Focus & AI Integration Lead.',
+    primary: 'Leading Core Web at CNBC.',
+    accent: 'Player-Coach: Architecture & AI Integration.',
   },
-  bio: 'Principal Engineer at CNBC. Leading the migration to Isomorphic Akamai Edge Architecture for 50M+ monthly users. Architecting high-scale systems that achieve 1.1s LCP through performance-first engineering and governed AI integration.',
+  bio: 'Senior Manager of Core Web for CNBC.com — leading a team of 8 engineers and 2 QE, in lockstep with dedicated product partners, while staying hands-on in the architecture. Nine years of performance-first engineering behind it: Isomorphic Akamai Edge for 50M+ monthly users, 1.1s LCP, governed AI integration, and independent systems shipped with the same production discipline.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read My AI Thesis',
@@ -126,6 +126,7 @@ export const experienceData: ExperienceData = {
 };
 
 export interface EngineeringNote {
+  slug: string;
   title: string;
   date: string;
   tags: string[];
@@ -139,6 +140,27 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'why-i-made-this-site-readable-by-machines-not-just-humans',
+      title: 'Why I Made This Site Readable by Machines, Not Just Humans',
+      date: 'Jul 2026',
+      tags: ['AI Engineering', 'SEO', 'Structured Data'],
+      content: [
+        'Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root — a plain-text summary of who I am and what I\'ve built, structured for a language model\'s context window rather than a browser\'s rendering engine — JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.',
+        'The more interesting find while doing this wasn\'t a feature, it was a bug. My static-site adapter\'s SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write — silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site\'s build output is not implied by its source — verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.',
+      ],
+    },
+    {
+      slug: 'the-three-tiers-of-using-ai-and-why-only-two-matter-now',
+      title: 'The Three Tiers of Using AI, and Why Only Two of Them Still Differentiate You',
+      date: 'Jul 2026',
+      tags: ['AI Engineering', 'Agent Architecture', 'Career'],
+      content: [
+        'There\'s a real difference between using AI as a faster typist — autocomplete, chat-assisted edits, "fix this bug for me" — and delegating a bounded unit of work to an agent that plans, executes across multiple files, and hands you a diff to review. The first tier is now table stakes; every engineer I work with has a model open in a side pane, and it stopped being a differentiator the moment it became the default. The tiers above it — an agent working a scoped task end-to-end, or several agents running in parallel with their own permission boundaries — are where the actual leverage still lives, because almost nobody has restructured how they delegate work to get there.',
+        'As the person who sets AI-adoption standards for my org, I spend almost none of my time on prompting technique. I spend it on the guardrails: what an agent can touch unsupervised, what requires a human review gate before it ships, and what "done" has to prove before I believe it. This site\'s agent-readable rewrite — the notes, the structured data, the build-output bug above — was built the same way: scoped to specific files, verified against the existing type-check, lint, test, and build gates before anything shipped, with the plan surfaced for review rather than pushed silently. <strong>"I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and a review bar — instead of still typing every line yourself — is the one that\'s left.</strong>',
+      ],
+    },
+    {
+      slug: 'building-with-ai-the-compound-advantage',
       title: 'Building with AI: The Compound Advantage',
       date: 'Feb 2026',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
@@ -148,6 +170,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'sovereign-resilience-why-i-over-index-on-edge-architecture',
       title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
       date: 'Jan 2026',
       tags: ['Architecture', 'Edge Computing', 'Independence'],
@@ -157,6 +180,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'idempotency-in-distributed-systems',
       title: 'Idempotency in Distributed Systems',
       date: 'Jan 2026',
       tags: ['Backend', 'API Design', 'Reliability'],
@@ -166,6 +190,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'the-url-is-the-source-of-truth',
       title: 'The URL is the Source of Truth',
       date: 'Dec 2025',
       tags: ['Architecture', 'State Management', 'UX'],
@@ -175,6 +200,7 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'decoupling-state-from-render-in-llm-streaming',
       title: 'Decoupling State from Render in LLM Streaming',
       date: 'Oct 2025',
       tags: ['React Performance', 'HCI', '60fps'],
@@ -204,7 +230,7 @@ export const careerHistory: CareerHistory = {
     { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
     { year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },
     { year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
-    { year: 2027, impact: 100, role: 'Architect + Builder', company: 'Dual Track' },
+    { year: 2026, impact: 100, role: 'Senior Manager, Core Web', company: 'CNBC' },
   ],
 };
 
@@ -264,7 +290,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    'My career began as a web developer intern at CNBC, and over the last nine years I have evolved into a Principal Software Engineer overseeing the architecture of one of the world\'s most prominent financial news platforms.',
+    'My career began as a web developer intern at CNBC, and over the last nine years I have grown from web developer to Principal Engineer to Senior Manager of Core Web for CNBC.com. It is a player-coach role by design: I manage the team that owns the platform\'s core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them.',
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],

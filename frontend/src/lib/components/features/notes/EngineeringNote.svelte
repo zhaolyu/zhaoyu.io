@@ -4,9 +4,11 @@
     date: string;
     tags: string[];
     content: string[];
+    /** When provided, the title links to its canonical /blog/{slug} page. */
+    slug?: string;
   }
 
-  let { title, date, tags, content }: Props = $props();
+  let { title, date, tags, content, slug }: Props = $props();
 </script>
 
 <article class="engineering-note">
@@ -20,13 +22,22 @@
         {/each}
       </div>
     </div>
-    <h3 class="note-title">{title}</h3>
+    <h3 class="note-title">
+      {#if slug}
+        <a href="/blog/{slug}">{title}</a>
+      {:else}
+        {title}
+      {/if}
+    </h3>
   </header>
   <div class="note-content">
     {#each content as paragraph}
       {@html `<p>${paragraph}</p>`}
     {/each}
   </div>
+  {#if slug}
+    <a href="/blog/{slug}" class="permalink">Read as standalone note &rarr;</a>
+  {/if}
 </article>
 
 <style>
@@ -73,6 +84,30 @@
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.3;
+  }
+
+  .note-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .note-title a:hover {
+    text-decoration: underline;
+  }
+
+  .permalink {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent-primary-light);
+    text-decoration: none;
+  }
+
+  .permalink:hover {
+    text-decoration: underline;
   }
 
   .note-content {
