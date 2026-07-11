@@ -89,6 +89,7 @@ Plan (and get approval) before coding when: multi-file changes, new features tou
 - `section-observer.ts` – section visibility tracking
 - `cost-projection.ts` – Cost-Guard aggregation/projection math
 - `cost-guard-display.ts` – Cost-Guard snapshot display formatting
+- `feature-flags.ts` – filters content items by `FEATURE_FLAGS` (config.ts)
 
 New utils require a colocated `*.test.ts` with ≥90% coverage.
 
