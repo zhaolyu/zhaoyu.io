@@ -148,7 +148,7 @@
   <title>Manifesto — zhaoyu.io</title>
   <meta
     name="description"
-    content="A personal manifesto on AI-augmented engineering — principles for building with large language models as a Principal Engineer."
+    content="A personal manifesto on AI-augmented engineering — principles for building with large language models as an engineering leader."
   />
 </svelte:head>
 

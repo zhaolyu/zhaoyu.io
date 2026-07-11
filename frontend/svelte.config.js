@@ -12,7 +12,10 @@ const config = {
     adapter: adapter({
       pages: 'build',
       assets: 'build',
-      fallback: 'index.html', // Required for SPA mode - enables client-side routing
+      // 200.html (not index.html) so the SPA fallback doesn't overwrite the
+      // prerendered '/' page. Cloudflare Pages natively serves 200.html for
+      // unmatched routes with a 200 status — no _redirects rule needed.
+      fallback: '200.html',
       precompress: false,
       strict: true,
     }),

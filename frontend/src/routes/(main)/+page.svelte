@@ -21,31 +21,58 @@
 </script>
 
 <svelte:head>
-  <title>Zhao Yu | Principal Engineer at CNBC</title>
+  <title>Zhao Yu | Senior Manager, Core Web at CNBC</title>
   <meta
     name="description"
-    content="Principal Engineer at CNBC architecting high-performance media systems for [redacted] users. UI Factory and AI Integration at scale."
+    content="Senior Manager of Core Web for CNBC.com — leading the team behind a [redacted] user platform while staying hands-on in the architecture. AI Integration Lead and independent builder."
   />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://zhaoyu.io/" />
   <meta
     property="og:title"
-    content="Zhao Yu — Principal Engineer at CNBC. Full Stack with UI Focus."
+    content="Zhao Yu — Senior Manager, Core Web at CNBC. Player-coach engineering leader."
   />
   <meta
     property="og:description"
-    content="Principal Engineer at CNBC. [redacted], [redacted] users, UI Factory and AI Integration. Opinionated on latency, streaming interfaces, and production AI."
+    content="Senior Manager, Core Web at CNBC. [redacted], [redacted] users, AI Integration Lead, independent builder. Opinionated on latency, streaming interfaces, and production AI."
   />
   <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/" />
-  <meta property="twitter:title" content="Zhao Yu — Principal Engineer at CNBC" />
+  <meta property="twitter:title" content="Zhao Yu — Senior Manager, Core Web at CNBC" />
   <meta
     property="twitter:description"
-    content="Principal Engineer at CNBC. UI Factory and AI Integration at scale."
+    content="Senior Manager, Core Web at CNBC. Engineering leader, AI Integration Lead, and independent builder, shipping at scale."
   />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Zhao Yu",
+      "jobTitle": "Senior Manager, Core Web",
+      "url": "https://zhaoyu.io",
+      "sameAs": ["https://github.com/zhaolyu"],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "CNBC"
+      },
+      "description": "Senior Manager of Core Web for CNBC.com, leading a team of 8 engineers and 2 QE while staying hands-on as an architect on high-performance isomorphic edge systems for [redacted] monthly users. AI Integration Lead and independent builder.",
+      "knowsAbout": [
+        "Engineering Leadership",
+        "Edge Computing",
+        "Akamai EdgeWorkers",
+        "Isomorphic React",
+        "SvelteKit",
+        "AI-Assisted Software Engineering",
+        "Agentic AI Workflows",
+        "Performance Engineering",
+        "Distributed Systems"
+      ]
+    }
+  </script>
 </svelte:head>
 
 <main class="main-container">

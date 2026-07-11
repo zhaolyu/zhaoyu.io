@@ -35,7 +35,7 @@
       <div class="status-group">
         <div class="status-item">
           <span class="s-label">ENGINEERING</span>
-          <span class="s-value">Principal @ CNBC</span>
+          <span class="s-value">Sr. Manager, Core Web @ CNBC</span>
         </div>
         <div class="status-item">
           <span class="s-label">SCALE</span>
