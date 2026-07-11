@@ -37,7 +37,10 @@ export const ANIMATION_CONFIG = {
  */
 export const ELECTRIC_SYNC_URL = 'https://ingestion-api-240dd81-538316597788.us-central1.run.app';
 
-export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard';
+// v2: cost_items schema narrowed (resource_name/metadata no longer synced).
+// Bumping the dir gives visitors a clean local DB; stale versions are purged
+// by CostDB's init-time cleanup and data re-syncs from Electric.
+export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard-v2';
 
 /**
  * Cost Simulator configuration
