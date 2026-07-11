@@ -17,7 +17,12 @@ The differentiator is the combination, not any single axis:
 
 1. **Player-coach engineering leadership** — manages delivery for the
    CNBC.com Core Web team (8 engineers, 2 QE) without leaving the
-   codebase; still architects and ships alongside the team.
+   codebase; still architects and ships alongside the team. The career
+   arc deliberately crossed both tracks before this hybrid role: senior
+   engineer → engineering manager → Principal Engineer (an intentional
+   return to the technical track) → Senior Manager, Core Web. The
+   player-coach positioning is a synthesis of both tracks, not a
+   compromise on either.
 2. **Edge performance engineering at real scale** — isomorphic Akamai
    EdgeWorkers architecture serving [redacted] monthly users, sub-second LCP
    during market-moving traffic events.
