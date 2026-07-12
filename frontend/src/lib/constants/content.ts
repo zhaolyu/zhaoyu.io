@@ -145,6 +145,28 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'the-agent-run-is-the-new-unit-of-work',
+      title: 'The Agent Run Is the New Unit of Work — and Reviewing It Is Management',
+      date: 'Jul 2026',
+      dateISO: '2026-07',
+      tags: ['Agent Architecture', 'Engineering Management', 'AI Engineering'],
+      content: [
+        "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage 8 engineers and 2 QE, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
+        "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable — completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule — <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
+      ],
+    },
+    {
+      slug: 'agents-degrade-quietly-maintenance-is-where-value-compounds',
+      title: 'Agents Degrade Quietly: Maintenance Is Where the Value Compounds',
+      date: 'Jul 2026',
+      dateISO: '2026-07',
+      tags: ['Agent Architecture', 'Reliability', 'Engineering Management'],
+      content: [
+        'Building an agent produces a visible artifact — there was nothing, now there is a working agent — so it reads as progress. Maintaining one produces no artifact; at best, nothing happens. So effort flows to building, and the felt value inverts the real value. A well-built agent nobody maintains degrades on a schedule: its context sources go stale, its permissions drift wider than its job, its instructions calcify into a patch pile. A modestly-built agent someone reviews weekly <strong>compounds</strong> — each pass prunes a failure mode and sharpens the job. This is the oldest lesson in operations wearing a new costume: prevented loss is invisible, which is why nobody celebrates the on-call review that kept the incident from existing.',
+        "The corrective is ownership, and it decomposes into four responsibilities I now require for any agent near production work: <strong>define the job narrowly</strong> (a vague agent is an unowned agent waiting to happen); <strong>curate the diet</strong> — what it reads, which examples it learns from, including rejected outputs so it learns what <em>not</em> to do; <strong>manage permissions proportional to stakes</strong> — draft-only and write-access are different categories, and write access is earned inside a narrow job, not granted because a demo looked good; and <strong>run the review loop</strong>, where one-off failures get fixed at the output level but recurring failures get fixed at the system level. Team agents fail by tragedy of the commons — the pain is collective, the maintenance is nobody's job — so the owner follows the work. <strong>An agent is not a feature you ship. It is a service you operate.</strong>",
+      ],
+    },
+    {
       slug: 'spec-quality-is-the-bottleneck-not-implementation-speed',
       title: 'Spec Quality Is the Bottleneck Now, Not Implementation Speed',
       date: 'Jul 2026',
@@ -262,7 +284,7 @@ export const careerHistory: CareerHistory = {
     { year: 2016, impact: 10, role: 'Intern', company: 'CNBC' },
     { year: 2017, impact: 30, role: 'Software Engineer', company: 'CNBC' },
     { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
-    { year: 2021, impact: 70, role: 'Senior Manager', company: 'NBCUniversal' },
+    { year: 2021, impact: 70, role: 'Engineering Manager', company: 'NBCUniversal' },
     { year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
     { year: 2026, impact: 100, role: 'Senior Manager, Core Web', company: 'CNBC' },
   ],
@@ -306,6 +328,18 @@ export const builderProjects: BuilderProject[] = [
     featureFlag: 'showCnbcAiWork',
   },
   {
+    title: 'OB1: Personal Exocortex',
+    category: 'independent',
+    description:
+      'A second brain built for agents, not just for me. Books, engineering sources, and production lessons get distilled into atomic, cross-linked claims — 740+ and compounding — searchable by meaning and exposed to my AI tools over MCP, so every agent session starts with my accumulated judgment instead of a blank context window.',
+    stack: ['MCP', 'Embeddings', 'Semantic Search', 'TypeScript'],
+    status: 'shipped',
+    metrics: [
+      { label: 'Atomic Claims', value: '740+' },
+      { label: 'Agent Access', value: 'MCP' },
+    ],
+  },
+  {
     title: 'Cost-Guard: Infra Dashboard',
     category: 'experiment',
     description:
@@ -327,7 +361,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    "My career began as a web developer intern at CNBC, and over the last nine years I have grown from web developer to Principal Engineer to Senior Manager of Core Web for CNBC.com. It is a player-coach role by design: I manage the team that owns the platform's core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them.",
+    "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage the team that owns the platform's core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],

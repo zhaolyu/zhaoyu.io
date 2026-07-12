@@ -1,140 +1,82 @@
-# zhaoyu.io - SvelteKit Frontend
+# zhaoyu.io — SvelteKit Frontend
 
-Personal website built with SvelteKit, configured in SPA mode for optimal client-side routing experience.
-
-## Features
-
-- ✅ **SPA Mode**: True client-side routing with no page reloads
-- ✅ **TypeScript**: Full type safety throughout the application
-- ✅ **Tailwind CSS v4**: Modern styling with utility-first approach
-- ✅ **API Routes**: Server endpoints for backend integration
-- ✅ **Responsive Design**: Mobile-friendly navigation and layouts
-- ✅ **Performance**: Compiled Svelte code with minimal bundle sizes
+Personal portfolio site built with SvelteKit 2 + Svelte 5, fully static
+(`adapter-static`, prerender + SPA fallback), deployed to Cloudflare Pages.
 
 ## Quick Start
 
-### Prerequisites
-
-- Node.js 24.13.0 (use `.nvmrc` or install manually)
-- npm or your preferred package manager
-
-### Installation
+Prerequisites: Node.js 24.13.0 (see `.nvmrc`) and pnpm.
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+pnpm install
+pnpm dev       # dev server at http://localhost:5173
+pnpm build     # production build → build/
+pnpm preview   # preview the production build
 ```
 
-The development server will start at `http://localhost:5173`
+## Scripts
+
+- `pnpm dev` / `pnpm build` / `pnpm preview`
+- `pnpm check` — svelte-kit sync + svelte-check (type checking)
+- `pnpm lint` / `pnpm lint:fix` — ESLint
+- `pnpm format` — Prettier
+- `pnpm test` / `pnpm test:watch` — Vitest
 
 ## Project Structure
 
 ```
 frontend/
 ├── src/
-│   ├── routes/          # File-based routing
-│   │   ├── +layout.svelte    # Root layout with navigation
-│   │   ├── +page.svelte      # Home page
-│   │   ├── about/            # About page
-│   │   ├── api-demo/         # API demo page
-│   │   ├── comparison/       # Framework comparison
-│   │   └── api/              # API routes
-│   ├── app.html         # HTML template
-│   ├── app.css          # Global styles
-│   └── app.d.ts         # TypeScript types
-├── static/              # Static assets
-├── docs/                # Documentation
-└── [config files]       # Configuration files
+│   ├── lib/
+│   │   ├── components/       # features/ · layout/ · ui/
+│   │   ├── constants/        # config.ts, content.ts, routes.ts
+│   │   ├── stores/           # scroll, theme
+│   │   ├── types/            # shared TypeScript types
+│   │   ├── utils/            # pure utilities (tested)
+│   │   ├── db.svelte.ts      # Cost-Guard PGlite + ElectricSQL sync
+│   │   ├── hud.svelte.ts     # Architect HUD telemetry state
+│   │   └── simulator.svelte.ts  # cost what-if simulator state
+│   ├── routes/
+│   │   ├── (main)/           # landing page + /blog and /blog/[slug]
+│   │   ├── (standalone)/     # /ai-manifesto (own layout)
+│   │   ├── infra/            # Cost-Guard dashboard (ssr = false)
+│   │   └── sitemap.xml/      # prerendered sitemap endpoint
+│   ├── app.html
+│   └── app.css
+└── static/                   # robots.txt, llms.txt, _headers, og-image
 ```
 
-## Available Routes
+## Routes
 
-- `/` - Home page with demo links
-- `/about` - About page demonstrating SPA navigation
-- `/api-demo` - Interactive API route demonstration
-- `/comparison` - Astro vs SvelteKit comparison
-- `/api/test` - Example API endpoint (returns JSON)
+- `/` — landing page (hero, metrics, career, selected work, philosophy, notes, contact)
+- `/blog` — engineering notes index; individual notes at `/blog/{slug}`
+- `/ai-manifesto` — working thesis on AI-augmented engineering
+- `/infra` — Cost-Guard, a local-first infra cost dashboard (PGlite + ElectricSQL; noindex)
+- `/sitemap.xml`, `/robots.txt`, `/llms.txt` — crawler and AI-agent surfaces
 
-## Documentation
+## Architecture Notes
 
-- [Quick Start](docs/QUICK_START.md) - Get started in minutes
-- [Setup Guide](docs/SETUP.md) - Detailed setup and configuration
-- [Architecture](docs/ARCHITECTURE.md) - Project structure and patterns
-- [Deployment](docs/DEPLOYMENT.md) - Cloudflare Pages deployment guide
-- [Comparison](docs/COMPARISON.md) - Astro vs SvelteKit detailed comparison
-
-See the [docs/](docs/) directory for all documentation.
-
-## Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run check` - Run TypeScript and Svelte checks
-- `npm run check:watch` - Run checks in watch mode
-
-## Configuration
-
-### SPA Mode
-
-This project is configured in SPA mode using `@sveltejs/adapter-static`. This means:
-
-- All routes are pre-rendered at build time
-- Client-side routing handles navigation
-- No server required for deployment
-- Perfect for static hosting (Vercel, Netlify, GitHub Pages, etc.)
-
-### Tailwind CSS
-
-Tailwind CSS v4 is configured via the Vite plugin. No separate config file needed - it uses the new CSS-first configuration.
+- **Static + SPA**: every route is prerendered; `404.html` is the SPA fallback.
+  There is no runtime server — the only "endpoint" (`sitemap.xml`) is generated
+  at build time.
+- **Content lives in `src/lib/constants/content.ts`** — projects, notes, career
+  history, and copy are typed data consumed by the components.
+- **Cost-Guard** boots an in-browser Postgres (PGlite/WASM) and syncs cost
+  snapshots from an ElectricSQL endpoint on Cloud Run (managed outside this repo).
+- **Security**: CSP is generated in `svelte.config.js` (hash mode); other
+  headers ship via `static/_headers`.
 
 ## Deployment
 
-### Static Hosting
+GitHub Actions deploys to Cloudflare Pages: pull requests get a preview
+deployment (`.github/workflows/ci.yml`), and pushes to `main` deploy
+production after type-check, lint, test, and build gates
+(`.github/workflows/cloudflare-pages.yml`).
 
-Since this is configured as an SPA, you can deploy to any static hosting service:
+## Conventions
 
-```bash
-npm run build
-# Output will be in the 'build' directory
-```
-
-**Recommended Platforms:**
-
-- Vercel
-- Netlify
-- GitHub Pages
-- Cloudflare Pages
-- Any static file server
-
-### Environment Variables
-
-Create a `.env` file for environment-specific variables:
-
-```env
-PUBLIC_API_URL=https://api.example.com
-```
-
-Variables prefixed with `PUBLIC_` are exposed to the client.
-
-## Learning Resources
-
-- [SvelteKit Documentation](https://kit.svelte.dev)
-- [Svelte Documentation](https://svelte.dev)
-- [Tailwind CSS Documentation](https://tailwindcss.com)
-
-## Comparison with Astro
-
-This SvelteKit implementation was originally compared with an Astro implementation. See the [comparison documentation](docs/COMPARISON.md) for detailed differences.
+See [`CLAUDE.md`](../CLAUDE.md) for coding conventions, testing rules, and
+design principles that apply to this codebase.
 
 ## License
 

@@ -9,6 +9,7 @@ export class CostDB {
   #error = $state<string | null>(null);
   #retried = false;
   #started = false;
+  #cleanedStale = false;
 
   /**
    * Kick off PGlite initialization. Safe to call multiple times — only the
@@ -22,6 +23,7 @@ export class CostDB {
   }
 
   async init(): Promise<void> {
+    await this.#dropStaleLocalDbs();
     try {
       const pg = await PGlite.create({
         dataDir: PGLITE_DATA_DIR,
@@ -30,11 +32,12 @@ export class CostDB {
         },
       });
 
-      // TODO(security): resource_name and metadata may contain sensitive infra
-      // identifiers (bucket names, instance IDs, region config). The harvester
-      // (Cloud Run, outside this repo) should strip or redact these fields
-      // before they reach Electric. Until then, raw values are synced into the
-      // browser's IndexedDB and are visible via DevTools.
+      // Security: resource_name and metadata may contain sensitive infra
+      // identifiers (bucket names, instance IDs, region config), so the
+      // cost_items shape below requests only the columns the UI consumes and
+      // those fields never reach the browser. Server-side redaction in the
+      // harvester (Cloud Run, outside this repo) is still worthwhile as
+      // defense in depth.
       await pg.exec(`
 				CREATE TABLE IF NOT EXISTS cost_snapshots (
 					id TEXT PRIMARY KEY,
@@ -49,10 +52,8 @@ export class CostDB {
 					id TEXT PRIMARY KEY,
 					snapshot_id TEXT NOT NULL,
 					resource_type TEXT NOT NULL,
-					resource_name TEXT NOT NULL,
 					monthly_cost NUMERIC NOT NULL DEFAULT 0,
-					change_type TEXT NOT NULL,
-					metadata JSONB
+					change_type TEXT NOT NULL
 				);
 			`);
 
@@ -75,7 +76,12 @@ export class CostDB {
           cost_items: {
             shape: {
               url: shapeUrl,
-              params: { table: 'cost_items' },
+              params: {
+                table: 'cost_items',
+                // Only the columns the UI consumes — keeps sensitive resource
+                // identifiers out of the browser entirely.
+                columns: ['id', 'snapshot_id', 'resource_type', 'monthly_cost', 'change_type'],
+              },
             },
             table: 'cost_items',
             primaryKey: ['id'],
@@ -124,17 +130,45 @@ export class CostDB {
     const dbs = await indexedDB.databases();
     for (const db of dbs) {
       if (db.name?.startsWith('zhaoyu-cost-guard')) {
-        // Await completion — firing deleteDatabase without waiting can leave the
-        // deletion blocked against the connection init() opens next.
-        await new Promise<void>((resolve) => {
-          const req = indexedDB.deleteDatabase(db.name!);
-          req.onsuccess = () => resolve();
-          req.onerror = () => resolve();
-          req.onblocked = () => resolve();
-        });
+        await this.#deleteIdb(db.name);
       }
     }
     return this.init();
+  }
+
+  /**
+   * One-time, best-effort purge of local databases from older schema versions
+   * (identified by a cost-guard name that doesn't match the current data dir),
+   * so columns synced before the shape was narrowed don't linger in the
+   * visitor's IndexedDB. Must never block init.
+   */
+  async #dropStaleLocalDbs(): Promise<void> {
+    if (this.#cleanedStale) return;
+    this.#cleanedStale = true;
+    try {
+      if (typeof indexedDB === 'undefined' || typeof indexedDB.databases !== 'function') return;
+      const current = PGLITE_DATA_DIR.replace('idb://', '');
+      const dbs = await indexedDB.databases();
+      for (const db of dbs) {
+        if (db.name && db.name.includes('zhaoyu-cost-guard') && !db.name.includes(current)) {
+          await this.#deleteIdb(db.name);
+        }
+      }
+    } catch {
+      // Cleanup is opportunistic — a failure here must not surface as an error.
+    }
+  }
+
+  /** Delete one IndexedDB database, awaiting completion — firing deleteDatabase
+   * without waiting can leave the deletion blocked against the connection
+   * init() opens next. */
+  #deleteIdb(name: string): Promise<void> {
+    return new Promise<void>((resolve) => {
+      const req = indexedDB.deleteDatabase(name);
+      req.onsuccess = () => resolve();
+      req.onerror = () => resolve();
+      req.onblocked = () => resolve();
+    });
   }
 
   get instance() {

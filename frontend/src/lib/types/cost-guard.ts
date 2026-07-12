@@ -10,14 +10,17 @@ export interface CostSnapshot {
   created_at: string; // ISO 8601
 }
 
+/**
+ * Client-side cost item row. The upstream table also carries resource_name and
+ * metadata, but the sync shape deliberately excludes them (sensitive infra
+ * identifiers) — they never reach the browser.
+ */
 export interface CostItem {
   id: string;
   snapshot_id: string;
   resource_type: string;
-  resource_name: string;
   monthly_cost: string; // Electric returns NUMERIC as string — use parseFloat()
   change_type: 'added' | 'modified' | 'removed' | 'unchanged';
-  metadata: Record<string, unknown> | null;
 }
 
 export type CostCategory = 'compute' | 'storage' | 'fixed';
