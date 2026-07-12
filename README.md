@@ -75,11 +75,8 @@ The frontend deploys to Cloudflare Pages on push to `main`. The GCP backend (ing
 
 ## 📚 Documentation
 
-- **[Deployment Guide](docs/DEPLOYMENT_RECOMMENDATION.md)** — Cloudflare Pages setup
-- **[GitHub Authentication](docs/GITHUB_AUTHENTICATION.md)** — Multi-account setup and troubleshooting
-- **[Project Summary](docs/PROJECT_SUMMARY.md)** — High-level overview
-
-For frontend-specific documentation, see [`frontend/docs/`](frontend/docs/).
+- **[Frontend README](frontend/README.md)** — structure, routes, scripts, deployment
+- **[CLAUDE.md](CLAUDE.md)** — coding conventions, testing rules, design principles
 
 ---
 

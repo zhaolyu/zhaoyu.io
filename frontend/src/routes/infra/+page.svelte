@@ -206,7 +206,13 @@
                     {:else if snapshots.length > 0}
                       No snapshots match the current filters
                     {:else}
-                      No cost snapshots found
+                      <span class="empty-title">No cost snapshots synced yet.</span>
+                      <span class="empty-detail">
+                        Snapshots arrive via an HMAC-signed GitHub Actions dispatch &rarr; ingestion
+                        API &rarr; ElectricSQL, then replicate into this in-browser Postgres
+                        (PGlite). The pipeline is live — the publishing workflow just hasn't been
+                        dispatched recently.
+                      </span>
                     {/if}
                   </td>
                 </tr>
@@ -538,6 +544,21 @@
     text-align: center;
     padding: var(--space-8) var(--space-5);
     color: var(--text-muted);
+  }
+
+  .empty-title {
+    display: block;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+  }
+
+  .empty-detail {
+    display: block;
+    max-width: 32rem;
+    margin: 0 auto;
+    font-size: 0.8125rem;
+    line-height: 1.6;
   }
 
   @media (max-width: 640px) {

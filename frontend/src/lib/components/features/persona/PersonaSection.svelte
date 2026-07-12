@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
   import { personaData, narrativeBio } from '$lib/constants/content';
   import { SectionHeader } from '$lib/components/ui';
   import { observeSection } from '$lib/utils/section-observer';
@@ -24,29 +23,28 @@
     <span class="headline-accent">outside the codebase.</span>
   </SectionHeader>
 
-  {#if sectionVisible}
-    <div class="bio-card" in:fly={{ y: 20, duration: 400 }}>
-      <h3 class="card-title">{narrativeBio.title}</h3>
-      <div class="card-body">
-        {#each narrativeBio.paragraphs as paragraph (paragraph)}
-          <p class="card-paragraph">{paragraph}</p>
-        {/each}
-      </div>
-    </div>
-
-    <div class="persona-grid" transition:fade={{ duration: 600, delay: 150 }}>
-      {#each personaData as item, i (item.title)}
-        <div class="persona-card" in:fly={{ y: 20, duration: 400, delay: i * 100 }}>
-          <h3 class="card-title">{item.title}</h3>
-          <div class="card-body">
-            {#each item.body as paragraph (paragraph)}
-              <p class="card-paragraph">{paragraph}</p>
-            {/each}
-          </div>
-        </div>
+  <!-- Always rendered so the bio and persona cards prerender; the reveal is animation-only. -->
+  <div class="bio-card reveal" class:revealed={sectionVisible}>
+    <h3 class="card-title">{narrativeBio.title}</h3>
+    <div class="card-body">
+      {#each narrativeBio.paragraphs as paragraph (paragraph)}
+        <p class="card-paragraph">{paragraph}</p>
       {/each}
     </div>
-  {/if}
+  </div>
+
+  <div class="persona-grid reveal reveal-delayed" class:revealed={sectionVisible}>
+    {#each personaData as item (item.title)}
+      <div class="persona-card">
+        <h3 class="card-title">{item.title}</h3>
+        <div class="card-body">
+          {#each item.body as paragraph (paragraph)}
+            <p class="card-paragraph">{paragraph}</p>
+          {/each}
+        </div>
+      </div>
+    {/each}
+  </div>
 </section>
 
 <style>
@@ -60,6 +58,27 @@
       background-color 0.2s,
       color 0.2s;
     border-bottom: 1px solid var(--border-color);
+  }
+
+  /* Entrance animation only when JS runs and motion is allowed; content is
+     always in the DOM so crawlers and no-JS readers get the full section. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.6s ease,
+        transform 0.5s ease;
+    }
+
+    .reveal-delayed {
+      transition-delay: 0.15s;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .bio-card {

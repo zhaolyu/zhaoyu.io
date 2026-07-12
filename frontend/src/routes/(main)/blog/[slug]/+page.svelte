@@ -1,12 +1,13 @@
 <script lang="ts">
   import { EngineeringNote } from '$lib/components/features/notes';
+  import { noteExcerpt } from '$lib/utils';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
   let note = $derived(data.note);
 
   let canonicalUrl = $derived(`https://zhaoyu.io/blog/${note.slug}`);
-  let description = $derived((note.content[0] ?? note.title).replace(/<[^>]+>/g, '').slice(0, 160));
+  let description = $derived(noteExcerpt(note));
   let jsonLd = $derived(
     JSON.stringify({
       '@context': 'https://schema.org',
@@ -45,7 +46,7 @@
 </svelte:head>
 
 <main class="blog-post">
-  <a href="/#notes" class="back-link">&larr; All notes</a>
+  <a href="/blog" class="back-link">&larr; All notes</a>
   <EngineeringNote
     title={note.title}
     date={note.date}

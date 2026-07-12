@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
   import { performanceMetrics } from '$lib/constants/content';
   import { observeSection } from '$lib/utils/section-observer';
 
@@ -19,35 +18,34 @@
 
 <section id="skills" class="skills" bind:this={skillsContainer}>
   <div class="skills-container">
-    {#if sectionVisible}
-      <div class="skills-content" transition:fade={{ duration: 600 }}>
-        <div class="skills-text">
-          <div class="skills-badge">
-            <span class="badge-dot"></span>
-            <h2 class="badge-text">Impact at Scale</h2>
-          </div>
-          <h3 class="skills-headline">
-            The numbers behind<br />
-            <span class="highlight-blue">the system.</span>
-          </h3>
-          <p class="skills-description">
-            These are production metrics from CNBC.com — not synthetic benchmarks. Shipped at this
-            scale,
-            <span class="highlight-text">consistently</span>.
-          </p>
+    <!-- Always rendered so the content prerenders; the reveal is animation-only. -->
+    <div class="skills-content reveal" class:revealed={sectionVisible}>
+      <div class="skills-text">
+        <div class="skills-badge">
+          <span class="badge-dot"></span>
+          <h2 class="badge-text">Impact at Scale</h2>
         </div>
-
-        <div class="metrics-grid">
-          {#each performanceMetrics as metric, i (metric.label)}
-            <div class="metric-card" in:fly={{ y: 16, duration: 400, delay: i * 80 }}>
-              <div class="metric-value">{metric.value}</div>
-              <div class="metric-label">{metric.label}</div>
-              <div class="metric-sublabel">{metric.sublabel}</div>
-            </div>
-          {/each}
-        </div>
+        <h3 class="skills-headline">
+          The numbers behind<br />
+          <span class="highlight-blue">the system.</span>
+        </h3>
+        <p class="skills-description">
+          These are production metrics from CNBC.com — not synthetic benchmarks. Shipped at this
+          scale,
+          <span class="highlight-text">consistently</span>.
+        </p>
       </div>
-    {/if}
+
+      <div class="metrics-grid">
+        {#each performanceMetrics as metric (metric.label)}
+          <div class="metric-card">
+            <div class="metric-value">{metric.value}</div>
+            <div class="metric-label">{metric.label}</div>
+            <div class="metric-sublabel">{metric.sublabel}</div>
+          </div>
+        {/each}
+      </div>
+    </div>
   </div>
 </section>
 
@@ -71,6 +69,23 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 3rem;
+  }
+
+  /* Entrance animation only when JS runs and motion is allowed; content is
+     always in the DOM so crawlers and no-JS readers get the full section. */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity 0.6s ease,
+        transform 0.5s ease;
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
   }
 
   .skills-text {

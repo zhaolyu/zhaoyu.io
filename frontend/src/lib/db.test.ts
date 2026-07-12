@@ -34,9 +34,9 @@ function fakePg(opts: { countRows?: number } = {}) {
   return { pg, captured };
 }
 
-function stubIndexedDB(deleted: string[]) {
+function stubIndexedDB(deleted: string[], names = ['zhaoyu-cost-guard-v2', 'unrelated-db']) {
   vi.stubGlobal('indexedDB', {
-    databases: async () => [{ name: 'zhaoyu-cost-guard' }, { name: 'unrelated-db' }],
+    databases: async () => names.map((name) => ({ name })),
     deleteDatabase: (name: string) => {
       deleted.push(name);
       const req: { onsuccess?: () => void; onerror?: () => void; onblocked?: () => void } = {};
@@ -129,7 +129,7 @@ describe('recovery paths', () => {
     await settle();
 
     expect(first.pg.close).toHaveBeenCalled();
-    expect(deleted).toEqual(['zhaoyu-cost-guard']); // unrelated-db untouched
+    expect(deleted).toEqual(['zhaoyu-cost-guard-v2']); // unrelated-db untouched
     expect(db.status).toBe('Live'); // recovered via the second instance
   });
 
@@ -167,8 +167,23 @@ describe('recovery paths', () => {
     await vi.waitFor(() => expect(createMock).toHaveBeenCalledTimes(2));
     await settle();
 
-    expect(deleted).toEqual(['zhaoyu-cost-guard']);
+    expect(deleted).toEqual(['zhaoyu-cost-guard-v2']);
     expect(db.status).toBe('Live');
+  });
+
+  it('purges stale cost-guard databases from older schema versions at init', async () => {
+    const deleted: string[] = [];
+    stubIndexedDB(deleted, ['zhaoyu-cost-guard', 'zhaoyu-cost-guard-v2', 'unrelated-db']);
+
+    const { pg } = fakePg({ countRows: 1 });
+    createMock.mockResolvedValue(pg);
+
+    const db = new CostDB();
+    db.start();
+    await vi.waitFor(() => expect(db.status).toBe('Live'));
+
+    // Only the old-version DB is purged; the current dir and unrelated DBs survive.
+    expect(deleted).toEqual(['zhaoyu-cost-guard']);
   });
 
   it('surfaces unrecognized init failures as errors without retrying', async () => {

@@ -13,6 +13,18 @@
   const STORAGE_DATE = 'manifesto-streak-date';
   const STORAGE_CHECK_DATE = 'manifesto-check-date';
 
+  const jsonLd = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: 'The Factory Is Going Dark — a Working Thesis on AI-Augmented Engineering',
+    author: { '@type': 'Person', name: 'Zhao Yu', url: 'https://zhaoyu.io' },
+    url: 'https://zhaoyu.io/ai-manifesto',
+    keywords: 'AI Engineering, Agent Architecture, Specification, Engineering Leadership',
+  });
+  // Tag assembled from split parts: a literal script open/close token anywhere
+  // in this component (even in a string or comment) ends the surrounding block.
+  const jsonLdScript = '<scr' + 'ipt type="application/ld+json">' + jsonLd + '</scr' + 'ipt>';
+
   const principles = [
     {
       num: '01',
@@ -172,6 +184,26 @@
     name="description"
     content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
   />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://zhaoyu.io/ai-manifesto" />
+  <meta property="og:title" content="AI Thesis — Zhao Yu" />
+  <meta
+    property="og:description"
+    content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
+  />
+  <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://zhaoyu.io/ai-manifesto" />
+  <meta property="twitter:title" content="AI Thesis — Zhao Yu" />
+  <meta
+    property="twitter:description"
+    content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
+  />
+  <link rel="canonical" href="https://zhaoyu.io/ai-manifesto" />
+
+  <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->
+  {@html jsonLdScript}
 </svelte:head>
 
 <div class="manifesto-root">
@@ -289,7 +321,7 @@
         <br />
         Influences worth reading in full:
         <a
-          href="https://x.com/mattshumer_/status/2021256989876109403"
+          href="https://shumer.dev/something-big-is-happening"
           target="_blank"
           rel="noopener noreferrer">Matt Shumer's "Something Big Is Happening"</a
         >

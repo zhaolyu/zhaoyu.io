@@ -289,7 +289,11 @@
 
 <style>
   .header-nav {
-    background-color: var(--bg-primary);
+    /* Transparent at the top of the page so the hero background flows behind
+       the nav instead of ending in a hard seam (most visible on mobile, where
+       the hero's glow tints most of the viewport width). The scrolled state
+       below paints the solid/blurred background. */
+    background-color: transparent;
     border-color: transparent;
     transition:
       background-color 0.2s,

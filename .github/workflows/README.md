@@ -301,7 +301,7 @@ Both workflows use npm cache:
 
 ## Related Documentation
 
-- [Deployment Guide](../frontend/docs/DEPLOYMENT.md) - Detailed Cloudflare Pages setup
+- [Frontend README](../frontend/README.md) - Structure, scripts, and deployment overview
 - [Development Workflow](../frontend/.cursor/docs/DEVELOPMENT_WORKFLOW.md) - Local development practices
 - [Testing Guide](../frontend/.cursor/docs/TESTING.md) - Testing strategies
 
