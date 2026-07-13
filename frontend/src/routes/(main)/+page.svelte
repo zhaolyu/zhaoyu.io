@@ -49,6 +49,8 @@
   />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
 
+  <link rel="canonical" href="https://zhaoyu.io/" />
+
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
