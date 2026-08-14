@@ -3,8 +3,10 @@
  */
 export const FEATURE_FLAGS = {
   /**
-   * CNBC's consumer AI product hasn't launched publicly yet.
-   * Flip to true to show the CNBC AI project/builder cards.
+   * CNBC's consumer AI product hasn't launched publicly yet. Flip to true at
+   * launch to surface the CNBC AI project/builder cards — the AI Financial
+   * Assistant card then leads Selected Work. Also switch that card's status
+   * from 'in-progress' to 'shipped' at the same time.
    */
   showCnbcAiWork: false,
 } as const;

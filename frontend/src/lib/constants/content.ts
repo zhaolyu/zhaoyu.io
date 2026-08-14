@@ -22,9 +22,9 @@ export const heroContent: HeroContent = {
   badge: 'SENIOR MANAGER · CORE WEB · CNBC',
   headline: {
     primary: 'Leading Core Web at CNBC.',
-    accent: 'Player-Coach: Architecture & AI Integration.',
+    accent: 'I own the AI and video surfaces a financial audience runs on.',
   },
-  bio: 'Senior Manager of Core Web for CNBC.com — leading a team of 8 engineers and 2 QE, in lockstep with dedicated product partners, while staying hands-on in the architecture. Nine years of performance-first engineering behind it: Isomorphic Akamai Edge for [redacted] monthly users, [redacted], governed AI integration, and independent systems shipped with the same production discipline.',
+  bio: "Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE, and co-leading the ~20-engineer next-generation site rebuild across three teams. Built the production UI for CNBC's AI financial assistant; lead the team shipping CNBC's next-gen web video experience. Nine years of performance-first engineering underneath it: Isomorphic Akamai Edge, [redacted] monthly users, [redacted].",
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read My AI Thesis',
@@ -273,6 +273,8 @@ export interface CareerPoint {
   impact: number; // 0-100
   role: string;
   company: string;
+  /** One-line context for track changes, so the timeline reads as a choice, not a zigzag. */
+  note?: string;
 }
 
 export interface CareerHistory {
@@ -284,9 +286,27 @@ export const careerHistory: CareerHistory = {
     { year: 2016, impact: 10, role: 'Intern', company: 'CNBC' },
     { year: 2017, impact: 30, role: 'Software Engineer', company: 'CNBC' },
     { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
-    { year: 2021, impact: 70, role: 'Engineering Manager', company: 'NBCUniversal' },
-    { year: 2025, impact: 90, role: 'Principal Engineer', company: 'Versant / CNBC' },
-    { year: 2026, impact: 100, role: 'Senior Manager, Core Web', company: 'CNBC' },
+    {
+      year: 2021,
+      impact: 70,
+      role: 'Engineering Manager',
+      company: 'NBCUniversal',
+      note: 'First management tour.',
+    },
+    {
+      year: 2025,
+      impact: 90,
+      role: 'Principal Engineer',
+      company: 'Versant / CNBC',
+      note: 'Deliberate return to the technical track through the spinoff — kept architecture judgment current.',
+    },
+    {
+      year: 2026,
+      impact: 100,
+      role: 'Senior Manager, Core Web',
+      company: 'CNBC',
+      note: 'The synthesis: player-coach role spanning both tracks — direct team of 8+2, co-lead of the ~20-engineer rebuild.',
+    },
   ],
 };
 
@@ -297,11 +317,42 @@ export interface BuilderProject {
   stack: string[];
   status: 'shipped' | 'in-progress' | 'exploring';
   metrics?: Array<{ label: string; value: string }>;
+  /** Optional deep-link to a note that documents the work in more depth. */
+  link?: { label: string; href: string };
   /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
   featureFlag?: FeatureFlag;
 }
 
 export const builderProjects: BuilderProject[] = [
+  {
+    title: 'CNBC AI Financial Assistant',
+    category: 'professional',
+    description:
+      "Sole frontend engineer and product bridge for CNBC's AI assistant. Designed the deterministic UI layer around non-deterministic model output — frame-buffered token streaming (state decoupled from render, rAF-throttled commits), graceful degradation, and trust-preserving latency for a financial audience. Architected the tiered system prompt: compressed ~4,000 words to ~1,300 with reinforcement anchors calibrated to multi-turn model attention. Built inside financial-media compliance constraints.",
+    stack: ['Consumer AI', 'LLM Streaming UI', 'System Prompt Architecture', 'React'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'System Prompt Compression', value: '4,000 → 1,300' },
+      { label: 'Streaming Render', value: '60 FPS' },
+    ],
+    link: {
+      label: 'Read the architecture note',
+      href: '/blog/decoupling-state-from-render-in-llm-streaming',
+    },
+    featureFlag: 'showCnbcAiWork',
+  },
+  {
+    title: 'CNBC Next-Gen Web Video',
+    category: 'professional',
+    description:
+      "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. Acting product owner during a PM vacancy: requirements, roadmap, and sequencing, alongside technical direction.",
+    stack: ['Video Platform', 'Product Leadership', 'Team Leadership'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'Surfaces In Flight', value: '5' },
+      { label: 'During PM Vacancy', value: 'Acting PO' },
+    ],
+  },
   {
     title: 'CNBC UI Factory Initiative',
     category: 'professional',
@@ -313,19 +364,6 @@ export const builderProjects: BuilderProject[] = [
       { label: 'Templates', value: '50+' },
       { label: 'LCP', value: '[redacted]' },
     ],
-  },
-  {
-    title: 'CNBC AI Integration',
-    category: 'professional',
-    description:
-      'Driving AI feature adoption at CNBC: streaming UI patterns, token rendering at 60fps, citation management, and the HCI principles that make non-deterministic outputs trustworthy for financial news consumers.',
-    stack: ['React', 'SSE', 'Streaming UI', 'HCI'],
-    status: 'in-progress',
-    metrics: [
-      { label: 'Interaction', value: 'Real-time' },
-      { label: 'Frame Rate', value: '60 FPS' },
-    ],
-    featureFlag: 'showCnbcAiWork',
   },
   {
     title: 'OB1: Personal Exocortex',
@@ -361,7 +399,8 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
-    "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage the team that owns the platform's core experience — 8 engineers and 2 QE, working in lockstep with dedicated product partners — while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
+    "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer next-generation site rebuild across three teams, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
+    "Today that means owning both ends of the strategic surface area: I built the production UI for CNBC's AI assistant myself, and I lead the team shipping the next-generation video experience — the property's revenue engine.",
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
