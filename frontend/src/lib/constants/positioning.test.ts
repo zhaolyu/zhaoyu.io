@@ -1,0 +1,104 @@
+import { describe, it, expect } from 'vitest';
+import {
+  buildHeroContent,
+  buildNarrativeBio,
+  buildBuilderProjects,
+  buildSocialDescriptions,
+} from './content';
+import { FEATURE_FLAGS } from './config';
+
+/**
+ * The go-loud flip happens once, months after this code was written. These
+ * assertions are what stop a one-sided edit — updating the loud copy while
+ * the quiet copy silently rots, or vice versa — from shipping unnoticed.
+ */
+const QUIET = { goLoudPositioning: false };
+const LOUD = { goLoudPositioning: true };
+
+const videoCard = (flags: { goLoudPositioning: boolean }) => {
+  const card = buildBuilderProjects(flags).find((p) => p.title === 'CNBC Next-Gen Web Video');
+  if (!card) throw new Error('CNBC Next-Gen Web Video card is missing from builderProjects');
+  return card;
+};
+
+describe('positioning flag — quiet state', () => {
+  it('ships the scope-describing hero', () => {
+    const hero = buildHeroContent(QUIET);
+    expect(hero.headline.accent).toBe('Player-Coach: Architecture, AI & Video.');
+    expect(hero.bio).not.toMatch(/AI financial assistant|next-gen web video experience/);
+  });
+
+  it('omits the surface-ownership paragraph from the persona bio', () => {
+    const paragraphs = buildNarrativeBio(QUIET).paragraphs;
+    expect(paragraphs.join(' ')).not.toMatch(/revenue engine|owning both ends/);
+  });
+
+  it('drops the monetization framing and acting-PM scope from the video card', () => {
+    const card = videoCard(QUIET);
+    expect(card.description).not.toMatch(/monetization engine|Acting product owner|PM vacancy/);
+    expect(card.metrics).toContainEqual({ label: 'Playback', value: 'Live + VOD' });
+  });
+
+  it('keeps social descriptions scope-describing', () => {
+    const { meta, twitter } = buildSocialDescriptions(QUIET);
+    expect(`${meta} ${twitter}`).not.toMatch(/AI financial assistant|next-gen web video/);
+  });
+});
+
+describe('positioning flag — go-loud state', () => {
+  it('ships the surface-ownership hero', () => {
+    const hero = buildHeroContent(LOUD);
+    expect(hero.headline.accent).toBe(
+      'I own the AI and video surfaces a financial audience runs on.',
+    );
+    expect(hero.bio).toMatch(/AI financial assistant/);
+  });
+
+  it('adds the surface-ownership paragraph to the persona bio', () => {
+    const quiet = buildNarrativeBio(QUIET).paragraphs;
+    const loud = buildNarrativeBio(LOUD).paragraphs;
+
+    expect(loud).toHaveLength(quiet.length + 1);
+    expect(loud[1]).toMatch(/revenue engine/);
+  });
+
+  it('adds the monetization framing and acting-PM scope to the video card', () => {
+    const card = videoCard(LOUD);
+    expect(card.description).toMatch(/monetization engine/);
+    expect(card.description).toMatch(/Acting product owner during a PM vacancy/);
+    expect(card.metrics).toContainEqual({ label: 'During PM Vacancy', value: 'Acting PO' });
+  });
+
+  it('leads social descriptions with AI and video', () => {
+    const { meta, twitter } = buildSocialDescriptions(LOUD);
+    expect(meta).toMatch(/AI financial assistant/);
+    expect(twitter).toMatch(/next-gen web video/);
+  });
+});
+
+describe('positioning-invariant content', () => {
+  it('keeps the canonical team phrasing in both states — it must match LinkedIn either way', () => {
+    for (const flags of [QUIET, LOUD]) {
+      expect(buildHeroContent(flags).bio).toMatch(/8 engineers and 2 QE/);
+      expect(buildHeroContent(flags).bio).toMatch(/~20-engineer/);
+      expect(buildNarrativeBio(flags).paragraphs[0]).toMatch(/8 engineers and 2 QE/);
+    }
+  });
+
+  it('keeps the video card visible and same-length in both states', () => {
+    expect(buildBuilderProjects(QUIET)).toHaveLength(buildBuilderProjects(LOUD).length);
+    expect(videoCard(QUIET).metrics).toHaveLength(2);
+    expect(videoCard(LOUD).metrics).toHaveLength(2);
+  });
+
+  it('keeps the AI assistant card first so it leads Selected Work when unflagged', () => {
+    expect(buildBuilderProjects(QUIET)[0].title).toBe('CNBC AI Financial Assistant');
+  });
+});
+
+describe('shipped defaults', () => {
+  it('ships the quiet state until the flag is deliberately flipped', () => {
+    expect(FEATURE_FLAGS.goLoudPositioning).toBe(false);
+    expect(FEATURE_FLAGS.showCnbcAiWork).toBe(false);
+  });
+});
