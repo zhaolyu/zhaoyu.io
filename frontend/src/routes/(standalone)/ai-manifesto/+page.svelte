@@ -192,7 +192,7 @@
     property="og:description"
     content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
   />
-  <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
+  <meta property="og:image" content="https://zhaoyu.io/og/site.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/ai-manifesto" />
   <meta property="twitter:title" content="AI Thesis — Zhao Yu" />
