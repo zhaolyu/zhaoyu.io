@@ -1,331 +1,198 @@
-# CI/CD Workflows Documentation
+# CI/CD Workflows
 
-This document describes the GitHub Actions workflows configured for this project, including CI checks, build processes, and automated deployment to Cloudflare Pages.
+GitHub Actions workflows for zhaoyu.io — a fully static SvelteKit site (all code
+under `frontend/`) deployed to Cloudflare Pages.
 
 ## Overview
 
-The project uses two main workflows:
-
-1. **CI - Quality Checks and Build** (`ci.yml`) - Runs quality checks and builds the project
-2. **Deploy to Cloudflare Pages** (`cloudflare-pages.yml`) - Deploys the built application
-
-## Workflow Architecture
+| Workflow | File | Trigger | Purpose |
+|----------|------|---------|---------|
+| CI - Quality Checks and Build | `ci.yml` | Pull requests | Quality gates + preview deployment |
+| Deploy to Cloudflare Pages | `cloudflare-pages.yml` | Push to `main`, manual | Production deployment |
+| Cost Guard - Report Infrastructure Costs | `cost-guard.yml` | Manual only | Cost snapshot ingestion for `/infra` |
 
 ```
-┌─────────────────────────────────────────────────┐
-│  Push to any branch or Open PR                  │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  ▼
-┌─────────────────────────────────────────────────┐
-│  CI - Quality Checks and Build                  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐     │
-│  │ Type     │  │ Lint     │  │ Test     │     │
-│  │ Check    │  │          │  │          │     │
-│  └──────────┘  └──────────┘  └──────────┘     │
-│  ┌──────────────────────────────────────────┐  │
-│  │ Build (verifies output)                   │  │
-│  └──────────────────────────────────────────┘  │
-└─────────────────┬───────────────────────────────┘
-                  │
-                  │ (if all checks pass)
-                  ▼
-┌─────────────────────────────────────────────────┐
-│  Deploy to Cloudflare Pages                     │
-│  ┌──────────────────────────────────────────┐  │
-│  │ Check for duplicate deployments          │  │
-│  │ Poll CI status (if push-triggered)       │  │
-│  └──────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────┐  │
-│  │ Build directly (no artifacts needed)     │  │
-│  └──────────────────────────────────────────┘  │
-│  ┌──────────────────────────────────────────┐  │
-│  │ Deploy to Cloudflare Pages               │  │
-│  └──────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────┘
+Pull request opened / updated
+        │
+        ▼
+┌──────────────────────────────────────────────┐
+│  ci.yml                                      │
+│  type-check ─┐                               │
+│  lint        ├─ parallel (~2-3 min)          │
+│  test        │                               │
+│  build      ─┘                               │
+│        │                                     │
+│        ▼ (build passed)                      │
+│  deploy → Cloudflare Pages preview           │
+│         → sticky PR comment with URL         │
+│        │                                     │
+│        ▼                                     │
+│  ci-success (summary gate)                   │
+└──────────────────────────────────────────────┘
+
+Merge to main (push)
+        │
+        ▼
+┌──────────────────────────────────────────────┐
+│  cloudflare-pages.yml                        │
+│  check → lint → test → build → verify        │
+│        → Cloudflare Pages production         │
+│          (https://zhaoyu.io)                 │
+└──────────────────────────────────────────────┘
 ```
 
-## Workflow Details
+## ci.yml — CI Quality Checks and Build
 
-### 1. CI - Quality Checks and Build
+**Triggers:** `pull_request` (`opened`, `reopened`, `synchronize`) targeting any
+branch. There is no push trigger — CI runs on PRs only.
 
-**File:** `.github/workflows/ci.yml`
+**Skipped when:**
 
-**Triggers:**
-- Push to **all branches** (enables feature branch deployments)
-- Pull requests targeting `main` or `develop`
-- Manual workflow dispatch
+- The PR is a draft (every job checks `github.event.pull_request.draft == false`).
+- The change touches only docs/config no-ops: `**.md`, `docs/**`, `.gitignore`,
+  `.prettierrc`, `LICENSE` (via `paths-ignore`).
+
+`.github/**` is deliberately **not** in the ignore list: workflow edits used to be
+skipped as "config", which meant changes to CI itself merged with zero checks.
+Don't re-add it.
+
+**Concurrency:** one run per ref (`ci-${{ github.ref }}`); a new commit cancels
+the in-progress run.
 
 **Jobs:**
 
-#### Parallel Quality Checks
+1. **type-check / lint / test / build** — run in parallel (~2-3 min total instead
+   of ~4-5 sequential). Each job checks out, installs with pnpm
+   (`--frozen-lockfile`), runs `pnpm run sync` where SvelteKit's generated files
+   are needed (all except lint), then its check. `build` also verifies the output
+   (`build/index.html` exists) and prints size/file-count stats.
+2. **deploy** — needs `build`. Rebuilds from scratch (see
+   [Design decisions](#design-decisions)), then:
+   - Deploys a **preview** via `cloudflare/wrangler-action` v4:
+     `pages deploy frontend/build --project-name=zhaoyu-io --branch=<PR head branch>`
+   - Creates a GitHub deployment record (the "View deployment" button on the PR).
+   - Posts a **sticky PR comment** with the preview URL — the branch-alias URL
+     when available, otherwise the atomic deployment URL. The comment is updated
+     in place on subsequent pushes, not duplicated.
+3. **ci-success** — summary gate that `needs` all of the above. Fails on any
+   `failure`, passes on `success`/`skipped` (so draft PRs and docs-only changes
+   don't block). Use this as the required status check.
 
-All quality checks run in parallel for faster feedback:
-
-1. **Type Check** (`type-check`)
-   - Runs `npm run sync` to generate SvelteKit config
-   - Runs `npm run check`
-   - Validates TypeScript types and Svelte component syntax
-   - Fails the workflow if type errors are found
-
-2. **Lint** (`lint`)
-   - Runs `npm run lint`
-   - Checks code style and catches potential issues
-   - Uses ESLint configuration
-
-3. **Test** (`test`)
-   - Runs `npm run test`
-   - Executes unit and integration tests via Vitest
-   - Ensures code functionality is correct
-
-#### Build Job
-
-4. **Build** (`build`)
-   - Runs `npm run sync` to generate SvelteKit config
-   - Runs `npm run build`
-   - Creates production build in `frontend/build/`
-   - Verifies build output exists and contains required files
-   - Displays build statistics (size, file count, etc.)
-   - **Note:** Artifacts are no longer uploaded (deployment builds directly)
-
-#### Summary Job
-
-5. **CI Success** (`ci-success`)
-   - Depends on all previous jobs
-   - Verifies all checks passed
-   - Provides final status confirmation
-
-**Performance:**
-- Parallel execution reduces total CI time
-- Typical duration: ~2-3 minutes (longest job determines total time)
-- No artifact upload (saves ~10-15 seconds per run)
-
-### 2. Deploy to Cloudflare Pages
-
-**File:** `.github/workflows/cloudflare-pages.yml`
+## cloudflare-pages.yml — Production Deploy
 
 **Triggers:**
-- **Primary:** `workflow_run` - After CI workflow completes successfully (all branches)
-- **Fallback:** `push` - Direct push to feature branches (with CI status check)
-- **Manual:** `workflow_dispatch` - Manual trigger (with optional CI check skip)
 
-**Job: Deploy**
+- `push` to `main` (i.e., PR merges) → production deploy to
+  [zhaoyu.io](https://zhaoyu.io).
+- `workflow_dispatch` → manual deploy of any ref. Useful when a merge skipped CI
+  (docs-only changes) or a deploy needs re-running. Dispatching from a non-`main`
+  ref deploys a preview, not production.
 
-#### Workflow Dependency
+**Concurrency:** one deploy per branch (`deploy-<branch>`); a newer push cancels
+the in-progress deploy.
 
-- Uses `workflow_run` trigger to wait for CI completion
-- Only deploys if CI workflow concluded successfully
-- Prevents deploying broken builds
+**Steps:** checkout → pnpm install → `pnpm run sync` → **type-check → lint →
+test** → build → verify output → deploy via `wrangler-action` v4 → record a
+GitHub deployment (`production` environment for `main`, `preview` otherwise).
 
-#### Concurrency Control
+The quality gates are re-run here on purpose, even though `ci.yml` exists: this
+workflow fires on any push to `main`, and a direct push (bypassing the PR flow)
+would otherwise reach production having passed nothing. See
+[Design decisions](#design-decisions).
 
-- Prevents concurrent deployments for the same branch
-- Cancels in-progress deployments when a new one starts
-- Ensures only the latest commit is deployed
+## cost-guard.yml — Cost Snapshot Ingestion
 
-#### Build Process
+**Trigger:** `workflow_dispatch` only, with a required `total_monthly_estimate`
+input (USD).
 
-- **Builds directly** in the deployment workflow
-- No artifact download needed (avoids permission issues)
-- Ensures fresh build for each deployment
-- Includes SvelteKit sync step before building
+Sends an HMAC-SHA256-signed (`X-Hub-Signature-256`) JSON snapshot — org id,
+project id, commit hash, the supplied estimate, empty `costs` array — to the
+Cost-Guard ingestion API on Cloud Run, which feeds the site's `/infra`
+dashboard.
 
-#### Deployment
+It is manual-only because this repo has no Terraform, so there is no real cost
+data to compute in CI. It previously ran on every push and sent a hardcoded $0
+snapshot per commit, which flooded the `/infra` dashboard with empty "Estimate"
+rows. Trigger it manually with a real estimate to exercise the ingestion
+pipeline end to end.
 
-- **Production:** Deploys to `main` branch → Production environment
-- **Preview:** Deploys to feature branches → Preview environment with branch-based URLs
-- Uses Cloudflare Pages action with proper authentication
-- Includes build verification before deployment
-- **Duplicate Prevention:** Checks for existing `workflow_run` deployments before push-triggered deployments
-- **CI Status Polling:** For push events, polls CI status (waits up to 5 minutes) instead of failing immediately
+## Shared conventions
 
-**Environment Variables Required:**
-- `CLOUDFLARE_API_TOKEN` - API token with Pages edit permissions
-- `CLOUDFLARE_ACCOUNT_ID` - Your Cloudflare account ID
-- `GITHUB_TOKEN` - Automatically provided by GitHub Actions
+- **Toolchain:** Node `24.13.0`, pnpm via `pnpm/action-setup` (version read from
+  `frontend/package.json`), pnpm store cached against `frontend/pnpm-lock.yaml`.
+- **Working directory:** every project command runs in `frontend/`.
+- **SvelteKit sync:** `pnpm run sync` runs before check/test/build — type
+  checking and builds fail without the generated files.
+- **Action pinning:** every action is pinned to a commit SHA (with a version
+  comment); Dependabot keeps the pins updated. Keep it that way.
+- **Least privilege:** jobs default to `permissions: contents: read`; deploy
+  jobs add only `deployments: write` (and `pull-requests: write` in `ci.yml`
+  for the preview comment).
+- **Timeouts** on every job (1-15 min) so hung runs can't burn minutes.
 
-## Optimizations Implemented
+## Secrets
 
-### 1. Parallel Job Execution
-- **Before:** Sequential execution (~4-5 minutes)
-- **After:** Parallel execution (~2-3 minutes)
-- **Benefit:** Faster feedback, especially for PRs
+| Secret | Used by | Purpose |
+|--------|---------|---------|
+| `CLOUDFLARE_API_TOKEN` | `ci.yml`, `cloudflare-pages.yml` | Pages deploy (needs Pages edit permission) |
+| `CLOUDFLARE_ACCOUNT_ID` | `ci.yml`, `cloudflare-pages.yml` | Target Cloudflare account |
+| `COST_GUARD_SECRET` | `cost-guard.yml` | HMAC signing key for ingestion requests |
 
-### 2. Direct Build in Deployment
-- **Before:** Downloaded artifacts from CI (permission issues, complexity)
-- **After:** Builds directly in deployment workflow
-- **Benefit:** Simpler workflow, avoids permission issues, ensures fresh builds
+The site is fully static — anything in `frontend/src/` or `frontend/static/`
+ships to the client, so secrets exist only here, in Actions.
 
-### 3. Quality Checks
-- **Before:** Only type check and build
-- **After:** Type check, lint, test, and build
-- **Benefit:** Catches issues earlier, better code quality
+## Design decisions
 
-### 4. Workflow Dependency
-- **Before:** Deploy could run even if CI failed
-- **After:** Deploy only runs after CI succeeds
-- **Benefit:** Prevents deploying broken code
+Three of these were learned the hard way; the workflow comments record them too.
 
-### 5. Concurrency Control
-- **Before:** Multiple deployments could run simultaneously
-- **After:** One deployment per branch at a time
-- **Benefit:** Prevents conflicts, ensures latest code deploys
+1. **CI must run on workflow changes.** `paths-ignore` once contained
+   `.github/**`, so edits to the workflows themselves got zero checks before
+   merging. The ignore list now covers only true no-ops. A CI skip-list must
+   never include the CI configuration itself.
+2. **Every path to production carries its own gates.** PR checks protect only
+   the PR path; `cloudflare-pages.yml` re-runs check/lint/test because a direct
+   push to `main` deploys too. The duplicated ~2 minutes is the price of the
+   deploy path being self-sufficient rather than trusting that everything goes
+   through a PR.
+3. **No automated placeholder telemetry.** Cost-Guard went from per-push
+   (hardcoded $0 snapshots that buried real data) to manual-only with a required
+   real estimate.
+4. **No artifact passing between jobs.** The deploy jobs rebuild rather than
+   download the CI build artifact. Duplicate build work is accepted in exchange
+   for simpler workflows and no cross-job artifact permission issues; builds are
+   fast enough for this to be cheap.
+5. **`wrangler-action` v4** replaced the deprecated `cloudflare/pages-action@v1`.
+   It exposes `deployment-url` (atomic) and `pages-deployment-alias-url` (branch
+   alias) outputs, which the preview comment uses.
 
-### 6. Duplicate Deployment Prevention
-- **Before:** Both `workflow_run` and `push` triggers could deploy simultaneously
-- **After:** Checks for existing `workflow_run` deployments before push-triggered deployments
-- **Benefit:** Prevents duplicate deployments, saves compute resources
+## Running things manually
 
-### 7. CI Status Polling
-- **Before:** Push-triggered deployments failed immediately if CI was still running
-- **After:** Polls CI status for up to 5 minutes, waits for completion
-- **Benefit:** More reliable deployments, handles CI timing variations
-
-### 8. SvelteKit Sync Consistency
-- **Before:** Only test and build jobs ran `npm run sync`
-- **After:** All jobs that need it (type-check, test, build) run sync step
-- **Benefit:** Consistent setup, prevents missing config errors
-
-## Workflow Status Badges
-
-You can add status badges to your README:
-
-```markdown
-![CI](https://github.com/your-username/your-repo/workflows/CI%20-%20Quality%20Checks%20and%20Build/badge.svg)
-![Deploy](https://github.com/your-username/your-repo/workflows/Deploy%20to%20Cloudflare%20Pages/badge.svg)
-```
-
-## Manual Deployment
-
-### Via GitHub UI
-
-1. Go to **Actions** tab
-2. Select **Deploy to Cloudflare Pages**** workflow
-3. Click **Run workflow**
-4. Choose branch and click **Run workflow**
-
-### Skip CI Check (Use with Caution)
-
-When manually dispatching, you can skip the CI check:
-- Enable the `skip_ci_check` input
-- ⚠️ **Warning:** Only use this if you're certain the code is ready
+- **Re-deploy production:** Actions → *Deploy to Cloudflare Pages* → Run
+  workflow → branch `main`. Do this after merging a docs-only PR if the change
+  should ship (CI skips `**.md`, and merges of skipped PRs still trigger the
+  push deploy — manual dispatch is for edge cases like re-runs).
+- **Send a cost snapshot:** Actions → *Cost Guard - Report Infrastructure
+  Costs* → Run workflow → enter a real monthly estimate.
 
 ## Troubleshooting
 
-### CI Fails
+**A quality gate fails** — reproduce locally from `frontend/`:
+`pnpm check`, `pnpm lint` (or `pnpm lint:fix`), `pnpm test`, `pnpm build`.
 
-**Type Check Fails:**
-- Fix TypeScript errors
-- Run `npm run check` locally to verify
+**Preview URL shows "Nothing is here yet"** — deployments take 1-2 minutes to
+propagate. Then check the Cloudflare Pages dashboard → Deployments tab for the
+deployment's actual status.
 
-**Lint Fails:**
-- Fix ESLint errors
-- Run `npm run lint` locally
-- Use `npm run lint:fix` for auto-fixes
+**Cloudflare deploy fails** — verify the `CLOUDFLARE_API_TOKEN` and
+`CLOUDFLARE_ACCOUNT_ID` secrets, and that the Pages project is named
+`zhaoyu-io`. Details in the wrangler step logs and the Cloudflare dashboard.
 
-**Test Fails:**
-- Fix failing tests
-- Run `npm run test` locally to debug
+**Preview comment missing** — the deploy job only comments after a successful
+deploy and URL extraction; check the "Extract deployment URLs" step logs.
 
-**Build Fails:**
-- Check build errors in logs
-- Verify all dependencies are installed
-- Run `npm run build` locally
+## Cloudflare Pages configuration
 
-### Deployment Fails
-
-**CI Status Check Fails:**
-- For push events, workflow polls CI status for up to 5 minutes
-- If CI is still running after 5 minutes, deployment fails
-- Check CI workflow logs to see why it's taking so long
-- Ensure CI workflow is configured correctly
-
-**Cloudflare Deployment Fails:**
-- Verify `CLOUDFLARE_API_TOKEN` secret is set correctly
-- Verify `CLOUDFLARE_ACCOUNT_ID` secret is set correctly
-- Check Cloudflare Pages project name matches (`zhaoyu-io`)
-- Review Cloudflare dashboard for error details
-
-**Concurrent Deployment:**
-- Wait for current deployment to complete
-- Or cancel the in-progress deployment manually
-
-## Workflow Configuration
-
-### Node.js Version
-
-Both workflows use Node.js `24.13.0`:
-- Defined in `.nvmrc` file
-- Ensures consistent builds across environments
-
-### Caching
-
-Both workflows use npm cache:
-- Cache key based on `package-lock.json`
-- Speeds up dependency installation
-- Automatically invalidated when dependencies change
-
-### Build Output
-
-- **Directory:** `frontend/build/`
-- **Adapter:** `@sveltejs/adapter-static`
-- **Mode:** SPA (Single Page Application)
-- **Fallback:** `index.html` for client-side routing
-
-## Best Practices
-
-1. **Always run CI locally before pushing:**
-   ```bash
-   npm run check
-   npm run lint
-   npm run test
-   npm run build
-   ```
-
-2. **Fix CI failures before requesting review:**
-   - PRs with failing CI should not be merged
-   - Reviewers can see CI status on PR page
-
-3. **Use feature branches:**
-   - Create branches for new features
-   - CI runs on all branches automatically
-   - Feature branches get preview deployments with branch-based URLs
-
-4. **Monitor deployment status:**
-   - Check GitHub Actions tab for workflow status
-   - Check Cloudflare Pages dashboard for deployment logs
-
-5. **Review build statistics:**
-   - CI workflow shows build size and file counts
-   - Monitor for unexpected size increases
-
-## Related Documentation
-
-- [Frontend README](../frontend/README.md) - Structure, scripts, and deployment overview
-- [Development Workflow](../frontend/.cursor/docs/DEVELOPMENT_WORKFLOW.md) - Local development practices
-- [Testing Guide](../frontend/.cursor/docs/TESTING.md) - Testing strategies
-
-## Workflow Files
-
-- `.github/workflows/ci.yml` - CI quality checks and build
-- `.github/workflows/cloudflare-pages.yml` - Deployment workflow
-- `.github/workflows/CLOUDFLARE_SETUP.md` - Cloudflare Pages configuration guide
-
-## Cloudflare Pages Configuration
-
-For feature branch preview deployments to work correctly, verify your Cloudflare Pages settings:
-
-**Quick Check:**
-1. **Production branch:** Set to `main` (Settings → Builds & deployments)
-2. **Preview branch control:** Should allow "All non-production branches" (default)
-3. **Access Policy:** Configure as desired (public or restricted)
-
-**Detailed Guide:** See [CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md) for complete configuration instructions.
-
-## Support
-
-For issues or questions about CI/CD:
-1. Check workflow logs in GitHub Actions
-2. Review this documentation
-3. Check Cloudflare Pages dashboard for deployment issues
-4. Verify GitHub secrets are configured correctly
+Dashboard settings that make branch previews work: production branch `main`,
+preview deployments allowed for all non-production branches, and (optionally) a
+public access policy for previews. Full walkthrough:
+[CLOUDFLARE_SETUP.md](./CLOUDFLARE_SETUP.md).
