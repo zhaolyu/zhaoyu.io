@@ -29,3 +29,5 @@ pnpm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+# Scratch profiles/screenshots from scripts/generate-og-images.mjs
+.og-tmp/

@@ -36,7 +36,7 @@
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
+  <meta property="og:image" content="https://zhaoyu.io/og/site.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content={canonicalUrl} />
   <meta property="twitter:title" content={pageTitle} />

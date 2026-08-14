@@ -7,6 +7,19 @@ import globals from 'globals';
 export default [
   js.configs.recommended,
   {
+    // Build-time CLI scripts: Node-only, and console is their output channel
+    // rather than a stray debug statement.
+    files: ['scripts/**/*.{js,mjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: { ...globals.node },
+    },
+    rules: {
+      'no-console': 'off',
+    },
+  },
+  {
     files: ['**/*.{js,ts}'],
     languageOptions: {
       parser: tsParser,
