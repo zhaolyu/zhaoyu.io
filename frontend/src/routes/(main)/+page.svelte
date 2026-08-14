@@ -10,6 +10,17 @@
   import { CodeManifesto } from '$lib/components/features/code-manifesto';
   import { EngineeringNotes } from '$lib/components/features/notes';
   import { Connect } from '$lib/components/features/connect';
+  import { FEATURE_FLAGS } from '$lib/constants/config';
+
+  // Human-facing descriptions follow the positioning flag; the agent-facing
+  // layer below (JSON-LD, llms.txt) always carries the full picture.
+  const metaDescription = FEATURE_FLAGS.goLoudPositioning
+    ? "Senior Manager, Core Web at CNBC. Built the production UI for CNBC's AI financial assistant; lead the next-gen web video platform. [redacted] users, [redacted], player-coach across both tracks."
+    : 'Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE and co-leading the ~20-engineer next-gen site rebuild, while staying hands-on in the architecture. [redacted] users, [redacted].';
+
+  const twitterDescription = FEATURE_FLAGS.goLoudPositioning
+    ? 'Senior Manager, Core Web at CNBC. AI financial assistant UI, next-gen web video, and edge performance at [redacted] users.'
+    : 'Senior Manager, Core Web at CNBC. Player-coach engineering leader, AI Integration Lead, and independent builder, shipping at scale.';
 
   onMount(() => {
     // Deliberate easter egg for devtools visitors — the one sanctioned console.log
@@ -24,10 +35,7 @@
 
 <svelte:head>
   <title>Zhao Yu | Senior Manager, Core Web at CNBC</title>
-  <meta
-    name="description"
-    content="Senior Manager of Core Web for CNBC.com — leading the team behind a [redacted] user platform while staying hands-on in the architecture. AI Integration Lead and independent builder."
-  />
+  <meta name="description" content={metaDescription} />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://zhaoyu.io/" />
@@ -35,18 +43,12 @@
     property="og:title"
     content="Zhao Yu — Senior Manager, Core Web at CNBC. Player-coach engineering leader."
   />
-  <meta
-    property="og:description"
-    content="Senior Manager, Core Web at CNBC. [redacted], [redacted] users, AI Integration Lead, independent builder. Opinionated on latency, streaming interfaces, and production AI."
-  />
+  <meta property="og:description" content={metaDescription} />
   <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/" />
   <meta property="twitter:title" content="Zhao Yu — Senior Manager, Core Web at CNBC" />
-  <meta
-    property="twitter:description"
-    content="Senior Manager, Core Web at CNBC. Engineering leader, AI Integration Lead, and independent builder, shipping at scale."
-  />
+  <meta property="twitter:description" content={twitterDescription} />
   <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
 
   <link rel="canonical" href="https://zhaoyu.io/" />
@@ -63,9 +65,12 @@
         "@type": "Organization",
         "name": "CNBC"
       },
-      "description": "Senior Manager of Core Web for CNBC.com, leading a team of 8 engineers and 2 QE while staying hands-on as an architect on high-performance isomorphic edge systems for [redacted] monthly users. AI Integration Lead and independent builder.",
+      "description": "Senior Manager of Core Web for CNBC.com, managing a direct team of 8 engineers and 2 QE and co-leading the ~20-engineer next-generation site rebuild. Built the production UI for CNBC's AI financial assistant and leads the team shipping the next-gen web video experience, on top of nine years of performance-first engineering: isomorphic edge systems for [redacted] monthly users at a [redacted].",
       "knowsAbout": [
         "Engineering Leadership",
+        "LLM Streaming Interfaces",
+        "System Prompt Architecture",
+        "Video Platforms",
         "Edge Computing",
         "Akamai EdgeWorkers",
         "Isomorphic React",
