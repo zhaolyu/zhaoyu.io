@@ -15,6 +15,11 @@
         /50M\+ monthly users/g,
         '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">50M+ monthly users</span>',
       )
+      // Both hero variants run through this; each phrase is a no-op when absent.
+      .replace(
+        /governed AI integration/g,
+        '<strong class="bio-name font-semibold">governed AI integration</strong>',
+      )
       .replace(
         /AI financial assistant/g,
         '<strong class="bio-name font-semibold">AI financial assistant</strong>',

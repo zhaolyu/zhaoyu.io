@@ -2,7 +2,7 @@
  * Content constants for landing page
  */
 
-import type { FeatureFlag } from '$lib/constants/config';
+import { FEATURE_FLAGS, type FeatureFlag } from '$lib/constants/config';
 
 export interface HeroContent {
   badge: string;
@@ -18,19 +18,38 @@ export interface HeroContent {
   motto: string[];
 }
 
-export const heroContent: HeroContent = {
+const CTA = {
+  primary: 'View Selected Work',
+  secondary: 'Read My AI Thesis',
+} as const;
+
+const MOTTO = ['Low Latency', 'High Leverage', 'Deep Focus'];
+
+/** Quieter default: describes scope without leading on surface ownership. */
+const stealthHero: HeroContent = {
+  badge: 'SENIOR MANAGER · CORE WEB · CNBC',
+  headline: {
+    primary: 'Leading Core Web at CNBC.',
+    accent: 'Player-Coach: Architecture, AI & Video.',
+  },
+  bio: 'Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE, and co-leading the ~20-engineer next-generation site rebuild across three teams, while staying hands-on in the architecture. Nine years of performance-first engineering behind it: Isomorphic Akamai Edge for 50M+ monthly users, 1.1s LCP, governed AI integration, and independent systems shipped with the same production discipline.',
+  cta: CTA,
+  motto: MOTTO,
+};
+
+/** Go-loud variant — see FEATURE_FLAGS.goLoudPositioning and docs/launch-checklist.md. */
+const goLoudHero: HeroContent = {
   badge: 'SENIOR MANAGER · CORE WEB · CNBC',
   headline: {
     primary: 'Leading Core Web at CNBC.',
     accent: 'I own the AI and video surfaces a financial audience runs on.',
   },
   bio: "Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE, and co-leading the ~20-engineer next-generation site rebuild across three teams. Built the production UI for CNBC's AI financial assistant; lead the team shipping CNBC's next-gen web video experience. Nine years of performance-first engineering underneath it: Isomorphic Akamai Edge, 50M+ monthly users, 1.1s LCP.",
-  cta: {
-    primary: 'View Selected Work',
-    secondary: 'Read My AI Thesis',
-  },
-  motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
+  cta: CTA,
+  motto: MOTTO,
 };
+
+export const heroContent: HeroContent = FEATURE_FLAGS.goLoudPositioning ? goLoudHero : stealthHero;
 
 export interface PerformanceMetric {
   label: string;
@@ -153,17 +172,6 @@ export const notesData: NotesData = {
       content: [
         "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to — and when that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. Salesforce found this same escalation across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less — which is only surprising if you believed the length was buying compliance in the first place.",
         "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: RoPE, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and retrieval accuracy for a fact placed mid-context drops by over 30% compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction — Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
-      ],
-    },
-    {
-      slug: 'not-all-video-requests-are-worth-the-same',
-      title: 'Not All Video Requests Are Worth the Same: Shedding by Cost of Failure',
-      date: 'Aug 2026',
-      dateISO: '2026-08',
-      tags: ['Video Platform', 'Resilience', 'Distributed Systems'],
-      content: [
-        "Netflix's live pipeline ranks its own traffic by cost of failure and sheds from the bottom. Origin writes rank highest, because a failed write breaks the streaming pipeline itself rather than one viewer's session. Live-edge reads rank second, because their failure hits the majority of people currently watching. DVR reads — the smaller subset scrubbing backward rather than watching live — rank lowest and get shed first. The shed itself is a TTL-cached HTTP 503 the CDN can hold for several seconds, so clients don't convert one refused request into a retry storm against an already-stressed origin. The detail I find most instructive: <strong>the priority decision is made from in-memory segment metadata rather than a datastore query</strong>, specifically so that deciding what to drop doesn't add load to the system that is already failing.",
-        "Uniform rate limiting is the false-fairness default. Treat every request as equally worth preserving and you either fail everything proportionally or fail whatever happens to arrive first — neither of which protects what actually matters. This is worth separating from the circuit breaker it superficially resembles: a breaker asks whether one measured quantity crossed a line, while this asks <em>given that we must shed something, which tier costs least to shed</em>. That is resource allocation under constraint, not threshold detection, and it has to be answered before the spike, not during it. The tiering is property-specific — for a financial news audience, a live market-open stream and a user stepping back through yesterday's segment have genuinely different costs of failure, and that ladder looks nothing like a general entertainment catalog's. But the discipline generalizes, and it is the same one behind every latency decision I make: <strong>graceful degradation preserves trust; uniform failure spends it.</strong>",
       ],
     },
     {
@@ -418,11 +426,15 @@ export interface NarrativeBio {
   paragraphs: string[];
 }
 
+/** Go-loud only — see FEATURE_FLAGS.goLoudPositioning and docs/launch-checklist.md. */
+const surfaceOwnershipParagraph =
+  "Today that means owning both ends of the strategic surface area: I built the production UI for CNBC's AI assistant myself, and I lead the team shipping the next-generation video experience — the property's revenue engine.";
+
 export const narrativeBio: NarrativeBio = {
   title: 'The Modernizer',
   paragraphs: [
     "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer next-generation site rebuild across three teams, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
-    "Today that means owning both ends of the strategic surface area: I built the production UI for CNBC's AI assistant myself, and I lead the team shipping the next-generation video experience — the property's revenue engine.",
+    ...(FEATURE_FLAGS.goLoudPositioning ? [surfaceOwnershipParagraph] : []),
     'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
     'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
   ],
