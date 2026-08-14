@@ -18,6 +18,13 @@ export interface HeroContent {
   motto: string[];
 }
 
+/**
+ * The subset of FEATURE_FLAGS the positioning builders read. Narrow and
+ * partial so a test can name only the flag under test, and so adding an
+ * unrelated flag can't break these call sites.
+ */
+export type PositioningFlags = { goLoudPositioning?: boolean };
+
 const CTA = {
   primary: 'View Selected Work',
   secondary: 'Read My AI Thesis',
@@ -49,7 +56,16 @@ const goLoudHero: HeroContent = {
   motto: MOTTO,
 };
 
-export const heroContent: HeroContent = FEATURE_FLAGS.goLoudPositioning ? goLoudHero : stealthHero;
+/**
+ * `flags` is injectable so both positioning states are assertable in tests;
+ * production callers use the exported `heroContent` below. Same pattern as
+ * `visibleItems` in $lib/utils/feature-flags.
+ */
+export function buildHeroContent(flags: PositioningFlags = FEATURE_FLAGS): HeroContent {
+  return flags.goLoudPositioning ? goLoudHero : stealthHero;
+}
+
+export const heroContent: HeroContent = buildHeroContent();
 
 export interface PerformanceMetric {
   label: string;
@@ -358,11 +374,41 @@ export interface BuilderProject {
  * variant describes the work, the loud one adds the revenue framing and the
  * acting-PM scope. See docs/launch-checklist.md.
  */
-const webVideoDescription = FEATURE_FLAGS.goLoudPositioning
-  ? "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. Acting product owner during a PM vacancy: requirements, roadmap, and sequencing, alongside technical direction."
-  : "Lead the team building CNBC's next-generation web video experience. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications — spanning player architecture, playback state, and the delivery path behind them.";
+const webVideoLoud =
+  "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. Acting product owner during a PM vacancy: requirements, roadmap, and sequencing, alongside technical direction.";
 
-export const builderProjects: BuilderProject[] = [
+const webVideoQuiet =
+  "Lead the team building CNBC's next-generation web video experience. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications — spanning player architecture, playback state, and the delivery path behind them.";
+
+function webVideoProject(flags: PositioningFlags): BuilderProject {
+  const loud = flags.goLoudPositioning === true;
+
+  return {
+    title: 'CNBC Next-Gen Web Video',
+    category: 'professional',
+    description: loud ? webVideoLoud : webVideoQuiet,
+    stack: ['Video Platform', 'Product Leadership', 'Team Leadership'],
+    status: 'in-progress',
+    metrics: [
+      { label: 'Surfaces In Flight', value: '5' },
+      loud
+        ? { label: 'During PM Vacancy', value: 'Acting PO' }
+        : { label: 'Playback', value: 'Live + VOD' },
+    ],
+  };
+}
+
+/**
+ * `flags` is injectable so both positioning states are assertable in tests;
+ * production callers use the exported `builderProjects` below.
+ */
+export function buildBuilderProjects(flags: PositioningFlags = FEATURE_FLAGS): BuilderProject[] {
+  const [aiAssistant, ...rest] = staticBuilderProjects;
+  return [aiAssistant, webVideoProject(flags), ...rest];
+}
+
+/** Cards whose copy does not vary with positioning; AI assistant stays first. */
+const staticBuilderProjects: BuilderProject[] = [
   {
     title: 'CNBC AI Financial Assistant',
     category: 'professional',
@@ -379,19 +425,6 @@ export const builderProjects: BuilderProject[] = [
       href: '/blog/decoupling-state-from-render-in-llm-streaming',
     },
     featureFlag: 'showCnbcAiWork',
-  },
-  {
-    title: 'CNBC Next-Gen Web Video',
-    category: 'professional',
-    description: webVideoDescription,
-    stack: ['Video Platform', 'Product Leadership', 'Team Leadership'],
-    status: 'in-progress',
-    metrics: [
-      { label: 'Surfaces In Flight', value: '5' },
-      FEATURE_FLAGS.goLoudPositioning
-        ? { label: 'During PM Vacancy', value: 'Acting PO' }
-        : { label: 'Playback', value: 'Live + VOD' },
-    ],
   },
   {
     title: 'CNBC UI Factory Initiative',
@@ -431,6 +464,8 @@ export const builderProjects: BuilderProject[] = [
   },
 ];
 
+export const builderProjects: BuilderProject[] = buildBuilderProjects();
+
 export interface NarrativeBio {
   title: string;
   paragraphs: string[];
@@ -440,15 +475,50 @@ export interface NarrativeBio {
 const surfaceOwnershipParagraph =
   "Today that means owning both ends of the strategic surface area: I built the production UI for CNBC's AI assistant myself, and I lead the team shipping the next-generation video experience — the property's revenue engine.";
 
-export const narrativeBio: NarrativeBio = {
-  title: 'The Modernizer',
-  paragraphs: [
-    "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer next-generation site rebuild across three teams, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
-    ...(FEATURE_FLAGS.goLoudPositioning ? [surfaceOwnershipParagraph] : []),
-    'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
-    'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
-  ],
-};
+/**
+ * `flags` is injectable so both positioning states are assertable in tests;
+ * production callers use the exported `narrativeBio` below.
+ */
+export function buildNarrativeBio(flags: PositioningFlags = FEATURE_FLAGS): NarrativeBio {
+  return {
+    title: 'The Modernizer',
+    paragraphs: [
+      "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer next-generation site rebuild across three teams, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
+      ...(flags.goLoudPositioning ? [surfaceOwnershipParagraph] : []),
+      'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
+      'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
+    ],
+  };
+}
+
+export const narrativeBio: NarrativeBio = buildNarrativeBio();
+
+export interface SocialDescriptions {
+  /** Used for both <meta name="description"> and og:description. */
+  meta: string;
+  twitter: string;
+}
+
+/**
+ * Human-facing social/meta copy. Follows the positioning flag; the
+ * agent-facing layer (JSON-LD, llms.txt) deliberately does not — see
+ * docs/launch-checklist.md.
+ */
+export function buildSocialDescriptions(
+  flags: PositioningFlags = FEATURE_FLAGS,
+): SocialDescriptions {
+  return flags.goLoudPositioning
+    ? {
+        meta: "Senior Manager, Core Web at CNBC. Built the production UI for CNBC's AI financial assistant; lead the next-gen web video platform. [redacted] users, [redacted], player-coach across both tracks.",
+        twitter:
+          'Senior Manager, Core Web at CNBC. AI financial assistant UI, next-gen web video, and edge performance at [redacted] users.',
+      }
+    : {
+        meta: 'Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE and co-leading the ~20-engineer next-gen site rebuild, while staying hands-on in the architecture. [redacted] users, [redacted].',
+        twitter:
+          'Senior Manager, Core Web at CNBC. Player-coach engineering leader, AI Integration Lead, and independent builder, shipping at scale.',
+      };
+}
 
 export interface PersonaItem {
   title: string;

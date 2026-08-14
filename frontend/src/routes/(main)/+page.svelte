@@ -10,17 +10,11 @@
   import { CodeManifesto } from '$lib/components/features/code-manifesto';
   import { EngineeringNotes } from '$lib/components/features/notes';
   import { Connect } from '$lib/components/features/connect';
-  import { FEATURE_FLAGS } from '$lib/constants/config';
+  import { buildSocialDescriptions } from '$lib/constants/content';
 
   // Human-facing descriptions follow the positioning flag; the agent-facing
   // layer below (JSON-LD, llms.txt) always carries the full picture.
-  const metaDescription = FEATURE_FLAGS.goLoudPositioning
-    ? "Senior Manager, Core Web at CNBC. Built the production UI for CNBC's AI financial assistant; lead the next-gen web video platform. [redacted] users, [redacted], player-coach across both tracks."
-    : 'Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE and co-leading the ~20-engineer next-gen site rebuild, while staying hands-on in the architecture. [redacted] users, [redacted].';
-
-  const twitterDescription = FEATURE_FLAGS.goLoudPositioning
-    ? 'Senior Manager, Core Web at CNBC. AI financial assistant UI, next-gen web video, and edge performance at [redacted] users.'
-    : 'Senior Manager, Core Web at CNBC. Player-coach engineering leader, AI Integration Lead, and independent builder, shipping at scale.';
+  const { meta: metaDescription, twitter: twitterDescription } = buildSocialDescriptions();
 
   onMount(() => {
     // Deliberate easter egg for devtools visitors — the one sanctioned console.log
