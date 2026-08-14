@@ -10,6 +10,8 @@
   let chartContainer: HTMLElement;
 
   const history = careerHistory.points;
+  // Desktop repeats year/role inside the SVG, so only the track changes need prose there.
+  const annotatedPoints = history.filter((point) => point.note);
 
   // SVG dimensions
   const width = 1000;
@@ -44,7 +46,7 @@
   <div class="chart-container">
     <div class="chart-header">
       <h2 class="section-badge">Career Velocity</h2>
-      <h3 class="section-title">Consistent Upward Trajectory.</h3>
+      <h3 class="section-title">Both Tracks. On Purpose.</h3>
     </div>
 
     <div class="chart-wrapper">
@@ -55,6 +57,9 @@
             <div class="mobile-point-year">{point.year}</div>
             <div class="mobile-point-role">{point.role}</div>
             <div class="mobile-point-company">{point.company}</div>
+            {#if point.note}
+              <p class="point-note">{point.note}</p>
+            {/if}
           </div>
         {/each}
       </div>
@@ -142,6 +147,15 @@
           {/each}
         </svg>
       {/if}
+    </div>
+
+    <div class="track-notes">
+      {#each annotatedPoints as point (point.year)}
+        <div class="track-note">
+          <div class="track-note-head">{point.year} · {point.role}</div>
+          <p class="point-note">{point.note}</p>
+        </div>
+      {/each}
     </div>
   </div>
 </section>
@@ -376,6 +390,44 @@
     color: var(--text-muted);
   }
 
+  .point-note {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    transition: color 0.2s;
+  }
+
+  /* Desktop-only: the SVG already carries year/role, so this strip adds the
+     prose that explains the two track changes. Mobile gets the same notes
+     inline in .mobile-points-list instead. */
+  .track-notes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 60rem;
+    margin: 0 auto;
+  }
+
+  .track-note {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .track-note-head {
+    font-size: 0.6875rem;
+    font-family: var(--font-mono);
+    color: var(--accent-primary-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+  }
+
+  .track-note .point-note {
+    margin-top: 0.375rem;
+  }
+
   .mobile-points-list {
     display: none;
   }
@@ -394,6 +446,10 @@
     .chart-wrapper {
       height: 400px;
       margin-bottom: 4rem;
+    }
+
+    .track-notes {
+      display: none;
     }
 
     .mobile-points-list {

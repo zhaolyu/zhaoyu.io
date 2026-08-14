@@ -50,6 +50,13 @@
       <span class="stack-tag">{tech}</span>
     {/each}
   </div>
+
+  {#if project.link}
+    <a class="card-link" href={project.link.href}>
+      {project.link.label}
+      <span aria-hidden="true">→</span>
+    </a>
+  {/if}
 </div>
 
 <style>
@@ -76,6 +83,23 @@
 
   :global(.dark) .builder-card:hover {
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-link {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--accent-primary-light);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+    transition: gap 0.2s;
+  }
+
+  .card-link:hover {
+    gap: 0.625rem;
+    text-decoration: underline;
   }
 
   .card-top {

@@ -31,11 +31,17 @@ describe('current site content', () => {
     const projectTitles = visibleItems(projectsData.projects).map((p) => p.title);
     const builderTitles = visibleItems(builderProjects).map((p) => p.title);
 
+    // Assert the gated cards exist before asserting they're hidden — otherwise
+    // renaming a card turns the negative assertions below into no-ops.
+    expect(projectsData.projects.map((p) => p.title)).toContain('CNBC AI Insight Engine');
+    expect(builderProjects.map((p) => p.title)).toContain('CNBC AI Financial Assistant');
+
     expect(projectTitles).not.toContain('CNBC AI Insight Engine');
-    expect(builderTitles).not.toContain('CNBC AI Integration');
+    expect(builderTitles).not.toContain('CNBC AI Financial Assistant');
 
     // the rest of the work remains visible
     expect(projectTitles).toContain('CNBC.com Next-Gen Migration');
+    expect(builderTitles).toContain('CNBC Next-Gen Web Video');
     expect(builderTitles).toContain('CNBC UI Factory Initiative');
     expect(builderTitles).toContain('Cost-Guard: Infra Dashboard');
   });

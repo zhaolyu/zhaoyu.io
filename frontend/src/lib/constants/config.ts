@@ -3,10 +3,22 @@
  */
 export const FEATURE_FLAGS = {
   /**
-   * CNBC's consumer AI product hasn't launched publicly yet.
-   * Flip to true to show the CNBC AI project/builder cards.
+   * CNBC's consumer AI product hasn't launched publicly yet. Flip to true at
+   * launch to surface the CNBC AI project/builder cards — the AI Financial
+   * Assistant card then leads Selected Work. Also switch that card's status
+   * from 'in-progress' to 'shipped' at the same time.
    */
   showCnbcAiWork: false,
+
+  /**
+   * Go-loud positioning. False ships the quieter, scope-describing copy;
+   * true ships the copy that leads with owning the AI and video surfaces.
+   * Gates the hero headline/bio, the persona ownership paragraph, and the
+   * three human-facing meta descriptions. The agent-facing layer (llms.txt,
+   * JSON-LD) always carries the full picture — see docs/launch-checklist.md
+   * for why, and for the full flip sequence.
+   */
+  goLoudPositioning: false,
 } as const;
 
 export type FeatureFlag = keyof typeof FEATURE_FLAGS;
