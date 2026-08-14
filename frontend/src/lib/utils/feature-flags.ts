@@ -12,10 +12,12 @@ export interface FeatureFlagged {
 /**
  * Keep items that carry no flag, or whose flag is enabled.
  * `flags` is injectable for tests; production callers use the default.
+ * Partial so a caller can name only the flags under test — an omitted flag
+ * reads as off, and adding a new flag can't break unrelated call sites.
  */
 export function visibleItems<T extends FeatureFlagged>(
   items: readonly T[],
-  flags: Record<FeatureFlag, boolean> = FEATURE_FLAGS,
+  flags: Partial<Record<FeatureFlag, boolean>> = FEATURE_FLAGS,
 ): T[] {
   return items.filter((item) => !item.featureFlag || flags[item.featureFlag]);
 }
