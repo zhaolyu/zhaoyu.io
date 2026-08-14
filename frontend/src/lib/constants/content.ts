@@ -353,6 +353,15 @@ export interface BuilderProject {
   featureFlag?: FeatureFlag;
 }
 
+/**
+ * The video card follows the same positioning flag as the hero: the quiet
+ * variant describes the work, the loud one adds the revenue framing and the
+ * acting-PM scope. See docs/launch-checklist.md.
+ */
+const webVideoDescription = FEATURE_FLAGS.goLoudPositioning
+  ? "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. Acting product owner during a PM vacancy: requirements, roadmap, and sequencing, alongside technical direction."
+  : "Lead the team building CNBC's next-generation web video experience. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications — spanning player architecture, playback state, and the delivery path behind them.";
+
 export const builderProjects: BuilderProject[] = [
   {
     title: 'CNBC AI Financial Assistant',
@@ -374,13 +383,14 @@ export const builderProjects: BuilderProject[] = [
   {
     title: 'CNBC Next-Gen Web Video',
     category: 'professional',
-    description:
-      "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. Acting product owner during a PM vacancy: requirements, roadmap, and sequencing, alongside technical direction.",
+    description: webVideoDescription,
     stack: ['Video Platform', 'Product Leadership', 'Team Leadership'],
     status: 'in-progress',
     metrics: [
       { label: 'Surfaces In Flight', value: '5' },
-      { label: 'During PM Vacancy', value: 'Acting PO' },
+      FEATURE_FLAGS.goLoudPositioning
+        ? { label: 'During PM Vacancy', value: 'Acting PO' }
+        : { label: 'Playback', value: 'Live + VOD' },
     ],
   },
   {
