@@ -38,12 +38,12 @@
     content="Zhao Yu — Senior Manager, Core Web at CNBC. Player-coach engineering leader."
   />
   <meta property="og:description" content={metaDescription} />
-  <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
+  <meta property="og:image" content="https://zhaoyu.io/og/site.png" />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="https://zhaoyu.io/" />
   <meta property="twitter:title" content="Zhao Yu — Senior Manager, Core Web at CNBC" />
   <meta property="twitter:description" content={twitterDescription} />
-  <meta property="twitter:image" content="https://zhaoyu.io/og-image.png" />
+  <meta property="twitter:image" content="https://zhaoyu.io/og/site.png" />
 
   <link rel="canonical" href="https://zhaoyu.io/" />
 
