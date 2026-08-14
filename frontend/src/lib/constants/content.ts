@@ -145,6 +145,28 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'reinforcement-anchors-beat-emphasis-in-system-prompts',
+      title: 'Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt',
+      date: 'Aug 2026',
+      dateISO: '2026-08',
+      tags: ['System Prompt Architecture', 'LLM Mechanics', 'AI Engineering'],
+      content: [
+        "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to — and when that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. Salesforce found this same escalation across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less — which is only surprising if you believed the length was buying compliance in the first place.",
+        "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: RoPE, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and retrieval accuracy for a fact placed mid-context drops by over 30% compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction — Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
+      ],
+    },
+    {
+      slug: 'not-all-video-requests-are-worth-the-same',
+      title: 'Not All Video Requests Are Worth the Same: Shedding by Cost of Failure',
+      date: 'Aug 2026',
+      dateISO: '2026-08',
+      tags: ['Video Platform', 'Resilience', 'Distributed Systems'],
+      content: [
+        "Netflix's live pipeline ranks its own traffic by cost of failure and sheds from the bottom. Origin writes rank highest, because a failed write breaks the streaming pipeline itself rather than one viewer's session. Live-edge reads rank second, because their failure hits the majority of people currently watching. DVR reads — the smaller subset scrubbing backward rather than watching live — rank lowest and get shed first. The shed itself is a TTL-cached HTTP 503 the CDN can hold for several seconds, so clients don't convert one refused request into a retry storm against an already-stressed origin. The detail I find most instructive: <strong>the priority decision is made from in-memory segment metadata rather than a datastore query</strong>, specifically so that deciding what to drop doesn't add load to the system that is already failing.",
+        "Uniform rate limiting is the false-fairness default. Treat every request as equally worth preserving and you either fail everything proportionally or fail whatever happens to arrive first — neither of which protects what actually matters. This is worth separating from the circuit breaker it superficially resembles: a breaker asks whether one measured quantity crossed a line, while this asks <em>given that we must shed something, which tier costs least to shed</em>. That is resource allocation under constraint, not threshold detection, and it has to be answered before the spike, not during it. The tiering is property-specific — for a financial news audience, a live market-open stream and a user stepping back through yesterday's segment have genuinely different costs of failure, and that ladder looks nothing like a general entertainment catalog's. But the discipline generalizes, and it is the same one behind every latency decision I make: <strong>graceful degradation preserves trust; uniform failure spends it.</strong>",
+      ],
+    },
+    {
       slug: 'the-agent-run-is-the-new-unit-of-work',
       title: 'The Agent Run Is the New Unit of Work — and Reviewing It Is Management',
       date: 'Jul 2026',

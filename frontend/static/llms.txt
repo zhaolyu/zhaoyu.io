@@ -75,6 +75,8 @@ The differentiator is the combination, not any single axis:
 
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
+- [Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt](https://zhaoyu.io/blog/reinforcement-anchors-beat-emphasis-in-system-prompts)
+- [Not All Video Requests Are Worth the Same: Shedding by Cost of Failure](https://zhaoyu.io/blog/not-all-video-requests-are-worth-the-same)
 - [The Agent Run Is the New Unit of Work — and Reviewing It Is Management](https://zhaoyu.io/blog/the-agent-run-is-the-new-unit-of-work)
 - [Agents Degrade Quietly: Maintenance Is Where the Value Compounds](https://zhaoyu.io/blog/agents-degrade-quietly-maintenance-is-where-value-compounds)
 - [Spec Quality Is the Bottleneck Now, Not Implementation Speed](https://zhaoyu.io/blog/spec-quality-is-the-bottleneck-not-implementation-speed)
