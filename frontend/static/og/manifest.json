@@ -1,0 +1,106 @@
+{
+  "site": {
+    "slug": "site",
+    "kind": "profile",
+    "eyebrow": "SENIOR MANAGER · CORE WEB · CNBC",
+    "subtitle": "Player-Coach: Architecture, AI & Video.",
+    "title": "Zhao Yu",
+    "footnote": ["Low Latency", "High Leverage", "Deep Focus"]
+  },
+  "reinforcement-anchors-beat-emphasis-in-system-prompts": {
+    "slug": "reinforcement-anchors-beat-emphasis-in-system-prompts",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · AUG 2026",
+    "title": "Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt",
+    "subtitle": "",
+    "footnote": ["System Prompt Architecture", "LLM Mechanics", "AI Engineering"]
+  },
+  "the-agent-run-is-the-new-unit-of-work": {
+    "slug": "the-agent-run-is-the-new-unit-of-work",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JUL 2026",
+    "title": "The Agent Run Is the New Unit of Work — and Reviewing It Is Management",
+    "subtitle": "",
+    "footnote": ["Agent Architecture", "Engineering Management", "AI Engineering"]
+  },
+  "agents-degrade-quietly-maintenance-is-where-value-compounds": {
+    "slug": "agents-degrade-quietly-maintenance-is-where-value-compounds",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JUL 2026",
+    "title": "Agents Degrade Quietly: Maintenance Is Where the Value Compounds",
+    "subtitle": "",
+    "footnote": ["Agent Architecture", "Reliability", "Engineering Management"]
+  },
+  "spec-quality-is-the-bottleneck-not-implementation-speed": {
+    "slug": "spec-quality-is-the-bottleneck-not-implementation-speed",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JUL 2026",
+    "title": "Spec Quality Is the Bottleneck Now, Not Implementation Speed",
+    "subtitle": "",
+    "footnote": ["AI Engineering", "Agent Architecture", "Specification"]
+  },
+  "agent-failures-are-loop-failures": {
+    "slug": "agent-failures-are-loop-failures",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JUL 2026",
+    "title": "Agent Failures Are Loop Failures, Not Intelligence Failures",
+    "subtitle": "",
+    "footnote": ["Agent Architecture", "Reliability", "Distributed Systems"]
+  },
+  "why-i-made-this-site-readable-by-machines-not-just-humans": {
+    "slug": "why-i-made-this-site-readable-by-machines-not-just-humans",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JUL 2026",
+    "title": "Why I Made This Site Readable by Machines, Not Just Humans",
+    "subtitle": "",
+    "footnote": ["AI Engineering", "SEO", "Structured Data"]
+  },
+  "the-three-tiers-of-using-ai-and-why-only-two-matter-now": {
+    "slug": "the-three-tiers-of-using-ai-and-why-only-two-matter-now",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JUL 2026",
+    "title": "The Three Tiers of Using AI, and Why Only Two of Them Still Differentiate You",
+    "subtitle": "",
+    "footnote": ["AI Engineering", "Agent Architecture", "Career"]
+  },
+  "building-with-ai-the-compound-advantage": {
+    "slug": "building-with-ai-the-compound-advantage",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · FEB 2026",
+    "title": "Building with AI: The Compound Advantage",
+    "subtitle": "",
+    "footnote": ["AI Engineering", "Productivity", "Meta"]
+  },
+  "sovereign-resilience-why-i-over-index-on-edge-architecture": {
+    "slug": "sovereign-resilience-why-i-over-index-on-edge-architecture",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JAN 2026",
+    "title": "Sovereign Resilience: Why I Over-Index on Edge Architecture",
+    "subtitle": "",
+    "footnote": ["Architecture", "Edge Computing", "Independence"]
+  },
+  "idempotency-in-distributed-systems": {
+    "slug": "idempotency-in-distributed-systems",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · JAN 2026",
+    "title": "Idempotency in Distributed Systems",
+    "subtitle": "",
+    "footnote": ["Backend", "API Design", "Reliability"]
+  },
+  "the-url-is-the-source-of-truth": {
+    "slug": "the-url-is-the-source-of-truth",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · DEC 2025",
+    "title": "The URL is the Source of Truth",
+    "subtitle": "",
+    "footnote": ["Architecture", "State Management", "UX"]
+  },
+  "decoupling-state-from-render-in-llm-streaming": {
+    "slug": "decoupling-state-from-render-in-llm-streaming",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · OCT 2025",
+    "title": "Decoupling State from Render in LLM Streaming",
+    "subtitle": "",
+    "footnote": ["React Performance", "HCI", "60fps"]
+  }
+}

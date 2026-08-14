@@ -7,6 +7,8 @@
   let note = $derived(data.note);
 
   let canonicalUrl = $derived(`https://zhaoyu.io/blog/${note.slug}`);
+  // Per-note card, so syndicated links don't all preview identically.
+  let cardUrl = $derived(`https://zhaoyu.io/og/${note.slug}.png`);
   let description = $derived(noteExcerpt(note));
   let jsonLd = $derived(
     JSON.stringify({
@@ -34,11 +36,12 @@
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:title" content={`${note.title} — Zhao Yu`} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content="https://zhaoyu.io/og-image.png" />
+  <meta property="og:image" content={cardUrl} />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content={canonicalUrl} />
   <meta property="twitter:title" content={note.title} />
   <meta property="twitter:description" content={description} />
+  <meta property="twitter:image" content={cardUrl} />
   <link rel="canonical" href={canonicalUrl} />
 
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->
