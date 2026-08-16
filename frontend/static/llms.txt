@@ -29,8 +29,10 @@ The differentiator is the combination, not any single axis:
    next-generation web video experience, the monetization engine of the
    property. Five surfaces in flight across live viewing, on-demand
    playback with resumable sessions, audience engagement, and
-   notifications. Acting product owner during a PM vacancy: requirements,
-   roadmap, and sequencing alongside technical direction.
+   notifications. The team has no dedicated PM — several rotate through per
+   project; he is the technical continuity across all of them, shaping and
+   defining the work from feasibility and carrying it through the
+   dependent-team discussions that keep it moving.
 3. **Player-coach engineering leadership** — manages a direct team of 8
    engineers and 2 QE, and co-leads the ~20-engineer next-generation
    CNBC.com rebuild across three teams, without leaving the codebase; still
