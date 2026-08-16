@@ -33,9 +33,11 @@ describe('positioning flag — quiet state', () => {
     expect(paragraphs.join(' ')).not.toMatch(/revenue engine|owning both ends/);
   });
 
-  it('drops the monetization framing and acting-PM scope from the video card', () => {
+  it('drops the monetization framing and product-continuity scope from the video card', () => {
     const card = videoCard(QUIET);
-    expect(card.description).not.toMatch(/monetization engine|Acting product owner|PM vacancy/);
+    expect(card.description).not.toMatch(
+      /monetization engine|[redacted]|technical continuity|Acting product owner|PM vacancy/,
+    );
     expect(card.metrics).toContainEqual({ label: 'Playback', value: 'Live + VOD' });
   });
 
@@ -62,11 +64,18 @@ describe('positioning flag — go-loud state', () => {
     expect(loud[1]).toMatch(/revenue engine/);
   });
 
-  it('adds the monetization framing and acting-PM scope to the video card', () => {
+  it('adds the monetization framing and product-continuity scope to the video card', () => {
     const card = videoCard(LOUD);
     expect(card.description).toMatch(/monetization engine/);
-    expect(card.description).toMatch(/Acting product owner during a PM vacancy/);
-    expect(card.metrics).toContainEqual({ label: 'During PM Vacancy', value: 'Acting PO' });
+    expect(card.description).toMatch(/technical continuity across all of them/);
+    // Guard against the retired overstatement: the team has no PM vacancy —
+    // several PMs rotate through per project. See ops/queue.md
+    // `pm-claim-overstatement-FLAGGED` in the exocortex vault.
+    expect(card.description).not.toMatch(/Acting product owner|PM vacancy/);
+    expect(card.metrics).toContainEqual({
+      label: 'Product Continuity',
+      value: 'Across rotating PMs',
+    });
   });
 
   it('leads social descriptions with AI and video', () => {

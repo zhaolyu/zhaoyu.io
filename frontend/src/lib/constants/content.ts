@@ -372,10 +372,10 @@ export interface BuilderProject {
 /**
  * The video card follows the same positioning flag as the hero: the quiet
  * variant describes the work, the loud one adds the revenue framing and the
- * acting-PM scope. See docs/launch-checklist.md.
+ * product-continuity scope. See docs/launch-checklist.md.
  */
 const webVideoLoud =
-  "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. Acting product owner during a PM vacancy: requirements, roadmap, and sequencing, alongside technical direction.";
+  "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications. The team has [redacted] — several rotate through per project. I'm the technical continuity across all of them: shaping and defining the work from feasibility, and carrying it through the dependent-team discussions that keep it moving.";
 
 const webVideoQuiet =
   "Lead the team building CNBC's next-generation web video experience. Five surfaces in flight across live viewing, on-demand playback with [redacted], audience engagement, and notifications — spanning player architecture, playback state, and the delivery path behind them.";
@@ -392,7 +392,7 @@ function webVideoProject(flags: PositioningFlags): BuilderProject {
     metrics: [
       { label: 'Surfaces In Flight', value: '5' },
       loud
-        ? { label: 'During PM Vacancy', value: 'Acting PO' }
+        ? { label: 'Product Continuity', value: 'Across rotating PMs' }
         : { label: 'Playback', value: 'Live + VOD' },
     ],
   };
