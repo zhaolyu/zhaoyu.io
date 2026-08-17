@@ -48,19 +48,107 @@
 
   /* ==========================================================================
 	   Spacing Scale
-	   Base unit: 4px (0.25rem). Named for intent, not pixel value.
+	   Step names, not multipliers. The scale is not linear — it opens up as it
+	   grows — so numeric names would promise arithmetic these values don't keep.
 	   Use these for section padding, gaps, and layout rhythm.
 	   ========================================================================== */
-  --space-1: 0.25rem; /*  4px — icon nudges, fine-grained alignment */
-  --space-2: 0.5rem; /*  8px — tight internal padding (badge, tag) */
-  --space-3: 0.75rem; /* 12px — compact gaps (ticker item margin) */
-  --space-4: 1rem; /* 16px — base unit: inline padding, small gaps */
-  --space-5: 1.5rem; /* 24px — component internal spacing */
-  --space-6: 2rem; /* 32px — card/panel padding */
-  --space-8: 3rem; /* 48px — section header bottom margin */
-  --space-10: 4rem; /* 64px — navbar scroll-margin, mid section padding */
-  --space-12: 6rem; /* 96px — standard section vertical padding */
-  --space-16: 8rem; /* 128px — generous section padding (work section) */
+  --space-2xs: 0.25rem; /*  4px — icon nudges, fine-grained alignment */
+  --space-xs: 0.5rem; /*  8px — tight internal padding (badge, tag) */
+  --space-sm: 0.75rem; /* 12px — compact gaps (ticker item margin) */
+  --space-md: 1rem; /* 16px — base unit: inline padding, small gaps */
+  --space-lg: 1.5rem; /* 24px — component internal spacing */
+  --space-xl: 2rem; /* 32px — card/panel padding */
+  --space-2xl: 3rem; /* 48px — section header bottom margin */
+  --space-3xl: 4rem; /* 64px — navbar scroll-margin, mid section padding */
+  --space-4xl: 6rem; /* 96px — standard section vertical padding */
+  --space-5xl: 8rem; /* 128px — generous section padding (work section) */
+
+  /* ==========================================================================
+	   Type Scale
+	   Size, line-height, and tracking are separate tokens because they don't
+	   pair one-to-one: display sizes want tight leading and negative tracking,
+	   body sizes want the opposite. Pick one from each group.
+	   ========================================================================== */
+  --type-2xs: 0.625rem; /* 10px — badge, stack tag */
+  --type-xs: 0.75rem; /* 12px — eyebrow, metric label, permalink */
+  --type-sm: 0.875rem; /* 14px — card body, dense UI */
+  --type-base: 1rem; /* 16px — default body */
+  --type-md: 1.125rem; /* 18px — lead paragraph */
+  --type-lg: 1.25rem; /* 20px — note title, card heading */
+  --type-xl: 1.5rem; /* 24px — hero bio, sub-headline */
+  --type-2xl: 2rem; /* 32px — section title (mobile) */
+  --type-3xl: 3rem; /* 48px — section title */
+  --type-4xl: 4.5rem; /* 72px — hero headline */
+
+  --leading-tight: 1.1; /* display headlines */
+  --leading-snug: 1.3; /* card + note titles */
+  --leading-normal: 1.6; /* default body */
+  --leading-relaxed: 1.75; /* long-form prose */
+
+  --tracking-tight: -0.025em; /* display sizes only */
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em; /* small caps, permalinks */
+  --tracking-wider: 0.1em; /* mono labels */
+  --tracking-widest: 0.15em; /* category badges */
+
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ==========================================================================
+	   Radius
+	   ========================================================================== */
+  --radius-xs: 0.25rem; /* stack tag, inline code */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem; /* cards */
+  --radius-xl: 1rem;
+  --radius-full: 9999px; /* pills, badges, dots */
+
+  /* ==========================================================================
+	   Elevation — redefined under .dark, where the same alphas read as mud
+	   ========================================================================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* ==========================================================================
+	   Motion
+	   --duration-base is the theme-transition duration every surface already
+	   used as a literal 0.2s; it is the same value, now named.
+	   ========================================================================== */
+  --duration-fast: 0.15s;
+  --duration-base: 0.2s;
+  --duration-slow: 0.4s;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ==========================================================================
+	   Section Rhythm
+	   The audit found section padding alternating 96px and 128px with no rule.
+	   The rule: --section-y is the default, --section-y-lg is for the two
+	   sections that deliberately breathe more (work, notes).
+	   ========================================================================== */
+  --section-y: var(--space-4xl);
+  --section-y-lg: var(--space-5xl);
+  --section-y-mobile: var(--space-3xl);
+  --section-x: var(--space-lg);
+
+  /* ==========================================================================
+	   Surfaces & Scrims
+	   Ink-on-surface alphas, promoted out of ProjectCard's private --ts-* set
+	   so any component drawing a panel, chrome, or inset can reach for them.
+	   ========================================================================== */
+  --surface-raised: var(--bg-secondary);
+  --scrim-subtle: rgba(0, 0, 0, 0.02);
+  --scrim-soft: rgba(0, 0, 0, 0.03);
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-soft: rgba(0, 0, 0, 0.07);
+  --ink-faint: rgba(0, 0, 0, 0.18);
+  --ink-dim: rgba(0, 0, 0, 0.38);
+  --ink-quiet: rgba(0, 0, 0, 0.5);
 
   /* Scrollbar tokens — used by both WebKit and Firefox paths */
   --scrollbar-track-light: #f1f5f9;
@@ -78,6 +166,20 @@
   --text-secondary: #d1d5db;
   --text-muted: #9ca3af;
   --border-color: rgba(255, 255, 255, 0.1);
+
+  /* Scrims invert: ink-on-light becomes light-on-ink. Shadows deepen, because
+     a 5% black shadow is invisible against a #111827 ground. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+
+  --scrim-subtle: rgba(255, 255, 255, 0.03);
+  --scrim-soft: rgba(255, 255, 255, 0.05);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --ink-faint: rgba(255, 255, 255, 0.22);
+  --ink-dim: rgba(255, 255, 255, 0.42);
+  --ink-quiet: rgba(255, 255, 255, 0.55);
 }
 
 /* ==========================================================================
@@ -223,12 +325,18 @@ a:focus-visible {
 
 /* Standard section padding rhythm */
 .section-padding {
-  padding: var(--space-12) var(--space-6);
+  padding: var(--section-y) var(--space-xl);
+}
+
+/* The two sections that deliberately breathe more — see --section-y-lg. */
+.section-padding-lg {
+  padding: var(--section-y-lg) var(--section-x);
 }
 
 @media (max-width: 767px) {
-  .section-padding {
-    padding: var(--space-10) var(--space-5);
+  .section-padding,
+  .section-padding-lg {
+    padding: var(--section-y-mobile) var(--section-x);
   }
 }
 
