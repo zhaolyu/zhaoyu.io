@@ -155,7 +155,7 @@
   .hero-badge {
     background: var(--accent-primary-10);
     border: 1px solid var(--accent-primary-20);
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     transition:
       background-color 0.2s,
       border-color 0.2s,
@@ -171,7 +171,7 @@
   }
 
   .motto-item:hover {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .radial-overlay {

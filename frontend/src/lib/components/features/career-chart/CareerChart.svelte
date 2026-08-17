@@ -1,180 +1,196 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { draw } from 'svelte/transition';
-  import { cubicOut } from 'svelte/easing';
   import { careerHistory } from '$lib/constants/content';
-  import { createSectionObserver } from '$lib/utils/section-observer';
-
-  let sectionVisible = $state(false);
-  let animationKey = $state(0); // Counter key for forcing transition re-trigger
-  let chartContainer: HTMLElement;
+  import { observeSection } from '$lib/utils/section-observer';
 
   const history = careerHistory.points;
-  // Desktop repeats year/role inside the SVG, so only the track changes need prose there.
-  const annotatedPoints = history.filter((point) => point.note);
+  const first = history[0];
+  const last = history[history.length - 1];
 
-  // SVG dimensions
-  const width = 1000;
-  const height = 400;
-  const padding = 50;
-  const labelHeight = 60; // Extra space for labels below chart
+  /* SVG geometry, in user units. The viewBox scales them to the container. */
+  const WIDTH = 1000;
+  const PLOT_HEIGHT = 400;
+  const PADDING = 50;
+  /** Room under the plot for the year axis labels. */
+  const LABEL_BAND = 60;
+  const VIEW_HEIGHT = PLOT_HEIGHT + LABEL_BAND;
 
-  // Helper to map data to pixels
-  const getX = (i: number) => padding + (i / (history.length - 1)) * (width - padding * 2);
-  const getY = (val: number) => height - padding - (val / 100) * (height - padding * 2);
+  /** Gap between each point's fade-in. Six points land inside the line draw. */
+  const STAGGER_MS = 90;
 
-  const pathD = `M ${history.map((h, i) => `${getX(i)},${getY(h.impact)}`).join(' L ')}`;
-  const areaD = `${pathD} L ${width - padding},${height} L ${padding},${height} Z`;
+  const getX = (i: number) => PADDING + (i / (history.length - 1)) * (WIDTH - PADDING * 2);
+  const getY = (impact: number) =>
+    PLOT_HEIGHT - PADDING - (impact / 100) * (PLOT_HEIGHT - PADDING * 2);
 
-  function triggerAnimation() {
-    sectionVisible = true;
-    animationKey++; // Increment key to force remount and re-trigger transition
-  }
+  const pathD = `M ${history.map((point, i) => `${getX(i)},${getY(point.impact)}`).join(' L ')}`;
+  const areaD = `${pathD} L ${WIDTH - PADDING},${PLOT_HEIGHT} L ${PADDING},${PLOT_HEIGHT} Z`;
 
-  onMount(() => {
-    return createSectionObserver(chartContainer, {
-      enableReanimation: true,
+  /**
+   * Length of the polyline, computed from the coordinates rather than measured
+   * off the DOM, so the draw animation can be pure CSS (and therefore inert
+   * under prefers-reduced-motion) instead of a JS transition.
+   */
+  const pathLength = Math.ceil(
+    history.reduce(
+      (total, point, i) =>
+        i === 0
+          ? total
+          : total +
+            Math.hypot(getX(i) - getX(i - 1), getY(point.impact) - getY(history[i - 1].impact)),
+      0,
+    ),
+  );
+
+  /** Edge labels anchor inward so they don't hang off the plot. */
+  const anchorFor = (i: number) =>
+    i === 0 ? 'start' : i === history.length - 1 ? 'end' : 'middle';
+
+  const TOOLTIP_W = 150;
+  const TOOLTIP_H = 66;
+  /** Keep the card inside the viewBox horizontally. */
+  const tooltipX = (i: number) => Math.min(Math.max(getX(i) - TOOLTIP_W / 2, 0), WIDTH - TOOLTIP_W);
+  /** Sit above the marker, or flip below it when there's no room up top. */
+  const tooltipY = (impact: number) => {
+    const y = getY(impact);
+    const above = y - TOOLTIP_H - 12;
+    return above >= 0 ? above : y + 14;
+  };
+
+  const chartLabel =
+    `Line chart of career progression from ${first.year} to ${last.year}: ` +
+    `${first.role} at ${first.company} through ${last.role} at ${last.company}. ` +
+    `Every point is listed in full below the chart.`;
+
+  let sectionVisible = $state(false);
+  let chartSection: HTMLElement;
+
+  onMount(() =>
+    observeSection(chartSection, {
       onVisible: () => {
-        triggerAnimation();
+        sectionVisible = true;
       },
       threshold: 0.2,
-    });
-  });
+    }),
+  );
 </script>
 
-<section id="career" class="career-chart-section" bind:this={chartContainer}>
+<section id="career" class="career-chart-section" bind:this={chartSection}>
   <div class="chart-container">
     <div class="chart-header">
       <h2 class="section-badge">Career Velocity</h2>
       <h3 class="section-title">Both Tracks. On Purpose.</h3>
     </div>
 
-    <div class="chart-wrapper">
-      <!-- Mobile: Show data points as list -->
-      <div class="mobile-points-list">
-        {#each history as point (point.year)}
-          <div class="mobile-point-item">
-            <div class="mobile-point-year">{point.year}</div>
-            <div class="mobile-point-role">{point.role}</div>
-            <div class="mobile-point-company">{point.company}</div>
-            {#if point.note}
-              <p class="point-note">{point.note}</p>
-            {/if}
-          </div>
-        {/each}
-      </div>
+    <!-- Always rendered so the chart prerenders and reads as data without JS;
+         the draw and the staggered fades are animation-only enhancement. -->
+    <div
+      class="chart-wrapper reveal"
+      class:revealed={sectionVisible}
+      style="--chart-aspect: {WIDTH} / {VIEW_HEIGHT}; --path-length: {pathLength};"
+    >
+      <svg
+        viewBox="0 0 {WIDTH} {VIEW_HEIGHT}"
+        preserveAspectRatio="xMidYMin meet"
+        class="chart-svg"
+        role="img"
+        aria-label={chartLabel}
+      >
+        <defs>
+          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.2" />
+            <stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0" />
+          </linearGradient>
+        </defs>
 
-      {#if sectionVisible}
-        <svg
-          viewBox="0 0 {width} {height + labelHeight}"
-          preserveAspectRatio="xMidYMin meet"
-          class="chart-svg"
-        >
-          <defs>
-            <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="var(--accent-primary)" stop-opacity="0.2" />
-              <stop offset="100%" stop-color="var(--accent-primary)" stop-opacity="0" />
-            </linearGradient>
-          </defs>
+        <path d={areaD} fill="url(#chartGradient)" class="chart-area" />
 
-          <path d={areaD} fill="url(#chartGradient)" class="chart-area" />
+        <path
+          d={pathD}
+          fill="none"
+          stroke="var(--accent-primary)"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="chart-line"
+        />
 
-          {#key animationKey}
-            <path
-              d={pathD}
-              fill="none"
-              stroke="var(--accent-primary)"
-              stroke-width="3"
-              stroke-linecap="round"
-              class="chart-line"
-              in:draw={{ duration: 4000, easing: cubicOut }}
+        {#each history as point, i (point.year)}
+          <g class="point-group">
+            <!-- Generous transparent hit area: the 6px marker is a hard target. -->
+            <circle cx={getX(i)} cy={getY(point.impact)} r="26" class="point-hit" />
+
+            <circle
+              cx={getX(i)}
+              cy={getY(point.impact)}
+              r="6"
+              class="chart-point"
+              style="animation-delay: {i * STAGGER_MS}ms;"
             />
-          {/key}
 
-          {#each history as point, i (point.year)}
-            {@const tooltipX = getX(i) - 75}
-            {@const tooltipY = getY(point.impact) - 80}
-            <g class="point-group">
-              <circle
-                cx={getX(i)}
-                cy={getY(point.impact)}
-                r="6"
-                class="chart-point"
-                style="animation-delay: {1000 + i * 100}ms;"
-              />
+            <text
+              x={getX(i)}
+              y={PLOT_HEIGHT - PADDING + 22}
+              class="year-label"
+              text-anchor={anchorFor(i)}
+              style="animation-delay: {i * STAGGER_MS}ms;"
+            >
+              {point.year}
+            </text>
 
-              <text
-                x={getX(i)}
-                y={height - padding + 18}
-                class="year-label"
-                text-anchor="middle"
-                style="animation-delay: {1000 + i * 100}ms;"
-              >
-                {point.year}
-              </text>
-
-              <text
-                x={getX(i)}
-                y={height - padding + 32}
-                class="role-label"
-                text-anchor="middle"
-                style="animation-delay: {1200 + i * 100}ms;"
-              >
-                {point.role}
-              </text>
-
-              <foreignObject
-                x={Math.max(padding - 75, Math.min(tooltipX, width - padding - 75))}
-                y={Math.max(padding - 80, Math.min(tooltipY, height - padding - 10))}
-                width="150"
-                height="70"
-                class="point-tooltip"
-              >
-                <div class="tooltip-content">
-                  <div class="flex flex-col items-center text-center">
-                    <span class="text-[10px] sm:text-xs font-bold tooltip-year-text">
-                      {point.year}
-                    </span>
-                    <span
-                      class="hidden md:block text-[10px] font-mono tooltip-title-text mt-1 uppercase tracking-wider"
-                    >
-                      {point.role}
-                    </span>
-                  </div>
-                </div>
-              </foreignObject>
-            </g>
-          {/each}
-        </svg>
-      {/if}
+            <!-- Years only on the axis. Points are spaced by index, so 2025 and
+                 2026 sit one slot apart, and "Senior Manager, Engineering" is
+                 wide enough to overprint "Principal Engineer". The list below
+                 carries role, company and note for every point, so dropping the
+                 axis role label removes a collision and a duplication at once. -->
+            <foreignObject
+              x={tooltipX(i)}
+              y={tooltipY(point.impact)}
+              width={TOOLTIP_W}
+              height={TOOLTIP_H}
+              class="point-tooltip"
+            >
+              <div class="tooltip-content">
+                <span class="tooltip-year">{point.year}</span>
+                <span class="tooltip-company">{point.company}</span>
+              </div>
+            </foreignObject>
+          </g>
+        {/each}
+      </svg>
     </div>
 
-    <div class="track-notes">
-      {#each annotatedPoints as point (point.year)}
-        <div class="track-note">
-          <div class="track-note-head">{point.year} · {point.role}</div>
-          <p class="point-note">{point.note}</p>
-        </div>
+    <!-- One list for every point, at every breakpoint: the note travels with the
+         point it belongs to, and a point without a note simply ends earlier. -->
+    <ol class="career-points reveal" class:revealed={sectionVisible}>
+      {#each history as point (point.year)}
+        <li class="career-point">
+          <div class="career-point-year">
+            <span class="career-point-dot" aria-hidden="true"></span>
+            {point.year}
+          </div>
+          <div class="career-point-role">{point.role}</div>
+          <div class="career-point-company">{point.company}</div>
+          {#if point.note}
+            <p class="career-point-note">{point.note}</p>
+          {/if}
+        </li>
       {/each}
-    </div>
+    </ol>
   </div>
 </section>
 
 <style>
   .career-chart-section {
-    padding: 6rem 1.5rem;
-    padding-bottom: 3rem;
+    padding: var(--section-y) var(--section-x) var(--space-2xl);
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border-color);
     color: var(--text-primary);
     transition:
-      background-color 0.2s,
-      color 0.2s,
-      border-color 0.2s;
-    scroll-margin-top: 4rem;
+      background-color var(--duration-base),
+      color var(--duration-base),
+      border-color var(--duration-base);
+    scroll-margin-top: var(--space-3xl);
     position: relative;
     overflow: visible;
-    margin-bottom: 2rem;
   }
 
   .chart-container {
@@ -183,315 +199,260 @@
   }
 
   .chart-header {
-    margin-bottom: 3rem;
+    margin-bottom: var(--space-2xl);
     text-align: center;
   }
 
   .section-badge {
-    font-size: 0.75rem;
+    font-size: var(--type-xs);
     font-family: var(--font-mono);
-    color: var(--accent-primary-light);
-    letter-spacing: 0.25em;
+    color: var(--accent-primary-text);
+    letter-spacing: var(--tracking-widest);
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-xs);
   }
 
   .section-title {
-    font-size: clamp(1.875rem, 4vw, 2.25rem);
-    font-weight: 700;
+    font-size: clamp(var(--type-2xl), 4vw, 2.25rem);
+    font-weight: var(--weight-bold);
     color: var(--text-primary);
-    line-height: 1.2;
+    line-height: var(--leading-tight);
   }
+
+  /* ---------- Chart ---------- */
 
   .chart-wrapper {
     position: relative;
     width: 100%;
-    height: 400px;
-    margin-bottom: 4rem;
+    aspect-ratio: var(--chart-aspect);
+    margin-bottom: var(--space-2xl);
     overflow: visible;
-  }
-
-  .chart-svg {
-    overflow: visible;
-  }
-
-  @media (min-width: 768px) {
-    .career-chart-section {
-      margin-bottom: 1rem;
-    }
-
-    .chart-wrapper {
-      height: auto;
-      aspect-ratio: 2.5 / 1;
-      margin-bottom: 3rem;
-    }
   }
 
   .chart-svg {
     width: 100%;
     height: 100%;
     overflow: visible;
-    /* Ensure SVG always takes up space to prevent layout shifts */
-    min-height: 400px;
   }
 
-  @media (min-width: 768px) {
-    .chart-svg {
-      overflow: visible;
-    }
-  }
-
+  /* The SVG is too dense to read below 768px; the list carries the data there,
+     so the wrapper goes with it rather than leaving an empty band. */
   @media (max-width: 767px) {
-    .chart-svg {
+    .career-chart-section {
+      padding: var(--section-y-mobile) var(--section-x) var(--space-2xl);
+    }
+
+    .chart-wrapper {
       display: none;
     }
-  }
-
-  .chart-area {
-    opacity: 1;
-    transition: opacity 1s 0.5s;
   }
 
   .chart-line {
     stroke-width: 3;
   }
 
-  @media (max-width: 767px) {
-    .chart-line {
-      stroke-width: 4;
-    }
+  .point-hit {
+    fill: transparent;
   }
 
   .point-group {
     cursor: crosshair;
-    opacity: 1;
   }
 
   .chart-point {
     fill: var(--bg-primary);
     stroke: var(--accent-primary);
     stroke-width: 2;
-    opacity: 0;
-    animation: fade-in 0.3s ease-in-out forwards;
     transition:
-      fill 0.2s,
-      stroke-width 0.2s,
-      transform 0.2s;
+      fill var(--duration-base),
+      stroke-width var(--duration-base);
   }
 
-  @media (max-width: 767px) {
-    .chart-point {
-      stroke-width: 3;
-      transform: scale(1.33);
-    }
-  }
-
-  .chart-point:hover {
+  .point-group:hover .chart-point {
     fill: var(--accent-primary);
   }
 
+  /* Axis label sizes are in SVG user units, not DOM pixels: the viewBox scales
+     them up by roughly 1.3x at the container's max width, which is why they sit
+     below the --type-* scale rather than on it. */
   .year-label {
-    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-size: 0.7rem;
     font-family: var(--font-mono);
     fill: var(--text-primary);
-    font-weight: 700;
-    opacity: 0;
-    animation: fade-in 0.3s ease-in-out forwards;
-    transition: fill 0.2s;
+    font-weight: var(--weight-bold);
+    transition: fill var(--duration-base);
   }
 
-  .role-label {
-    font-size: clamp(0.625rem, 1.8vw, 0.75rem);
-    font-family: var(--font-mono);
-    fill: var(--text-secondary);
+  /* ---------- Hover detail: the one datum the axis doesn't carry ---------- */
+
+  .point-tooltip {
     opacity: 0;
-    animation: fade-in 0.3s ease-in-out forwards;
-    transition: fill 0.2s;
+    pointer-events: none;
+    transition: opacity var(--duration-base);
+  }
+
+  .point-group:hover .point-tooltip {
+    opacity: 1;
+  }
+
+  .tooltip-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: var(--space-xs);
+    border-radius: var(--radius-xs);
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    transition:
+      background-color var(--duration-base),
+      border-color var(--duration-base);
+  }
+
+  .tooltip-year {
+    font-size: var(--type-xs);
+    font-family: var(--font-mono);
+    font-weight: var(--weight-bold);
+    color: var(--text-secondary);
+  }
+
+  .tooltip-company {
+    font-size: var(--type-2xs);
+    font-family: var(--font-mono);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  /* ---------- Per-point list ---------- */
+
+  .career-points {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: var(--space-md);
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   @media (min-width: 768px) {
-    .year-label {
-      font-size: 0.7rem;
-    }
-
-    .role-label {
-      font-size: 0.55rem;
-      letter-spacing: 0.1em;
-      word-spacing: 0.1em;
+    .career-points {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-lg);
     }
   }
 
-  @media (max-width: 767px) {
-    .year-label {
-      font-size: clamp(0.875rem, 3vw, 1rem);
-      fill: var(--text-primary);
+  .career-point {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    text-align: left;
+    transition:
+      background-color var(--duration-base),
+      border-color var(--duration-base);
+  }
+
+  .career-point-year {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--type-sm);
+    font-family: var(--font-mono);
+    color: var(--accent-primary-text);
+    font-weight: var(--weight-bold);
+    margin-bottom: var(--space-2xs);
+  }
+
+  /* Echoes the plot marker so a row reads as "this point", not a loose caption. */
+  .career-point-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--accent-primary);
+    background: var(--bg-primary);
+    flex: none;
+    transition: background-color var(--duration-base);
+  }
+
+  .career-point-role {
+    font-size: var(--type-base);
+    color: var(--text-primary);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    margin-bottom: var(--space-2xs);
+  }
+
+  .career-point-company {
+    font-size: var(--type-xs);
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .career-point-note {
+    font-size: var(--type-sm);
+    line-height: var(--leading-normal);
+    color: var(--text-secondary);
+    margin-top: var(--space-xs);
+    transition: color var(--duration-base);
+  }
+
+  /* ---------- Animation-only enhancement ----------
+     Everything above renders the finished chart. The rules below are the only
+     ones that hide anything, and they apply solely when JS can run the observer
+     and the reader hasn't asked for reduced motion — so no-JS readers, crawlers
+     and reduced-motion readers get the complete, static chart. Total sequence:
+     ~690ms (650ms line draw; last point lands at 5 x 90ms + 240ms). */
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .reveal .chart-line {
+      stroke-dasharray: var(--path-length);
+      stroke-dashoffset: var(--path-length);
     }
 
-    .role-label {
-      font-size: clamp(0.625rem, 2vw, 0.75rem);
-      visibility: visible;
-      fill: var(--text-secondary);
+    .reveal.revealed .chart-line {
+      animation: draw-line 650ms var(--ease-out) forwards;
+    }
+
+    .reveal .chart-area,
+    .reveal .chart-point,
+    .reveal .year-label {
+      opacity: 0;
+    }
+
+    .reveal.revealed .chart-area,
+    .reveal.revealed .chart-point,
+    .reveal.revealed .year-label {
+      animation: fade-in 240ms var(--ease-out) forwards;
+    }
+
+    .career-points.reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity var(--duration-slow) var(--ease-out) 0.1s,
+        transform var(--duration-slow) var(--ease-out) 0.1s;
+    }
+
+    .career-points.reveal.revealed {
+      opacity: 1;
+      transform: none;
     }
   }
 
-  .point-group:hover .year-label,
-  .point-group:hover .role-label {
-    fill: var(--text-primary);
+  @keyframes draw-line {
+    to {
+      stroke-dashoffset: 0;
+    }
   }
 
   @keyframes fade-in {
     to {
       opacity: 1;
-    }
-  }
-
-  .point-tooltip {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-  }
-
-  .point-group:hover .point-tooltip,
-  .point-group:active .point-tooltip {
-    opacity: 1;
-  }
-
-  @media (max-width: 767px) {
-    .point-tooltip {
-      pointer-events: auto;
-    }
-
-    .point-group:active .point-tooltip {
-      opacity: 1;
-    }
-  }
-
-  .tooltip-content {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    text-align: center;
-    box-shadow:
-      0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    transition:
-      background-color 0.2s,
-      border-color 0.2s;
-  }
-
-  .tooltip-year-text {
-    color: var(--text-secondary);
-  }
-
-  .tooltip-title-text {
-    color: var(--text-muted);
-  }
-
-  .point-note {
-    font-size: 0.8125rem;
-    line-height: 1.5;
-    color: var(--text-secondary);
-    margin-top: 0.5rem;
-    transition: color 0.2s;
-  }
-
-  /* Desktop-only: the SVG already carries year/role, so this strip adds the
-     prose that explains the two track changes. Mobile gets the same notes
-     inline in .mobile-points-list instead. */
-  .track-notes {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-    max-width: 60rem;
-    margin: 0 auto;
-  }
-
-  .track-note {
-    border-top: 1px solid var(--border-color);
-    padding-top: 1rem;
-    transition: border-color 0.2s;
-  }
-
-  .track-note-head {
-    font-size: 0.6875rem;
-    font-family: var(--font-mono);
-    color: var(--accent-primary-light);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    transition: color 0.2s;
-  }
-
-  .track-note .point-note {
-    margin-top: 0.375rem;
-  }
-
-  .mobile-points-list {
-    display: none;
-  }
-
-  @media (max-width: 767px) {
-    .career-chart-section {
-      padding: 4rem 1rem 12rem 1rem;
-      min-height: auto;
-      margin-bottom: 4rem;
-    }
-
-    .chart-header {
-      margin-bottom: 2rem;
-    }
-
-    .chart-wrapper {
-      height: 400px;
-      margin-bottom: 4rem;
-    }
-
-    .track-notes {
-      display: none;
-    }
-
-    .mobile-points-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .mobile-point-item {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: left;
-    }
-
-    .mobile-point-year {
-      font-size: 0.875rem;
-      font-family: var(--font-mono);
-      color: var(--accent-primary-light);
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .mobile-point-role {
-      font-size: 1rem;
-      color: var(--text-primary);
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .mobile-point-company {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .chart-svg {
-      min-height: 400px;
     }
   }
 </style>

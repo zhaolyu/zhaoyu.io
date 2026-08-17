@@ -80,6 +80,38 @@ Plan (and get approval) before coding when: multi-file changes, new features tou
 
 ---
 
+## Design System
+
+`src/app.css` is the single source of truth for tokens. **Never hardcode a colour, size, radius, shadow, duration, or spacing value in a component** — reach for a token, and if none fits, add it to `app.css` rather than inventing a local literal.
+
+| Family | Tokens | Notes |
+|--------|--------|-------|
+| Colour roles | `--bg-*`, `--text-*`, `--border-color`, `--accent-*`, `--status-*` | Roles, not hues. `.dark` swaps values only. |
+| Accent as text | `--accent-primary-text`, `--accent-{professional,independent,experiment}` | Theme-flipped for AA contrast. `--accent-primary-light` is for **fills/dots/borders only** — it fails AA as text on light. |
+| Surfaces & scrims | `--surface-raised`, `--scrim-*`, `--border-subtle\|soft`, `--ink-*` | Ink-on-surface alphas; invert under `.dark`. |
+| Type | `--type-2xs…4xl`, `--leading-*`, `--tracking-*`, `--weight-*` | Size/leading/tracking are separate — they don't pair 1:1. |
+| Spacing | `--space-2xs…5xl` | Step names, never numeric: the scale is non-linear. |
+| Rhythm | `--section-y`, `--section-y-lg`, `--section-y-mobile`, `--section-x` | `-lg` only for sections that deliberately breathe more. |
+| Radius / elevation / motion | `--radius-*`, `--shadow-*`, `--duration-*`, `--ease-*` | Shadows are redefined under `.dark`. |
+
+### Rules that are enforced by tests
+
+- `design-tokens.ts` mirrors `app.css` so previews can enumerate tokens. `design-tokens.test.ts` parses `app.css` and **fails on drift** — add a token to a covered family and you must register it.
+- Type hierarchy on cards: **classification > measurement > description**. Mono is reserved for measured values and identifiers; descriptive labels use sans. Don't put everything in mono-uppercase.
+- Sections render their content **always**; reveals are animation-only, gated on `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`. Never hide content behind `{#if visible}` — it won't prerender.
+
+### Claude Design hand-off
+
+`/design-system` prerenders one preview page per card from the **real components**, so a card can't drift from what ships. `src/lib/constants/design-system.ts` is the card registry.
+
+```bash
+pnpm build && pnpm design-system   # writes design-system/ (gitignored)
+```
+
+Then, from a **local** terminal — design sync needs an interactive login a remote web session can't perform — run `/design-sync` and push component by component, never wholesale.
+
+---
+
 ## Utilities
 
 **Check `$lib/utils/` before writing any helper.** Existing utils:
@@ -90,6 +122,7 @@ Plan (and get approval) before coding when: multi-file changes, new features tou
 - `cost-projection.ts` – Cost-Guard aggregation/projection math
 - `cost-guard-display.ts` – Cost-Guard snapshot display formatting
 - `feature-flags.ts` – filters content items by `FEATURE_FLAGS` (config.ts)
+- `note-excerpt.ts` – strips HTML and truncates a note for excerpt cards
 
 New utils require a colocated `*.test.ts` with ≥90% coverage.
 

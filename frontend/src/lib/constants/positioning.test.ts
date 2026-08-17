@@ -45,6 +45,14 @@ describe('positioning flag — quiet state', () => {
     expect(card.metrics).toContainEqual({ label: 'Playback', value: 'Live + VOD' });
   });
 
+  it('claims video architecture but not video team leadership', () => {
+    // The quiet card may say it architected the video experiences; only the
+    // loud one says he leads the team shipping them.
+    const card = platformCard(QUIET);
+    expect(card.description).toMatch(/core video streaming experiences/);
+    expect(card.description).not.toMatch(/lead the team|surfaces in flight/i);
+  });
+
   it('keeps social descriptions scope-describing', () => {
     const { meta, twitter } = buildSocialDescriptions(QUIET);
     expect(`${meta} ${twitter}`).not.toMatch(/AI financial assistant|next-gen web video/);
@@ -72,6 +80,11 @@ describe('positioning flag — go-loud state', () => {
     const card = platformCard(LOUD);
     expect(card.description).toMatch(/monetization engine/);
     expect(card.description).toMatch(/technical continuity across all of them/);
+    // The video-team leadership detail the standalone video card used to carry:
+    // leading the team, the five surfaces, and the layers they span.
+    expect(card.description).toMatch(/I lead the team building the video surfaces/);
+    expect(card.description).toMatch(/five in flight/);
+    expect(card.description).toMatch(/player architecture, playback state/);
     // Guard against the retired overstatement: the team has no PM vacancy —
     // several PMs rotate through per project. See ops/queue.md
     // `pm-claim-overstatement-FLAGGED` in the exocortex vault.

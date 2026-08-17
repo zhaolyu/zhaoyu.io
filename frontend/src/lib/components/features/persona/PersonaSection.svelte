@@ -131,7 +131,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .card-body {

@@ -27,12 +27,27 @@
   --accent-primary: #3b82f6;
   --accent-primary-hover: #2563eb;
   --accent-primary-light: #60a5fa;
+  /* Accent as TEXT. --accent-primary-light is tuned for dark grounds and hits
+     only ~2.4:1 on a white one, which fails AA at the eyebrow/label sizes it
+     was being used for. This flips per theme; use it for any accent-coloured
+     text, and keep --accent-primary-light for fills, dots, and borders. */
+  --accent-primary-text: #1d4ed8;
   --accent-primary-dark: #1d4ed8;
   --accent-gradient-start: #3b82f6;
   --accent-gradient-end: #6366f1;
   --accent-primary-10: rgba(59, 130, 246, 0.1);
   --accent-primary-20: rgba(59, 130, 246, 0.2);
   --accent-primary-30: rgba(59, 130, 246, 0.3);
+
+  /* Category Accents — classification badges (professional / independent /
+     experiment). These are the readable-on-surface variants: the -light accents
+     are tuned for dark grounds and fall below WCAG AA as 10px text on a light
+     one, so the badge takes these and flips them under .dark instead. */
+  --accent-professional: #1d4ed8;
+  --accent-independent: #b45309;
+  --accent-experiment: #0e7490;
+  --accent-independent-10: rgba(180, 83, 9, 0.1);
+  --accent-independent-20: rgba(180, 83, 9, 0.2);
 
   /* Infra Accent — Cyan (used for /infra ops dashboard) */
   --accent-infra: #06b6d4;
@@ -166,6 +181,17 @@
   --text-secondary: #d1d5db;
   --text-muted: #9ca3af;
   --border-color: rgba(255, 255, 255, 0.1);
+
+  /* On a dark ground the light accent is already the readable end. */
+  --accent-primary-text: #60a5fa;
+
+  /* Category accents flip to their light variants, which are the readable end
+     against a dark ground. */
+  --accent-professional: #60a5fa;
+  --accent-independent: #fbbf24;
+  --accent-experiment: #22d3ee;
+  --accent-independent-10: rgba(251, 191, 36, 0.1);
+  --accent-independent-20: rgba(251, 191, 36, 0.2);
 
   /* Scrims invert: ink-on-light becomes light-on-ink. Shadows deepen, because
      a 5% black shadow is invisible against a #111827 ground. */

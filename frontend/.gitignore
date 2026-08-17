@@ -31,3 +31,6 @@ pnpm-debug.log*
 *.tsbuildinfo
 # Scratch profiles/screenshots from scripts/generate-og-images.mjs
 .og-tmp/
+
+# Claude Design hand-off bundle — regenerate with `pnpm build && pnpm design-system`
+/design-system/
