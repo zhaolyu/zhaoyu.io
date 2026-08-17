@@ -32,20 +32,20 @@
 
 <style>
   .section-header {
-    margin-bottom: var(--space-8, 3rem);
+    margin-bottom: var(--space-2xl, 3rem);
   }
 
   @media (max-width: 768px) {
     .section-header {
-      margin-bottom: var(--space-6, 2rem);
+      margin-bottom: var(--space-xl, 2rem);
     }
   }
 
   .header-badge {
     display: flex;
     align-items: center;
-    gap: var(--space-4, 1rem);
-    margin-bottom: var(--space-5, 1.5rem);
+    gap: var(--space-md, 1rem);
+    margin-bottom: var(--space-lg, 1.5rem);
   }
 
   .badge-line {
@@ -58,7 +58,7 @@
   .badge-text {
     font-size: 0.75rem;
     font-family: var(--font-mono);
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     letter-spacing: 0.2em;
     text-transform: uppercase;
   }

@@ -63,8 +63,11 @@
       class="hero-headline text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight"
     >
       {heroContent.headline.primary}<br />
+      <!-- One type step down from the primary line: the tagline is a subhead,
+           and at full h1 size it wraps to six lines on a 390px viewport and
+           pushes the bio and both CTAs off the fold. -->
       <span
-        class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-400 dark:to-indigo-400"
+        class="hero-accent block text-2xl md:text-5xl mt-3 md:mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-400 dark:to-indigo-400"
       >
         {heroContent.headline.accent}
       </span>
@@ -152,7 +155,7 @@
   .hero-badge {
     background: var(--accent-primary-10);
     border: 1px solid var(--accent-primary-20);
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     transition:
       background-color 0.2s,
       border-color 0.2s,
@@ -168,7 +171,7 @@
   }
 
   .motto-item:hover {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .radial-overlay {

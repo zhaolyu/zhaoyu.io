@@ -42,7 +42,7 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-sm) var(--space-md);
     font-family: var(--font-mono);
     font-size: 0.75rem;
     transition:
@@ -54,14 +54,14 @@
   .hud-row {
     display: flex;
     align-items: center;
-    gap: var(--space-6);
+    gap: var(--space-xl);
     flex-wrap: wrap;
   }
 
   .hud-cell {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: var(--space-2xs);
   }
 
   .hud-trailing {
@@ -83,7 +83,7 @@
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-xs);
   }
 
   /* Status cell gets the accent — it's the one value that means something at a glance */
@@ -117,7 +117,7 @@
 
   @media (max-width: 640px) {
     .hud-row {
-      gap: var(--space-4);
+      gap: var(--space-md);
     }
 
     .hud-trailing {

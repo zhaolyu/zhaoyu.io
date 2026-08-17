@@ -72,7 +72,7 @@
 
 <style>
   .filter-bar {
-    padding: var(--space-3) var(--space-5);
+    padding: var(--space-sm) var(--space-lg);
     border-bottom: 1px solid var(--border-color);
     background: var(--bg-primary);
   }
@@ -81,14 +81,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-xs);
   }
 
   .chip-divider {
     width: 1px;
     height: 16px;
     background: var(--border-color);
-    margin: 0 var(--space-1);
+    margin: 0 var(--space-2xs);
   }
 
   .chip {
@@ -146,7 +146,7 @@
     color: var(--text-muted);
     cursor: pointer;
     transition: color 0.15s;
-    margin-left: var(--space-1);
+    margin-left: var(--space-2xs);
   }
 
   .chip-clear:hover {
@@ -155,7 +155,7 @@
 
   @media (max-width: 640px) {
     .filter-bar {
-      padding: var(--space-2) var(--space-4);
+      padding: var(--space-xs) var(--space-md);
     }
   }
 </style>

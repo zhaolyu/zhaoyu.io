@@ -92,7 +92,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     text-decoration: none;
   }
 
@@ -150,7 +150,7 @@
   }
 
   .tag {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .note-title {

@@ -27,22 +27,22 @@ describe('visibleItems', () => {
 });
 
 describe('current site content', () => {
-  it('hides the unlaunched CNBC AI cards under default flags', () => {
+  it('hides the unlaunched AI product-internals card under default flags', () => {
     const projectTitles = visibleItems(projectsData.projects).map((p) => p.title);
     const builderTitles = visibleItems(builderProjects).map((p) => p.title);
 
-    // Assert the gated cards exist before asserting they're hidden — otherwise
-    // renaming a card turns the negative assertions below into no-ops.
+    // Assert the gated card exists before asserting it's hidden — otherwise
+    // renaming a card turns the negative assertion below into a no-op.
     expect(projectsData.projects.map((p) => p.title)).toContain('CNBC AI Insight Engine');
-    expect(builderProjects.map((p) => p.title)).toContain('CNBC AI Financial Assistant');
-
     expect(projectTitles).not.toContain('CNBC AI Insight Engine');
-    expect(builderTitles).not.toContain('CNBC AI Financial Assistant');
 
-    // the rest of the work remains visible
+    // the rest of the work remains visible — including the AI assistant
+    // summary card, which ships unflagged because its copy is scoped to the
+    // beta pilot rather than to an unlaunched public product.
     expect(projectTitles).toContain('CNBC.com Next-Gen Migration');
-    expect(builderTitles).toContain('CNBC Next-Gen Web Video');
-    expect(builderTitles).toContain('CNBC UI Factory Initiative');
-    expect(builderTitles).toContain('Cost-Guard: Infra Dashboard');
+    expect(builderTitles).toContain('AI Financial Assistant (Architecture Pilot)');
+    expect(builderTitles).toContain('CNBC.com Next-Gen Platform & Video Rebuild');
+    expect(builderTitles).toContain('Infrastructure & Privacy Separation');
+    expect(builderTitles).toContain('Cost-Guard: FinOps Platform');
   });
 });

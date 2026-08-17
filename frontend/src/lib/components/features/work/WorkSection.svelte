@@ -44,15 +44,15 @@
 
 <style>
   .work-section {
-    padding: 8rem 1.5rem;
+    padding: var(--section-y-lg) var(--section-x);
     max-width: 72rem;
     margin: 0 auto;
     background: var(--bg-primary);
     color: var(--text-primary);
     transition:
-      background-color 0.2s,
-      color 0.2s;
-    scroll-margin-top: 4rem;
+      background-color var(--duration-base),
+      color var(--duration-base);
+    scroll-margin-top: var(--space-3xl);
   }
 
   @media (min-width: 768px) {
@@ -64,14 +64,25 @@
   .projects-container {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
-    margin-bottom: 4rem;
+    gap: var(--space-2xl);
+    margin-bottom: var(--space-3xl);
   }
 
   .systems-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-5);
+    gap: var(--space-lg);
+  }
+
+  /* The lead card is the headline of the section, so it takes the full row and
+     the rest run two-up beneath it. The second rule keeps that honest when the
+     card count changes behind a feature flag: a trailing card that would sit
+     alone at half width (i.e. an even total, since the lead takes its own row)
+     spans the row instead of leaving dead space beside it. Both are no-ops in
+     the single-column mobile grid. */
+  .systems-grid > :global(*:first-child),
+  .systems-grid > :global(*:last-child:nth-child(even)) {
+    grid-column: 1 / -1;
   }
 
   /* Entrance animation only when JS runs and motion is allowed; content is
@@ -97,7 +108,7 @@
 
   @media (max-width: 768px) {
     .work-section {
-      padding: 8rem 1.5rem 4rem 1.5rem;
+      padding: var(--section-y-lg) var(--section-x) var(--space-3xl) var(--section-x);
     }
 
     .systems-grid {
