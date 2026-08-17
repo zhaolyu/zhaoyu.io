@@ -67,9 +67,143 @@ export const colorTokens: TokenGroup = {
       dark: '#22d3ee',
       usage: 'Experiment category badge',
     },
-    { name: 'status-success', value: '#10b981', usage: 'Shipped, healthy' },
-    { name: 'status-warning', value: '#fbbf24', usage: 'Degraded, exploring' },
-    { name: 'status-error', value: '#ef4444', usage: 'Failed, over budget' },
+  ],
+};
+
+export const statusTokens: TokenGroup = {
+  id: 'status',
+  title: 'Status & state',
+  description:
+    'Semantic state, separate from the category accents: a shipped badge and a profitable P&L are the same idea, a professional project and an independent one are not. The bare token is the fill; -text is the readable end and flips per theme; -10/-20 are the tints components used to hand-roll as one-off rgba().',
+  tokens: [
+    { name: 'status-success', value: '#10b981', usage: 'Fill: healthy dot, positive bar' },
+    { name: 'status-warning', value: '#fbbf24', usage: 'Fill: degraded, caution' },
+    { name: 'status-error', value: '#ef4444', usage: 'Fill: failed, loss' },
+    { name: 'status-info', value: '#3b82f6', usage: 'Fill: neutral signal, baseline' },
+    {
+      name: 'status-success-text',
+      value: 'oklch(52% 0.15 150)',
+      dark: 'oklch(74% 0.17 150)',
+      usage: 'Positive delta, gain as text',
+    },
+    {
+      name: 'status-warning-text',
+      value: 'oklch(52% 0.13 75)',
+      dark: 'oklch(80% 0.15 85)',
+      usage: 'Marginal value as text',
+    },
+    {
+      name: 'status-error-text',
+      value: 'oklch(52% 0.19 25)',
+      dark: 'oklch(70% 0.19 25)',
+      usage: 'Negative delta, loss as text',
+    },
+    {
+      name: 'status-info-text',
+      value: 'oklch(48% 0.18 255)',
+      dark: 'oklch(72% 0.14 250)',
+      usage: 'Neutral emphasis as text',
+    },
+    {
+      name: 'status-success-10',
+      value: 'rgba(16, 185, 129, 0.1)',
+      dark: 'rgba(62, 207, 127, 0.1)',
+      usage: 'Pill and row tint',
+    },
+    {
+      name: 'status-success-20',
+      value: 'rgba(16, 185, 129, 0.2)',
+      dark: 'rgba(62, 207, 127, 0.2)',
+      usage: 'Pill border, hover tint',
+    },
+    {
+      name: 'status-warning-10',
+      value: 'rgba(251, 191, 36, 0.1)',
+      dark: 'rgba(224, 168, 0, 0.1)',
+      usage: 'Pill and row tint',
+    },
+    {
+      name: 'status-warning-20',
+      value: 'rgba(251, 191, 36, 0.2)',
+      dark: 'rgba(224, 168, 0, 0.2)',
+      usage: 'Pill border, hover tint',
+    },
+    {
+      name: 'status-error-10',
+      value: 'rgba(239, 68, 68, 0.1)',
+      dark: 'rgba(255, 107, 98, 0.1)',
+      usage: 'Pill and row tint',
+    },
+    {
+      name: 'status-error-20',
+      value: 'rgba(239, 68, 68, 0.2)',
+      dark: 'rgba(255, 107, 98, 0.2)',
+      usage: 'Pill border, hover tint',
+    },
+    {
+      name: 'status-info-10',
+      value: 'rgba(59, 130, 246, 0.1)',
+      dark: 'rgba(99, 168, 245, 0.1)',
+      usage: 'Pill and row tint',
+    },
+    {
+      name: 'status-info-20',
+      value: 'rgba(59, 130, 246, 0.2)',
+      dark: 'rgba(99, 168, 245, 0.2)',
+      usage: 'Pill border, hover tint',
+    },
+  ],
+};
+
+export const vizTokens: TokenGroup = {
+  id: 'data-viz',
+  title: 'Data-viz series',
+  description:
+    'Fixed lightness and chroma, hue-only variance, so no series in a multi-line chart reads as more important than another. Chart chrome is deliberately not a series: grid, axis and reference are muted and the reference line is always dashed.',
+  tokens: [
+    {
+      name: 'viz-series-1',
+      value: 'oklch(52% 0.15 250)',
+      dark: 'oklch(72% 0.15 250)',
+      usage: 'Default single series, ensemble',
+    },
+    {
+      name: 'viz-series-2',
+      value: 'oklch(52% 0.15 190)',
+      dark: 'oklch(72% 0.15 190)',
+      usage: 'Second series',
+    },
+    {
+      name: 'viz-series-3',
+      value: 'oklch(52% 0.15 85)',
+      dark: 'oklch(72% 0.15 85)',
+      usage: 'Third series',
+    },
+    {
+      name: 'viz-series-4',
+      value: 'oklch(52% 0.15 320)',
+      dark: 'oklch(72% 0.15 320)',
+      usage: 'Fourth series',
+    },
+    {
+      name: 'viz-series-5',
+      value: 'oklch(52% 0.15 150)',
+      dark: 'oklch(72% 0.15 150)',
+      usage: 'Fifth series',
+    },
+    {
+      name: 'viz-grid',
+      value: 'rgba(0, 0, 0, 0.06)',
+      dark: 'rgba(255, 255, 255, 0.06)',
+      usage: 'Gridline',
+    },
+    {
+      name: 'viz-axis',
+      value: 'rgba(0, 0, 0, 0.15)',
+      dark: 'rgba(255, 255, 255, 0.15)',
+      usage: 'Axis rule',
+    },
+    { name: 'viz-reference', value: '#6b7280', dark: '#9ca3af', usage: 'Dashed reference line' },
   ],
 };
 
@@ -243,6 +377,8 @@ export const motionTokens: TokenGroup = {
 /** Every foundation group, in the order the design system presents them. */
 export const tokenGroups: TokenGroup[] = [
   colorTokens,
+  statusTokens,
+  vizTokens,
   surfaceTokens,
   typeTokens,
   typeRhythmTokens,
@@ -259,6 +395,11 @@ export const tokenGroups: TokenGroup[] = [
  * living only in CSS. Families deliberately excluded: `accent-*-10/20/30`
  * (derived alphas), `scrollbar-*` (browser chrome), `section-*` (aliases of
  * spacing steps), and the Tailwind `@theme` font families.
+ *
+ * The asymmetry with `status-*-10/20`, which ARE covered, is deliberate: the
+ * accent alphas are derived from a hue that is already listed, while the status
+ * tints are the contract that stops the next dashboard from inventing
+ * `rgba(63, 185, 80, 0.15)` by hand. So they get enumerated.
  */
 export const COVERED_PREFIXES = [
   'space-',
@@ -272,6 +413,8 @@ export const COVERED_PREFIXES = [
   'ease-',
   'scrim-',
   'ink-',
+  'status-',
+  'viz-',
   'border-subtle',
   'border-soft',
 ] as const;
