@@ -115,7 +115,7 @@
   .section-badge {
     font-size: 0.8rem;
     font-family: var(--font-mono);
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     margin-bottom: 0.5rem;
@@ -311,7 +311,7 @@
   }
 
   .code-good .panel-label {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .code-content {
@@ -334,7 +334,7 @@
   }
 
   .code-good .code-content {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     transition: color 0.2s;
   }
 
@@ -352,7 +352,7 @@
   }
 
   .note-label {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     margin-right: 0.5rem;
   }
 

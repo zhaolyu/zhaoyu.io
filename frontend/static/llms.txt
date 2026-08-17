@@ -37,10 +37,14 @@ The differentiator is the combination, not any single axis:
    rebuild of CNBC.com and its core video streaming experiences: modular
    player frameworks and edge rendering delivering a [redacted] and [redacted]
    TTFB for [redacted] monthly uniques and [redacted] premium subscribers generating
-   [redacted]–55M ARR. Five video surfaces in flight across live viewing,
-   on-demand playback with [redacted], audience engagement, and
-   notifications. The team has [redacted] — several rotate through per
-   project; he is the technical continuity across all of them.
+   [redacted]–55M ARR. Leads the team building the video surfaces, the
+   monetization engine of the property — [redacted] across live
+   viewing, on-demand playback with [redacted], audience
+   engagement, and notifications, spanning player architecture, playback
+   state, and the delivery path behind them. The team has [redacted] —
+   several rotate through per project; he is the technical continuity
+   across all of them, shaping and defining the work from feasibility and
+   carrying it through the dependent-team discussions that keep it moving.
 3. **Player-coach engineering leadership** — directs a **20-engineer
    organization** across 3 web teams spanning the CNBC Web and Make It
    divisions, without leaving the codebase; still architects and ships

@@ -221,7 +221,7 @@
   .section-badge {
     font-size: 0.75rem;
     font-family: var(--font-mono);
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     margin-bottom: 0.5rem;

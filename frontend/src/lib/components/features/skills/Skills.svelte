@@ -126,7 +126,7 @@
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .skills-headline {
@@ -138,7 +138,7 @@
   }
 
   .highlight-blue {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .highlight-text {
@@ -203,7 +203,7 @@
     font-family: var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     opacity: 0.7;
   }
 

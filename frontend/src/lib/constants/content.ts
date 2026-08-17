@@ -376,13 +376,19 @@ export interface BuilderProject {
 /**
  * The platform rebuild card follows the same positioning flag as the hero: the
  * quiet variant describes the scope and the numbers, the loud one adds the
- * monetization framing and the product-continuity scope on the video surfaces.
- * See docs/launch-checklist.md.
+ * video-team leadership — the monetization framing, the surface count, and the
+ * product-continuity scope across rotating PMs.
+ *
+ * The video work stays gated deliberately: the quiet card claims architecture
+ * ("core video streaming experiences", "modular player frameworks"), and only
+ * the loud variant claims leading the team that ships it. The agent-facing
+ * layer (llms.txt, JSON-LD) carries the full picture either way — see
+ * docs/launch-checklist.md.
  */
 const platformRebuildQuiet =
   'Ground-up rebuild of CNBC.com and core video streaming experiences. Architected modular player frameworks and edge rendering delivering a [redacted] and [redacted] TTFB for [redacted] monthly uniques and [redacted] premium subscribers generating [redacted]–55M ARR.';
 
-const platformRebuildLoud = `${platformRebuildQuiet} The video surfaces are the monetization engine of the property — [redacted] across live viewing, on-demand playback with [redacted], audience engagement, and notifications. The team has [redacted]; several rotate through per project, and I'm the technical continuity across all of them.`;
+const platformRebuildLoud = `${platformRebuildQuiet} I lead the team building the video surfaces — the monetization engine of the property — with [redacted] across live viewing, on-demand playback with [redacted], audience engagement, and notifications, spanning player architecture, playback state, and the delivery path behind them. The team has [redacted]; several rotate through per project, and I'm the technical continuity across all of them: shaping and defining the work from feasibility, and carrying it through the dependent-team discussions that keep it moving.`;
 
 function platformRebuildProject(flags: PositioningFlags): BuilderProject {
   const loud = flags.goLoudPositioning === true;
