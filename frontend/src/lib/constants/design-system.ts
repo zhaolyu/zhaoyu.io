@@ -26,8 +26,22 @@ export const DESIGN_SYSTEM_CARDS: DesignSystemCard[] = [
     slug: 'color',
     name: 'Color roles',
     group: 'Foundations',
-    subtitle: 'Ground, ink, accent, category and status — light and dark',
+    subtitle: 'Ground, ink, accent and category — light and dark',
     viewport: { width: 1200, height: 900 },
+  },
+  {
+    slug: 'status',
+    name: 'Status & state',
+    group: 'Foundations',
+    subtitle: 'Fill, readable text, and -10/-20 tints per theme',
+    viewport: { width: 1200, height: 900 },
+  },
+  {
+    slug: 'data-viz',
+    name: 'Data-viz series',
+    group: 'Foundations',
+    subtitle: '5 series at fixed L/C, plus chart chrome',
+    viewport: { width: 1200, height: 600 },
   },
   {
     slug: 'surface',
@@ -98,6 +112,27 @@ export const DESIGN_SYSTEM_CARDS: DesignSystemCard[] = [
     group: 'Components',
     subtitle: 'Eyebrow, headline, accent line',
     viewport: { width: 1200, height: 500 },
+  },
+  {
+    slug: 'stat-card',
+    name: 'Stat card',
+    group: 'Components',
+    subtitle: 'Value, delta with arrow, live dot, sparkline slot',
+    viewport: { width: 1200, height: 600 },
+  },
+  {
+    slug: 'data-table',
+    name: 'Data table',
+    group: 'Components',
+    subtitle: 'Sortable header, tabular figures, status pills',
+    viewport: { width: 1200, height: 700 },
+  },
+  {
+    slug: 'annotated-chart',
+    name: 'Annotated chart',
+    group: 'Components',
+    subtitle: 'Axes, legend, dashed reference and a named event',
+    viewport: { width: 1200, height: 800 },
   },
 ];
 

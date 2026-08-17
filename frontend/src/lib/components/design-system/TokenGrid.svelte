@@ -10,17 +10,21 @@
   let { group, dark = false }: Props = $props();
 
   const v = (name: string) => `var(--${name})`;
+
+  /** Groups whose tokens are colours, so the sample is a chip. */
+  const SWATCH_GROUPS = ['color', 'surface', 'status', 'data-viz'];
+  const isSwatch = $derived(SWATCH_GROUPS.includes(group.id));
 </script>
 
 <div class="token-panel" class:dark>
   <p class="panel-theme">{dark ? 'Dark' : 'Light'}</p>
 
-  <div class="token-list" class:swatches={group.id === 'color' || group.id === 'surface'}>
+  <div class="token-list" class:swatches={isSwatch}>
     {#each group.tokens as token (token.name)}
       {@const value = dark && token.dark ? token.dark : token.value}
 
       <div class="token">
-        {#if group.id === 'color' || group.id === 'surface'}
+        {#if isSwatch}
           <span class="chip" style="background: {v(token.name)}"></span>
         {:else if group.id === 'spacing'}
           <span class="bar" style="width: {v(token.name)}"></span>
