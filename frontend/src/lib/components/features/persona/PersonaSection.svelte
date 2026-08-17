@@ -82,14 +82,14 @@
   }
 
   .bio-card {
-    padding: var(--space-6);
+    padding: var(--space-xl);
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     background: var(--bg-secondary);
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-lg);
     transition:
       border-color 0.3s,
       background-color 0.3s;
@@ -102,11 +102,11 @@
   .persona-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-5);
+    gap: var(--space-lg);
   }
 
   .persona-card {
-    padding: var(--space-6);
+    padding: var(--space-xl);
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     background: var(--bg-secondary);

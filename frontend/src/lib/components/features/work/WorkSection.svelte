@@ -71,7 +71,7 @@
   .systems-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-5);
+    gap: var(--space-lg);
   }
 
   /* Entrance animation only when JS runs and motion is allowed; content is
