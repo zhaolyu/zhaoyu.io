@@ -15,16 +15,20 @@ import { FEATURE_FLAGS } from './config';
 const QUIET = { goLoudPositioning: false };
 const LOUD = { goLoudPositioning: true };
 
-const videoCard = (flags: { goLoudPositioning: boolean }) => {
-  const card = buildBuilderProjects(flags).find((p) => p.title === 'CNBC Next-Gen Web Video');
-  if (!card) throw new Error('CNBC Next-Gen Web Video card is missing from builderProjects');
+const PLATFORM_CARD = 'CNBC.com Next-Gen Platform & Video Rebuild';
+
+const platformCard = (flags: { goLoudPositioning: boolean }) => {
+  const card = buildBuilderProjects(flags).find((p) => p.title === PLATFORM_CARD);
+  if (!card) throw new Error(`${PLATFORM_CARD} card is missing from builderProjects`);
   return card;
 };
 
 describe('positioning flag — quiet state', () => {
   it('ships the scope-describing hero', () => {
     const hero = buildHeroContent(QUIET);
-    expect(hero.headline.accent).toBe('Player-Coach: Architecture, AI & Video.');
+    expect(hero.headline.accent).toBe(
+      'Player-Coach: Platform Architecture, Core Video & AI Governance.',
+    );
     expect(hero.bio).not.toMatch(/AI financial assistant|next-gen web video experience/);
   });
 
@@ -33,8 +37,8 @@ describe('positioning flag — quiet state', () => {
     expect(paragraphs.join(' ')).not.toMatch(/revenue engine|owning both ends/);
   });
 
-  it('drops the monetization framing and product-continuity scope from the video card', () => {
-    const card = videoCard(QUIET);
+  it('drops the monetization framing and product-continuity scope from the platform card', () => {
+    const card = platformCard(QUIET);
     expect(card.description).not.toMatch(
       /monetization engine|[redacted]|technical continuity|Acting product owner|PM vacancy/,
     );
@@ -51,7 +55,7 @@ describe('positioning flag — go-loud state', () => {
   it('ships the surface-ownership hero', () => {
     const hero = buildHeroContent(LOUD);
     expect(hero.headline.accent).toBe(
-      'I own the AI and video surfaces a financial audience runs on.',
+      'I own the platform, video, and AI surfaces a financial audience runs on.',
     );
     expect(hero.bio).toMatch(/AI financial assistant/);
   });
@@ -64,8 +68,8 @@ describe('positioning flag — go-loud state', () => {
     expect(loud[1]).toMatch(/revenue engine/);
   });
 
-  it('adds the monetization framing and product-continuity scope to the video card', () => {
-    const card = videoCard(LOUD);
+  it('adds the monetization framing and product-continuity scope to the platform card', () => {
+    const card = platformCard(LOUD);
     expect(card.description).toMatch(/monetization engine/);
     expect(card.description).toMatch(/technical continuity across all of them/);
     // Guard against the retired overstatement: the team has no PM vacancy —
@@ -88,20 +92,33 @@ describe('positioning flag — go-loud state', () => {
 describe('positioning-invariant content', () => {
   it('keeps the canonical team phrasing in both states — it must match LinkedIn either way', () => {
     for (const flags of [QUIET, LOUD]) {
-      expect(buildHeroContent(flags).bio).toMatch(/8 engineers and 2 QE/);
-      expect(buildHeroContent(flags).bio).toMatch(/~20-engineer/);
-      expect(buildNarrativeBio(flags).paragraphs[0]).toMatch(/8 engineers and 2 QE/);
+      expect(buildHeroContent(flags).bio).toMatch(/20-engineer organization/);
+      expect(buildHeroContent(flags).bio).toMatch(/Senior Manager, Engineering/);
+      expect(buildNarrativeBio(flags).paragraphs[0]).toMatch(/20-engineer organization/);
     }
   });
 
-  it('keeps the video card visible and same-length in both states', () => {
+  it('keeps the platform card visible and same-length in both states', () => {
     expect(buildBuilderProjects(QUIET)).toHaveLength(buildBuilderProjects(LOUD).length);
-    expect(videoCard(QUIET).metrics).toHaveLength(2);
-    expect(videoCard(LOUD).metrics).toHaveLength(2);
+    expect(platformCard(QUIET).metrics).toHaveLength(2);
+    expect(platformCard(LOUD).metrics).toHaveLength(2);
   });
 
-  it('keeps the AI assistant card first so it leads Selected Work when unflagged', () => {
-    expect(buildBuilderProjects(QUIET)[0].title).toBe('CNBC AI Financial Assistant');
+  it('keeps the platform rebuild card first so it leads Selected Work', () => {
+    expect(buildBuilderProjects(QUIET)[0].title).toBe(PLATFORM_CARD);
+  });
+
+  it('ships the AI assistant card unflagged, grounded to the beta pilot', () => {
+    for (const flags of [QUIET, LOUD]) {
+      const card = buildBuilderProjects(flags).find((p) =>
+        p.title.startsWith('AI Financial Assistant'),
+      );
+      // Grounding guard: the assistant is a validated pilot cohort, not a
+      // site-wide production surface. Copy must not imply otherwise.
+      expect(card?.featureFlag).toBeUndefined();
+      expect(card?.status).toBe('beta-pilot');
+      expect(card?.description).toMatch(/[redacted] beta cohort/);
+    }
   });
 });
 

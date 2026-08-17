@@ -17,6 +17,9 @@
     shipped: 'SHIPPED',
     'in-progress': 'IN PROGRESS',
     exploring: 'EXPLORING',
+    active: 'ACTIVE',
+    'beta-pilot': 'BETA PILOT',
+    completed: 'COMPLETED',
   };
 </script>
 
@@ -158,16 +161,19 @@
     flex-shrink: 0;
   }
 
-  .dot-shipped {
+  .dot-shipped,
+  .dot-completed {
     background: #22c55e;
   }
 
-  .dot-in-progress {
+  .dot-in-progress,
+  .dot-active {
     background: var(--accent-primary-light);
     animation: pulse-dot 2s ease-in-out infinite;
   }
 
-  .dot-exploring {
+  .dot-exploring,
+  .dot-beta-pilot {
     background: #f59e0b;
   }
 
