@@ -71,6 +71,36 @@ indexing).
   bundle is byte-deterministic and a no-change re-sync is detectable by
   checksum alone.
 
+## Re-sync 3 — 2026-08-16, dashboard/data-viz kit port (11 → 16 cards)
+
+- Ported `templates/dashboard-dataviz-kit/handoff/` into the repo: status family
+  extended (`-text`, `-10/-20`, `--status-info`), new `--viz-*` series palette,
+  5 UI components, 5 new cards (`status`, `data-viz`, `stat-card`, `data-table`,
+  `annotated-chart`).
+- Atomic path (project non-empty + pinned). One `finalize_plan`:
+  `localDir=frontend/design-system`, writes `foundations/**, components/**,
+  README.md, _ds_needs_recompile`, **deletes `[]`** — every remote path still
+  existed on disk, so this was a pure overwrite plus 5 additions.
+  Note `finalize_plan` rejects an omitted `deletes`; pass `[]` explicitly.
+- Uploaded: sentinel → README + 10 foundations → 6 components → sentinel re-arm.
+  Post-upload `list_files` = 16 cards + README + sentinel, matching disk.
+- **All 11 pre-existing cards were re-uploaded, not just the 5 new ones.** Every
+  card inlines `app.css`, which grew ~63 lines; `color.html` additionally lost
+  its status swatches and had its subtitle retitled. Assume a token change means
+  a full re-upload.
+- `TokenGrid` gated swatch rendering on `group.id === 'color' || 'surface'`, so
+  the two new foundation cards first generated as unlabelled text lists — a
+  colour card with no colour. Fixed with a `SWATCH_GROUPS` list before upload.
+  **Any future token group needs adding there**, or its card ships as text.
+- The project was being edited from the Claude Design side during this run — an
+  `exocortex-viz/` handoff, `dashboard-style.css`, `build-tokens-css.mjs`,
+  `uploads/` and `screenshots/` appeared mid-session. None were touched; the
+  plan globs cover only `foundations/`, `components/` and `README.md`.
+- `build-design-system.mjs` now also emits `design-system/index.html`, a local
+  browse index. The bare `python -m http.server` listing ships no CSS and no
+  `color-scheme`, so in a dark browser it renders black-on-black. The index has
+  no `@dsCard` marker and sits outside the plan globs — it is never uploaded.
+
 ## Re-sync procedure
 
 1. `cd frontend && pnpm install --frozen-lockfile && pnpm build && pnpm design-system`

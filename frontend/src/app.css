@@ -56,10 +56,46 @@
   --accent-infra-10: rgba(6, 182, 212, 0.1);
   --accent-infra-20: rgba(6, 182, 212, 0.2);
 
-  /* Status Colors */
+  /* Status Colors — semantic state, distinct from the category accents.
+     The bare token is the FILL (dot, bar, series stroke) and keeps the value it
+     has always had. The -text variant is the readable end: #10b981 is ~2.5:1 on
+     a white ground and fails AA at the 10–12px sizes dashboards use it for, so
+     text takes -text and flips it under .dark. Same split as
+     --accent-primary / --accent-primary-text. */
   --status-success: #10b981;
   --status-warning: #fbbf24;
   --status-error: #ef4444;
+  --status-info: #3b82f6;
+  --status-success-text: oklch(52% 0.15 150); /* ≈ #0b7a3f */
+  --status-warning-text: oklch(52% 0.13 75); /* ≈ #7c5300 */
+  --status-error-text: oklch(52% 0.19 25); /* ≈ #c1272c */
+  --status-info-text: oklch(48% 0.18 255); /* ≈ #1a4bcc */
+  --status-success-10: rgba(16, 185, 129, 0.1);
+  --status-success-20: rgba(16, 185, 129, 0.2);
+  --status-warning-10: rgba(251, 191, 36, 0.1);
+  --status-warning-20: rgba(251, 191, 36, 0.2);
+  --status-error-10: rgba(239, 68, 68, 0.1);
+  --status-error-20: rgba(239, 68, 68, 0.2);
+  --status-info-10: rgba(59, 130, 246, 0.1);
+  --status-info-20: rgba(59, 130, 246, 0.2);
+
+  /* ==========================================================================
+	   Data-Viz Series
+	   Qualitative palette for multi-series charts: fixed lightness and chroma,
+	   hue-only variance, so no series reads as more important than another. The
+	   dashboard picked its own hex per chart before these existed. Series 1 is
+	   the default single-series stroke. Grid/axis/reference are the chart
+	   chrome — a reference line is always dashed and always muted, never a
+	   fourth series.
+	   ========================================================================== */
+  --viz-series-1: oklch(52% 0.15 250);
+  --viz-series-2: oklch(52% 0.15 190);
+  --viz-series-3: oklch(52% 0.15 85);
+  --viz-series-4: oklch(52% 0.15 320);
+  --viz-series-5: oklch(52% 0.15 150);
+  --viz-grid: rgba(0, 0, 0, 0.06);
+  --viz-axis: rgba(0, 0, 0, 0.15);
+  --viz-reference: #6b7280;
 
   /* ==========================================================================
 	   Spacing Scale
@@ -192,6 +228,31 @@
   --accent-experiment: #22d3ee;
   --accent-independent-10: rgba(251, 191, 36, 0.1);
   --accent-independent-20: rgba(251, 191, 36, 0.2);
+
+  /* Status text and tints flip to the light end, which is the readable one on a
+     dark ground. The fills do not: #10b981 and friends already carry on #111827. */
+  --status-success-text: oklch(74% 0.17 150); /* ≈ #3ecf7f */
+  --status-warning-text: oklch(80% 0.15 85); /* ≈ #e0a800 */
+  --status-error-text: oklch(70% 0.19 25); /* ≈ #ff6b62 */
+  --status-info-text: oklch(72% 0.14 250); /* ≈ #63a8f5 */
+  --status-success-10: rgba(62, 207, 127, 0.1);
+  --status-success-20: rgba(62, 207, 127, 0.2);
+  --status-warning-10: rgba(224, 168, 0, 0.1);
+  --status-warning-20: rgba(224, 168, 0, 0.2);
+  --status-error-10: rgba(255, 107, 98, 0.1);
+  --status-error-20: rgba(255, 107, 98, 0.2);
+  --status-info-10: rgba(99, 168, 245, 0.1);
+  --status-info-20: rgba(99, 168, 245, 0.2);
+
+  /* Series lighten as a set; chart chrome inverts like the scrims do. */
+  --viz-series-1: oklch(72% 0.15 250);
+  --viz-series-2: oklch(72% 0.15 190);
+  --viz-series-3: oklch(72% 0.15 85);
+  --viz-series-4: oklch(72% 0.15 320);
+  --viz-series-5: oklch(72% 0.15 150);
+  --viz-grid: rgba(255, 255, 255, 0.06);
+  --viz-axis: rgba(255, 255, 255, 0.15);
+  --viz-reference: #9ca3af;
 
   /* Scrims invert: ink-on-light becomes light-on-ink. Shadows deepen, because
      a 5% black shadow is invisible against a #111827 ground. */

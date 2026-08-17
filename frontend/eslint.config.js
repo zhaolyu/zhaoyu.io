@@ -63,9 +63,24 @@ export default [
         ...globals.node,
       },
     },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
     rules: {
       'no-console': 'warn',
       'svelte/no-at-html-tags': 'warn',
+      // Same pairing as the .ts block above. Without it the base rule stays on
+      // for .svelte and reports the parameter names in a function-typed prop
+      // (`onsort?: (key: string) => void`) as unused variables — and the `^_`
+      // escape hatch the convention documents wouldn't apply either.
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      'no-unused-vars': 'off', // Use TypeScript version instead
       // Designed for apps served under a base path; this site is a static
       // SPA at the domain root, so plain absolute hrefs are correct.
       'svelte/no-navigation-without-resolve': 'off',
