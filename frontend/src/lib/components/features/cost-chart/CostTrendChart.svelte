@@ -182,7 +182,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-md) var(--space-lg);
     border-bottom: 1px solid var(--border-color);
   }
 
@@ -196,7 +196,7 @@
   .chart-legend {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-sm);
     font-family: var(--font-mono);
     font-size: 0.65rem;
     color: var(--text-muted);
@@ -224,7 +224,7 @@
   }
 
   .chart-empty {
-    padding: var(--space-8) var(--space-5);
+    padding: var(--space-2xl) var(--space-lg);
     text-align: center;
     font-family: var(--font-mono);
     font-size: 0.75rem;

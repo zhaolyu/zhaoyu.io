@@ -269,21 +269,21 @@
   .infra-container {
     max-width: 64rem;
     margin: 0 auto;
-    padding: var(--space-8) var(--space-6);
+    padding: var(--space-2xl) var(--space-xl);
   }
 
   /* Chrome: header + HUD — tight grouping, these are metadata not content */
   .infra-chrome {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
-    margin-bottom: var(--space-8);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-2xl);
   }
 
   .infra-header {
     display: flex;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-md);
   }
 
   .theme-toggle {
@@ -333,8 +333,8 @@
     background: rgba(239, 68, 68, 0.08);
     border: 1px solid rgba(239, 68, 68, 0.25);
     border-radius: 0.5rem;
-    padding: var(--space-4);
-    margin-bottom: var(--space-5);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
     color: var(--status-error);
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -344,7 +344,7 @@
   .infra-main {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
+    gap: var(--space-lg);
   }
 
   /* Hero metric — side-by-side GCP Actual vs IaC Estimate */
@@ -353,7 +353,7 @@
     border: 1px solid var(--border-color);
     border-top: 2px solid var(--accent-infra);
     border-radius: 0.75rem;
-    padding: var(--space-6);
+    padding: var(--space-xl);
     display: flex;
     align-items: stretch;
     gap: 0;
@@ -366,13 +366,13 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    gap: var(--space-2xs);
   }
 
   .metric-divider {
     width: 1px;
     background: var(--border-color);
-    margin: 0 var(--space-6);
+    margin: 0 var(--space-xl);
     align-self: stretch;
   }
 
@@ -405,7 +405,7 @@
     font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--text-muted);
-    margin-top: var(--space-1);
+    margin-top: var(--space-2xs);
   }
 
   /* Table card */
@@ -423,7 +423,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--space-4) var(--space-5);
+    padding: var(--space-md) var(--space-lg);
     border-bottom: 1px solid var(--border-color);
   }
 
@@ -458,7 +458,7 @@
   }
 
   th {
-    padding: var(--space-3) var(--space-5);
+    padding: var(--space-sm) var(--space-lg);
     text-align: left;
     font-size: 0.65rem;
     font-weight: 500;
@@ -469,7 +469,7 @@
   }
 
   td {
-    padding: var(--space-3) var(--space-5);
+    padding: var(--space-sm) var(--space-lg);
     color: var(--text-secondary);
     border-bottom: 1px solid var(--border-color);
   }
@@ -489,12 +489,12 @@
   /* Source-specific row accent via left border on first td */
   .row-gcp td:first-child {
     border-left: 2px solid var(--status-success);
-    padding-left: calc(var(--space-5) - 2px);
+    padding-left: calc(var(--space-lg) - 2px);
   }
 
   .row-github td:first-child {
     border-left: 2px solid var(--accent-infra);
-    padding-left: calc(var(--space-5) - 2px);
+    padding-left: calc(var(--space-lg) - 2px);
   }
 
   /* Source badges */
@@ -542,7 +542,7 @@
 
   .table-empty {
     text-align: center;
-    padding: var(--space-8) var(--space-5);
+    padding: var(--space-2xl) var(--space-lg);
     color: var(--text-muted);
   }
 
@@ -550,7 +550,7 @@
     display: block;
     font-weight: 600;
     color: var(--text-secondary);
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-xs);
   }
 
   .empty-detail {
@@ -563,16 +563,16 @@
 
   @media (max-width: 640px) {
     .infra-container {
-      padding: var(--space-5) var(--space-4);
+      padding: var(--space-lg) var(--space-md);
     }
 
     .infra-chrome {
-      margin-bottom: var(--space-5);
+      margin-bottom: var(--space-lg);
     }
 
     .infra-metric-card {
       flex-direction: column;
-      gap: var(--space-5);
+      gap: var(--space-lg);
     }
 
     .metric-divider {

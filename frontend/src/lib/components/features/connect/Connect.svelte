@@ -42,7 +42,9 @@
       <div class="status-block">
         <div class="status-row">
           <span class="status-key">Currently:</span>
-          <span class="status-value">Senior Manager, Core Web at CNBC.</span>
+          <span class="status-value"
+            >Senior Manager, Engineering at Versant (CNBC Web &amp; Make It).</span
+          >
         </div>
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
@@ -152,7 +154,7 @@
   .icon {
     width: 1.5rem;
     height: 1.5rem;
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
   }
 
   .section-title {
@@ -195,7 +197,7 @@
   }
 
   .status-key {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     font-weight: 600;
     white-space: nowrap;
     letter-spacing: 0.03em;
@@ -308,7 +310,7 @@
   }
 
   .prompt {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     flex-shrink: 0;
   }
 
@@ -352,7 +354,7 @@
   }
 
   .output-link {
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -385,7 +387,7 @@
 
   .copy-button.copied {
     background: var(--accent-primary-10);
-    color: var(--accent-primary-light);
+    color: var(--accent-primary-text);
     border-color: var(--accent-primary-20);
   }
 

@@ -3,10 +3,12 @@
  */
 export const FEATURE_FLAGS = {
   /**
-   * CNBC's consumer AI product hasn't launched publicly yet. Flip to true at
-   * launch to surface the CNBC AI project/builder cards — the AI Financial
-   * Assistant card then leads Selected Work. Also switch that card's status
-   * from 'in-progress' to 'shipped' at the same time.
+   * CNBC's AI assistant is a 200-subscriber beta pilot, not a public product.
+   * The Selected Work card ships unflagged because its copy states that scope
+   * explicitly; this flag gates the deeper AI Insight Engine project card
+   * (product internals, HCI architecture) until public launch. Flip to true at
+   * launch, and switch the assistant card's status from 'beta-pilot' to
+   * 'shipped' at the same time.
    */
   showCnbcAiWork: false,
 
