@@ -1,0 +1,9 @@
+{
+  "projectId": "fb0221b2-12c4-4b10-8c83-6b215f6f677d",
+  "projectName": "zhaoyu.io",
+  "shape": "manual",
+  "pkg": "frontend",
+  "bundleDir": "design-system",
+  "buildCmd": "pnpm build && pnpm design-system",
+  "notes": "Hand-authored preview-only bundle: SvelteKit prerenders one @dsCard HTML per card from the real components (see scripts/build-design-system.mjs). Not the React esbuild converter path — there is no _ds_bundle.js/_ds_sync.json; every sync re-uploads the 11 cards + README."
+}
