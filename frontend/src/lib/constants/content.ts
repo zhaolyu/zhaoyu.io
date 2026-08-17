@@ -32,26 +32,30 @@ const CTA = {
 
 const MOTTO = ['Low Latency', 'High Leverage', 'Deep Focus'];
 
+/** Shared across both positioning states — the title is a fact, not a stance. */
+const HERO_BADGE = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC WEB & MAKE IT';
+const HERO_PRIMARY = 'Leading CNBC Web & Make It.';
+
 /** Quieter default: describes scope without leading on surface ownership. */
 const stealthHero: HeroContent = {
-  badge: 'SENIOR MANAGER · CORE WEB · CNBC',
+  badge: HERO_BADGE,
   headline: {
-    primary: 'Leading Core Web at CNBC.',
-    accent: 'Player-Coach: Architecture, AI & Video.',
+    primary: HERO_PRIMARY,
+    accent: 'Player-Coach: Platform Architecture, Core Video & AI Governance.',
   },
-  bio: 'Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE, and co-leading the ~20-engineer next-generation site rebuild across three teams, while staying hands-on in the architecture. Nine years of performance-first engineering behind it: Isomorphic Akamai Edge for 50M+ monthly users, 1.1s LCP, governed AI integration, and independent systems shipped with the same production discipline.',
+  bio: 'Senior Manager, Engineering across CNBC Web & Make It divisions—directing a 20-engineer organization executing the platform rebuild of CNBC.com ($50–55M ARR, 170K+ subscribers), while staying hands-on in core architecture. Nine years of performance-first engineering: Isomorphic Akamai Edge for 50M+ monthly users, 1.1s LCP, zero-downtime infrastructure migrations, and governed AI integration.',
   cta: CTA,
   motto: MOTTO,
 };
 
 /** Go-loud variant — see FEATURE_FLAGS.goLoudPositioning and docs/launch-checklist.md. */
 const goLoudHero: HeroContent = {
-  badge: 'SENIOR MANAGER · CORE WEB · CNBC',
+  badge: HERO_BADGE,
   headline: {
-    primary: 'Leading Core Web at CNBC.',
-    accent: 'I own the AI and video surfaces a financial audience runs on.',
+    primary: HERO_PRIMARY,
+    accent: 'I own the platform, video, and AI surfaces a financial audience runs on.',
   },
-  bio: "Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE, and co-leading the ~20-engineer next-generation site rebuild across three teams. Built the production UI for CNBC's AI financial assistant; lead the team shipping CNBC's next-gen web video experience. Nine years of performance-first engineering underneath it: Isomorphic Akamai Edge, 50M+ monthly users, 1.1s LCP.",
+  bio: "Senior Manager, Engineering across CNBC Web & Make It divisions — directing a 20-engineer organization across 3 web teams through the platform rebuild of CNBC.com ($50–55M ARR, 170K+ subscribers). Sole frontend architect of CNBC's AI financial assistant, shipped to a 200-subscriber beta cohort; lead the team shipping CNBC's next-gen web video experience. Nine years of performance-first engineering underneath it: Isomorphic Akamai Edge, 50M+ monthly users, 1.1s LCP.",
   cta: CTA,
   motto: MOTTO,
 };
@@ -112,7 +116,7 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC AI Insight Engine',
       description:
-        "Non-deterministic output requires deterministic UI. Engineered the frontend architecture for CNBC's first consumer-facing AI tool — solving the HCI paradox of maintaining user trust when data is streaming and non-deterministic. Built a latency masking layer for token rendering at 60fps and a real-time citation engine that maps AI-generated tokens to verified CNBC sources.",
+        "Non-deterministic output requires deterministic UI. Engineered the frontend architecture for CNBC's first user-facing AI assistant — currently a 200-subscriber beta pilot, not a site-wide surface — solving the HCI paradox of maintaining user trust when data is streaming and non-deterministic. Built a latency masking layer for token rendering at 60fps and a real-time citation engine that maps AI-generated tokens to verified CNBC sources.",
       tags: ['React', 'Akamai Edge', 'Generative AI', 'HCI'],
       metrics: [
         { label: 'LATENCY MASKING', value: '60 FPS' },
@@ -197,7 +201,7 @@ export const notesData: NotesData = {
       dateISO: '2026-07',
       tags: ['Agent Architecture', 'Engineering Management', 'AI Engineering'],
       content: [
-        "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage 8 engineers and 2 QE, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
+        "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage 20 engineers across 3 web teams, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
         "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable — completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule — <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
       ],
     },
@@ -349,9 +353,9 @@ export const careerHistory: CareerHistory = {
     {
       year: 2026,
       impact: 100,
-      role: 'Senior Manager, Core Web',
-      company: 'CNBC',
-      note: 'The synthesis: player-coach role spanning both tracks — direct team of 8+2, co-lead of the ~20-engineer rebuild.',
+      role: 'Senior Manager, Engineering',
+      company: 'Versant / CNBC',
+      note: 'The synthesis: player-coach role spanning both tracks — a 20-engineer organization across 3 web teams, still hands-on in core architecture.',
     },
   ],
 };
@@ -361,7 +365,7 @@ export interface BuilderProject {
   category: 'professional' | 'independent' | 'experiment';
   description: string;
   stack: string[];
-  status: 'shipped' | 'in-progress' | 'exploring';
+  status: 'shipped' | 'in-progress' | 'exploring' | 'active' | 'beta-pilot' | 'completed';
   metrics?: Array<{ label: string; value: string }>;
   /** Optional deep-link to a note that documents the work in more depth. */
   link?: { label: string; href: string };
@@ -370,27 +374,27 @@ export interface BuilderProject {
 }
 
 /**
- * The video card follows the same positioning flag as the hero: the quiet
- * variant describes the work, the loud one adds the revenue framing and the
- * product-continuity scope. See docs/launch-checklist.md.
+ * The platform rebuild card follows the same positioning flag as the hero: the
+ * quiet variant describes the scope and the numbers, the loud one adds the
+ * monetization framing and the product-continuity scope on the video surfaces.
+ * See docs/launch-checklist.md.
  */
-const webVideoLoud =
-  "Lead the team building CNBC's next-generation web video experience — the monetization engine of the property. Five surfaces in flight across live viewing, on-demand playback with resumable sessions, audience engagement, and notifications. The team has no dedicated PM — several rotate through per project. I'm the technical continuity across all of them: shaping and defining the work from feasibility, and carrying it through the dependent-team discussions that keep it moving.";
+const platformRebuildQuiet =
+  'Ground-up rebuild of CNBC.com and core video streaming experiences. Architected modular player frameworks and edge rendering delivering a 1.1s LCP and <300ms TTFB for 50M+ monthly uniques and 170K+ premium subscribers generating $50–55M ARR.';
 
-const webVideoQuiet =
-  "Lead the team building CNBC's next-generation web video experience. Five surfaces in flight across live viewing, on-demand playback with resumable sessions, audience engagement, and notifications — spanning player architecture, playback state, and the delivery path behind them.";
+const platformRebuildLoud = `${platformRebuildQuiet} The video surfaces are the monetization engine of the property — five in flight across live viewing, on-demand playback with resumable sessions, audience engagement, and notifications. The team has no dedicated PM; several rotate through per project, and I'm the technical continuity across all of them.`;
 
-function webVideoProject(flags: PositioningFlags): BuilderProject {
+function platformRebuildProject(flags: PositioningFlags): BuilderProject {
   const loud = flags.goLoudPositioning === true;
 
   return {
-    title: 'CNBC Next-Gen Web Video',
+    title: 'CNBC.com Next-Gen Platform & Video Rebuild',
     category: 'professional',
-    description: loud ? webVideoLoud : webVideoQuiet,
-    stack: ['Video Platform', 'Product Leadership', 'Team Leadership'],
-    status: 'in-progress',
+    description: loud ? platformRebuildLoud : platformRebuildQuiet,
+    stack: ['Isomorphic React', 'Akamai EdgeWorkers', 'SSE Real-Time Sync', 'Micro-Frontends'],
+    status: 'active',
     metrics: [
-      { label: 'Surfaces In Flight', value: '5' },
+      { label: 'Subscriber ARR', value: '$50–55M' },
       loud
         ? { label: 'Product Continuity', value: 'Across rotating PMs' }
         : { label: 'Playback', value: 'Live + VOD' },
@@ -403,39 +407,37 @@ function webVideoProject(flags: PositioningFlags): BuilderProject {
  * production callers use the exported `builderProjects` below.
  */
 export function buildBuilderProjects(flags: PositioningFlags = FEATURE_FLAGS): BuilderProject[] {
-  const [aiAssistant, ...rest] = staticBuilderProjects;
-  return [aiAssistant, webVideoProject(flags), ...rest];
+  return [platformRebuildProject(flags), ...staticBuilderProjects];
 }
 
-/** Cards whose copy does not vary with positioning; AI assistant stays first. */
+/** Cards whose copy does not vary with positioning. */
 const staticBuilderProjects: BuilderProject[] = [
   {
-    title: 'CNBC AI Financial Assistant',
+    title: 'AI Financial Assistant (Architecture Pilot)',
     category: 'professional',
     description:
-      "Sole frontend engineer and product bridge for CNBC's AI assistant. Designed the deterministic UI layer around non-deterministic model output — frame-buffered token streaming (state decoupled from render, rAF-throttled commits), graceful degradation, and trust-preserving latency for a financial audience. Architected the tiered system prompt: compressed ~4,000 words to ~1,300 with reinforcement anchors calibrated to multi-turn model attention. Built inside financial-media compliance constraints.",
-    stack: ['Consumer AI', 'LLM Streaming UI', 'System Prompt Architecture', 'React'],
-    status: 'in-progress',
+      "Sole frontend architect and technical bridge for CNBC's first user-facing AI assistant. Spec'd and shipped the multi-step agentic pipeline (query planner → MCP data retrieval → tool grader → response generator) in 4 months to a 200-subscriber beta cohort, establishing the architectural blueprint for future conversational surfaces.",
+    stack: ['Multi-Agent Pipeline', 'MCP Integration', 'Tool Grader', 'SSE Streaming'],
+    status: 'beta-pilot',
     metrics: [
-      { label: 'System Prompt Compression', value: '4,000 → 1,300' },
-      { label: 'Streaming Render', value: '60 FPS' },
+      { label: 'Beta Cohort', value: '200 Subs' },
+      { label: 'Spec → Ship', value: '4 Months' },
     ],
     link: {
       label: 'Read the architecture note',
       href: '/blog/decoupling-state-from-render-in-llm-streaming',
     },
-    featureFlag: 'showCnbcAiWork',
   },
   {
-    title: 'CNBC UI Factory Initiative',
+    title: 'Infrastructure & Privacy Separation',
     category: 'professional',
     description:
-      "Architecting CNBC's next-generation component system. Establishing UI standards, performance budgets, and design token systems that scale across 50+ page templates serving a global newsroom.",
-    stack: ['React', 'Akamai EdgeWorkers', 'GraphQL', 'Node.js'],
-    status: 'in-progress',
+      'Directed a 4-month cross-functional sprint across 3 teams to fully separate CNBC infrastructure from the parent company, migrating video streaming, analytics, and privacy services with zero downtime.',
+    stack: ['GCP', 'Zero Downtime', 'GDPR/CCPA Compliance', 'Cloud Architecture'],
+    status: 'completed',
     metrics: [
-      { label: 'Templates', value: '50+' },
-      { label: 'LCP', value: 'Top 1%' },
+      { label: 'Teams Coordinated', value: '3' },
+      { label: 'Downtime', value: 'Zero' },
     ],
   },
   {
@@ -451,11 +453,11 @@ const staticBuilderProjects: BuilderProject[] = [
     ],
   },
   {
-    title: 'Cost-Guard: Infra Dashboard',
+    title: 'Cost-Guard: FinOps Platform',
     category: 'experiment',
     description:
-      'Local-first cloud cost monitoring using PGlite + ElectricSQL. Zero-latency reads, real-time sync, and what-if simulations for infrastructure spend. Personal observability tooling built with AI-assisted development.',
-    stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'TypeScript'],
+      'Local-first cloud cost monitoring using PGlite + ElectricSQL. Zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run with Pulumi-managed infrastructure. Personal observability tooling built with AI-assisted development.',
+    stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
     status: 'in-progress',
     metrics: [
       { label: 'Sync', value: 'Real-time' },
@@ -473,7 +475,7 @@ export interface NarrativeBio {
 
 /** Go-loud only — see FEATURE_FLAGS.goLoudPositioning and docs/launch-checklist.md. */
 const surfaceOwnershipParagraph =
-  "Today that means owning both ends of the strategic surface area: I built the production UI for CNBC's AI assistant myself, and I lead the team shipping the next-generation video experience — the property's revenue engine.";
+  "Today that means owning both ends of the strategic surface area: I was the sole frontend architect for CNBC's AI financial assistant — now validated with a 200-subscriber beta cohort — and I lead the team shipping the next-generation video experience, the property's revenue engine.";
 
 /**
  * `flags` is injectable so both positioning states are assertable in tests;
@@ -483,9 +485,9 @@ export function buildNarrativeBio(flags: PositioningFlags = FEATURE_FLAGS): Narr
   return {
     title: 'The Modernizer',
     paragraphs: [
-      "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager of Core Web for CNBC.com. The role is the synthesis of both tracks: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer next-generation site rebuild across three teams, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
+      "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager, Engineering across CNBC Web & Make It. The role is the synthesis of both tracks: I direct a 20-engineer organization across 3 web teams executing the platform rebuild of CNBC.com, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
       ...(flags.goLoudPositioning ? [surfaceOwnershipParagraph] : []),
-      'Beyond UI architecture, I serve as the AI Integration Lead, where I formalize the standards for AI-assisted development across the organization. My leadership philosophy is built on "Plan-first" execution — ensuring that tools like Cursor and Claude are utilized as disciplined velocity multipliers that adhere to strict security and compliance guardrails.',
+      'As AI Integration Lead, I formalize the standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers across 3 web teams integrate AI tools like Cursor into production codebases, delivering a 25% velocity increase and 15% fewer high-severity defects. The philosophy underneath it is "Plan-first" execution — AI as a disciplined velocity multiplier inside strict security and compliance guardrails, never as an unreviewed author.',
       'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
     ],
   };
@@ -509,14 +511,14 @@ export function buildSocialDescriptions(
 ): SocialDescriptions {
   return flags.goLoudPositioning
     ? {
-        meta: "Senior Manager, Core Web at CNBC. Built the production UI for CNBC's AI financial assistant; lead the next-gen web video platform. 50M+ users, 1.1s LCP, player-coach across both tracks.",
+        meta: "Senior Manager, Engineering at Versant (CNBC Web & Make It). Sole frontend architect of CNBC's AI financial assistant (200-subscriber beta pilot); lead the next-gen web video platform. 20-engineer org, 50M+ users, 1.1s LCP.",
         twitter:
-          'Senior Manager, Core Web at CNBC. AI financial assistant UI, next-gen web video, and edge performance at 50M+ users.',
+          'Senior Manager, Engineering at Versant (CNBC Web & Make It). AI financial assistant architecture, next-gen web video, and edge performance at 50M+ users.',
       }
     : {
-        meta: 'Senior Manager of Core Web for CNBC.com — managing a direct team of 8 engineers and 2 QE and co-leading the ~20-engineer next-gen site rebuild, while staying hands-on in the architecture. 50M+ users, 1.1s LCP.',
+        meta: 'Senior Manager, Engineering at Versant (CNBC Web & Make It) — directing a 20-engineer organization through the platform rebuild of CNBC.com, while staying hands-on in core architecture. 50M+ users, 1.1s LCP.',
         twitter:
-          'Senior Manager, Core Web at CNBC. Player-coach engineering leader, AI Integration Lead, and independent builder, shipping at scale.',
+          'Senior Manager, Engineering at Versant (CNBC Web & Make It). Player-coach engineering leader, AI governance lead, and independent builder, shipping at scale.',
       };
 }
 

@@ -42,7 +42,9 @@
       <div class="status-block">
         <div class="status-row">
           <span class="status-key">Currently:</span>
-          <span class="status-value">Senior Manager, Core Web at CNBC.</span>
+          <span class="status-value"
+            >Senior Manager, Engineering at Versant (CNBC Web &amp; Make It).</span
+          >
         </div>
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
