@@ -17,6 +17,8 @@
     "format": "prettier --write .",
     "prepare": "git -C .. config core.hooksPath frontend/.husky || true",
     "og": "node scripts/generate-og-images.mjs",
+    "tokens": "node scripts/build-tokens-css.mjs",
+    "prebuild": "pnpm tokens",
     "design-system": "node scripts/build-design-system.mjs"
   },
   "devDependencies": {
