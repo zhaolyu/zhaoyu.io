@@ -159,7 +159,7 @@ export const vizTokens: TokenGroup = {
   id: 'data-viz',
   title: 'Data-viz series',
   description:
-    'Fixed lightness and chroma, hue-only variance, so no series in a multi-line chart reads as more important than another. Chart chrome is deliberately not a series: grid, axis and reference are muted and the reference line is always dashed.',
+    'Fixed lightness and chroma, hue-only variance, so no series in a multi-line chart reads as more important than another. Chart chrome is deliberately not a series: grid, axis and reference are muted and the reference line is always dashed. Two ramps, because mark density changes optimal lightness: the base set for a few strokes, the -dense set for canvases with more marks than a legend can name. Eight categorical slots, then fold to --viz-quiet — a repeated hue claims a kinship that isn’t there. A class distinction always has a second channel besides hue: dash for “this link does not exist yet”, width and luminance for emphasis. Colour assists; it never carries the class alone. A categorical palette is validated all-pairs against its ground, not swatch-by-swatch: two hues that each pass against the background can still be indistinguishable from each other.',
   tokens: [
     {
       name: 'viz-series-1',
@@ -204,6 +204,27 @@ export const vizTokens: TokenGroup = {
       usage: 'Axis rule',
     },
     { name: 'viz-reference', value: '#6b7280', dark: '#9ca3af', usage: 'Dashed reference line' },
+    { name: 'viz-series-1-dense', value: 'oklch(55% 0.15 250)', usage: 'Dense canvas series 1' },
+    { name: 'viz-series-2-dense', value: 'oklch(55% 0.15 190)', usage: 'Dense canvas series 2' },
+    { name: 'viz-series-3-dense', value: 'oklch(55% 0.15 85)', usage: 'Dense canvas series 3' },
+    { name: 'viz-series-4-dense', value: 'oklch(55% 0.15 320)', usage: 'Dense canvas series 4' },
+    { name: 'viz-series-5-dense', value: 'oklch(55% 0.15 150)', usage: 'Dense canvas series 5' },
+    { name: 'viz-series-6-dense', value: 'oklch(55% 0.15 45)', usage: 'Dense canvas series 6' },
+    { name: 'viz-series-7-dense', value: 'oklch(55% 0.15 300)', usage: 'Cluster lens slot 7' },
+    { name: 'viz-series-8-dense', value: 'oklch(55% 0.15 20)', usage: 'Cluster lens slot 8' },
+    {
+      name: 'viz-structure',
+      value: '#6b7280',
+      dark: '#9ca3af',
+      usage: 'Structure marks, nav nodes',
+    },
+    {
+      name: 'viz-quiet',
+      value: '#9ca3af',
+      dark: '#6b7280',
+      usage: 'Quiet marks, categorical overflow',
+    },
+    { name: 'viz-conflict', value: '#e66767', usage: 'Contradiction — signal, not error' },
   ],
 };
 

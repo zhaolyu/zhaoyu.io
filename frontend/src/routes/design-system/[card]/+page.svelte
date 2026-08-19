@@ -8,6 +8,7 @@
     DataTable,
     ChartFrame,
     AnnotatedLineChart,
+    Segmented,
   } from '$lib/components/ui';
   import { tokenGroups } from '$lib/constants/design-tokens';
   import { builderProjects, notesData, type BuilderProject } from '$lib/constants/content';
@@ -105,6 +106,13 @@
 
   /* Reliability scatter for the plain-ChartFrame half of the chart card:
      predicted vs observed, so the dashed diagonal is the reference. */
+  /**
+   * The segmented control is the one preview that has to be live: the card is
+   * showing a selected state, so it needs something to select.
+   */
+  let lens = $state('flow');
+  let range = $state('30d');
+
   const reliability = [
     { p: 0.1, actual: 0.08 },
     { p: 0.2, actual: 0.24 },
@@ -314,6 +322,41 @@
         </svg>
       </ChartFrame>
     </section>
+  {:else if data.card.slug === 'segmented'}
+    <section class="ds-section">
+      <h2>Light</h2>
+      <div class="ds-row">
+        <Segmented
+          label="Graph lens"
+          options={['flow', 'cluster', 'time']}
+          value={lens}
+          onchange={(v) => (lens = v)}
+        />
+        <Segmented
+          label="Range"
+          options={['7d', '30d', '90d', 'all']}
+          value={range}
+          onchange={(v) => (range = v)}
+        />
+      </div>
+    </section>
+    <section class="ds-section dark ds-dark-scope">
+      <h2>Dark</h2>
+      <div class="ds-row">
+        <Segmented
+          label="Graph lens, dark"
+          options={['flow', 'cluster', 'time']}
+          value={lens}
+          onchange={(v) => (lens = v)}
+        />
+        <Segmented
+          label="Mode"
+          options={['paper', 'live']}
+          labels={['Paper', 'Live']}
+          value="paper"
+        />
+      </div>
+    </section>
   {/if}
 </main>
 
@@ -401,6 +444,15 @@
   .ds-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+    gap: var(--space-lg);
+  }
+
+  /* Controls sit at their intrinsic width rather than stretching, so the row
+     shows the real proportions of a 3-option and a 4-option group. */
+  .ds-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-lg);
   }
 
