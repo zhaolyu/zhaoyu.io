@@ -4,6 +4,7 @@
  * required keys are asserted once (structured-data.test.ts).
  */
 import { heroContent, socialDescriptions, type EngineeringNote } from '$lib/constants/content';
+import type { CaseStudy } from '$lib/constants/case-studies';
 
 export const SITE_URL = 'https://zhaoyu.io';
 export const SITE_CARD_IMAGE = `${SITE_URL}/og/site.png`;
@@ -69,6 +70,24 @@ export function techArticleJsonLd(note: EngineeringNote, description: string) {
     author: PERSON,
     publisher: PERSON,
     keywords: note.tags.join(', '),
+  };
+}
+
+export function caseStudyJsonLd(cs: CaseStudy) {
+  const url = `${SITE_URL}/work/${cs.slug}`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: cs.title,
+    description: cs.oneLiner,
+    url,
+    mainEntityOfPage: url,
+    datePublished: cs.dateISO,
+    dateModified: cs.dateModified ?? cs.dateISO,
+    image: `${SITE_URL}/og/${cs.slug}.png`,
+    author: PERSON,
+    publisher: PERSON,
+    keywords: cs.stack.join(', '),
   };
 }
 
