@@ -27,21 +27,18 @@ describe('visibleItems', () => {
 });
 
 describe('current site content', () => {
-  it('hides the unlaunched AI product-internals card under default flags', () => {
+  it('ships no flagged content until CNBC announces — a flag hides a card, not the bundle', () => {
+    // Anything gated by showCnbcAiWork stays out of this repository until it
+    // is public (see FEATURE_FLAGS), so under default flags every card is
+    // visible and none carries the flag.
+    expect(projectsData.projects.every((p) => !p.featureFlag)).toBe(true);
+    expect(builderProjects.every((p) => !p.featureFlag)).toBe(true);
+
     const projectTitles = visibleItems(projectsData.projects).map((p) => p.title);
     const builderTitles = visibleItems(builderProjects).map((p) => p.title);
-
-    // Assert the gated card exists before asserting it's hidden — otherwise
-    // renaming a card turns the negative assertion below into a no-op.
-    expect(projectsData.projects.map((p) => p.title)).toContain('CNBC AI Insight Engine');
-    expect(projectTitles).not.toContain('CNBC AI Insight Engine');
-
-    // the rest of the work remains visible — including the AI assistant
-    // summary card, which ships unflagged because its copy is scoped to the
-    // beta pilot rather than to an unlaunched public product.
     expect(projectTitles).toContain('CNBC.com Next-Gen Migration');
-    expect(builderTitles).toContain('AI Financial Assistant (Architecture Pilot)');
     expect(builderTitles).toContain('CNBC.com Next-Gen Platform & Video Rebuild');
+    expect(builderTitles).toContain('AI-Powered Investing Tools (Frontend Architecture)');
     expect(builderTitles).toContain('Infrastructure & Privacy Separation');
     expect(builderTitles).toContain('Cost-Guard: FinOps Platform');
   });

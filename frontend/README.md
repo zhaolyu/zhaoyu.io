@@ -48,7 +48,7 @@ frontend/
 
 ## Routes
 
-- `/` — landing page (hero, metrics, career, selected work, philosophy, notes, contact)
+- `/` — landing page (hero, impact numbers with sources, selected work, notes, how I work, about + career timeline, contact)
 - `/blog` — engineering notes index; individual notes at `/blog/{slug}`
 - `/ai-manifesto` — working thesis on AI-augmented engineering
 - `/infra` — Cost-Guard, a local-first infra cost dashboard (PGlite + ElectricSQL; noindex)

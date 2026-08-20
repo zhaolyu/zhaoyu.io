@@ -9,7 +9,7 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<main class="ds-index">
+<main id="main" class="ds-index">
   <header>
     <p class="eyebrow">Design system</p>
     <h1>The tokens and components this site is built from.</h1>

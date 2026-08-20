@@ -3,24 +3,14 @@
  */
 export const FEATURE_FLAGS = {
   /**
-   * CNBC's AI assistant is a [redacted] beta pilot, not a public product.
-   * The Selected Work card ships unflagged because its copy states that scope
-   * explicitly; this flag gates the deeper AI Insight Engine project card
-   * (product internals, HCI architecture) until public launch. Flip to true at
-   * launch, and switch the assistant card's status from 'beta-pilot' to
-   * 'shipped' at the same time.
+   * Reserved for the AI-product case study and any copy that goes beyond what
+   * Versant has disclosed publicly ("AI-powered investing tools" in CNBC's
+   * next-generation platform). Nothing gated by this flag lives in this
+   * repository until CNBC announces: a flag only hides content from the
+   * rendered page, not from the shipped JS bundle. Flip to true at launch and
+   * add the content in the same change.
    */
   showCnbcAiWork: false,
-
-  /**
-   * Go-loud positioning. False ships the quieter, scope-describing copy;
-   * true ships the copy that leads with owning the AI and video surfaces.
-   * Gates the hero headline/bio, the persona ownership paragraph, and the
-   * three human-facing meta descriptions. The agent-facing layer (llms.txt,
-   * JSON-LD) always carries the full picture — see docs/launch-checklist.md
-   * for why, and for the full flip sequence.
-   */
-  goLoudPositioning: false,
 } as const;
 
 export type FeatureFlag = keyof typeof FEATURE_FLAGS;

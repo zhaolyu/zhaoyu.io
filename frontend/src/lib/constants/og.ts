@@ -26,8 +26,7 @@ function siteCard(): OgCard {
     slug: SITE_CARD_SLUG,
     kind: 'profile',
     eyebrow: heroContent.badge,
-    // Tracks FEATURE_FLAGS.goLoudPositioning through heroContent.
-    subtitle: heroContent.headline.accent,
+    subtitle: heroContent.tagline,
     title: 'Zhao Yu',
     footnote: heroContent.motto,
   };

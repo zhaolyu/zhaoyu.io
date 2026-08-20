@@ -9,7 +9,7 @@
   <title>Error {status} - zhaoyu.io</title>
 </svelte:head>
 
-<article class="error-page">
+<article id="main" class="error-page">
   <div class="error-content">
     <h1>{status}</h1>
     <h2>
