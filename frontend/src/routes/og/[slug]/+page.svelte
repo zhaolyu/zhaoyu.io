@@ -11,7 +11,7 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<div id="main" class="og-card" class:is-note={card.kind === 'note'}>
+<div id="main" class="og-card" class:is-note={card.kind !== 'profile'}>
   <div class="grid-bg"></div>
   <div class="glow"></div>
 

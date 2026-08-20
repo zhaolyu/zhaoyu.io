@@ -29,6 +29,16 @@ frontend/            ← all commands run from here
       +layout.ts
 ```
 
+### Case studies
+
+`src/lib/constants/case-studies.ts` is the registry for long-form case studies at
+`/work/{slug}`. Entries are decision records — context, constraints, options,
+decision, architecture, measured outcomes (each with a basis), what went wrong,
+my-role-vs-team — and `case-studies.test.ts` rejects anything thinner (≥1,200
+words, ≥1 https source, related notes must resolve). A `featureFlag` hides a
+study from the page, sitemap, OG set, and llms.txt together; embargoed studies
+stay out of the repo entirely (same disclosure policy as content.ts).
+
 There is no backend in this repo: the site is fully static (adapter-static, SPA fallback + prerender). `sitemap.xml/+server.ts` is prerendered at build time; there are no runtime API endpoints.
 
 ### Imports
@@ -57,12 +67,12 @@ pnpm build           # build
 
 ## Design Principles
 
-| Principle | Rule |
-|-----------|------|
-| **SRP** | One function/component = one purpose |
-| **DRY** | Check `$lib/utils/` before writing anything new |
-| **KISS** | Simplest implementation that meets requirements |
-| **YAGNI** | Build only what's needed now |
+| Principle                  | Rule                                            |
+| -------------------------- | ----------------------------------------------- |
+| **SRP**                    | One function/component = one purpose            |
+| **DRY**                    | Check `$lib/utils/` before writing anything new |
+| **KISS**                   | Simplest implementation that meets requirements |
+| **YAGNI**                  | Build only what's needed now                    |
 | **Separation of concerns** | Data/UI/logic separate; stores for shared state |
 
 Avoid: god components, copy-paste, tight coupling, magic strings/numbers, deep nesting.
@@ -84,15 +94,15 @@ Plan (and get approval) before coding when: multi-file changes, new features tou
 
 `src/app.css` is the single source of truth for tokens. **Never hardcode a colour, size, radius, shadow, duration, or spacing value in a component** — reach for a token, and if none fits, add it to `app.css` rather than inventing a local literal.
 
-| Family | Tokens | Notes |
-|--------|--------|-------|
-| Colour roles | `--bg-*`, `--text-*`, `--border-color`, `--accent-*`, `--status-*` | Roles, not hues. `.dark` swaps values only. |
-| Accent as text | `--accent-primary-text`, `--accent-{professional,independent,experiment}` | Theme-flipped for AA contrast. `--accent-primary-light` is for **fills/dots/borders only** — it fails AA as text on light. |
-| Surfaces & scrims | `--surface-raised`, `--scrim-*`, `--border-subtle\|soft`, `--ink-*` | Ink-on-surface alphas; invert under `.dark`. |
-| Type | `--type-2xs…4xl`, `--leading-*`, `--tracking-*`, `--weight-*` | Size/leading/tracking are separate — they don't pair 1:1. |
-| Spacing | `--space-2xs…5xl` | Step names, never numeric: the scale is non-linear. |
-| Rhythm | `--section-y`, `--section-y-lg`, `--section-y-mobile`, `--section-x` | `-lg` only for sections that deliberately breathe more. |
-| Radius / elevation / motion | `--radius-*`, `--shadow-*`, `--duration-*`, `--ease-*` | Shadows are redefined under `.dark`. |
+| Family                      | Tokens                                                                    | Notes                                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Colour roles                | `--bg-*`, `--text-*`, `--border-color`, `--accent-*`, `--status-*`        | Roles, not hues. `.dark` swaps values only.                                                                                |
+| Accent as text              | `--accent-primary-text`, `--accent-{professional,independent,experiment}` | Theme-flipped for AA contrast. `--accent-primary-light` is for **fills/dots/borders only** — it fails AA as text on light. |
+| Surfaces & scrims           | `--surface-raised`, `--scrim-*`, `--border-subtle\|soft`, `--ink-*`       | Ink-on-surface alphas; invert under `.dark`.                                                                               |
+| Type                        | `--type-2xs…4xl`, `--leading-*`, `--tracking-*`, `--weight-*`             | Size/leading/tracking are separate — they don't pair 1:1.                                                                  |
+| Spacing                     | `--space-2xs…5xl`                                                         | Step names, never numeric: the scale is non-linear.                                                                        |
+| Rhythm                      | `--section-y`, `--section-y-lg`, `--section-y-mobile`, `--section-x`      | `-lg` only for sections that deliberately breathe more.                                                                    |
+| Radius / elevation / motion | `--radius-*`, `--shadow-*`, `--duration-*`, `--ease-*`                    | Shadows are redefined under `.dark`.                                                                                       |
 
 ### Rules that are enforced by tests
 
@@ -142,18 +152,22 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 ## Coding Conventions
 
 ### Naming
+
 - Components: PascalCase. Functions/variables: camelCase. Constants: UPPER_SNAKE_CASE. Types/interfaces: PascalCase.
 
 ### Svelte 5
+
 - Use runes: `$state`, `$derived`, `$effect`, `$props`.
 - Prefer `$props()` over `export let`.
 - Use `$lib` stores for cross-component shared state.
 
 ### Components
+
 - Feature components: `src/lib/components/features/<name>/`
 - Barrel export via `index.ts` in each folder.
 
 ### Security
+
 - No hardcoded secrets — this is a static site; anything in `src/` or `static/` ships to the client.
 - **Disclosure policy (employer facts).** Versant is a public company. Every employer-related number on any surface — copy, `<meta>`, JSON-LD, `llms.txt`, OG cards — carries a public source from `SOURCES` in `content.ts`; nothing Versant/CNBC has not disclosed publicly is stated anywhere. `disclosure-guard.test.ts` holds the deny-list and scans every surface; `content.test.ts` enforces basis + source on metrics. A feature flag is not an exemption: `content.ts` is bundled into client JS whether or not a card renders, so embargoed copy stays out of the repository entirely until it is public.
 - Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).

@@ -8,6 +8,8 @@ import {
   SAME_AS,
 } from './structured-data';
 import { notesData } from './content';
+import { caseStudyJsonLd } from './structured-data';
+import type { CaseStudy } from './case-studies';
 
 describe('personJsonLd', () => {
   const person = personJsonLd();
@@ -46,6 +48,39 @@ describe('techArticleJsonLd', () => {
   it('prefers an explicit dateModified when a note has one', () => {
     const edited = techArticleJsonLd({ ...note, dateModified: '2026-08-19' }, 'x');
     expect(edited.dateModified).toBe('2026-08-19');
+  });
+});
+
+describe('caseStudyJsonLd', () => {
+  const study = {
+    slug: 'fixture-study',
+    title: 'Fixture Study',
+    oneLiner: 'One sentence.',
+    role: 'Architect',
+    period: '2024–2025',
+    dateISO: '2026-08-20',
+    sections: {} as CaseStudy['sections'],
+    sources: [],
+    relatedNotes: [],
+    stack: ['Edge', 'React'],
+  } as CaseStudy;
+
+  it('carries full dates, image, author, publisher and canonical URL', () => {
+    const article = caseStudyJsonLd(study);
+    expect(article['@type']).toBe('TechArticle');
+    expect(article.url).toBe('https://zhaoyu.io/work/fixture-study');
+    expect(article.mainEntityOfPage).toBe(article.url);
+    expect(article.datePublished).toBe('2026-08-20');
+    expect(article.dateModified).toBe('2026-08-20');
+    expect(article.image).toBe('https://zhaoyu.io/og/fixture-study.png');
+    expect(article.author.name).toBe('Zhao Yu');
+    expect(article.keywords).toBe('Edge, React');
+  });
+
+  it('prefers an explicit dateModified', () => {
+    expect(caseStudyJsonLd({ ...study, dateModified: '2026-09-01' }).dateModified).toBe(
+      '2026-09-01',
+    );
   });
 });
 
