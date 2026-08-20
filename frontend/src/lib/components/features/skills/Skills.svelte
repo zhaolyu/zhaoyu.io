@@ -16,35 +16,41 @@
   });
 </script>
 
-<section id="skills" class="skills" bind:this={skillsContainer}>
+<section id="impact" class="skills" bind:this={skillsContainer}>
   <div class="skills-container">
     <!-- Always rendered so the content prerenders; the reveal is animation-only. -->
     <div class="skills-content reveal" class:revealed={sectionVisible}>
       <div class="skills-text">
         <div class="skills-badge">
           <span class="badge-dot"></span>
-          <h2 class="badge-text">Impact at Scale</h2>
+          <p class="badge-text">Impact at Scale</p>
         </div>
-        <h3 class="skills-headline">
-          The numbers behind<br />
-          <span class="highlight-blue">the system.</span>
-        </h3>
+        <h2 class="skills-headline">
+          The numbers,<br />
+          <span class="highlight-blue">with receipts.</span>
+        </h2>
         <p class="skills-description">
-          These are production metrics from CNBC.com — not synthetic benchmarks. Shipped at this
-          scale,
-          <span class="highlight-text">consistently</span>.
+          Every figure here is public and linked to its source — Versant's investor materials,
+          Chrome UX Report field data, or the record of the role. Nothing that isn't
+          <span class="highlight-text">publicly disclosed</span> is stated.
         </p>
       </div>
 
-      <div class="metrics-grid">
+      <dl class="metrics-grid">
         {#each performanceMetrics as metric (metric.label)}
           <div class="metric-card">
-            <div class="metric-value">{metric.value}</div>
-            <div class="metric-label">{metric.label}</div>
-            <div class="metric-sublabel">{metric.sublabel}</div>
+            <dt class="metric-label">{metric.label}</dt>
+            <dd class="metric-value">{metric.value}</dd>
+            <dd class="metric-sublabel">{metric.sublabel}</dd>
+            <dd class="metric-basis">
+              {metric.basis}.
+              <a class="metric-source" href={metric.source.href} target="_blank" rel="noopener">
+                Source: {metric.source.label}
+              </a>
+            </dd>
           </div>
         {/each}
-      </div>
+      </dl>
     </div>
   </div>
 </section>
@@ -161,6 +167,7 @@
   }
 
   .metric-card {
+    margin: 0;
     padding: 1.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.75rem;
@@ -207,6 +214,29 @@
     opacity: 0.7;
   }
 
+  .metric-card dd {
+    margin: 0;
+  }
+
+  .metric-basis {
+    margin-top: var(--space-sm) !important;
+    font-size: var(--type-xs);
+    line-height: var(--leading-snug);
+    color: var(--text-secondary);
+  }
+
+  .metric-source {
+    display: block;
+    margin-top: var(--space-2xs);
+    color: var(--accent-primary-text);
+    text-decoration: none;
+  }
+
+  .metric-source:hover,
+  .metric-source:focus-visible {
+    text-decoration: underline;
+  }
+
   @media (min-width: 768px) {
     .skills-content {
       flex-direction: row;
@@ -219,7 +249,7 @@
     }
 
     .metrics-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .metric-value {

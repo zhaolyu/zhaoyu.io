@@ -23,6 +23,17 @@
   --text-muted: #6b7280;
   --border-color: rgba(0, 0, 0, 0.1);
 
+  /* Inverse surface — the always-dark footer. These do not flip under .dark;
+     the surface is dark in both themes, so every text token here is checked
+     against --bg-inverse at ≥ 4.5:1 (the old #444/#666/#0077d5 literals were
+     1.9:1, 3.2:1 and 4.4:1). */
+  --bg-inverse: #050505;
+  --surface-on-inverse: rgba(255, 255, 255, 0.03);
+  --border-on-inverse: rgba(255, 255, 255, 0.08);
+  --text-on-inverse: #e5e5e5; /* ≈ 15:1 */
+  --text-on-inverse-muted: #9ca3af; /* ≈ 7.6:1 */
+  --accent-on-inverse: #60a5fa; /* ≈ 8:1 — same hue as --accent-primary-light */
+
   /* Accent Colors */
   --accent-primary: #3b82f6;
   --accent-primary-hover: #2563eb;
@@ -44,10 +55,10 @@
      are tuned for dark grounds and fall below WCAG AA as 10px text on a light
      one, so the badge takes these and flips them under .dark instead. */
   --accent-professional: #1d4ed8;
-  --accent-independent: #b45309;
+  --accent-independent: #9a4405; /* 5.5:1 on its own -10 tint; #b45309 was 4.2:1 */
   --accent-experiment: #0e7490;
-  --accent-independent-10: rgba(180, 83, 9, 0.1);
-  --accent-independent-20: rgba(180, 83, 9, 0.2);
+  --accent-independent-10: rgba(154, 68, 5, 0.1);
+  --accent-independent-20: rgba(154, 68, 5, 0.2);
 
   /* Infra Accent — Cyan (used for /infra ops dashboard) */
   --accent-infra: #06b6d4;

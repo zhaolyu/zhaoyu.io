@@ -1,9 +1,11 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { personaData, narrativeBio } from '$lib/constants/content';
+  import { narrativeBio } from '$lib/constants/content';
+  import { CareerTimeline } from '$lib/components/features/career-chart';
   import { SectionHeader } from '$lib/components/ui';
   import { observeSection } from '$lib/utils/section-observer';
 
+  /** The About section: the narrative bio, then the career as a timeline. */
   let sectionVisible = $state(false);
   let section: HTMLElement;
 
@@ -17,13 +19,13 @@
   });
 </script>
 
-<section id="persona" class="persona-section" bind:this={section}>
-  <SectionHeader badge="Principles & Persona">
-    How I think,<br />
-    <span class="headline-accent">outside the codebase.</span>
+<section id="about" class="persona-section" bind:this={section}>
+  <SectionHeader badge="About">
+    Both tracks.<br />
+    <span class="headline-accent">On purpose.</span>
   </SectionHeader>
 
-  <!-- Always rendered so the bio and persona cards prerender; the reveal is animation-only. -->
+  <!-- Always rendered so the bio and timeline prerender; the reveal is animation-only. -->
   <div class="bio-card reveal" class:revealed={sectionVisible}>
     <h3 class="card-title">{narrativeBio.title}</h3>
     <div class="card-body">
@@ -33,17 +35,8 @@
     </div>
   </div>
 
-  <div class="persona-grid reveal reveal-delayed" class:revealed={sectionVisible}>
-    {#each personaData as item (item.title)}
-      <div class="persona-card">
-        <h3 class="card-title">{item.title}</h3>
-        <div class="card-body">
-          {#each item.body as paragraph (paragraph)}
-            <p class="card-paragraph">{paragraph}</p>
-          {/each}
-        </div>
-      </div>
-    {/each}
+  <div class="reveal reveal-delayed" class:revealed={sectionVisible}>
+    <CareerTimeline />
   </div>
 </section>
 
@@ -58,6 +51,7 @@
       background-color 0.2s,
       color 0.2s;
     border-bottom: 1px solid var(--border-color);
+    scroll-margin-top: 4rem;
   }
 
   /* Entrance animation only when JS runs and motion is allowed; content is
@@ -99,32 +93,6 @@
     max-width: 72ch;
   }
 
-  .persona-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg);
-  }
-
-  .persona-card {
-    padding: var(--space-xl);
-    border: 1px solid var(--border-color);
-    border-radius: 0.75rem;
-    background: var(--bg-secondary);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    transition:
-      border-color 0.3s,
-      background-color 0.3s,
-      transform 0.3s;
-  }
-
-  .persona-card:hover {
-    border-color: var(--text-muted);
-    background: var(--bg-primary);
-    transform: translateY(-2px);
-  }
-
   .card-title {
     font-size: 0.875rem;
     font-family: var(--font-mono);
@@ -150,10 +118,6 @@
   @media (max-width: 768px) {
     .persona-section {
       padding: 4rem 1rem;
-    }
-
-    .persona-grid {
-      grid-template-columns: 1fr;
     }
   }
 </style>

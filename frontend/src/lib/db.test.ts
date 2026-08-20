@@ -47,8 +47,13 @@ function stubIndexedDB(deleted: string[], names = ['zhaoyu-cost-guard-v2', 'unre
 }
 
 async function settle() {
-  // flush the promise chains inside init/wipeAndRetry
-  for (let i = 0; i < 10; i++) await Promise.resolve();
+  // Flush the promise chains inside init/wipeAndRetry. init() now loads PGlite
+  // through a dynamic import, which resolves on a later turn than a bare
+  // promise chain, so yield a macrotask on each pass as well.
+  for (let pass = 0; pass < 3; pass++) {
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    for (let i = 0; i < 10; i++) await Promise.resolve();
+  }
 }
 
 beforeEach(() => {

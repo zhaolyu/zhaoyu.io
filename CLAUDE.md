@@ -24,7 +24,7 @@ frontend/            ← all commands run from here
     routes/
       (main)/        # main layout group: landing page + blog/[slug]/
       (standalone)/  # ai-manifesto (own layout)
-      infra/         # Cost-Guard dashboard (ssr = false)
+      infra/         # Cost-Guard dashboard (prerendered shell; PGlite is imported on mount)
       sitemap.xml/   # prerendered +server.ts endpoint (the only server route)
       +layout.ts
 ```
@@ -144,6 +144,7 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 
 ### Security
 - No hardcoded secrets — this is a static site; anything in `src/` or `static/` ships to the client.
+- **Disclosure policy (employer facts).** Versant is a public company. Every employer-related number on any surface — copy, `<meta>`, JSON-LD, `llms.txt`, OG cards — carries a public source from `SOURCES` in `content.ts`; nothing Versant/CNBC has not disclosed publicly is stated anywhere. `disclosure-guard.test.ts` holds the deny-list and scans every surface; `content.test.ts` enforces basis + source on metrics. A feature flag is not an exemption: `content.ts` is bundled into client JS whether or not a card renders, so embargoed copy stays out of the repository entirely until it is public.
 - Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).
 - CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
 - GitHub Actions are pinned to commit SHAs; Dependabot keeps them and npm deps updated.

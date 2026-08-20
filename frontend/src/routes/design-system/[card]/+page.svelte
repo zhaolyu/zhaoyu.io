@@ -129,7 +129,7 @@
   <meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<main class="ds-card">
+<main id="main" class="ds-card">
   <header class="ds-head">
     <p class="ds-group">{data.card.group}</p>
     <h1>{data.card.name}</h1>
