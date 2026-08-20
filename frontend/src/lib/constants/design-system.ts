@@ -134,6 +134,13 @@ export const DESIGN_SYSTEM_CARDS: DesignSystemCard[] = [
     subtitle: 'Axes, legend, dashed reference and a named event',
     viewport: { width: 1200, height: 800 },
   },
+  {
+    slug: 'segmented',
+    name: 'Segmented control',
+    group: 'Components',
+    subtitle: '2–4 exclusive options, one row',
+    viewport: { width: 1200, height: 400 },
+  },
 ];
 
 export const designSystemCard = (slug: string): DesignSystemCard | undefined =>
