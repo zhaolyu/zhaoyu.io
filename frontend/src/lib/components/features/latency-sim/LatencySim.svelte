@@ -127,15 +127,15 @@
   });
 </script>
 
-<section id="latency" class="latency-sim-section" bind:this={latencySection}>
+<div id="latency" class="latency-sim-section" bind:this={latencySection}>
   <div class="sim-container">
     <div class="sim-content">
       <div class="sim-text">
-        <h2 class="section-badge">HCI Engineering</h2>
-        <h3 class="section-title">Viscerally Faster.</h3>
+        <p class="section-badge">See it: latency demo</p>
+        <h3 class="section-title">Latency is the enemy of trust.</h3>
         <p class="section-description">
-          Don't just tell stakeholders your architecture is better.
-          <strong>Show them.</strong>
+          Don't just tell stakeholders the architecture is better —
+          <strong>show them.</strong>
           Switch modes to feel the difference between a naive socket connection and a frame-buffered stream.
         </p>
 
@@ -177,17 +177,16 @@
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <style>
   .latency-sim-section {
-    padding: 6rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+    padding: 0;
     background: var(--bg-primary);
     color: var(--text-primary);
     position: relative;
     overflow: hidden;
-    scroll-margin-top: 4rem;
+    scroll-margin-top: 6rem;
     transition:
       background-color 0.2s,
       color 0.2s,
@@ -274,15 +273,15 @@
   }
 
   .mode-button.active.naive {
-    background: rgba(239, 68, 68, 0.2);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.5);
+    background: var(--status-error-10);
+    color: var(--status-error-text);
+    border: 1px solid var(--status-error);
   }
 
   .mode-button.active.optimized {
-    background: rgba(16, 185, 129, 0.2);
-    color: #34d399;
-    border: 1px solid rgba(16, 185, 129, 0.5);
+    background: var(--status-success-10);
+    color: var(--status-success-text);
+    border: 1px solid var(--status-success);
   }
 
   .sim-display {
@@ -325,36 +324,19 @@
     width: 8px;
   }
 
-  /* Light mode scrollbar */
-  :global(html:not(.dark)) .display-content::-webkit-scrollbar-track {
-    background: rgba(241, 245, 249, 0.5);
-    border-radius: 4px;
+  .display-content::-webkit-scrollbar-track {
+    background: var(--scrim-soft);
+    border-radius: var(--radius-sm);
   }
 
-  :global(html:not(.dark)) .display-content::-webkit-scrollbar-thumb {
-    background-color: #cbd5e1;
-    border-radius: 4px;
-    border: 1px solid rgba(241, 245, 249, 0.5);
+  .display-content::-webkit-scrollbar-thumb {
+    background-color: var(--ink-faint);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--scrim-soft);
   }
 
-  :global(html:not(.dark)) .display-content::-webkit-scrollbar-thumb:hover {
-    background-color: #94a3b8;
-  }
-
-  /* Dark mode scrollbar */
-  :global(.dark) .display-content::-webkit-scrollbar-track {
-    background: rgba(10, 10, 10, 0.5);
-    border-radius: 4px;
-  }
-
-  :global(.dark) .display-content::-webkit-scrollbar-thumb {
-    background-color: #262626;
-    border-radius: 4px;
-    border: 1px solid rgba(10, 10, 10, 0.5);
-  }
-
-  :global(.dark) .display-content::-webkit-scrollbar-thumb:hover {
-    background-color: #404040;
+  .display-content::-webkit-scrollbar-thumb:hover {
+    background-color: var(--ink-dim);
   }
 
   .display-text {
@@ -394,20 +376,20 @@
   }
 
   .display-badge.naive {
-    color: #f87171;
-    border-color: rgba(239, 68, 68, 0.3);
-    background: rgba(239, 68, 68, 0.1);
+    color: var(--status-error-text);
+    border-color: var(--status-error-20);
+    background: var(--status-error-10);
   }
 
   .display-badge.optimized {
-    color: #34d399;
-    border-color: rgba(16, 185, 129, 0.3);
-    background: rgba(16, 185, 129, 0.1);
+    color: var(--status-success-text);
+    border-color: var(--status-success-20);
+    background: var(--status-success-10);
   }
 
   @media (max-width: 768px) {
     .latency-sim-section {
-      padding: 4rem 1rem;
+      padding: 0;
     }
 
     .sim-content {

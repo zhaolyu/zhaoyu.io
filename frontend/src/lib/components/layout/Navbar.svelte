@@ -10,13 +10,12 @@
   let menuEl = $state<HTMLElement | null>(null);
   let hamburgerEl = $state<HTMLElement | null>(null);
 
+  // Writing is one click from anywhere; sections in page order.
   const navLinks = [
-    { name: '/skills', href: '/#skills' },
-    { name: '/career', href: '/#career' },
-    { name: '/architecture', href: '/#work' },
-    { name: '/latency', href: '/#latency' },
-    { name: '/manifesto', href: '/#manifesto' },
-    { name: '/notes', href: '/#notes' },
+    { name: '/work', href: '/#work' },
+    { name: '/writing', href: '/blog' },
+    { name: '/how-i-work', href: '/#manifesto' },
+    { name: '/about', href: '/#about' },
     { name: '/ai-thesis', href: '/ai-manifesto' },
     { name: '/contact', href: '/#connect' },
   ];

@@ -1,8 +1,44 @@
 /**
- * Content constants for landing page
+ * Content constants for the landing page.
+ *
+ * Disclosure policy — the code must stand on its own, so the rule is restated
+ * here: every employer-related number on any surface (copy, meta, JSON-LD,
+ * llms.txt, OG cards) carries a public source from `SOURCES`, and nothing
+ * Versant/CNBC has not disclosed publicly is stated anywhere. Role and scope
+ * are described loudly; internal specifics are not. `disclosure-guard.test.ts`
+ * enforces the deny-list; `content.test.ts` enforces the source rule.
  */
 
-import { FEATURE_FLAGS, type FeatureFlag } from '$lib/constants/config';
+import type { FeatureFlag } from '$lib/constants/config';
+
+export interface Source {
+  label: string;
+  href: string;
+}
+
+/**
+ * The public sources employer facts may cite. Checked 2026-08-19 against the
+ * FY2025 10-K, both 2026 10-Qs, the Q2-2026 8-K, the Q1/Q2 earnings calls and
+ * the Investor Day deck. Add a new disclosure here before using it in copy.
+ */
+export const SOURCES = {
+  versantInvestorDay2025: {
+    label: 'Versant Investor Day, Dec 2025 · slide 66 (ComScore)',
+    href: 'https://cdn.versantmedia.com/versantmedia/2025-12/Versant%20Investor%20Day%20-%20Full%20Deck%20-%20December%204%202025_vPost_compressed.pdf',
+  },
+  versantQ2Call2026: {
+    label: 'Versant Q2-2026 earnings call, 6 Aug 2026',
+    href: 'https://www.investing.com/news/transcripts/earnings-call-transcript-versant-media-lifts-2026-outlook-in-q2-2026-93CH-4842245',
+  },
+  cruxCnbc: {
+    label: 'Chrome UX Report · origin www.cnbc.com · Jul 2026 (via treo.sh)',
+    href: 'https://treo.sh/sitespeed/www.cnbc.com',
+  },
+  linkedin: {
+    label: 'LinkedIn · role and scope',
+    href: 'https://linkedin.com/in/zhaolyu',
+  },
+} as const satisfies Record<string, Source>;
 
 export interface HeroContent {
   badge: string;
@@ -10,6 +46,8 @@ export interface HeroContent {
     primary: string;
     accent: string;
   };
+  /** One-line version of the headline for the OG card and other tight slots. */
+  tagline: string;
   bio: string;
   cta: {
     primary: string;
@@ -19,71 +57,72 @@ export interface HeroContent {
 }
 
 /**
- * The subset of FEATURE_FLAGS the positioning builders read. Narrow and
- * partial so a test can name only the flag under test, and so adding an
- * unrelated flag can't break these call sites.
+ * Hero copy. Written for a Director / Head-of-Engineering reader: role and
+ * outcomes up front, the still-ships differentiator second, no internal
+ * specifics. The headline (primary + accent) is held to 40 words by
+ * positioning.test.ts; the bio carries at most one number.
  */
-export type PositioningFlags = { goLoudPositioning?: boolean };
-
-const CTA = {
-  primary: 'View Selected Work',
-  secondary: 'Read My AI Thesis',
-} as const;
-
-const MOTTO = ['Low Latency', 'High Leverage', 'Deep Focus'];
-
-/** Shared across both positioning states — the title is a fact, not a stance. */
-const HERO_BADGE = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC WEB & MAKE IT';
-const HERO_PRIMARY = 'Leading CNBC Web & Make It.';
-
-/** Quieter default: describes scope without leading on surface ownership. */
-const stealthHero: HeroContent = {
-  badge: HERO_BADGE,
+export const heroContent: HeroContent = {
+  badge: 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE',
   headline: {
-    primary: HERO_PRIMARY,
-    accent: 'Player-Coach: Platform Architecture, Core Video & AI Governance.',
+    primary: 'I lead engineering teams that turn platform performance into audience and revenue.',
+    accent:
+      'Player-coach: 20 engineers, 3 teams, driving the next-gen CNBC.com rebuild — hands still in the code.',
   },
-  bio: 'Senior Manager, Engineering across CNBC Web & Make It divisions—directing a 20-engineer organization executing the platform rebuild of CNBC.com ($50–55M ARR, 170K+ subscribers), while staying hands-on in core architecture. Nine years of performance-first engineering: Isomorphic Akamai Edge for 50M+ monthly users, 1.1s LCP, zero-downtime infrastructure migrations, and governed AI integration.',
-  cta: CTA,
-  motto: MOTTO,
-};
-
-/** Go-loud variant — see FEATURE_FLAGS.goLoudPositioning and docs/launch-checklist.md. */
-const goLoudHero: HeroContent = {
-  badge: HERO_BADGE,
-  headline: {
-    primary: HERO_PRIMARY,
-    accent: 'I own the platform, video, and AI surfaces a financial audience runs on.',
+  tagline:
+    'Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
+  bio: 'Nine years on CNBC.com, intern to Principal Engineer to running the web organization. I keep the platform fast enough to hold ~47M monthly readers through market-moving events — edge architecture, video, and governed AI, built by teams I lead and still code beside.',
+  cta: {
+    primary: 'View Selected Work',
+    secondary: 'Read the Notes',
   },
-  bio: "Senior Manager, Engineering across CNBC Web & Make It divisions — directing a 20-engineer organization across 3 web teams through the platform rebuild of CNBC.com ($50–55M ARR, 170K+ subscribers). Sole frontend architect of CNBC's AI financial assistant, shipped to a 200-subscriber beta cohort; lead the team shipping CNBC's next-gen web video experience. Nine years of performance-first engineering underneath it: Isomorphic Akamai Edge, 50M+ monthly users, 1.1s LCP.",
-  cta: CTA,
-  motto: MOTTO,
+  motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
 };
-
-/**
- * `flags` is injectable so both positioning states are assertable in tests;
- * production callers use the exported `heroContent` below. Same pattern as
- * `visibleItems` in $lib/utils/feature-flags.
- */
-export function buildHeroContent(flags: PositioningFlags = FEATURE_FLAGS): HeroContent {
-  return flags.goLoudPositioning ? goLoudHero : stealthHero;
-}
-
-export const heroContent: HeroContent = buildHeroContent();
 
 export interface PerformanceMetric {
   label: string;
   value: string;
   sublabel: string;
+  /** What the number measures, over what window — rendered with the metric. */
+  basis: string;
+  source: Source;
 }
 
+/**
+ * Headline numbers. Each one is public and linked; the metrics grid is the
+ * only place they appear as figures (content.test.ts caps repeats).
+ */
 export const performanceMetrics: PerformanceMetric[] = [
-  { label: 'LCP', value: '1.1s', sublabel: 'CNBC.com · Top 1%' },
-  { label: 'Monthly Users', value: '50M+', sublabel: 'CNBC Reach' },
-  { label: 'Akamai TTFB', value: '<300ms', sublabel: 'EdgeWorkers · Global' },
-  { label: 'Cache Hit Rate', value: '98.4%', sublabel: 'Akamai Edge Layer' },
-  { label: 'Production Years', value: '9+', sublabel: 'Shipped at Scale' },
-  { label: 'Core Web Vitals', value: 'Top 1%', sublabel: 'Lighthouse Score' },
+  {
+    label: 'Monthly uniques',
+    value: '47M',
+    sublabel: 'CNBC digital · ComScore',
+    basis:
+      'U.S. average monthly unique visitors, Sept 2024–Aug 2025, as reported at Versant Investor Day',
+    source: SOURCES.versantInvestorDay2025,
+  },
+  {
+    label: 'p75 LCP',
+    value: '1.7s',
+    sublabel: 'cnbc.com · CrUX field data',
+    basis:
+      'Chrome UX Report, all devices, July 2026 — 85% of page loads inside the 2.5s "good" threshold',
+    source: SOURCES.cruxCnbc,
+  },
+  {
+    label: 'Engineers',
+    value: '20',
+    sublabel: '3 web teams · CNBC Core',
+    basis: 'Organization scope as Senior Manager, Engineering',
+    source: SOURCES.linkedin,
+  },
+  {
+    label: 'Years shipping',
+    value: '9+',
+    sublabel: 'CNBC · NBC News · NBCUniversal',
+    basis: 'Intern in 2016 to Senior Manager, Engineering in 2026, on the same platform',
+    source: SOURCES.linkedin,
+  },
 ];
 
 export interface Project {
@@ -105,64 +144,14 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC.com Next-Gen Migration',
       description:
-        'Architected the migration of CNBC.com from a legacy client-side monolith to a high-performance Isomorphic Akamai Edge architecture. Business and rendering logic moved to Akamai EdgeWorkers — executing at the network edge, not origin. The result: <300ms global TTFB and a 1.1s LCP during market-moving events with 50M+ concurrent users and zero downtime.',
+        'Market-moving days are a financial-news business at its most valuable and most fragile. I architected CNBC.com’s migration from a legacy client-side monolith to an isomorphic Akamai Edge architecture, moving business and rendering logic to the network edge, so the platform holds its full audience through exactly those spikes: sub-2-second p75 LCP in public field data, zero downtime through the cutover, and no lost sessions or ad impressions at the moments the audience is largest.',
       tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
       metrics: [
-        { label: 'LCP (TOP 1%)', value: '1.1s' },
-        { label: 'AKAMAI TTFB', value: '<300ms' },
+        { label: 'P75 LCP (CRUX)', value: '1.7s' },
+        { label: 'MONTHLY UNIQUES', value: '47M' },
       ],
       diagram: 'migration-arch',
     },
-    {
-      title: 'CNBC AI Insight Engine',
-      description:
-        "Non-deterministic output requires deterministic UI. Engineered the frontend architecture for CNBC's first user-facing AI assistant — currently a 200-subscriber beta pilot, not a site-wide surface — solving the HCI paradox of maintaining user trust when data is streaming and non-deterministic. Built a latency masking layer for token rendering at 60fps and a real-time citation engine that maps AI-generated tokens to verified CNBC sources.",
-      tags: ['React', 'Akamai Edge', 'Generative AI', 'HCI'],
-      metrics: [
-        { label: 'LATENCY MASKING', value: '60 FPS' },
-        { label: 'CITATION ENGINE', value: 'Real-time' },
-      ],
-      diagram: 'ai-state-machine',
-      featureFlag: 'showCnbcAiWork',
-    },
-  ],
-};
-
-export interface ExperienceItem {
-  name: string;
-  type: 'org' | 'tech';
-}
-
-export interface ExperienceData {
-  items: ExperienceItem[];
-}
-
-export const experienceData: ExperienceData = {
-  items: [
-    // ORGANIZATIONS (The Authority)
-    { name: 'NBCUNIVERSAL', type: 'org' },
-    { name: 'NBC NEWS', type: 'org' },
-    { name: 'VERSANT', type: 'org' },
-    { name: 'CNBC', type: 'org' },
-
-    // --- THE UI FOUNDATION ---
-    { name: 'REACT', type: 'tech' },
-    { name: 'NEXT.JS', type: 'tech' },
-    { name: 'TYPESCRIPT', type: 'tech' },
-    { name: 'TAILWIND', type: 'tech' },
-
-    // --- THE PERFORMANCE & DATA LAYER (The "Principal" Edge) ---
-    { name: 'AKAMAI', type: 'tech' },
-    { name: 'SVELTE', type: 'tech' },
-    { name: 'NODE.JS', type: 'tech' },
-    { name: 'GRAPHQL', type: 'tech' },
-    { name: 'MONGODB', type: 'tech' },
-
-    // --- AI & BUILDER SIGNALS ---
-    { name: 'CURSOR', type: 'tech' },
-    { name: 'CLAUDE CODE', type: 'tech' },
-    { name: 'PGLITE', type: 'tech' },
-    { name: 'PYTHON', type: 'tech' },
   ],
 };
 
@@ -173,6 +162,8 @@ export interface EngineeringNote {
   date: string;
   /** ISO 8601 date (YYYY-MM) for schema.org datePublished */
   dateISO: string;
+  /** ISO 8601 date of the last substantive edit, when later than dateISO. */
+  dateModified?: string;
   tags: string[];
   content: string[];
 }
@@ -190,8 +181,8 @@ export const notesData: NotesData = {
       dateISO: '2026-08',
       tags: ['System Prompt Architecture', 'LLM Mechanics', 'AI Engineering'],
       content: [
-        "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to — and when that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. Salesforce found this same escalation across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less — which is only surprising if you believed the length was buying compliance in the first place.",
-        "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: RoPE, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and retrieval accuracy for a fact placed mid-context drops by over 30% compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction — Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
+        "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to — and when that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. <a href='https://www.salesforce.com/news/stories/ai-lessons-building-enterprise-agents/' target='_blank' rel='noopener'>Salesforce found this same escalation</a> across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less — which is only surprising if you believed the length was buying compliance in the first place.",
+        "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: <a href='https://arxiv.org/abs/2104.09864' target='_blank' rel='noopener'>RoPE</a>, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and <a href='https://arxiv.org/abs/2307.03172' target='_blank' rel='noopener'>retrieval accuracy for a fact placed mid-context drops by more than 20 points</a> compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction — Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
       ],
     },
     {
@@ -223,7 +214,7 @@ export const notesData: NotesData = {
       dateISO: '2026-07',
       tags: ['AI Engineering', 'Agent Architecture', 'Specification'],
       content: [
-        "The industry is measuring AI-assisted development with the wrong unit of analysis. Code-generation speed is the vanity metric; the METR result everyone cites — experienced developers who <em>felt</em> 20% faster while measuring slower — isn't evidence that AI doesn't work, it's evidence that implementation speed was never the constraint. When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description itself. StrongDM's autonomous pipeline runs on 6,000+ lines of behavioral specification — and that corpus, not the generated code, is the engineering artifact. <strong>The specification becomes the primary artifact; the codebase is a derivative</strong> — closer to a build output than to source.",
+        "The industry is measuring AI-assisted development with the wrong unit of analysis. Code-generation speed is the vanity metric; <a href='https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/' target='_blank' rel='noopener'>the METR result everyone cites</a> — experienced developers who <em>felt</em> 20% faster while measuring slower — isn't evidence that AI doesn't work, it's evidence that implementation speed was never the constraint. When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description itself. <a href='https://www.strongdm.com/blog/the-strongdm-software-factory-building-software-with-ai' target='_blank' rel='noopener'>StrongDM's autonomous pipeline</a> runs on nearly 6,000 lines of <a href='https://github.com/strongdm/attractor' target='_blank' rel='noopener'>public behavioral specification</a> — and that corpus, not the generated code, is the engineering artifact. <strong>The specification becomes the primary artifact; the codebase is a derivative</strong> — closer to a build output than to source.",
         'Building production systems with Cursor and Claude Code has restructured where my own hours go. My leverage stopped correlating with how fast I can type and started correlating with how precisely I can state three things: the goal, the boundary, and what "done" has to prove. The human stays at the two endpoints — specification in, satisfaction judgment out — and everything between is increasingly the machine\'s. This also explains why AI amplifies experts instead of equalizing them: it equalizes execution speed, but execution was already cheap. What it amplifies is specification quality, and specification quality is a direct function of domain depth. If the agent keeps disappointing you, the uncomfortable first question is no longer about the model — it\'s whether you actually specified the thing you wanted.',
       ],
     },
@@ -320,7 +311,6 @@ export const notesData: NotesData = {
 
 export interface CareerPoint {
   year: number;
-  impact: number; // 0-100
   role: string;
   company: string;
   /** One-line context for track changes, so the timeline reads as a choice, not a zigzag. */
@@ -333,26 +323,23 @@ export interface CareerHistory {
 
 export const careerHistory: CareerHistory = {
   points: [
-    { year: 2016, impact: 10, role: 'Intern', company: 'CNBC' },
-    { year: 2017, impact: 30, role: 'Software Engineer', company: 'CNBC' },
-    { year: 2019, impact: 50, role: 'Senior Engineer', company: 'NBC News' },
+    { year: 2016, role: 'Intern', company: 'CNBC' },
+    { year: 2017, role: 'Software Engineer', company: 'CNBC' },
+    { year: 2019, role: 'Senior Engineer', company: 'NBC News' },
     {
       year: 2021,
-      impact: 70,
       role: 'Engineering Manager',
       company: 'NBCUniversal',
       note: 'First management tour.',
     },
     {
       year: 2025,
-      impact: 90,
       role: 'Principal Engineer',
       company: 'Versant / CNBC',
       note: 'Deliberate return to the technical track through the spinoff — kept architecture judgment current.',
     },
     {
       year: 2026,
-      impact: 100,
       role: 'Senior Manager, Engineering',
       company: 'Versant / CNBC',
       note: 'The synthesis: player-coach role spanning both tracks — a 20-engineer organization across 3 web teams, still hands-on in core architecture.',
@@ -374,60 +361,41 @@ export interface BuilderProject {
 }
 
 /**
- * The platform rebuild card follows the same positioning flag as the hero: the
- * quiet variant describes the scope and the numbers, the loud one adds the
- * video-team leadership — the monetization framing, the surface count, and the
- * product-continuity scope across rotating PMs.
- *
- * The video work stays gated deliberately: the quiet card claims architecture
- * ("core video streaming experiences", "modular player frameworks"), and only
- * the loud variant claims leading the team that ships it. The agent-facing
- * layer (llms.txt, JSON-LD) carries the full picture either way — see
- * docs/launch-checklist.md.
+ * Selected-work cards. The platform card leads. The AI card describes the work
+ * only at the level Versant has disclosed publicly ("AI-powered investing
+ * tools" in the next-generation platform); the product specifics wait for the
+ * announcement and live outside this repository until then.
  */
-const platformRebuildQuiet =
-  'Ground-up rebuild of CNBC.com and core video streaming experiences. Architected modular player frameworks and edge rendering delivering a 1.1s LCP and <300ms TTFB for 50M+ monthly uniques and 170K+ premium subscribers generating $50–55M ARR.';
-
-const platformRebuildLoud = `${platformRebuildQuiet} I lead the team building the video surfaces — the monetization engine of the property — with five in flight across live viewing, on-demand playback with resumable sessions, audience engagement, and notifications, spanning player architecture, playback state, and the delivery path behind them. The team has no dedicated PM; several rotate through per project, and I'm the technical continuity across all of them: shaping and defining the work from feasibility, and carrying it through the dependent-team discussions that keep it moving.`;
-
-function platformRebuildProject(flags: PositioningFlags): BuilderProject {
-  const loud = flags.goLoudPositioning === true;
-
-  return {
-    title: 'CNBC.com Next-Gen Platform & Video Rebuild',
-    category: 'professional',
-    description: loud ? platformRebuildLoud : platformRebuildQuiet,
-    stack: ['Isomorphic React', 'Akamai EdgeWorkers', 'SSE Real-Time Sync', 'Micro-Frontends'],
-    status: 'active',
-    metrics: [
-      { label: 'Subscriber ARR', value: '$50–55M' },
-      loud
-        ? { label: 'Product Continuity', value: 'Across rotating PMs' }
-        : { label: 'Playback', value: 'Live + VOD' },
-    ],
-  };
-}
-
-/**
- * `flags` is injectable so both positioning states are assertable in tests;
- * production callers use the exported `builderProjects` below.
- */
-export function buildBuilderProjects(flags: PositioningFlags = FEATURE_FLAGS): BuilderProject[] {
-  return [platformRebuildProject(flags), ...staticBuilderProjects];
-}
-
-/** Cards whose copy does not vary with positioning. */
-const staticBuilderProjects: BuilderProject[] = [
+export const builderProjects: BuilderProject[] = [
   {
-    title: 'AI Financial Assistant (Architecture Pilot)',
+    title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      "Sole frontend architect and technical bridge for CNBC's first user-facing AI assistant. Spec'd and shipped the multi-step agentic pipeline (query planner → MCP data retrieval → tool grader → response generator) in 4 months to a 200-subscriber beta cohort, establishing the architectural blueprint for future conversational surfaces.",
-    stack: ['Multi-Agent Pipeline', 'MCP Integration', 'Tool Grader', 'SSE Streaming'],
-    status: 'beta-pilot',
+      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the surface Versant’s digital growth strategy rides on.',
+    stack: [
+      'Isomorphic React',
+      'Akamai EdgeWorkers',
+      'GraphQL',
+      'Micro-Frontends',
+      'Amplitude',
+      'MPS Ads',
+    ],
+    status: 'active',
     metrics: [
-      { label: 'Beta Cohort', value: '200 Subs' },
-      { label: 'Spec → Ship', value: '4 Months' },
+      { label: 'Experiences', value: 'AI · Video · Site' },
+      { label: 'Integrations', value: 'Analytics · Ads · Identity · Subs' },
+    ],
+  },
+  {
+    title: 'AI-Powered Investing Tools (Frontend Architecture)',
+    category: 'professional',
+    description:
+      "Leading the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform — the direct-to-consumer bet Versant has described to investors. In financial products, trust is the conversion metric: my work makes non-deterministic model output feel deterministic — frame-buffered streaming, graceful degradation, latency that never shakes a reader’s confidence in the number on screen.",
+    stack: ['Streaming UI', 'SSE', 'React', 'HCI'],
+    status: 'active',
+    metrics: [
+      { label: 'Token rendering', value: '60 fps' },
+      { label: 'Interface', value: 'Deterministic' },
     ],
     link: {
       label: 'Read the architecture note',
@@ -438,7 +406,7 @@ const staticBuilderProjects: BuilderProject[] = [
     title: 'Infrastructure & Privacy Separation',
     category: 'professional',
     description:
-      'Directed a 4-month cross-functional sprint across 3 teams to fully separate CNBC infrastructure from the parent company, migrating video streaming, analytics, and privacy services with zero downtime.',
+      'When the corporate spinoff needed CNBC’s digital business to stand alone, I directed the 4-month, 3-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company with zero downtime — compliance obligations met, no revenue interruption, no user-visible seam.',
     stack: ['GCP', 'Zero Downtime', 'GDPR/CCPA Compliance', 'Cloud Architecture'],
     status: 'completed',
     metrics: [
@@ -450,7 +418,7 @@ const staticBuilderProjects: BuilderProject[] = [
     title: 'OB1: Personal Exocortex',
     category: 'independent',
     description:
-      'A second brain built for agents, not just for me. Books, engineering sources, and production lessons get distilled into atomic, cross-linked claims — 740+ and compounding — searchable by meaning and exposed to my AI tools over MCP, so every agent session starts with my accumulated judgment instead of a blank context window.',
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 740+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
     stack: ['MCP', 'Embeddings', 'Semantic Search', 'TypeScript'],
     status: 'shipped',
     metrics: [
@@ -462,7 +430,7 @@ const staticBuilderProjects: BuilderProject[] = [
     title: 'Cost-Guard: FinOps Platform',
     category: 'experiment',
     description:
-      'Local-first cloud cost monitoring using PGlite + ElectricSQL. Zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run with Pulumi-managed infrastructure. Personal observability tooling built with AI-assisted development.',
+      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development — the same governed workflow I set for my org, proven on my own infrastructure.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
     status: 'in-progress',
     metrics: [
@@ -472,34 +440,19 @@ const staticBuilderProjects: BuilderProject[] = [
   },
 ];
 
-export const builderProjects: BuilderProject[] = buildBuilderProjects();
-
 export interface NarrativeBio {
   title: string;
   paragraphs: string[];
 }
 
-/** Go-loud only — see FEATURE_FLAGS.goLoudPositioning and docs/launch-checklist.md. */
-const surfaceOwnershipParagraph =
-  "Today that means owning both ends of the strategic surface area: I was the sole frontend architect for CNBC's AI financial assistant — now validated with a 200-subscriber beta cohort — and I lead the team shipping the next-generation video experience, the property's revenue engine.";
-
-/**
- * `flags` is injectable so both positioning states are assertable in tests;
- * production callers use the exported `narrativeBio` below.
- */
-export function buildNarrativeBio(flags: PositioningFlags = FEATURE_FLAGS): NarrativeBio {
-  return {
-    title: 'The Modernizer',
-    paragraphs: [
-      "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager, Engineering across CNBC Web & Make It. The role is the synthesis of both tracks: I direct a 20-engineer organization across 3 web teams executing the platform rebuild of CNBC.com, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
-      ...(flags.goLoudPositioning ? [surfaceOwnershipParagraph] : []),
-      'As AI Integration Lead, I formalize the standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers across 3 web teams integrate AI tools like Cursor into production codebases, delivering a 25% velocity increase and 15% fewer high-severity defects. The philosophy underneath it is "Plan-first" execution — AI as a disciplined velocity multiplier inside strict security and compliance guardrails, never as an unreviewed author.',
-      'Outside of architecting enterprise systems or building developer tools like Cost-Guard, I am a competitive long-distance runner. I believe the endurance and discipline required to complete a 50k ultramarathon are the same traits needed to lead complex, multi-year technical transformations.',
-    ],
-  };
-}
-
-export const narrativeBio: NarrativeBio = buildNarrativeBio();
+export const narrativeBio: NarrativeBio = {
+  title: 'Player-coach by design',
+  paragraphs: [
+    'What the business gets from me is both tracks at once. Over nine years at CNBC I deliberately crossed the line most engineers pick a side of — senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. The payoff for the organization: I direct a 20-engineer organization across 3 web teams rebuilding CNBC.com, and because I still architect and ship alongside them, technical decisions get made in the room — no translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
+    'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code — measurable velocity gains with fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
+    'Outside the codebase I am a long-distance runner — a 3:07 marathon and a 50K ultra — and the same discipline carries into multi-year technical transformations.',
+  ],
+};
 
 export interface SocialDescriptions {
   /** Used for both <meta name="description"> and og:description. */
@@ -507,59 +460,32 @@ export interface SocialDescriptions {
   twitter: string;
 }
 
-/**
- * Human-facing social/meta copy. Follows the positioning flag; the
- * agent-facing layer (JSON-LD, llms.txt) deliberately does not — see
- * docs/launch-checklist.md.
- */
-export function buildSocialDescriptions(
-  flags: PositioningFlags = FEATURE_FLAGS,
-): SocialDescriptions {
-  return flags.goLoudPositioning
-    ? {
-        meta: "Senior Manager, Engineering at Versant (CNBC Web & Make It). Sole frontend architect of CNBC's AI financial assistant (200-subscriber beta pilot); lead the next-gen web video platform. 20-engineer org, 50M+ users, 1.1s LCP.",
-        twitter:
-          'Senior Manager, Engineering at Versant (CNBC Web & Make It). AI financial assistant architecture, next-gen web video, and edge performance at 50M+ users.',
-      }
-    : {
-        meta: 'Senior Manager, Engineering at Versant (CNBC Web & Make It) — directing a 20-engineer organization through the platform rebuild of CNBC.com, while staying hands-on in core architecture. 50M+ users, 1.1s LCP.',
-        twitter:
-          'Senior Manager, Engineering at Versant (CNBC Web & Make It). Player-coach engineering leader, AI governance lead, and independent builder, shipping at scale.',
-      };
-}
+/** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
+export const socialDescriptions: SocialDescriptions = {
+  meta: 'Senior Manager, Engineering at Versant (CNBC Core). Player-coach leading 20 engineers through the next-gen CNBC.com rebuild: edge, video, governed AI.',
+  twitter:
+    'Senior Manager, Engineering at Versant (CNBC Core). Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
+};
 
 export interface PersonaItem {
   title: string;
   body: string[];
 }
 
+/** Operating principles shown beside the code standards in "How I work". */
 export const personaData: PersonaItem[] = [
   {
-    title: 'The Engineering Philosophy',
+    title: 'Latency Is the Enemy of Trust',
     body: [
-      "Latency is the enemy of trust. Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt. Every millisecond removed is a unit of confidence restored.",
-      'The UI Factory model is the operational expression of this: treat UI production like manufacturing, not craftsmanship. Standards, budgets, and repeatability over one-off heroics.',
+      "Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt — and doubt is churn. Every millisecond removed is a unit of audience confidence restored.",
+      'Operationally that means standards, budgets, and repeatability over one-off heroics: UI production run like manufacturing, not craftsmanship.',
     ],
   },
   {
     title: 'The Bridge',
     body: [
       "I operate at the intersection of Product and Engineering. I don't build to spec — I partner with product leaders to define what is technically possible at scale.",
-      'I translate Akamai EdgeWorker configurations into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong.',
-    ],
-  },
-  {
-    title: 'Endurance Engineering',
-    body: [
-      'Off the clock, I trade latency metrics for endurance miles. I apply the same optimization mindset to running as I do to code: instrument everything, reduce friction, compound marginal gains.',
-      'A 3:07 marathon, a 50K ultra finish, and a sub-1:25 half in the crosshairs. The discipline carries.',
-    ],
-  },
-  {
-    title: 'The Search for the Gold Standard',
-    body: [
-      "I'm drawn to systems that prioritize precision and craft. In NYC, that means chasing the best Japanese food — Omakase, Kaiseki, the obsession with quality over volume.",
-      'In markets, it means studying equity structures and the secondary dynamics of Pokémon TCG as a lens for value, scarcity, and liquidity. I enjoy the game theory of high-value systems wherever I find them.',
+      'I translate edge configuration into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong — engineering earns its seat by speaking the business’s language.',
     ],
   },
 ];
@@ -573,7 +499,7 @@ export interface FooterManifestoItem {
 export const footerManifesto: FooterManifestoItem[] = [
   {
     title: 'Latency Is the Enemy of Trust',
-    body: 'Performance is a feature, not an afterthought. I architect for a 1.1s LCP at a global scale of 50M+ users.',
+    body: 'Performance is a feature, not an afterthought. The critical rendering path is the product; I architect for it first.',
   },
   {
     title: 'URL > Store',
@@ -585,7 +511,7 @@ export const footerManifesto: FooterManifestoItem[] = [
   },
   {
     title: 'Server > Client',
-    body: "I leverage SvelteKit and Akamai EdgeWorkers to ship HTML, not just JSON. I optimize for the browser's critical rendering path.",
+    body: "I ship HTML, not just JSON — SvelteKit here, Akamai EdgeWorkers at work — and optimize for the browser's critical rendering path.",
   },
 ];
 

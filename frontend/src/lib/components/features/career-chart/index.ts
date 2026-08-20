@@ -1,2 +1,1 @@
-// Career Chart feature components
-export { default as CareerChart } from './CareerChart.svelte';
+export { default as CareerTimeline } from './CareerTimeline.svelte';

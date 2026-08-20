@@ -1,31 +1,17 @@
 <script lang="ts">
   import { EngineeringNote } from '$lib/components/features/notes';
   import { noteExcerpt } from '$lib/utils';
+  import { SITE_URL, techArticleJsonLd, jsonLdScript } from '$lib/constants/structured-data';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
   let note = $derived(data.note);
 
-  let canonicalUrl = $derived(`https://zhaoyu.io/blog/${note.slug}`);
+  let canonicalUrl = $derived(`${SITE_URL}/blog/${note.slug}`);
   // Per-note card, so syndicated links don't all preview identically.
-  let cardUrl = $derived(`https://zhaoyu.io/og/${note.slug}.png`);
+  let cardUrl = $derived(`${SITE_URL}/og/${note.slug}.png`);
   let description = $derived(noteExcerpt(note));
-  let jsonLd = $derived(
-    JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'TechArticle',
-      headline: note.title,
-      datePublished: note.dateISO,
-      author: { '@type': 'Person', name: 'Zhao Yu', url: 'https://zhaoyu.io' },
-      url: canonicalUrl,
-      keywords: note.tags.join(', '),
-    }),
-  );
-  // Tag assembled from split parts: a literal script open/close token anywhere
-  // in this component (even in a string or comment) ends the surrounding block.
-  let jsonLdScript = $derived(
-    '<scr' + 'ipt type="application/ld+json">' + jsonLd + '</scr' + 'ipt>',
-  );
+  let articleScript = $derived(jsonLdScript(techArticleJsonLd(note, description)));
 </script>
 
 <svelte:head>
@@ -45,10 +31,10 @@
   <link rel="canonical" href={canonicalUrl} />
 
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->
-  {@html jsonLdScript}
+  {@html articleScript}
 </svelte:head>
 
-<main class="blog-post">
+<main id="main" class="blog-post">
   <a href="/blog" class="back-link">&larr; All notes</a>
   <EngineeringNote
     title={note.title}

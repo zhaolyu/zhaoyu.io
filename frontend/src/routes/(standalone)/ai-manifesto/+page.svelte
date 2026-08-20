@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import '@fontsource/dm-serif-display';
   import '@fontsource/jetbrains-mono/400.css';
   import '@fontsource/jetbrains-mono/600.css';
@@ -7,23 +6,30 @@
   import '@fontsource/source-sans-3/400.css';
   import '@fontsource/source-sans-3/600.css';
   import '@fontsource/source-sans-3/700.css';
+  import {
+    articleJsonLd,
+    jsonLdScript,
+    SITE_URL,
+    SITE_CARD_IMAGE,
+  } from '$lib/constants/structured-data';
 
-  const STORAGE_CHECKS = 'manifesto-checks';
-  const STORAGE_STREAK = 'manifesto-streak';
-  const STORAGE_DATE = 'manifesto-streak-date';
-  const STORAGE_CHECK_DATE = 'manifesto-check-date';
+  /** First published with the page (git: 2026-02-11); bump on substantive edits. */
+  const DATE_PUBLISHED = '2026-02-11';
+  const DATE_MODIFIED = '2026-08-19';
 
-  const jsonLd = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: 'The Factory Is Going Dark — a Working Thesis on AI-Augmented Engineering',
-    author: { '@type': 'Person', name: 'Zhao Yu', url: 'https://zhaoyu.io' },
-    url: 'https://zhaoyu.io/ai-manifesto',
-    keywords: 'AI Engineering, Agent Architecture, Specification, Engineering Leadership',
-  });
-  // Tag assembled from split parts: a literal script open/close token anywhere
-  // in this component (even in a string or comment) ends the surrounding block.
-  const jsonLdScript = '<scr' + 'ipt type="application/ld+json">' + jsonLd + '</scr' + 'ipt>';
+  const description =
+    "Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems.";
+
+  const articleScript = jsonLdScript(
+    articleJsonLd({
+      headline: 'The Factory Is Going Dark — a Working Thesis on AI-Augmented Engineering',
+      description,
+      path: '/ai-manifesto',
+      datePublished: DATE_PUBLISHED,
+      dateModified: DATE_MODIFIED,
+      keywords: 'AI Engineering, Agent Architecture, Specification, Engineering Leadership',
+    }),
+  );
 
   const principles = [
     {
@@ -44,30 +50,13 @@
     {
       num: '04',
       title: 'Deterministic Shells, Non-Deterministic Cores',
-      body: 'Non-deterministic output demands a deterministic, accessible interface as its stability layer. The UI is a contract, not a display — that is what makes streaming AI trustworthy enough for 50M+ monthly users on a financial news platform.',
+      body: 'Non-deterministic output demands a deterministic, accessible interface as its stability layer. The UI is a contract, not a display — that is what makes streaming AI trustworthy enough for a national financial-news audience.',
     },
     {
       num: '05',
       title: 'AI Is a Motorcycle, Not an Equalizer',
       body: 'AI equalizes execution speed — but execution was already cheap. What it amplifies is specification quality, which is a direct function of domain depth. It makes experts more productive faster than it makes novices competent. Keep earning the depth.',
     },
-  ];
-
-  const checkItems = [
-    {
-      key: 'check-1',
-      text: 'Delegate one bounded task to an agent end-to-end — boundary and review bar, not keystrokes',
-    },
-    {
-      key: 'check-2',
-      text: 'Write the spec before the prompt: goal, boundary, tools, artifacts, receipts',
-    },
-    { key: 'check-3', text: 'Use the best model available, not the default' },
-    {
-      key: 'check-4',
-      text: 'Reject one "done" that arrived without a receipt — the diff, the test run, the artifact',
-    },
-    { key: 'check-5', text: 'Capture one claim, pattern, or tension into the vault' },
   ];
 
   const rememberItems = [
@@ -85,128 +74,28 @@
     'Single-trial outcomes cannot grade a decision process',
     'Your worth is not your throughput',
   ];
-
-  let checkState = $state<Record<string, boolean>>({});
-  let streak = $state(0);
-  let todayDate = $state('');
-
-  onMount(() => {
-    // Format today's date
-    const now = new Date();
-    todayDate = now.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-
-    // Load persisted state
-    try {
-      const todayIso = now.toISOString().split('T')[0];
-      const checkDate = localStorage.getItem(STORAGE_CHECK_DATE);
-
-      // Only restore checks if they were saved today — auto-reset on new day
-      if (checkDate === todayIso) {
-        const savedChecks = localStorage.getItem(STORAGE_CHECKS);
-        if (savedChecks) {
-          checkState = JSON.parse(savedChecks);
-        }
-      }
-
-      const savedStreak = localStorage.getItem(STORAGE_STREAK);
-      if (savedStreak) {
-        streak = parseInt(savedStreak, 10) || 0;
-      }
-
-      // A streak only survives if the last completed day was today or
-      // yesterday — anything older means the chain is broken.
-      const lastCompleted = localStorage.getItem(STORAGE_DATE);
-      const yesterdayIso = new Date(now.getTime() - 86_400_000).toISOString().split('T')[0];
-      if (streak > 0 && lastCompleted !== todayIso && lastCompleted !== yesterdayIso) {
-        streak = 0;
-        localStorage.setItem(STORAGE_STREAK, '0');
-      }
-    } catch {
-      // localStorage unavailable, use in-memory defaults
-    }
-  });
-
-  function toggleCheck(key: string) {
-    checkState = { ...checkState, [key]: !checkState[key] };
-    try {
-      const todayIso = new Date().toISOString().split('T')[0];
-      localStorage.setItem(STORAGE_CHECKS, JSON.stringify(checkState));
-      localStorage.setItem(STORAGE_CHECK_DATE, todayIso);
-    } catch {
-      // ignore
-    }
-    updateStreak();
-  }
-
-  function updateStreak() {
-    const allChecked = checkItems.every((item) => checkState[item.key]);
-    if (!allChecked) return;
-
-    const now = new Date();
-    const todayIso = now.toISOString().split('T')[0];
-    const yesterdayIso = new Date(now.getTime() - 86_400_000).toISOString().split('T')[0];
-    try {
-      const lastDate = localStorage.getItem(STORAGE_DATE);
-      if (lastDate === todayIso) return; // already counted today
-
-      // Consecutive only if the previous completion was yesterday;
-      // a gap restarts the chain at 1 instead of silently continuing it.
-      streak = lastDate === yesterdayIso ? streak + 1 : 1;
-      localStorage.setItem(STORAGE_STREAK, String(streak));
-      localStorage.setItem(STORAGE_DATE, todayIso);
-    } catch {
-      streak = streak + 1;
-    }
-  }
-
-  function resetStreak() {
-    streak = 0;
-    checkState = {};
-    try {
-      localStorage.removeItem(STORAGE_CHECKS);
-      localStorage.removeItem(STORAGE_STREAK);
-      localStorage.removeItem(STORAGE_DATE);
-      localStorage.removeItem(STORAGE_CHECK_DATE);
-    } catch {
-      // ignore
-    }
-  }
 </script>
 
 <svelte:head>
   <title>AI Thesis — Zhao Yu</title>
-  <meta
-    name="description"
-    content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
-  />
+  <meta name="description" content={description} />
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://zhaoyu.io/ai-manifesto" />
+  <meta property="og:url" content="{SITE_URL}/ai-manifesto" />
   <meta property="og:title" content="AI Thesis — Zhao Yu" />
-  <meta
-    property="og:description"
-    content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
-  />
-  <meta property="og:image" content="https://zhaoyu.io/og/site.png" />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={SITE_CARD_IMAGE} />
   <meta property="twitter:card" content="summary_large_image" />
-  <meta property="twitter:url" content="https://zhaoyu.io/ai-manifesto" />
+  <meta property="twitter:url" content="{SITE_URL}/ai-manifesto" />
   <meta property="twitter:title" content="AI Thesis — Zhao Yu" />
-  <meta
-    property="twitter:description"
-    content="Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems."
-  />
-  <link rel="canonical" href="https://zhaoyu.io/ai-manifesto" />
+  <meta property="twitter:description" content={description} />
+  <link rel="canonical" href="{SITE_URL}/ai-manifesto" />
 
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->
-  {@html jsonLdScript}
+  {@html articleScript}
 </svelte:head>
 
-<div class="manifesto-root">
+<main id="main" class="manifesto-root">
   <!-- Grain overlay -->
   <div class="grain" aria-hidden="true"></div>
 
@@ -215,7 +104,7 @@
     <div class="header">
       <span class="tag">Working Thesis</span>
       <h1>The Factory<br />Is Going Dark</h1>
-      <div class="date">{todayDate}</div>
+      <div class="date">Published {DATE_PUBLISHED} · Updated {DATE_MODIFIED}</div>
     </div>
 
     <div class="divider"></div>
@@ -247,34 +136,12 @@
       </div>
     </section>
 
-    <!-- DAILY CHECKLIST -->
-    <section class="section">
-      <div class="section-label">Daily Non-Negotiables</div>
-      <div class="checklist">
-        {#each checkItems as item (item.key)}
-          <button
-            class="check-item"
-            class:checked={checkState[item.key]}
-            onclick={() => toggleCheck(item.key)}
-            type="button"
-          >
-            <div class="checkbox">
-              {#if checkState[item.key]}
-                <span class="checkmark">✓</span>
-              {/if}
-            </div>
-            <span class="check-text">{item.text}</span>
-          </button>
-        {/each}
-      </div>
-    </section>
-
     <!-- REALITY CHECK -->
     <section class="section">
       <div class="section-label">Stay Grounded — The Balance</div>
       <div class="reality-cards">
         <div class="reality-card hype">
-          <h4>Remember This</h4>
+          <h3>Remember This</h3>
           <ul>
             {#each rememberItems as item (item)}
               <li>{item}</li>
@@ -282,7 +149,7 @@
           </ul>
         </div>
         <div class="reality-card ground">
-          <h4>But Also This</h4>
+          <h3>But Also This</h3>
           <ul>
             {#each butAlsoItems as item (item)}
               <li>{item}</li>
@@ -303,16 +170,6 @@
       </div>
     </section>
 
-    <!-- STREAK -->
-    <section class="section">
-      <div class="streak-section">
-        <div class="streak-number">{streak}</div>
-        <div class="streak-label">Day Streak</div>
-        <div class="streak-sub">Days in a row you've completed all 5 non-negotiables</div>
-        <button class="streak-reset" onclick={resetStreak} type="button">Reset Streak</button>
-      </div>
-    </section>
-
     <!-- FOOTER -->
     <footer class="footer">
       <p>
@@ -325,16 +182,19 @@
           target="_blank"
           rel="noopener noreferrer">Matt Shumer's "Something Big Is Happening"</a
         >
-        on urgency, and Kleppmann's <em>Designing Data-Intensive Applications</em> on why the loop patterns
-        are older than the agents.
+        on urgency, and Kleppmann's
+        <a href="https://dataintensive.net/" target="_blank" rel="noopener noreferrer"
+          ><em>Designing Data-Intensive Applications</em></a
+        > on why the loop patterns are older than the agents.
       </p>
     </footer>
   </div>
-</div>
+</main>
 
 <style>
   /* Light mode (default) */
   .manifesto-root {
+    display: block;
     --m-bg: #f5f5f8;
     --m-surface: #ffffff;
     --m-surface-hover: #ededf2;
@@ -550,73 +410,6 @@
     font-weight: 400;
   }
 
-  /* Checklist */
-  .checklist {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .check-item {
-    background: var(--m-surface);
-    border: 1px solid var(--m-border);
-    border-radius: 10px;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    user-select: none;
-    width: 100%;
-    text-align: left;
-    color: var(--m-text);
-    font-family: 'Source Sans 3', sans-serif;
-  }
-
-  .check-item:hover {
-    background: var(--m-surface-hover);
-  }
-
-  .check-item.checked {
-    opacity: 0.65;
-  }
-
-  .checkbox {
-    width: 22px;
-    height: 22px;
-    border: 2px solid var(--m-border-strong);
-    border-radius: 5px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-  }
-
-  .check-item.checked .checkbox {
-    background: var(--m-green);
-    border-color: var(--m-green);
-  }
-
-  .checkmark {
-    color: #000;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .check-text {
-    font-size: 15px;
-    font-weight: 400;
-    transition: all 0.2s ease;
-  }
-
-  .check-item.checked .check-text {
-    text-decoration: line-through;
-    color: var(--m-text-dim);
-  }
-
   /* Reality cards */
   .reality-cards {
     display: grid;
@@ -646,7 +439,7 @@
     border-color: var(--m-green-border);
   }
 
-  .reality-card h4 {
+  .reality-card h3 {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     letter-spacing: 2px;
@@ -654,10 +447,10 @@
     margin-bottom: 12px;
   }
 
-  .reality-card.hype h4 {
+  .reality-card.hype h3 {
     color: var(--m-accent);
   }
-  .reality-card.ground h4 {
+  .reality-card.ground h3 {
     color: var(--m-green);
   }
 
@@ -705,60 +498,6 @@
     color: var(--m-text-dim);
     margin-top: 12px;
     display: block;
-  }
-
-  /* Streak */
-  .streak-section {
-    text-align: center;
-    padding: 32px;
-    background: var(--m-surface);
-    border: 1px solid var(--m-border);
-    border-radius: 14px;
-  }
-
-  .streak-number {
-    font-family: 'DM Serif Display', serif;
-    font-size: 64px;
-    line-height: 1;
-    background: linear-gradient(135deg, var(--m-amber), var(--m-accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-  }
-
-  .streak-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--m-text-dim);
-    margin-bottom: 16px;
-  }
-
-  .streak-sub {
-    font-size: 13px;
-    color: var(--m-text-dim);
-    font-weight: 400;
-  }
-
-  .streak-reset {
-    margin-top: 16px;
-    background: transparent;
-    border: 1px solid var(--m-border);
-    color: var(--m-text-dim);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 1px;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .streak-reset:hover {
-    border-color: var(--m-accent);
-    color: var(--m-accent);
   }
 
   /* Footer */

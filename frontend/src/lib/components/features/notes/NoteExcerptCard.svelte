@@ -26,9 +26,9 @@
     </ul>
   </div>
 
-  <h4 class="note-title">
+  <h3 class="note-title">
     <a href="/blog/{note.slug}">{note.title}</a>
-  </h4>
+  </h3>
 
   <p class="note-dek">{excerpt}&hellip;</p>
 </article>

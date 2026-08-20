@@ -4,30 +4,19 @@
   import { heroContent } from '$lib/constants/content';
   import { handleAnchorNavigation } from '$lib/utils/navigation';
 
-  // Memoize formatted bio to avoid re-processing on every render
+  // Light emphasis on the two phrases that carry the story; each replace is a
+  // no-op when the phrase is absent, so a copy edit cannot break the markup.
   const formattedBio = $derived(
     heroContent.bio
       .replace(
-        /Isomorphic Akamai Edge/g,
-        '<strong class="bio-emphasis font-normal">Isomorphic Akamai Edge</strong>',
+        /edge architecture/g,
+        '<strong class="bio-emphasis font-normal">edge architecture</strong>',
       )
       .replace(
-        /50M\+ monthly users/g,
-        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">50M+ monthly users</span>',
+        /~47M monthly readers/g,
+        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">~47M monthly readers</span>',
       )
-      // Both hero variants run through this; each phrase is a no-op when absent.
-      .replace(
-        /governed AI integration/g,
-        '<strong class="bio-name font-semibold">governed AI integration</strong>',
-      )
-      .replace(
-        /AI financial assistant/g,
-        '<strong class="bio-name font-semibold">AI financial assistant</strong>',
-      )
-      .replace(
-        /next-gen web video experience/g,
-        '<strong class="bio-name font-semibold">next-gen web video experience</strong>',
-      ),
+      .replace(/ships with AI/g, '<strong class="bio-name font-semibold">ships with AI</strong>'),
   );
 </script>
 
@@ -93,7 +82,7 @@
         {heroContent.cta.primary}
       </a>
       <a
-        href="/ai-manifesto"
+        href="/blog"
         class="px-8 py-3 border border-neutral-300 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-neutral-900 dark:hover:text-white transition-colors w-full md:w-auto"
       >
         {heroContent.cta.secondary}

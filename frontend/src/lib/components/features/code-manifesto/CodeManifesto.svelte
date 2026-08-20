@@ -1,5 +1,13 @@
 <script lang="ts">
-  import { codeStandards } from '$lib/constants/content';
+  import type { Snippet } from 'svelte';
+  import { codeStandards, personaData } from '$lib/constants/content';
+
+  /**
+   * "How I work": the operating principles in prose, the code standards as
+   * before/after pairs, and — via `children` — an interactive demo of one of
+   * them (the latency simulator) so the section shows as well as tells.
+   */
+  let { children }: { children?: Snippet } = $props();
 
   let activeTab = $state('state');
 
@@ -27,8 +35,8 @@
     <div class="manifesto-content">
       <div class="manifesto-header">
         <div class="header-content">
-          <h2 class="section-badge">Engineering Philosophy</h2>
-          <h3 class="section-title">Strong opinions, weakly held.</h3>
+          <p class="section-badge">How I work</p>
+          <h2 class="section-title">Strong opinions, weakly held.</h2>
         </div>
 
         <div class="tab-container">
@@ -42,6 +50,17 @@
             </button>
           {/each}
         </div>
+      </div>
+
+      <div class="principles-grid">
+        {#each personaData as item (item.title)}
+          <article class="principle-card">
+            <h3 class="principle-title">{item.title}</h3>
+            {#each item.body as paragraph (paragraph)}
+              <p class="principle-paragraph">{paragraph}</p>
+            {/each}
+          </article>
+        {/each}
       </div>
 
       <div class="code-viewer">
@@ -71,6 +90,12 @@
         <span class="note-label">NOTE:</span>
         {getNote(activeTab)}
       </div>
+
+      {#if children}
+        <div class="manifesto-demo">
+          {@render children()}
+        </div>
+      {/if}
     </div>
   </div>
 </section>
@@ -127,6 +152,52 @@
     color: var(--text-primary);
     line-height: 1.2;
     transition: color 0.2s;
+  }
+
+  .principles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+  }
+
+  @media (min-width: 768px) {
+    .principles-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .principle-card {
+    padding: var(--space-xl);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    transition:
+      border-color var(--duration-base),
+      background-color var(--duration-base);
+  }
+
+  .principle-title {
+    font-size: var(--type-sm);
+    font-family: var(--font-mono);
+    font-weight: var(--weight-bold);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--accent-primary-text);
+  }
+
+  .principle-paragraph {
+    font-size: var(--type-base);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    font-weight: var(--weight-light);
+  }
+
+  .manifesto-demo {
+    margin-top: var(--space-2xl);
   }
 
   .tab-container {
@@ -298,16 +369,10 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    opacity: 0.65;
-    transition: opacity 0.2s;
-  }
-
-  .code-panel:hover .panel-label {
-    opacity: 1;
   }
 
   .code-bad .panel-label {
-    color: var(--status-error);
+    color: var(--status-error-text);
   }
 
   .code-good .panel-label {
@@ -324,13 +389,7 @@
   }
 
   .code-bad .code-content {
-    color: var(--text-muted);
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-
-  .code-bad:hover .code-content {
-    opacity: 1;
+    color: var(--text-secondary);
   }
 
   .code-good .code-content {

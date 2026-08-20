@@ -12,6 +12,8 @@
   />
 </svelte:head>
 
+<a class="skip-link" href="#main">Skip to content</a>
+
 <slot />
 
 <style>
@@ -24,5 +26,28 @@
 
   :global(body) {
     font-family: var(--font-sans);
+  }
+
+  /* Bypass-blocks (WCAG 2.4.1): visible only while focused. */
+  .skip-link {
+    position: absolute;
+    top: var(--space-sm);
+    left: var(--space-sm);
+    z-index: 100;
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    background: var(--accent-primary);
+    color: var(--bg-primary);
+    font-family: var(--font-mono);
+    font-size: var(--type-sm);
+    text-decoration: none;
+    transform: translateY(-200%);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .skip-link:focus-visible {
+    transform: none;
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
   }
 </style>

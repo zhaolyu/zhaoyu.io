@@ -1,31 +1,34 @@
 <script lang="ts">
   import { notesData } from '$lib/constants/content';
   import { noteExcerpt } from '$lib/utils';
+  import {
+    PERSON,
+    SITE_URL,
+    SITE_CARD_IMAGE,
+    techArticleJsonLd,
+    jsonLdScript,
+  } from '$lib/constants/structured-data';
 
   const notes = notesData.notes;
 
-  const canonicalUrl = 'https://zhaoyu.io/blog';
+  const canonicalUrl = `${SITE_URL}/blog`;
   const pageTitle = 'Engineering Notes — Zhao Yu';
   const description =
-    'Engineering notes by Zhao Yu — architectural decisions, performance constraints, and AI-agent engineering lessons from production systems serving 50M+ monthly users.';
+    'Engineering notes by Zhao Yu — architectural decisions, performance constraints, and AI-agent engineering lessons from production news systems at national scale.';
 
-  const jsonLd = JSON.stringify({
+  const blogScript = jsonLdScript({
     '@context': 'https://schema.org',
     '@type': 'Blog',
     name: pageTitle,
     description,
     url: canonicalUrl,
-    author: { '@type': 'Person', name: 'Zhao Yu', url: 'https://zhaoyu.io' },
-    blogPost: notes.map((note) => ({
-      '@type': 'TechArticle',
-      headline: note.title,
-      datePublished: note.dateISO,
-      url: `https://zhaoyu.io/blog/${note.slug}`,
-    })),
+    author: PERSON,
+    blogPost: notes.map((note) => {
+      // Embedded posts carry the same keys as their own pages, minus @context.
+      const { '@context': _context, ...article } = techArticleJsonLd(note, noteExcerpt(note));
+      return article;
+    }),
   });
-  // Tag assembled from split parts: a literal script open/close token anywhere
-  // in this component (even in a string or comment) ends the surrounding block.
-  const jsonLdScript = '<scr' + 'ipt type="application/ld+json">' + jsonLd + '</scr' + 'ipt>';
 </script>
 
 <svelte:head>
@@ -36,7 +39,7 @@
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:title" content={pageTitle} />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content="https://zhaoyu.io/og/site.png" />
+  <meta property="og:image" content={SITE_CARD_IMAGE} />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content={canonicalUrl} />
   <meta property="twitter:title" content={pageTitle} />
@@ -44,10 +47,10 @@
   <link rel="canonical" href={canonicalUrl} />
 
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->
-  {@html jsonLdScript}
+  {@html blogScript}
 </svelte:head>
 
-<main class="blog-index">
+<main id="main" class="blog-index">
   <a href="/" class="back-link">&larr; zhaoyu.io</a>
   <h1>Engineering Notes</h1>
   <p class="index-description">

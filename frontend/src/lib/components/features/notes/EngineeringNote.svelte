@@ -89,6 +89,19 @@
     line-height: 1.3;
   }
 
+  /* Inline citations inside note paragraphs (injected via {@html}). */
+  .note-content :global(a) {
+    color: var(--accent-primary-text);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-primary-30);
+    text-underline-offset: 2px;
+  }
+
+  .note-content :global(a:hover),
+  .note-content :global(a:focus-visible) {
+    text-decoration-color: currentColor;
+  }
+
   .note-title a {
     color: inherit;
     text-decoration: none;
