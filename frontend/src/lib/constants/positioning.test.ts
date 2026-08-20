@@ -82,7 +82,7 @@ describe('one story on every surface', () => {
   });
 
   it('leads Selected Work with the platform rebuild', () => {
-    expect(builderProjects[0].title).toBe('CNBC.com Next-Gen Platform & Video Rebuild');
+    expect(builderProjects[0].title).toBe('CNBC.com Next-Gen Rebuild');
   });
 });
 
