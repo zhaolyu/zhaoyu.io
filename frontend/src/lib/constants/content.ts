@@ -65,13 +65,13 @@ export interface HeroContent {
 export const heroContent: HeroContent = {
   badge: 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE',
   headline: {
-    primary: 'I lead engineering teams that ship fast, trustworthy media platforms.',
+    primary: 'I lead engineering teams that turn platform performance into audience and revenue.',
     accent:
-      'Player-coach: 20 engineers, 3 teams, the next-gen CNBC.com rebuild — hands still in the code.',
+      'Player-coach: 20 engineers, 3 teams, driving the next-gen CNBC.com rebuild — hands still in the code.',
   },
   tagline:
-    'Player-coach engineering leader: edge architecture, video, and governed AI at news scale.',
-  bio: 'Nine years building CNBC.com — from intern to Principal Engineer to running the web organization. Today that means edge architecture, video, and governed AI for a platform ~47M readers use every month.',
+    'Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
+  bio: 'Nine years on CNBC.com, intern to Principal Engineer to running the web organization. I keep the platform fast enough to hold ~47M monthly readers through market-moving events — edge architecture, video, and governed AI, built by teams I lead and still code beside.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read the Notes',
@@ -144,7 +144,7 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC.com Next-Gen Migration',
       description:
-        'Architected the migration of CNBC.com from a legacy client-side monolith to an isomorphic Akamai Edge architecture: business and rendering logic moved to Akamai EdgeWorkers, executing at the network edge rather than origin. The platform now carries CNBC’s full digital audience through market-moving events with a sub-2-second p75 LCP in public field data, and the cutover shipped with zero downtime.',
+        'Market-moving days are a financial-news business at its most valuable and most fragile. I architected CNBC.com’s migration from a legacy client-side monolith to an isomorphic Akamai Edge architecture, moving business and rendering logic to the network edge, so the platform holds its full audience through exactly those spikes: sub-2-second p75 LCP in public field data, zero downtime through the cutover, and no lost sessions or ad impressions at the moments the audience is largest.',
       tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
       metrics: [
         { label: 'P75 LCP (CRUX)', value: '1.7s' },
@@ -368,22 +368,29 @@ export interface BuilderProject {
  */
 export const builderProjects: BuilderProject[] = [
   {
-    title: 'CNBC.com Next-Gen Platform & Video Rebuild',
+    title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Ground-up rebuild of CNBC.com and its core video experiences: modular player frameworks and edge rendering for CNBC’s digital audience, live and on-demand. I run the three web teams delivering it and still carry the core architecture myself.',
-    stack: ['Isomorphic React', 'Akamai EdgeWorkers', 'SSE Real-Time Sync', 'Micro-Frontends'],
+      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the surface Versant’s digital growth strategy rides on.',
+    stack: [
+      'Isomorphic React',
+      'Akamai EdgeWorkers',
+      'GraphQL',
+      'Micro-Frontends',
+      'Amplitude',
+      'MPS Ads',
+    ],
     status: 'active',
     metrics: [
-      { label: 'Web teams', value: '3' },
-      { label: 'Playback', value: 'Live + VOD' },
+      { label: 'Experiences', value: 'AI · Video · Site' },
+      { label: 'Integrations', value: 'Analytics · Ads · Identity · Subs' },
     ],
   },
   {
     title: 'AI-Powered Investing Tools (Frontend Architecture)',
     category: 'professional',
     description:
-      "Leading the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform: deterministic, accessible interfaces around non-deterministic model output — frame-buffered token streaming, graceful degradation, and trust-preserving latency for a financial audience.",
+      "Leading the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform — the direct-to-consumer bet Versant has described to investors. In financial products, trust is the conversion metric: my work makes non-deterministic model output feel deterministic — frame-buffered streaming, graceful degradation, latency that never shakes a reader’s confidence in the number on screen.",
     stack: ['Streaming UI', 'SSE', 'React', 'HCI'],
     status: 'active',
     metrics: [
@@ -399,7 +406,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'Infrastructure & Privacy Separation',
     category: 'professional',
     description:
-      'Directed a 4-month cross-functional sprint across 3 teams to fully separate CNBC infrastructure from the parent company, migrating video streaming, analytics, and privacy services with zero downtime.',
+      'When the corporate spinoff needed CNBC’s digital business to stand alone, I directed the 4-month, 3-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company with zero downtime — compliance obligations met, no revenue interruption, no user-visible seam.',
     stack: ['GCP', 'Zero Downtime', 'GDPR/CCPA Compliance', 'Cloud Architecture'],
     status: 'completed',
     metrics: [
@@ -411,7 +418,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'OB1: Personal Exocortex',
     category: 'independent',
     description:
-      'A second brain built for agents, not just for me. Books, engineering sources, and production lessons get distilled into atomic, cross-linked claims — 740+ and compounding — searchable by meaning and exposed to my AI tools over MCP, so every agent session starts with my accumulated judgment instead of a blank context window.',
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 740+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
     stack: ['MCP', 'Embeddings', 'Semantic Search', 'TypeScript'],
     status: 'shipped',
     metrics: [
@@ -423,7 +430,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'Cost-Guard: FinOps Platform',
     category: 'experiment',
     description:
-      'Local-first cloud cost monitoring using PGlite + ElectricSQL. Zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run with Pulumi-managed infrastructure. Personal observability tooling built with AI-assisted development.',
+      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development — the same governed workflow I set for my org, proven on my own infrastructure.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
     status: 'in-progress',
     metrics: [
@@ -441,8 +448,8 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'Player-coach by design',
   paragraphs: [
-    "My career began as a web developer intern at CNBC, and over nine years it has deliberately crossed the two tracks most engineers pick between: senior engineer, then engineering manager, then back to the technical track as Principal Engineer — a choice, not a detour, made to keep my architecture judgment current — and now Senior Manager, Engineering for CNBC Core. The role is the synthesis of both tracks: I direct a 20-engineer organization across 3 web teams executing the platform rebuild of CNBC.com, while still architecting and shipping alongside them. Player-coach by design, because I've done both jobs on their own.",
-    'As AI Integration Lead, I formalize the standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers across 3 web teams integrate AI tools like Cursor into production codebases — measurable velocity gains with fewer high-severity defects. The philosophy underneath it is "plan-first" execution: AI as a disciplined velocity multiplier inside strict security and compliance guardrails, never as an unreviewed author.',
+    'What the business gets from me is both tracks at once. Over nine years at CNBC I deliberately crossed the line most engineers pick a side of — senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. The payoff for the organization: I direct a 20-engineer organization across 3 web teams rebuilding CNBC.com, and because I still architect and ship alongside them, technical decisions get made in the room — no translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
+    'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code — measurable velocity gains with fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
     'Outside the codebase I am a long-distance runner — a 3:07 marathon and a 50K ultra — and the same discipline carries into multi-year technical transformations.',
   ],
 };
@@ -457,7 +464,7 @@ export interface SocialDescriptions {
 export const socialDescriptions: SocialDescriptions = {
   meta: 'Senior Manager, Engineering at Versant (CNBC Core). Player-coach leading 20 engineers through the next-gen CNBC.com rebuild: edge, video, governed AI.',
   twitter:
-    'Senior Manager, Engineering at Versant (CNBC Core). Player-coach engineering leader: edge architecture, video, and governed AI at news scale.',
+    'Senior Manager, Engineering at Versant (CNBC Core). Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
 };
 
 export interface PersonaItem {
@@ -470,7 +477,7 @@ export const personaData: PersonaItem[] = [
   {
     title: 'Latency Is the Enemy of Trust',
     body: [
-      "Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt. Every millisecond removed is a unit of confidence restored.",
+      "Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt — and doubt is churn. Every millisecond removed is a unit of audience confidence restored.",
       'Operationally that means standards, budgets, and repeatability over one-off heroics: UI production run like manufacturing, not craftsmanship.',
     ],
   },
@@ -478,7 +485,7 @@ export const personaData: PersonaItem[] = [
     title: 'The Bridge',
     body: [
       "I operate at the intersection of Product and Engineering. I don't build to spec — I partner with product leaders to define what is technically possible at scale.",
-      'I translate edge configuration into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong.',
+      'I translate edge configuration into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong — engineering earns its seat by speaking the business’s language.',
     ],
   },
 ];
@@ -492,7 +499,7 @@ export interface FooterManifestoItem {
 export const footerManifesto: FooterManifestoItem[] = [
   {
     title: 'Latency Is the Enemy of Trust',
-    body: 'Performance is a feature, not an afterthought. I architect for the critical rendering path at news scale.',
+    body: 'Performance is a feature, not an afterthought. The critical rendering path is the product; I architect for it first.',
   },
   {
     title: 'URL > Store',
@@ -504,7 +511,7 @@ export const footerManifesto: FooterManifestoItem[] = [
   },
   {
     title: 'Server > Client',
-    body: "I leverage SvelteKit and Akamai EdgeWorkers to ship HTML, not just JSON. I optimize for the browser's critical rendering path.",
+    body: "I ship HTML, not just JSON — SvelteKit here, Akamai EdgeWorkers at work — and optimize for the browser's critical rendering path.",
   },
 ];
 

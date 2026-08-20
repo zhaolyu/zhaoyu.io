@@ -37,7 +37,7 @@ describe('current site content', () => {
     const projectTitles = visibleItems(projectsData.projects).map((p) => p.title);
     const builderTitles = visibleItems(builderProjects).map((p) => p.title);
     expect(projectTitles).toContain('CNBC.com Next-Gen Migration');
-    expect(builderTitles).toContain('CNBC.com Next-Gen Platform & Video Rebuild');
+    expect(builderTitles).toContain('CNBC.com Next-Gen Rebuild');
     expect(builderTitles).toContain('AI-Powered Investing Tools (Frontend Architecture)');
     expect(builderTitles).toContain('Infrastructure & Privacy Separation');
     expect(builderTitles).toContain('Cost-Guard: FinOps Platform');

@@ -1,10 +1,12 @@
 # Zhao Yu
 
-> Senior Manager, Engineering @ Versant (CNBC Core). Player-coach:
-> leads a 20-engineer organization across 3 web teams through the
-> next-generation rebuild of CNBC.com — edge architecture, video, and
-> governed AI — while still shipping the core architecture. Nine years on
-> the same platform, intern to Principal Engineer to running the web org.
+> Senior Manager, Engineering @ Versant (CNBC Core). Player-coach who
+> turns platform performance into audience and revenue: leads a
+> 20-engineer organization across 3 web teams through the next-generation
+> rebuild of CNBC.com — edge architecture, video, and governed AI — while
+> still shipping the core architecture, so technical decisions get made in
+> the room rather than through a translation layer. Nine years on the same
+> platform, intern to Principal Engineer to running the web org.
 > Every number on this site is public and linked to its source (Versant
 > investor materials, Chrome UX Report field data, or the record of the
 > role); nothing Versant/CNBC has not disclosed publicly is stated here.
@@ -14,18 +16,24 @@
 The differentiator is the combination, not any single axis:
 
 1. **Player-coach engineering leadership** — directs a 20-engineer
-   organization across 3 web teams in Versant’s CNBC Core group without leaving the codebase; still architects and ships
-   alongside the team. The career arc deliberately crossed both tracks
-   before this hybrid role: senior engineer → engineering manager →
-   Principal Engineer (an intentional return to the technical track) →
-   Senior Manager, Engineering. Player-coach is a synthesis of both
-   tracks, not a compromise on either.
-2. **Platform and video rebuild leadership** — runs the ground-up rebuild
-   of CNBC.com and its core video experiences (modular player frameworks,
-   edge rendering, live and on-demand playback) for a property with ~47M
-   monthly digital unique visitors (ComScore, Versant Investor Day, Dec
-   2025) and a p75 LCP of 1.7s in public Chrome UX Report field data
-   (July 2026).
+   organization across 3 web teams in Versant’s CNBC Core group without
+   leaving the codebase; still architects and ships alongside the team.
+   What the organization gets: strategy and codebase with no translation
+   layer between them — technical decisions made in the room, architecture
+   that never drifts from what the teams can deliver. The career arc
+   deliberately crossed both tracks first: senior engineer → engineering
+   manager → Principal Engineer (an intentional return to the technical
+   track) → Senior Manager, Engineering.
+2. **Driving the CNBC.com redesign** — architecting and shaping the
+   complete UI/UX rebuild of CNBC.com end to end alongside a peer
+   engineering manager: leading the frontend architecture for the AI
+   experiences, leading the team building the video and site experiences,
+   and ensuring the whole web behind the page holds up — analytics
+   (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer,
+   login and subscription systems, SEO, compliance, and editorial
+   workflows. The property serves ~47M monthly digital unique visitors
+   (ComScore, Versant Investor Day, Dec 2025) at a p75 LCP of 1.7s in
+   public Chrome UX Report field data (July 2026).
 3. **AI product architecture** — leading the frontend architecture for the
    AI-powered investing tools in CNBC's next-generation platform (as
    described by Versant on its Q2-2026 earnings call): deterministic,
@@ -33,16 +41,22 @@ The differentiator is the combination, not any single axis:
    frame-buffered token streaming with state decoupled from render,
    graceful degradation, and trust-preserving latency for a financial
    audience.
-4. **Edge performance engineering at real scale** — isomorphic Akamai
-   EdgeWorkers architecture behind CNBC.com, sub-2-second p75 LCP through
-   market-moving traffic events, plus a 4-month cross-functional separation
-   of CNBC infrastructure from its parent company (video streaming,
-   analytics, and privacy services migrated with zero downtime).
-5. **AI governance and integration lead** — formalizes the standards and PR
-   quality gates (SonarQube, lint, Jest test automation) governing how 20+
-   engineers across 3 web teams integrate AI tools like Cursor into
-   production codebases. Org-wide governance, not personal productivity
-   tricks. Working thesis: specification quality — not implementation speed
+4. **Edge performance engineering at real scale** — market-moving days
+   are a financial-news business at its most valuable and most fragile;
+   the isomorphic Akamai EdgeWorkers architecture behind CNBC.com holds
+   the full audience through exactly those spikes (sub-2-second p75 LCP in
+   public field data). Also directed the 4-month, 3-team separation of
+   CNBC's digital infrastructure from its parent company — video
+   streaming, analytics, and privacy services migrated with zero downtime
+   and no revenue interruption, the work that let the corporate spinoff
+   stand alone.
+5. **AI governance and integration lead** — turned AI adoption from
+   individual experimentation into an organizational capability: standards
+   and PR quality gates (SonarQube, lint, Jest test automation) governing
+   how 20+ engineers use tools like Cursor in production code, with
+   measurable velocity gains and fewer high-severity defects. The org
+   ships faster because the review bar got stronger, not looser. Working
+   thesis: specification quality — not implementation speed
    — is the bottleneck in agent-driven development, and agent reliability
    is engineered into the loop (boundaries, receipts, control planes), not
    summoned from the model.
