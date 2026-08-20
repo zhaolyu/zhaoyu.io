@@ -1,6 +1,8 @@
 # Agent and AI tooling
 .agent/
-.claude/
+# .claude/* (not .claude/) so the negation below can re-include a subdirectory.
+.claude/*
+!.claude/skills/
 
 # Documentation (local reference only)
 docs/

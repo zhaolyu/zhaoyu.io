@@ -109,6 +109,39 @@
   --viz-reference: #6b7280;
 
   /* ==========================================================================
+	   Data-Viz — dense canvases
+	   Mark density changes optimal lightness. The --viz-series-* set above is
+	   tuned for a handful of 2px strokes; several hundred small filled dots at
+	   L 72% glare on a dark ground and vibrate on a light one. The -dense ramp
+	   is the same hue set two lightness steps in, for scatter plots, force
+	   graphs, heat cells — anything with more marks than a legend can name.
+	   Slot 6 exists because three maximally separated categories want
+	   blue/orange/green, and 250/190/85 puts teal where orange belongs.
+	   ========================================================================== */
+  --viz-series-1-dense: oklch(55% 0.15 250);
+  --viz-series-2-dense: oklch(55% 0.15 190);
+  --viz-series-3-dense: oklch(55% 0.15 85);
+  --viz-series-4-dense: oklch(55% 0.15 320);
+  --viz-series-5-dense: oklch(55% 0.15 150);
+  --viz-series-6-dense: oklch(55% 0.15 45);
+  /* Slots 7–8 for community/cluster lenses, which need eight before they need
+	   a better idea. Past slot 8, fold to --viz-quiet — a repeated hue claims a
+	   kinship that isn't there, and gray admits the truth. */
+  --viz-series-7-dense: oklch(55% 0.15 300);
+  --viz-series-8-dense: oklch(55% 0.15 20);
+
+  /* Structure, not category. Navigation nodes, axis furniture, and marks that
+	   carry position but no class. --viz-quiet is also the categorical overflow
+	   colour, and both flip per theme like the ink ramp does. */
+  --viz-structure: #6b7280;
+  --viz-quiet: #9ca3af;
+
+  /* Conflict is not error. A contradiction between two claims is signal worth
+	   surfacing, so it takes its own role rather than borrowing --status-error,
+	   which means something failed. */
+  --viz-conflict: #e66767;
+
+  /* ==========================================================================
 	   Spacing Scale
 	   Step names, not multipliers. The scale is not linear — it opens up as it
 	   grows — so numeric names would promise arithmetic these values don't keep.
@@ -264,6 +297,11 @@
   --viz-grid: rgba(255, 255, 255, 0.06);
   --viz-axis: rgba(255, 255, 255, 0.15);
   --viz-reference: #9ca3af;
+
+  /* Structure marks lighten; the -dense series ramp is ground-independent by
+     construction and stays put. */
+  --viz-structure: #9ca3af;
+  --viz-quiet: #6b7280;
 
   /* Scrims invert: ink-on-light becomes light-on-ink. Shadows deepen, because
      a 5% black shadow is invisible against a #111827 ground. */

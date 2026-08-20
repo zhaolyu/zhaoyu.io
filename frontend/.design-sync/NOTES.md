@@ -40,7 +40,7 @@ indexing).
   → https://claude.ai/design/p/fb0221b2-12c4-4b10-8c83-6b215f6f677d
 - Path: incremental (project created this run, empty). One `finalize_plan`:
   `localDir=frontend/design-system`, writes `foundations/**, components/**,
-  README.md, _ds_needs_recompile`, deletes `foundations/**, components/**`.
+README.md, _ds_needs_recompile`, deletes `foundations/**, components/**`.
 - Uploaded: sentinel → README + 8 foundations → 3 components → sentinel re-arm.
   Post-upload `list_files` = 11 cards + README + sentinel, matching disk exactly.
 - No `_ds_sync.json` anchor was written: the sidecar's `keyRecipe`/hash
@@ -79,7 +79,7 @@ indexing).
   `annotated-chart`).
 - Atomic path (project non-empty + pinned). One `finalize_plan`:
   `localDir=frontend/design-system`, writes `foundations/**, components/**,
-  README.md, _ds_needs_recompile`, **deletes `[]`** — every remote path still
+README.md, _ds_needs_recompile`, **deletes `[]`** — every remote path still
   existed on disk, so this was a pure overwrite plus 5 additions.
   Note `finalize_plan` rejects an omitted `deletes`; pass `[]` explicitly.
 - Uploaded: sentinel → README + 10 foundations → 6 components → sentinel re-arm.
