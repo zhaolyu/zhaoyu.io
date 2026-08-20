@@ -1,5 +1,4 @@
-import { PGlite } from '@electric-sql/pglite';
-import { electricSync } from '@electric-sql/pglite-sync';
+import type { PGlite } from '@electric-sql/pglite';
 import { browser } from '$app/environment';
 import { ELECTRIC_SYNC_URL, PGLITE_DATA_DIR } from '$lib/constants/config';
 
@@ -25,6 +24,14 @@ export class CostDB {
   async init(): Promise<void> {
     await this.#dropStaleLocalDbs();
     try {
+      // Loaded on demand: the ~16 MB WASM runtime must not be part of the
+      // route's static import graph, so /infra can prerender its <head>
+      // (title, description, noindex) and the shell paints before the
+      // database downloads. Only the type is imported statically.
+      const [{ PGlite }, { electricSync }] = await Promise.all([
+        import('@electric-sql/pglite'),
+        import('@electric-sql/pglite-sync'),
+      ]);
       const pg = await PGlite.create({
         dataDir: PGLITE_DATA_DIR,
         extensions: {

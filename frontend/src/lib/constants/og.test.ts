@@ -19,7 +19,7 @@ describe('og card definitions', () => {
     // The hand-made image this replaced survived a hero rewrite still showing
     // the old accent line. That is the regression this asserts against.
     const site = ogCard(SITE_CARD_SLUG)!;
-    expect(site.subtitle).toBe(heroContent.headline.accent);
+    expect(site.subtitle).toBe(heroContent.tagline);
     expect(site.eyebrow).toBe(heroContent.badge);
   });
 

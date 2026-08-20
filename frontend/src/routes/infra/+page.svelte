@@ -149,7 +149,7 @@
       </div>
     {/if}
 
-    <main class="infra-main">
+    <main id="main" class="infra-main">
       <!-- Summary metrics (always unfiltered) -->
       <div class="infra-metric-card">
         <div class="metric-col">

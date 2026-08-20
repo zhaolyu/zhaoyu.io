@@ -16,9 +16,9 @@
 <div class="section-header">
   <div class="header-badge">
     <div class="badge-line"></div>
-    <h2 class="badge-text">{badge}</h2>
+    <p class="badge-text">{badge}</p>
   </div>
-  <h3 class="section-headline">
+  <h2 class="section-headline">
     {#if children}
       {@render children()}
     {:else}
@@ -27,7 +27,7 @@
         <span class="headline-accent">{accentText}</span>
       {/if}
     {/if}
-  </h3>
+  </h2>
 </div>
 
 <style>

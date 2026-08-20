@@ -103,29 +103,39 @@ for (const slug of slugs) {
   const page = pagePath(slug);
   const shot = join(tmpDir, `${slug}.png`);
 
-  execFileSync(
-    chromium,
-    [
-      '--headless',
-      '--disable-gpu',
-      '--no-sandbox',
-      '--hide-scrollbars',
-      '--force-device-scale-factor=1',
-      '--force-color-profile=srgb',
-      // Each render gets its own profile. Sharing the default user-data-dir
-      // across back-to-back launches corrupts later screenshots — text drops
-      // out and background layers go missing, silently and only after the
-      // first few images.
-      `--user-data-dir=${join(tmpDir, `profile-${slug}`)}`,
-      // Deliberately no --virtual-time-budget: it advances a synthetic clock
-      // and captures before the compositor has applied the card's blurred
-      // glow and grid layers, silently dropping them and thinning the text.
-      '--window-size=1200,630',
-      `--screenshot=${shot}`,
-      `file://${page}`,
-    ],
-    { stdio: ['ignore', 'ignore', 'pipe'] },
-  );
+  // Full Chrome (as opposed to headless_shell) writes the screenshot and then
+  // keeps running — GCM registration, profile services — so the call needs a
+  // deadline, and a deadline that fires after the PNG exists is success.
+  const run = () =>
+    execFileSync(
+      chromium,
+      [
+        '--headless',
+        '--disable-gpu',
+        '--no-sandbox',
+        '--hide-scrollbars',
+        '--force-device-scale-factor=1',
+        '--force-color-profile=srgb',
+        // Each render gets its own profile. Sharing the default user-data-dir
+        // across back-to-back launches corrupts later screenshots — text drops
+        // out and background layers go missing, silently and only after the
+        // first few images.
+        `--user-data-dir=${join(tmpDir, `profile-${slug}`)}`,
+        // Deliberately no --virtual-time-budget: it advances a synthetic clock
+        // and captures before the compositor has applied the card's blurred
+        // glow and grid layers, silently dropping them and thinning the text.
+        '--window-size=1200,630',
+        `--screenshot=${shot}`,
+        `file://${page}`,
+      ],
+      { stdio: ['ignore', 'ignore', 'pipe'], timeout: 30_000, killSignal: 'SIGKILL' },
+    );
+
+  try {
+    run();
+  } catch (err) {
+    if (!(err && err.code === 'ETIMEDOUT' && existsSync(shot))) throw err;
+  }
 
   if (!existsSync(shot)) {
     console.error(`Chromium produced no image for ${slug}`);

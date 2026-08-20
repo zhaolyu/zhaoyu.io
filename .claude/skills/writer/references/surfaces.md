@@ -4,34 +4,39 @@ Everything below lives in `frontend/src/lib/constants/content.ts` unless noted.
 
 ## Verified figures — use these, never invent new ones
 
-| Fact | Value |
-|---|---|
-| CNBC.com LCP | 1.1s (top 1%) |
-| Monthly users | [redacted] |
-| Akamai TTFB | [redacted], global |
-| Edge cache hit rate | [redacted] |
-| Production years | 9+ |
-| Org | 20 engineers, 3 web teams, CNBC Web & Make It (Versant) |
-| CNBC.com business | [redacted]–55M ARR, [redacted] subscribers |
-| AI assistant | [redacted] beta cohort — a pilot, **not** a site-wide surface |
-| AI governance outcome | [redacted] increase, [redacted] high-severity defects |
-| Running | 3:07 marathon, 50K ultra finish, sub-1:25 half in the crosshairs |
+**The disclosure policy governs this table.** Versant is a public company: every
+employer-related number on any surface must carry a public source from `SOURCES`
+in `content.ts`, and `disclosure-guard.test.ts` scans copy, `og.ts`,
+`structured-data.ts`, `llms.txt`, and the page roots against a deny-list.
+Add a new figure to `SOURCES` (with its public citation) before using it in prose.
 
-Two standing accuracy rules the copy already enforces: the AI assistant is described as a
-beta pilot, and the title ("Senior Manager, Engineering") is stated as fact in both
-positioning variants. Don't let a rewrite inflate either.
+| Fact | Value | Source |
+|---|---|---|
+| CNBC digital audience | ~47M monthly unique visitors (ComScore) | Versant Investor Day deck, Dec 2025, slide 66 |
+| CNBC.com field performance | 1.7s p75 LCP, all devices, Jul 2026 | Chrome UX Report (public field data) |
+| Org | 20 engineers, 3 web teams, CNBC Core (Versant) | LinkedIn / role of record |
+| Production years | 9+ (intern 2016 → Senior Manager 2026) | Career timeline |
+| Next-gen platform + AI investing tools | Public cover: Versant Q2-2026 earnings call | Lazarus quote, 6 Aug 2026 |
+| Running | 3:07 marathon, 50K ultra finish | Personal record |
 
-## The positioning flag
+**Deny-listed — never write these, even if you find them in old copy or git
+history:** `[redacted]`, `[redacted]`, `[redacted]`, `[redacted] TTFB`, `[redacted]` cache hit,
+subscription ARR or subscriber counts, AI-assistant beta size or pipeline
+internals, unannounced video roadmap items, internal governance metrics
+(velocity/defect percentages), "[redacted]", "I own the".
+The AI work is described only as "leading the frontend architecture for the
+AI-powered investing tools in CNBC's next-generation platform" until CNBC
+announces the product.
 
-`FEATURE_FLAGS.goLoudPositioning` (in `config.ts`) switches hero, narrative bio, and social
-descriptions between a **stealth** variant (scope, no surface-ownership claims) and a
-**go-loud** variant (explicit ownership of the AI and video surfaces).
+## One story on every surface
 
-- Any edit to hero / narrative bio / social descriptions must be made in **both** variants,
-  or deliberately in one with a comment saying which.
-- `positioning.test.ts` asserts both states. Run it after any change there.
-- Agent-facing copy (JSON-LD, `llms.txt`) deliberately does **not** follow the flag. Keep it
-  factual and flag-independent.
+There is no positioning flag — `goLoudPositioning` was removed. Hero, narrative
+bio, social descriptions, JSON-LD, and `llms.txt` all tell the same story:
+loud on role and outcomes, quiet on internals. `positioning.test.ts` enforces
+the shared title/employer string, the 40-word headline cap, and the one-figure
+bio; run it after touching any of those surfaces. `FEATURE_FLAGS.showCnbcAiWork`
+still exists, but nothing gated by it lives in the repo until CNBC announces —
+a flag hides a card, not the shipped bundle.
 
 ## Surface specs
 
@@ -41,8 +46,8 @@ maintained newest-first.
 
 **Hero** (`heroContent`) — badge is the title line, all caps, separated by `·`. `headline.primary`
 is a short declarative sentence ending in a period. `headline.accent` is the positioning
-claim, one line. `bio` is one dense paragraph, 55–75 words, ending on the performance
-credentials. `motto` is three two-word phrases.
+claim, one line. `bio` is one dense paragraph, 40–60 words, at most one figure (enforced by
+`positioning.test.ts`), ending on what the reader gets. `motto` is three two-word phrases.
 
 **Projects** (`projectsData.projects`) — `description` is one paragraph, 55–80 words,
 structured as: what was architected → the technical move → the measured result. Two `metrics`
@@ -53,17 +58,16 @@ each, label in caps. 4 tags. Lead with the architecture decision, not the compan
 Paragraph 2 is AI governance. Final paragraph is the running/discipline close. Keep the
 through-line: player-coach by design.
 
-**Persona** (`personaData`) — 4 cards, each `title` + exactly 2 short paragraphs (35–55 words
-each). This is the one surface where personality outranks receipts, but each card still
-lands on a concrete: a metric, a cuisine, a market.
+**Persona** (`personaData`) — 2 operating-principle cards rendered inside the
+"How I work" section, each `title` + 2 short paragraphs (35–55 words each). Each
+card ties an engineering principle to its business consequence.
 
 **Footer manifesto** (`footerManifesto`) — 4 items. `title` is 3–5 words, ideally an
 asymmetric comparison (`URL > Store`, `Server > Client`). `body` is one sentence, 20–30 words,
 stating the rule and its justification.
 
-**Social descriptions** (`buildSocialDescriptions`) — `meta` caps at ~160 characters (it's
-also what `noteExcerpt` truncates to); `twitter` is shorter and drops the numbers. Both
-follow the positioning flag.
+**Social descriptions** (`socialDescriptions`, a plain constant) — `meta` caps at
+160 characters (enforced); `twitter` is shorter and drops the numbers.
 
 **Code standards** (`codeStandards`) — `bad` / `good` snippet pairs with a `note`. The bad
 snippet must be a real trap someone would write, commented with why it fails; the good one

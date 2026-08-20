@@ -57,7 +57,7 @@ export const colorTokens: TokenGroup = {
     },
     {
       name: 'accent-independent',
-      value: '#b45309',
+      value: '#9a4405',
       dark: '#fbbf24',
       usage: 'Independent category badge',
     },

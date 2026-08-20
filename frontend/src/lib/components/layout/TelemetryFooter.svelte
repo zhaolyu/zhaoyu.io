@@ -1,5 +1,9 @@
 <script lang="ts">
   import { footerManifesto } from '$lib/constants/content';
+  import { performanceMetrics } from '$lib/constants/content';
+
+  /** The one figure the footer repeats is the public audience number, sourced. */
+  const audience = performanceMetrics.find((m) => m.value === '47M');
 </script>
 
 <footer class="terminal-footer">
@@ -7,7 +11,7 @@
     <div class="manifesto-grid">
       {#each footerManifesto as item (item.title)}
         <div class="manifesto-item">
-          <h4>{item.title}</h4>
+          <h3>{item.title}</h3>
           <p>{item.body}</p>
         </div>
       {/each}
@@ -19,23 +23,21 @@
           <span class="s-label">ENGINEERING</span>
           <span class="s-value">Sr. Manager, Engineering @ Versant</span>
         </div>
-        <div class="status-item">
-          <span class="s-label">SCALE</span>
-          <span class="s-value">[redacted] Monthly Uniques</span>
-        </div>
+        {#if audience}
+          <div class="status-item">
+            <span class="s-label">SCALE</span>
+            <span class="s-value">
+              <a class="s-link" href={audience.source.href} target="_blank" rel="noopener">
+                {audience.value} monthly uniques · ComScore
+              </a>
+            </span>
+          </div>
+        {/if}
       </div>
       <div class="status-group">
         <div class="status-item">
-          <span class="s-label">MARATHON_PR</span>
-          <span class="s-value">3:07:45</span>
-        </div>
-        <div class="status-item">
-          <span class="s-label">HALF_PR</span>
-          <span class="s-value">1:31:49</span>
-        </div>
-        <div class="status-item">
-          <span class="s-label">NEXT_TARGET</span>
-          <span class="s-value accent">Sub-1:25 HM</span>
+          <span class="s-label">OFF_CLOCK</span>
+          <span class="s-value accent">Marathon 3:07 · 50K finisher</span>
         </div>
       </div>
     </div>
@@ -44,6 +46,7 @@
       <div class="social-links">
         <a href="https://linkedin.com/in/zhaolyu" target="_blank" rel="noopener">LinkedIn</a>
         <a href="https://github.com/zhaolyu" target="_blank" rel="noopener">GitHub</a>
+        <a href="/rss.xml">RSS</a>
       </div>
       <p class="copyright">
         © {new Date().getFullYear()} Zhao Yu —
@@ -57,10 +60,10 @@
   .terminal-footer {
     width: 100%;
     padding: 5rem 1.25rem 2.5rem;
-    background: #050505;
-    border-top: 1px solid #1a1a1a;
-    font-family: 'JetBrains Mono', 'IBM Plex Mono', var(--font-mono), monospace;
-    color: #888;
+    background: var(--bg-inverse);
+    border-top: 1px solid var(--border-on-inverse);
+    font-family: var(--font-mono);
+    color: var(--text-on-inverse-muted);
   }
 
   .footer-container {
@@ -77,20 +80,19 @@
     margin-bottom: 5rem;
   }
 
-  .manifesto-item h4 {
-    font-size: 0.6875rem;
-    color: #0077d5;
-    letter-spacing: 0.15em;
+  .manifesto-item h3 {
+    font-size: var(--type-xs);
+    color: var(--accent-on-inverse);
+    letter-spacing: var(--tracking-widest);
     margin-bottom: 0.75rem;
-    font-weight: 800;
-    text-shadow: 0 0 10px rgba(0, 119, 213, 0.3);
+    font-weight: var(--weight-bold);
     text-transform: uppercase;
   }
 
   .manifesto-item p {
-    font-size: 0.8125rem;
-    line-height: 1.7;
-    color: #aaa;
+    font-size: var(--type-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--text-on-inverse-muted);
   }
 
   /* ── Status bar ── */
@@ -102,9 +104,9 @@
     align-items: center;
     gap: 1.5rem;
     padding: 1.5rem 1.875rem;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 2px;
+    background: var(--surface-on-inverse);
+    border: 1px solid var(--border-on-inverse);
+    border-radius: var(--radius-sm);
     margin-bottom: 3.75rem;
   }
 
@@ -121,21 +123,31 @@
   }
 
   .s-label {
-    font-size: 0.5625rem;
-    color: #444;
-    font-weight: 700;
-    letter-spacing: 0.1em;
+    font-size: var(--type-2xs);
+    color: var(--text-on-inverse-muted);
+    font-weight: var(--weight-bold);
+    letter-spacing: var(--tracking-wider);
     text-transform: uppercase;
   }
 
   .s-value {
-    font-size: 0.6875rem;
-    color: #e0e0e0;
-    font-weight: 500;
+    font-size: var(--type-xs);
+    color: var(--text-on-inverse);
+    font-weight: var(--weight-medium);
   }
 
-  .s-value.accent {
-    color: #0077d5;
+  .s-value.accent,
+  .s-link {
+    color: var(--accent-on-inverse);
+  }
+
+  .s-link {
+    text-decoration: none;
+  }
+
+  .s-link:hover,
+  .s-link:focus-visible {
+    text-decoration: underline;
   }
 
   /* ── Bottom bar ── */
@@ -146,7 +158,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    border-top: 1px solid var(--border-on-inverse);
     padding-top: 2.5rem;
   }
 
@@ -156,25 +168,22 @@
   }
 
   .social-links a {
-    font-size: 0.75rem;
-    color: #666;
+    font-size: var(--type-xs);
+    color: var(--text-on-inverse-muted);
     text-decoration: none;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    transition: color 0.2s;
+    transition: color var(--duration-base);
   }
 
-  .social-links a:hover {
-    color: #0077d5;
+  .social-links a:hover,
+  .social-links a:focus-visible {
+    color: var(--accent-on-inverse);
   }
 
   .copyright {
-    font-size: 0.6875rem;
-    color: #444;
-  }
-
-  .copyright span {
-    opacity: 0.5;
+    font-size: var(--type-xs);
+    color: var(--text-on-inverse-muted);
   }
 
   @media (max-width: 767px) {
