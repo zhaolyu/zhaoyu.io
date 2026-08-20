@@ -112,6 +112,17 @@ Then, from a **local** terminal — design sync needs an interactive login a rem
 
 ---
 
+## Writing Content
+
+**Always invoke the `writer` skill before writing or editing any user-facing prose** —
+engineering notes, hero and bio copy, project and persona blurbs, the AI manifesto, meta
+descriptions, or `llms.txt`. It carries the voice spec, the measured shape of a note, the
+per-surface constraints, and the publish checklist (content.ts → llms.txt → `pnpm og` →
+tests). Site copy lives in `src/lib/constants/content.ts` and is covered by tests, so
+prose edits go through the same gates as code.
+
+---
+
 ## Utilities
 
 **Check `$lib/utils/` before writing any helper.** Existing utils:
