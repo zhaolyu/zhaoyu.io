@@ -195,12 +195,17 @@ jobs:
           echo "  Files: $(find build/ -type f | wc -l)"
           echo "  Directories: $(find build/ -type d | wc -l)"
 
-  # Deploy to Cloudflare Pages after successful build
+  # Deploy to Cloudflare Pages after successful build.
+  # Dependabot PRs run against Dependabot's own secret store, which does not
+  # carry CLOUDFLARE_API_TOKEN, so wrangler fails and drags ci-success down with
+  # it. Skip the preview deploy for them — ci-success counts a skipped Deploy as
+  # a pass, and the merge to main still deploys via cloudflare-pages.yml.
   deploy:
     needs: [build]
     if: |
       (needs.build.result == 'success') &&
-      (github.event.pull_request.draft == false)
+      (github.event.pull_request.draft == false) &&
+      (github.actor != 'dependabot[bot]')
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
     timeout-minutes: 15
@@ -454,7 +459,8 @@ jobs:
     steps:
       - name: Check all jobs status
         run: |
-          # Check jobs (allow skipped results for draft PRs or path filtering)
+          # Check jobs (allow skipped results for draft PRs, path filtering,
+          # or the Dependabot deploy skip)
           # Only fail if result is "failure", allow "success" or "skipped"
           check_job() {
             local result="$1"
@@ -463,7 +469,7 @@ jobs:
               echo "❌ $job_name failed"
               return 1
             elif [ "$result" == "skipped" ]; then
-              echo "⏭️  $job_name skipped (draft PR or path filtering)"
+              echo "⏭️  $job_name skipped (draft PR, path filtering, or Dependabot)"
               return 0
             elif [ "$result" == "success" ]; then
               echo "✅ $job_name passed"
