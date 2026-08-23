@@ -16,9 +16,11 @@
 </script>
 
 <article class="note-card">
+  <!-- No date here. This grid is a sampler, not an archive: every note from the
+       same month would print the same string, which reads as a batch rather
+       than a body of work. The date lives on the note itself, on /blog's month
+       headings, and in the RSS, sitemap and JSON-LD. -->
   <div class="note-meta">
-    <time datetime={note.dateISO}>{note.date}</time>
-    <span class="separator" aria-hidden="true">/</span>
     <ul class="tags">
       {#each note.tags as tag (tag)}
         <li class="tag">{tag}</li>
@@ -78,10 +80,6 @@
     transition: color var(--duration-base);
   }
 
-  .separator {
-    color: var(--border-color);
-  }
-
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -93,6 +91,13 @@
 
   .tag {
     color: var(--accent-primary-text);
+  }
+
+  /* Same reason as the archive: with the date gone, adjacent tags need a mark
+     between them or they read as one string. */
+  .tag:not(:last-child)::after {
+    content: ' ·';
+    color: var(--border-color);
   }
 
   .note-title {
