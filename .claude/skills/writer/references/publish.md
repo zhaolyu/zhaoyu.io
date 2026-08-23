@@ -57,7 +57,7 @@ The tests that specifically guard content:
 | `sitemap.test.ts` | One URL per note; lastmod tracks `dateISO` |
 | `rss.test.ts` | Feed entries and pubDates |
 | `blog/[slug]/page.test.ts` | Prerender entries and 404 behavior |
-| `positioning.test.ts` | Both positioning variants (hero/bio/social edits) |
+| `positioning.test.ts` | Hero, bio and social copy (constraints and length caps) |
 
 ## Editing existing copy
 
