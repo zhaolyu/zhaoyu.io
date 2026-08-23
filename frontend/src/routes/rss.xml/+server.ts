@@ -20,12 +20,11 @@ function escapeXml(value: string): string {
 }
 
 /**
- * Note dates are month-granularity (YYYY-MM). RFC 822 requires a full
- * timestamp, so anchor to midnight UTC on the first of that month —
- * stable across rebuilds, which a "now" fallback would not be.
+ * RFC 822 requires a full timestamp, so anchor each note's publication date to
+ * midnight UTC — stable across rebuilds, which a "now" fallback would not be.
  */
 function toPubDate(dateISO: string): string {
-  return new Date(`${dateISO.length === 7 ? `${dateISO}-01` : dateISO}T00:00:00Z`).toUTCString();
+  return new Date(`${dateISO}T00:00:00Z`).toUTCString();
 }
 
 function item(note: EngineeringNote): string {

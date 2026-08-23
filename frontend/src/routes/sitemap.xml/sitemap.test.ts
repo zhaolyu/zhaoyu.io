@@ -44,10 +44,10 @@ describe('sitemap.xml GET', () => {
     }
   });
 
-  it('stamps note entries with a full-date lastmod from their publication month', async () => {
+  it("stamps note entries with the note's own publication date as lastmod", async () => {
     const { body } = await fetchSitemap();
     for (const note of notesData.notes) {
-      expect(body).toContain(`<lastmod>${note.dateISO}-01</lastmod>`);
+      expect(body).toContain(`<lastmod>${note.dateISO}</lastmod>`);
     }
   });
 
@@ -66,7 +66,7 @@ describe('sitemap.xml GET', () => {
       '',
     );
     const homeEntry = body.slice(body.indexOf('<url>'), body.indexOf('</url>'));
-    expect(homeEntry).toContain(`<lastmod>${newest}-01</lastmod>`);
+    expect(homeEntry).toContain(`<lastmod>${newest}</lastmod>`);
   });
 
   it('excludes /infra because that page is noindex', async () => {
