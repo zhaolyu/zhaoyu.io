@@ -6,24 +6,36 @@ Everything below lives in `frontend/src/lib/constants/content.ts` unless noted.
 
 **The disclosure policy governs this table.** Versant is a public company: every
 employer-related number on any surface must carry a public source from `SOURCES`
-in `content.ts`, and `disclosure-guard.test.ts` scans copy, `og.ts`,
-`structured-data.ts`, `llms.txt`, and the page roots against a deny-list.
+in `content.ts`. `disclosure-guard.test.ts` walks every route and component —
+not a hand-picked list, which is how an unsourced figure once shipped inside an
+SVG — plus `og.ts`, `structured-data.ts` and `llms.txt`.
 Add a new figure to `SOURCES` (with its public citation) before using it in prose.
 
-| Fact | Value | Source |
-|---|---|---|
-| CNBC digital audience | ~47M monthly unique visitors (ComScore) | Versant Investor Day deck, Dec 2025, slide 66 |
-| CNBC.com field performance | 1.7s p75 LCP, all devices, Jul 2026 | Chrome UX Report (public field data) |
-| Org | 20 engineers, 3 web teams, CNBC Core (Versant) | LinkedIn / role of record |
-| Production years | 9+ (intern 2016 → Senior Manager 2026) | Career timeline |
-| Next-gen platform + AI investing tools | Public cover: Versant Q2-2026 earnings call | Lazarus quote, 6 Aug 2026 |
-| Running | 3:07 marathon, 50K ultra finish | Personal record |
+| Fact                                   | Value                                          | Source                                        |
+| -------------------------------------- | ---------------------------------------------- | --------------------------------------------- |
+| CNBC digital audience                  | ~47M monthly unique visitors (ComScore)        | Versant Investor Day deck, Dec 2025, slide 66 |
+| CNBC.com field performance             | 1.7s p75 LCP, all devices, Jul 2026            | Chrome UX Report (public field data)          |
+| Org                                    | 20 engineers, 3 web teams, CNBC Core (Versant) | LinkedIn / role of record                     |
+| Production years                       | 9+ (intern 2016 → Senior Manager 2026)         | Career timeline                               |
+| Next-gen platform + AI investing tools | Public cover: Versant Q2-2026 earnings call    | Lazarus quote, 6 Aug 2026                     |
+| Running                                | 3:07 marathon, 50K ultra finish                | Personal record                               |
 
-**Deny-listed — never write these, even if you find them in old copy or git
-history:** `[redacted]`, `[redacted]`, `[redacted]`, `[redacted] TTFB`, `[redacted]` cache hit,
-subscription ARR or subscriber counts, AI-assistant beta size or pipeline
-internals, unannounced video roadmap items, internal governance metrics
-(velocity/defect percentages), "[redacted]", "I own the".
+**The rule is an allowlist, not a list of forbidden strings.** A number about
+the employer ships only if it is in the table above, with a basis and a public
+`SOURCES` citation. Anything else is cut — including figures that look harmless,
+and including numbers you find in old copy or git history.
+
+`disclosure-guard.test.ts` enforces this by matching the _shape_ of an employer
+claim — a subscriber count, an ARR figure, a cache-hit rate, a ranking
+superlative, a field-performance number — and failing unless the value traces to
+`performanceMetrics`. It deliberately does not name the figures it is protecting
+against: a list of forbidden values is itself a disclosure, which is why this
+paragraph no longer contains one.
+
+Categories that are never public regardless of the number: subscription ARR,
+subscriber counts, AI-assistant pilot size or pipeline internals, unannounced
+roadmap items, and internal governance metrics. Scope claims like "sole …
+architect" or "I own the …" are cut for overclaiming, not for disclosure.
 The AI work is described only as "leading the frontend architecture for the
 AI-powered investing tools in CNBC's next-generation platform" until CNBC
 announces the product.
@@ -41,8 +53,8 @@ a flag hides a card, not the shipped bundle.
 ## Surface specs
 
 **Engineering notes** (`notesData.notes`) — see the main SKILL.md. Newest first; `date` is
-display ("Aug 2026"), `dateISO` is `YYYY-MM`. RSS sorts defensively but the array is
-maintained newest-first.
+display ("Aug 14, 2026"), `dateISO` is a full `YYYY-MM-DD`, and every note carries at least
+one `sources` entry. RSS sorts defensively but the array is maintained newest-first.
 
 **Hero** (`heroContent`) — badge is the title line, all caps, separated by `·`. `headline.primary`
 is a short declarative sentence ending in a period. `headline.accent` is the positioning
@@ -54,7 +66,7 @@ structured as: what was architected → the technical move → the measured resu
 each, label in caps. 4 tags. Lead with the architecture decision, not the company.
 
 **Narrative bio** (`narrativeBio`) — 3–4 paragraphs. Paragraph 1 is the career arc as a
-*deliberate* sequence (the IC→EM→IC→EM path is the point, "a choice, not a detour").
+_deliberate_ sequence (the IC→EM→IC→EM path is the point, "a choice, not a detour").
 Paragraph 2 is AI governance. Final paragraph is the running/discipline close. Keep the
 through-line: player-coach by design.
 

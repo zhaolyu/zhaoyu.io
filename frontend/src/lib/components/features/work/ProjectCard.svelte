@@ -243,7 +243,7 @@
               </g>
 
               <g transform="translate(450, 50)" font-family="monospace" font-size="10">
-                <text x="0" y="0" class="hit-rate-text" font-weight="bold">HIT: [redacted]</text>
+                <text x="0" y="0" class="hit-rate-text" font-weight="bold">CACHE HIT</text>
               </g>
             </svg>
           {/if}
