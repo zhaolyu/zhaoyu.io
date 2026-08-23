@@ -20,10 +20,10 @@ Add a new figure to `SOURCES` (with its public citation) before using it in pros
 | Running | 3:07 marathon, 50K ultra finish | Personal record |
 
 **Deny-listed — never write these, even if you find them in old copy or git
-history:** `[redacted]`, `[redacted]`, `[redacted]`, `[redacted] TTFB`, `[redacted]` cache hit,
+history:** `50M+`, `1.1s LCP`, `Top 1%`, `<300ms TTFB`, `98.4%` cache hit,
 subscription ARR or subscriber counts, AI-assistant beta size or pipeline
 internals, unannounced video roadmap items, internal governance metrics
-(velocity/defect percentages), "[redacted]", "I own the".
+(velocity/defect percentages), "sole frontend architect", "I own the".
 The AI work is described only as "leading the frontend architecture for the
 AI-powered investing tools in CNBC's next-generation platform" until CNBC
 announces the product.
