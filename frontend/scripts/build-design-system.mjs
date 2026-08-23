@@ -13,9 +13,10 @@
  * Then, from a LOCAL Claude Code session (design sync needs an interactive
  * login that a remote session cannot perform):  /design-sync
  */
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { FONT_FILES, buildStylesCss, unresolvedConventionTokens } from './design-system-styles.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const buildDir = join(root, 'build', 'design-system');
@@ -126,6 +127,60 @@ for (const card of cards) {
   );
 }
 
+/*
+ * styles.css + fonts/ — the half of the bundle the design *agent* consumes.
+ *
+ * Rendered designs receive only styles.css's @import closure; the cards above
+ * are a human-facing picker. Without this file every var(--accent-primary) the
+ * agent writes resolves to nothing, and it falls back to inventing literals —
+ * which is design → code, the wrong direction for this repo.
+ */
+const tokensCssPath = join(root, 'static/tokens.css');
+if (!existsSync(tokensCssPath)) {
+  console.error('No static/tokens.css — run `pnpm tokens` (or `pnpm build`, which does).');
+  process.exit(1);
+}
+
+const stylesCss = buildStylesCss({
+  appCss: readFileSync(join(root, 'src/app.css'), 'utf8'),
+  tokensCss: readFileSync(tokensCssPath, 'utf8'),
+});
+writeFileSync(join(outDir, 'styles.css'), stylesCss);
+
+mkdirSync(join(outDir, 'fonts'), { recursive: true });
+let fontBytes = 0;
+for (const font of FONT_FILES) {
+  const from = join(root, 'node_modules', font.pkg, font.source);
+  if (!existsSync(from)) {
+    console.error(`Missing font ${font.pkg}/${font.source} — run \`pnpm install\`.`);
+    process.exit(1);
+  }
+  copyFileSync(from, join(outDir, 'fonts', font.file));
+  fontBytes += readFileSync(from).length;
+}
+
+console.log(
+  `\n  styles.css  ${(Buffer.byteLength(stylesCss) / 1024).toFixed(0)}KB` +
+    `   fonts/  ${FONT_FILES.length} files, ${(fontBytes / 1024).toFixed(0)}KB`,
+);
+
+/*
+ * The conventions header is prepended to the README, which is the design
+ * agent's usage reference. It names token families, so a name that no longer
+ * resolves would teach the agent vocabulary that silently does nothing —
+ * hence the check here as well as in design-system-styles.test.ts, which is
+ * what catches it without a build.
+ */
+const conventions = readFileSync(join(root, '.design-sync/conventions.md'), 'utf8').trim();
+const unresolved = unresolvedConventionTokens(conventions, stylesCss);
+if (unresolved.length) {
+  console.error(
+    `conventions.md names ${unresolved.length} token(s) that styles.css does not declare:\n` +
+      `  ${unresolved.join(', ')}\nFix the header (or add the token to app.css) before syncing.`,
+  );
+  process.exit(1);
+}
+
 writeFileSync(
   join(outDir, 'README.md'),
   `# zhaoyu.io design system — Claude Design bundle
@@ -137,6 +192,16 @@ components and tokens they are rendered from, then regenerate.
 - Token index (guarded by \`design-tokens.test.ts\`): \`frontend/src/lib/constants/design-tokens.ts\`
 - Card registry: \`frontend/src/lib/constants/design-system.ts\`
 - Previews: \`frontend/src/routes/design-system/\`
+- Conventions header below: \`frontend/.design-sync/conventions.md\`
+
+## What is in here
+
+- \`styles.css\` — the design vocabulary. Rendered designs receive only this
+  file's \`@import\` closure, so it carries the web fonts and the full token
+  layer (\`:root\` light, \`.dark\` overrides).
+- \`fonts/\` — the two woff2 faces \`styles.css\` declares.
+- \`foundations/\`, \`components/\` — one self-contained \`@dsCard\` preview per
+  card, rendered from the real components.
 
 ## Pushing to Claude Design
 
@@ -152,6 +217,10 @@ Push component by component rather than wholesale — that is the documented
 discipline for keeping a local library and a Design project in step.
 
 ${written} cards, ${(bytes / 1024).toFixed(0)}KB total.
+
+---
+
+${conventions}
 `,
 );
 
