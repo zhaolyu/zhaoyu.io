@@ -31,6 +31,19 @@ const config = {
     // the extra sha256 below is the inline theme-init script in app.html
     // (recompute if that script changes: sha256+base64 of the exact tag body).
     // frame-ancestors can't be set via <meta>, so it lives in static/_headers.
+    //
+    // Cloudflare injects two things at the edge that this policy has to answer:
+    //   1. the Web Analytics beacon from static.cloudflareinsights.com — an
+    //      external script, so allowlisting the origin is enough. Allowed below,
+    //      which is what turns traffic data back on.
+    //   2. the Bot Fight Mode challenge loader, an INLINE script that embeds a
+    //      per-request ray token. Its hash therefore changes on every response
+    //      (measured: two fetches, two different sha256), so it can never be
+    //      allowlisted in hash mode. The only policy-side alternatives are
+    //      'unsafe-inline' or a nonce — the first defeats the CSP, the second is
+    //      impossible on prerendered HTML. Fix that one by turning Bot Fight Mode
+    //      off in the Cloudflare dashboard, not by weakening this policy.
+    // csp.test.ts pins these directives so the escape hatches can't creep back in.
     csp: {
       mode: 'hash',
       directives: {
@@ -39,6 +52,7 @@ const config = {
           'self',
           'wasm-unsafe-eval', // PGlite (WASM Postgres) on /infra
           'sha256-OeL7jzJbFrONBWQFnrqtx6SxmNiAoG1JvmtdhwveVDw=', // app.html theme script
+          'https://static.cloudflareinsights.com', // Web Analytics beacon (see note above)
         ],
         'style-src': ['self', 'unsafe-inline'], // inline style attrs + Svelte transition styles
         'img-src': ['self', 'data:'], // data: for inline SVG noise/grain textures
@@ -46,6 +60,7 @@ const config = {
         'connect-src': [
           'self',
           'https://ingestion-api-240dd81-538316597788.us-central1.run.app', // ElectricSQL sync
+          'https://cloudflareinsights.com', // Web Analytics beacon POSTs its payload here
         ],
         'object-src': ['none'],
         'base-uri': ['self'],
