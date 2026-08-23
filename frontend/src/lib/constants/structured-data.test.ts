@@ -4,7 +4,6 @@ import {
   techArticleJsonLd,
   articleJsonLd,
   jsonLdScript,
-  toIsoDate,
   SAME_AS,
 } from './structured-data';
 import { notesData } from './content';
@@ -100,11 +99,6 @@ describe('articleJsonLd', () => {
 });
 
 describe('helpers', () => {
-  it('anchors month-granular dates to the first of the month', () => {
-    expect(toIsoDate('2026-07')).toBe('2026-07-01');
-    expect(toIsoDate('2026-07-15')).toBe('2026-07-15');
-  });
-
   it('emits a script tag that survives Svelte template parsing', () => {
     const out = jsonLdScript({ a: 1 });
     expect(out.startsWith('<script type="application/ld+json">')).toBe(true);

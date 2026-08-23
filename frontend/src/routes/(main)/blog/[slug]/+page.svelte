@@ -41,6 +41,7 @@
     date={note.date}
     tags={note.tags}
     content={note.content}
+    sources={note.sources}
     headingLevel="h1"
   />
 </main>

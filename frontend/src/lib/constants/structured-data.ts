@@ -49,14 +49,9 @@ export function personJsonLd() {
   };
 }
 
-/** Full ISO date for schema.org; month-granular note dates anchor to the 1st. */
-export function toIsoDate(dateISO: string): string {
-  return dateISO.length === 7 ? `${dateISO}-01` : dateISO;
-}
-
 export function techArticleJsonLd(note: EngineeringNote, description: string) {
   const url = `${SITE_URL}/blog/${note.slug}`;
-  const published = toIsoDate(note.dateISO);
+  const published = note.dateISO;
   return {
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
@@ -65,7 +60,7 @@ export function techArticleJsonLd(note: EngineeringNote, description: string) {
     url,
     mainEntityOfPage: url,
     datePublished: published,
-    dateModified: toIsoDate(note.dateModified ?? note.dateISO),
+    dateModified: note.dateModified ?? note.dateISO,
     image: `${SITE_URL}/og/${note.slug}.png`,
     author: PERSON,
     publisher: PERSON,
