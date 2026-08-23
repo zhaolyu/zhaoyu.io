@@ -3,6 +3,41 @@
 @import '@fontsource/geist-mono';
 
 /* ==========================================================================
+   Metric-matched fallbacks (CLS)
+   ==========================================================================
+   @fontsource ships font-display: swap, so the fallback face paints first and
+   the real face swaps in on load. Without matched metrics the two occupy
+   different space and every block of body copy reflows — measured as the
+   layout-shift culprit on p.hero-bio.
+
+   The overrides below are computed, not guessed: metrics were read from the
+   OS/2 and hhea tables of the shipped font files and of the local fallback.
+
+     Geist Sans  upm 1000  asc 920  desc -220  gap 100
+
+   size-adjust is the ratio of actually-rendered text width, measured with
+   canvas measureText across the site's own prose — NOT the OS/2 xAvgCharWidth
+   ratio. That ratio is defined inconsistently between these two fonts and
+   implies 132.76%, which overshoots so badly it *adds* two lines of wrap; it
+   was measured doing exactly that before being replaced.
+
+     measured over 86 blocks / 12,393 chars of real page copy:
+     Geist 581,325px vs Arial 558,732px -> 104.04%
+
+   The vertical overrides are then divided by that factor so they stay relative
+   to the adjusted em: 920/1040.44, 220/1040.44, 100/1040.44.
+   Re-measure these if the font is ever changed or re-subset — a single short
+   sample is not enough, the ratio swings ~1.5% between samples. */
+@font-face {
+  font-family: 'Geist Sans Fallback';
+  src: local('Arial'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 104.04%;
+  ascent-override: 88.42%;
+  descent-override: 21.14%;
+  line-gap-override: 9.61%;
+}
+
+/* ==========================================================================
    Theme Configuration
    ========================================================================== */
 
@@ -10,7 +45,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: 'Geist Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Geist Sans', 'Geist Sans Fallback', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', 'Courier New', monospace;
 }
 

@@ -31,19 +31,26 @@ jobs:
         env:
           COST_GUARD_SECRET: ${{ secrets.COST_GUARD_SECRET }}
           INGESTION_URL: https://ingestion-api-240dd81-538316597788.us-central1.run.app/v1/ingest
+          COMMIT_SHA: ${{ github.sha }}
+          ESTIMATE: ${{ inputs.total_monthly_estimate }}
         run: |
-          BODY=$(cat <<EOF
-          {
-            "org_id": "4915feab-e474-439a-823f-9f2b914ca447",
-            "project_id": "zhaoyu-io",
-            "commit_hash": "${{ github.sha }}",
-            "total_monthly_estimate": ${{ inputs.total_monthly_estimate }},
-            "costs": []
-          }
-          EOF
-          )
-          # Compact the JSON (remove whitespace)
-          BODY=$(echo "$BODY" | jq -c .)
+          # The estimate is a workflow_dispatch input. It used to be interpolated
+          # straight into an unquoted heredoc, where the shell still performs
+          # command substitution — so an input of $(...) would have executed.
+          # Validate it, then let jq build the JSON so quoting is never our job.
+          case "$ESTIMATE" in
+            '' | *[!0-9.]* | *.*.* )
+              echo "❌ total_monthly_estimate must be a non-negative number (got: $ESTIMATE)"
+              exit 1
+              ;;
+          esac
+
+          BODY=$(jq -cn \
+            --arg org_id "4915feab-e474-439a-823f-9f2b914ca447" \
+            --arg project_id "zhaoyu-io" \
+            --arg commit_hash "$COMMIT_SHA" \
+            --argjson total_monthly_estimate "$ESTIMATE" \
+            '{$org_id, $project_id, $commit_hash, $total_monthly_estimate, costs: []}')
 
           # Generate HMAC-SHA256 signature
           SIGNATURE="sha256=$(echo -n "$BODY" | openssl dgst -sha256 -hmac "$COST_GUARD_SECRET" | cut -d' ' -f2)"
