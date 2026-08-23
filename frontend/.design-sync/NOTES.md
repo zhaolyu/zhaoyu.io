@@ -17,13 +17,14 @@ from `src/routes/design-system/[card]` (real components, compiled CSS inlined,
 hydration payload stripped) and stamps a first-line `@dsCard` marker. The card
 registry is `src/lib/constants/design-system.ts`.
 
-Bundle layout (as of 2026-08-16, 11 cards / 939 KB):
+Bundle layout (as of 2026-08-19, 17 cards / 1611 KB):
 
 ```
 design-system/
   README.md
-  foundations/{color,surface,type,type-rhythm,spacing,radius,elevation,motion}.html
-  components/{system-card,note-card,section-header}.html
+  index.html                      # local browse index only — never uploaded
+  foundations/{color,status,data-viz,surface,type,type-rhythm,spacing,radius,elevation,motion}.html
+  components/{system-card,note-card,section-header,stat-card,data-table,annotated-chart,segmented}.html
 ```
 
 Note the paths are `<group>/<slug>.html`, NOT the converter's
@@ -100,6 +101,37 @@ README.md, _ds_needs_recompile`, **deletes `[]`** — every remote path still
   browse index. The bare `python -m http.server` listing ships no CSS and no
   `color-scheme`, so in a dark browser it renders black-on-black. The index has
   no `@dsCard` marker and sits outside the plan globs — it is never uploaded.
+
+## Re-sync 4 — 2026-08-19, data-viz library additions + Segmented (16 → 17 cards)
+
+- Source: `main@29e7d2d` (PR #43, "Finish the data-viz library additions and
+  ship tokens.css"), run from the `claude/design-system-sync-9c8f53` worktree.
+  Fresh `pnpm install --frozen-lockfile` was needed — worktrees start without
+  `node_modules`.
+- Atomic path again (project non-empty + pinned). `get_project` confirmed
+  `PROJECT_TYPE_DESIGN_SYSTEM`, `canEdit: true`. One `finalize_plan`:
+  `localDir=frontend/design-system`, writes `foundations/**, components/**,
+README.md, _ds_needs_recompile`, `deletes: []` — every remote card path still
+  existed on disk.
+- Pre-upload `list_files` showed the previous sentinel had been consumed
+  (`_ds_needs_recompile` absent; `_ds_manifest.json` + `_ds_bundle.js` present),
+  i.e. the app did recompile after re-sync 3.
+- **Uploaded one file per `write_files` call** (the "card by card, not
+  wholesale" discipline): sentinel (`"1"`, text/plain) → README → 10
+  foundations → 7 components → sentinel re-arm. 20 calls, all `written: 1`.
+- All 16 pre-existing cards re-uploaded, not just `segmented`: `app.css` grew
+  38 lines (`--viz-series-*-dense`, `--viz-structure/quiet/conflict`) and every
+  card inlines the compiled CSS. Spot-checked before upload: `data-viz.html`
+  body references all 11 new tokens; `segmented.html` renders 4 groups / 12
+  buttons across Light + Dark (no text-only fallback).
+- Post-upload `list_files` = 17 cards + README + sentinel, matching disk. The
+  Claude-Design-side files (`templates/**`, `uploads/**`, `screenshots/**`,
+  `_ds_*`, `_adherence.oxlintrc.json`, `github.md`) were untouched.
+- The `styles.css` / conventions-header gaps below still stand. `pnpm tokens`
+  now emits `static/tokens.css` for the _site_ (served at `/tokens.css`), but
+  the bundle itself still ships no stylesheet file — the fix is the same as
+  before: have `build-design-system.mjs` also write a `styles.css` and add it
+  to the plan's writes.
 
 ## Re-sync procedure
 
