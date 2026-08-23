@@ -257,21 +257,34 @@ jobs:
           echo "Build size:"
           du -sh build/
 
+      # Branch names are attacker-controlled on a public repo: any fork can open
+      # a PR from a ref containing quotes, semicolons or backticks, and `${{ }}`
+      # is substituted into the script *before* the shell parses it. Pass the
+      # refs through env: so the shell only ever sees them as variable values,
+      # and sanitise before the value reaches a command line downstream.
       - name: Determine deployment type
         id: deployment
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
-          # Get the PR head branch (source branch)
-          BRANCH="${{ github.event.pull_request.head.ref }}"
+          # Cloudflare Pages branch aliases only ever contain [A-Za-z0-9._/-];
+          # anything else is replaced rather than passed on to wrangler.
+          BRANCH=$(printf '%s' "$HEAD_REF" | tr -c 'A-Za-z0-9._/-' '-')
 
-          if [ "${{ github.event.pull_request.base.ref }}" = "main" ]; then
-            echo "environment=preview" >> $GITHUB_OUTPUT
-            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          if [ -z "$BRANCH" ]; then
+            echo "❌ Error: could not derive a deployment branch name"
+            exit 1
+          fi
+
+          if [ "$BASE_REF" = "main" ]; then
             echo "Deploying to PREVIEW (PR targeting main)"
           else
-            echo "environment=preview" >> $GITHUB_OUTPUT
-            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
             echo "Deploying to PREVIEW (feature branch)"
           fi
+
+          echo "environment=preview" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
 
       # wrangler-action replaces the deprecated cloudflare/pages-action@v1.
       # Outputs: deployment-url (atomic) and pages-deployment-alias-url (branch alias).

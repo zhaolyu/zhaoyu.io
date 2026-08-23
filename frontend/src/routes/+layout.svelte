@@ -1,9 +1,14 @@
 <script lang="ts">
   import '../app.css';
   import '../app.print.css';
+  // Preload the one face that renders above the fold. Importing it with ?url
+  // gives Vite's hashed, fingerprinted path, so the preload can never point at
+  // a stale file the way a hardcoded href in app.html would.
+  import geistSans400 from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url';
 </script>
 
 <svelte:head>
+  <link rel="preload" as="font" type="font/woff2" href={geistSans400} crossorigin="anonymous" />
   <link
     rel="alternate"
     type="application/rss+xml"
