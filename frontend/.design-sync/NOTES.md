@@ -171,6 +171,25 @@ design-system/` for the placeholder itself came back empty.
 - Bundle grew 1611 → 1659 KB (app.css gained the font-fallback metrics block);
   17 cards, same layout.
 
+## Re-sync 6 — 2026-08-23, styles.css + fonts/ + conventions header
+
+- Closes the two gaps the file had carried since the first sync. The cards were
+  not re-uploaded: `app.css` did not change, so only the four new/changed paths
+  went up. One `finalize_plan` with writes `styles.css, fonts/**, README.md,
+_ds_needs_recompile` and `deletes: []`, then sentinel → styles.css → 2 fonts
+  → README → sentinel. 6 calls, all `written: 1`.
+- Post-upload `list_files` shows `styles.css` and `fonts/` alongside the 17
+  cards. The Design-side files were untouched again.
+- Verified in a browser before pushing, not only in unit tests: served the
+  bundle and loaded a probe page that styles itself purely through
+  `var(--…)` off `styles.css`. All 18 probed tokens resolved to real computed
+  values (`--bg-secondary` → `rgb(249,250,251)`, `--radius-lg` → `12px`,
+  `--shadow-md`, `--type-2xl` → `32px`, `--viz-series-1` → its oklch, …), both
+  Geist faces reported `loaded` from `fonts/`, and adding `class="dark"`
+  flipped ground, text and accent. Before this change every one of those would
+  have resolved to nothing in a rendered design.
+- Bundle is now 17 cards + `styles.css` (8 KB) + `fonts/` (2 files, 42 KB).
+
 ## Re-sync procedure
 
 0. `git fetch && git status` — the checkout must be **clean and at
@@ -188,24 +207,27 @@ design-system/` for the placeholder itself came back empty.
 3. Diff `list_files` against `design-system/`: any remote path under
    `foundations/` or `components/` that disk no longer has goes into the plan's
    `deletes` explicitly.
-4. `finalize_plan` with the same globs as above (add new top-level groups if
-   the registry grew one), then: sentinel → all writes → deletes → sentinel.
+4. `finalize_plan` with writes `foundations/**, components/**, styles.css,
+fonts/**, README.md, _ds_needs_recompile` (add new top-level groups if the
+   registry grew one), then: sentinel → all writes → deletes → sentinel.
+   `styles.css` and `fonts/**` are what rendered designs actually consume —
+   omitting them leaves the agent building against tokens that resolve to
+   nothing.
 5. Skip `_ds_sync.json` (see above).
 
 ## Known gaps / follow-ups (not blockers)
 
-- **No `styles.css` in the bundle.** Rendered designs in Claude Design receive
-  only `styles.css`'s `@import` closure, so the token vocabulary in the cards
-  (`--bg-*`, `--accent-*`, `--space-*`, …) does not reach designs the agent
-  builds — the cards are a human-facing reference today. Fix: have
-  `build-design-system.mjs` also emit the compiled `build/_app/immutable/assets/*.css`
-  as `styles.css`, add it to the plan's writes, and re-sync.
-- **No conventions header** (`.design-sync/conventions.md` → README). Deferred
-  deliberately: without `styles.css` a header telling the design agent to use
-  `var(--accent-primary)` would name vocabulary that doesn't resolve in designs.
-  Author it together with the `styles.css` fix — CLAUDE.md's "Design System"
-  token-family table is the right starting content, and every name must be
-  grepped against the compiled CSS before shipping. The build script would need
-  a small hook to prepend the file to the generated README.
+- ~~No `styles.css` in the bundle.~~ **Closed 2026-08-23.** The bundle now ships
+  `styles.css` + `fonts/`, so the token vocabulary reaches designs the agent
+  builds and not just the human-facing cards. Built from `static/tokens.css`
+  rather than the compiled `build/_app/immutable/assets/*.css` the original
+  note proposed — that sheet is ~90 KB of Tailwind utilities and hashed Svelte
+  scopes, where `tokens.css` is 179 custom properties, already drift-guarded,
+  and already the designated travelling layer.
+- ~~No conventions header.~~ **Closed 2026-08-23.** `.design-sync/conventions.md`
+  is prepended to the generated README by `build-design-system.mjs`.
+  `design-system-styles.test.ts` resolves every `var(--…)` it names against the
+  generated sheet and fails on a token family the header never documents, so
+  the header cannot quietly rot the way the deferral warned about.
 - No `.d.ts` / `.prompt.md` per component — not applicable to Svelte
-  components; the design agent gets previews + README only.
+  components; the design agent gets previews + README + `styles.css`.
