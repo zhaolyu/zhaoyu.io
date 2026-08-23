@@ -1,4 +1,6 @@
 import { notesData } from '$lib/constants/content';
+import { CASE_STUDIES } from '$lib/constants/case-studies';
+import { visibleItems } from '$lib/utils/feature-flags';
 import { ROUTES } from '$lib/constants/routes';
 
 export const prerender = true;
@@ -36,13 +38,19 @@ export function GET() {
     urlEntry(ROUTES.AI_MANIFESTO, 'monthly', '0.5'),
   ];
 
+  // Case studies are full dates already; flag-gated studies stay out, matching
+  // the page, OG, and llms.txt visibility rules.
+  const workEntries = visibleItems(CASE_STUDIES).map((cs) =>
+    urlEntry(`/work/${cs.slug}`, 'monthly', '0.9', cs.dateModified ?? cs.dateISO),
+  );
+
   const blogEntries = notesData.notes.map((note) =>
     urlEntry(`/blog/${note.slug}`, 'monthly', '0.7', toLastmod(note.dateISO)),
   );
 
   const body = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${[...staticEntries, ...blogEntries].join('\n')}
+${[...staticEntries, ...workEntries, ...blogEntries].join('\n')}
 </urlset>
 `;
 

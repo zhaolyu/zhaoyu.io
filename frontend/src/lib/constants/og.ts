@@ -7,10 +7,12 @@
  * scripts/generate-og-images.mjs via the prerendered /og/<slug> routes.
  */
 import { notesData, heroContent } from '$lib/constants/content';
+import { CASE_STUDIES } from '$lib/constants/case-studies';
+import { visibleItems } from '$lib/utils/feature-flags';
 
 export interface OgCard {
   slug: string;
-  kind: 'profile' | 'note';
+  kind: 'profile' | 'note' | 'case-study';
   eyebrow: string;
   title: string;
   /** Empty for note cards, whose title already carries the message. */
@@ -46,10 +48,29 @@ export function noteCard(slug: string): OgCard | undefined {
   };
 }
 
+export function caseStudyCard(slug: string): OgCard | undefined {
+  const cs = visibleItems(CASE_STUDIES).find((c) => c.slug === slug);
+  if (!cs) return undefined;
+
+  return {
+    slug,
+    kind: 'case-study',
+    eyebrow: `CASE STUDY · ${cs.period}`,
+    title: cs.title,
+    subtitle: cs.oneLiner,
+    footnote: cs.stack,
+  };
+}
+
 export function ogCard(slug: string): OgCard | undefined {
-  return slug === SITE_CARD_SLUG ? siteCard() : noteCard(slug);
+  if (slug === SITE_CARD_SLUG) return siteCard();
+  return noteCard(slug) ?? caseStudyCard(slug);
 }
 
 export function ogCards(): OgCard[] {
-  return [siteCard(), ...notesData.notes.map((note) => noteCard(note.slug)!)];
+  return [
+    siteCard(),
+    ...notesData.notes.map((note) => noteCard(note.slug)!),
+    ...visibleItems(CASE_STUDIES).map((cs) => caseStudyCard(cs.slug)!),
+  ];
 }

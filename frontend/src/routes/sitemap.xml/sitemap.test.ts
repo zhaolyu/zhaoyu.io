@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { GET } from './+server';
 import { notesData } from '$lib/constants/content';
+import { CASE_STUDIES } from '$lib/constants/case-studies';
+import { visibleItems } from '$lib/utils/feature-flags';
 
 async function fetchSitemap() {
   const res = GET();
@@ -21,6 +23,18 @@ describe('sitemap.xml GET', () => {
     expect(body).toContain('<loc>https://zhaoyu.io/</loc>');
     expect(body).toContain('<loc>https://zhaoyu.io/blog</loc>');
     expect(body).toContain('<loc>https://zhaoyu.io/ai-manifesto</loc>');
+  });
+
+  it('includes every visible case study with its own lastmod', async () => {
+    const { body } = await fetchSitemap();
+    for (const cs of visibleItems(CASE_STUDIES)) {
+      expect(body).toContain(`<loc>https://zhaoyu.io/work/${cs.slug}</loc>`);
+      expect(body).toContain(`<lastmod>${cs.dateModified ?? cs.dateISO}</lastmod>`);
+    }
+    // Flag-gated studies never leak into the sitemap.
+    for (const cs of CASE_STUDIES.filter((c) => c.featureFlag)) {
+      expect(body).not.toContain(`/work/${cs.slug}`);
+    }
   });
 
   it('includes every engineering note permalink', async () => {

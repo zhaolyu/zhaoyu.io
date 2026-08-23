@@ -42,6 +42,7 @@ const DENY_LIST: Array<{ pattern: RegExp; why: string }> = [
 const here = dirname(fileURLToPath(import.meta.url));
 const SURFACES = [
   './content.ts',
+  './case-studies.ts',
   './og.ts',
   './structured-data.ts',
   '../../../static/llms.txt',
