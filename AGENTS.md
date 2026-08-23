@@ -5,6 +5,7 @@ Repository router for Forge slug `zhaoyu-io`.
 **verify**: `cd frontend && pnpm check && pnpm test`
 
 
+
 <!-- forge-agent-baseline:v1 begin -->
 ## Forge agent baseline
 
@@ -21,7 +22,5 @@ Forge `AGENTS.md` was loaded.
   you know it.
 - Keep changes within this repository unless the task explicitly requires a
   cross-repo change.
-- For unpublished Forge library changes, use `bin/forge-link` from the Forge
-  root when available. Do not use `npm link`, `pnpm link`, or overrides.
 - Report the commands run, their outcomes, and anything skipped.
 <!-- forge-agent-baseline:v1 end -->
