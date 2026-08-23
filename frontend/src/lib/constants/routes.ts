@@ -7,4 +7,5 @@ export const ROUTES = {
   BLOG: '/blog',
   AI_MANIFESTO: '/ai-manifesto',
   INFRA: '/infra',
+  WORK: '/work',
 } as const;

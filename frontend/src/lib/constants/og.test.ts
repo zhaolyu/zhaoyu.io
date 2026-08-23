@@ -2,17 +2,32 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { ogCards, ogCard, noteCard, SITE_CARD_SLUG } from './og';
+import { ogCards, ogCard, noteCard, caseStudyCard, SITE_CARD_SLUG } from './og';
 import { notesData, heroContent } from './content';
+import { CASE_STUDIES } from './case-studies';
+import { visibleItems } from '$lib/utils/feature-flags';
 
 const staticOg = resolve(dirname(fileURLToPath(import.meta.url)), '../../../static/og');
 
 const REGENERATE = 'Run `pnpm build && pnpm og`, then commit static/og/.';
 
 describe('og card definitions', () => {
-  it('covers the site card plus every note', () => {
+  it('covers the site card, every note, and every visible case study', () => {
     const slugs = ogCards().map((c) => c.slug);
-    expect(slugs).toEqual([SITE_CARD_SLUG, ...notesData.notes.map((n) => n.slug)]);
+    expect(slugs).toEqual([
+      SITE_CARD_SLUG,
+      ...notesData.notes.map((n) => n.slug),
+      ...visibleItems(CASE_STUDIES).map((cs) => cs.slug),
+    ]);
+  });
+
+  it('builds case-study cards only for visible studies', () => {
+    expect(caseStudyCard('not-a-study')).toBeUndefined();
+    for (const cs of visibleItems(CASE_STUDIES)) {
+      const card = caseStudyCard(cs.slug)!;
+      expect(card.kind).toBe('case-study');
+      expect(card.subtitle).toBe(cs.oneLiner);
+    }
   });
 
   it('tracks the hero, so the card cannot advertise a retired tagline', () => {
