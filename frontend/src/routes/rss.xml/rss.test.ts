@@ -44,10 +44,10 @@ describe('rss.xml GET', () => {
     expect(slugOrder).toEqual(expected);
   });
 
-  it('emits RFC 822 pubDates anchored to the note month', async () => {
+  it("emits RFC 822 pubDates from each note's own publication date", async () => {
     const { body } = await fetchFeed();
     const newest = notesData.notes.reduce((max, n) => (n.dateISO > max.dateISO ? n : max));
-    const expected = new Date(`${newest.dateISO}-01T00:00:00Z`).toUTCString();
+    const expected = new Date(`${newest.dateISO}T00:00:00Z`).toUTCString();
 
     expect(body).toContain(`<pubDate>${expected}</pubDate>`);
     expect(body).toContain(`<lastBuildDate>${expected}</lastBuildDate>`);

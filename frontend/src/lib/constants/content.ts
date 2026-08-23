@@ -155,16 +155,28 @@ export const projectsData: ProjectsData = {
   ],
 };
 
+/**
+ * What a note's claim rests on. `href` is present when the receipt is public
+ * and a reader can go check it; it is absent when the receipt is the author's
+ * own practice, which is stated plainly rather than dressed up as a citation.
+ */
+export interface NoteSource {
+  label: string;
+  href?: string;
+}
+
 export interface EngineeringNote {
   slug: string;
   title: string;
-  /** Display date, e.g. "Jul 2026" */
+  /** Display date, e.g. "Jul 11, 2026" */
   date: string;
-  /** ISO 8601 date (YYYY-MM) for schema.org datePublished */
+  /** ISO 8601 date (YYYY-MM-DD) for schema.org datePublished */
   dateISO: string;
   /** ISO 8601 date of the last substantive edit, when later than dateISO. */
   dateModified?: string;
   tags: string[];
+  /** At least one. A note with no receipt does not ship — see PUBLISHING.md. */
+  sources: NoteSource[];
   content: string[];
 }
 
@@ -177,9 +189,24 @@ export const notesData: NotesData = {
     {
       slug: 'reinforcement-anchors-beat-emphasis-in-system-prompts',
       title: 'Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt',
-      date: 'Aug 2026',
-      dateISO: '2026-08',
+      date: 'Aug 14, 2026',
+      dateISO: '2026-08-14',
       tags: ['System Prompt Architecture', 'LLM Mechanics', 'AI Engineering'],
+      sources: [
+        {
+          label: 'Salesforce — lessons from 20,000 enterprise agent deployments',
+          href: 'https://www.salesforce.com/news/stories/ai-lessons-building-enterprise-agents/',
+        },
+        {
+          label: 'RoFormer: Enhanced Transformer with Rotary Position Embedding (arXiv 2104.09864)',
+          href: 'https://arxiv.org/abs/2104.09864',
+        },
+        {
+          label: 'Lost in the Middle: How Language Models Use Long Contexts (arXiv 2307.03172)',
+          href: 'https://arxiv.org/abs/2307.03172',
+        },
+        { label: 'First-hand: compressing a production system prompt from ~4,000 to ~1,300 words' },
+      ],
       content: [
         "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to — and when that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. <a href='https://www.salesforce.com/news/stories/ai-lessons-building-enterprise-agents/' target='_blank' rel='noopener'>Salesforce found this same escalation</a> across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less — which is only surprising if you believed the length was buying compliance in the first place.",
         "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: <a href='https://arxiv.org/abs/2104.09864' target='_blank' rel='noopener'>RoPE</a>, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and <a href='https://arxiv.org/abs/2307.03172' target='_blank' rel='noopener'>retrieval accuracy for a fact placed mid-context drops by more than 20 points</a> compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction — Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
@@ -188,9 +215,12 @@ export const notesData: NotesData = {
     {
       slug: 'the-agent-run-is-the-new-unit-of-work',
       title: 'The Agent Run Is the New Unit of Work — and Reviewing It Is Management',
-      date: 'Jul 2026',
-      dateISO: '2026-07',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['Agent Architecture', 'Engineering Management', 'AI Engineering'],
+      sources: [
+        { label: 'First-hand: reviewing delegated agent output while managing 3 web teams' },
+      ],
       content: [
         "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage 20 engineers across 3 web teams, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
         "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable — completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule — <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
@@ -199,9 +229,15 @@ export const notesData: NotesData = {
     {
       slug: 'agents-degrade-quietly-maintenance-is-where-value-compounds',
       title: 'Agents Degrade Quietly: Maintenance Is Where the Value Compounds',
-      date: 'Jul 2026',
-      dateISO: '2026-07',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['Agent Architecture', 'Reliability', 'Engineering Management'],
+      sources: [
+        {
+          label:
+            'First-hand: ownership requirements applied to agents running near production work',
+        },
+      ],
       content: [
         'Building an agent produces a visible artifact — there was nothing, now there is a working agent — so it reads as progress. Maintaining one produces no artifact; at best, nothing happens. So effort flows to building, and the felt value inverts the real value. A well-built agent nobody maintains degrades on a schedule: its context sources go stale, its permissions drift wider than its job, its instructions calcify into a patch pile. A modestly-built agent someone reviews weekly <strong>compounds</strong> — each pass prunes a failure mode and sharpens the job. This is the oldest lesson in operations wearing a new costume: prevented loss is invisible, which is why nobody celebrates the on-call review that kept the incident from existing.',
         "The corrective is ownership, and it decomposes into four responsibilities I now require for any agent near production work: <strong>define the job narrowly</strong> (a vague agent is an unowned agent waiting to happen); <strong>curate the diet</strong> — what it reads, which examples it learns from, including rejected outputs so it learns what <em>not</em> to do; <strong>manage permissions proportional to stakes</strong> — draft-only and write-access are different categories, and write access is earned inside a narrow job, not granted because a demo looked good; and <strong>run the review loop</strong>, where one-off failures get fixed at the output level but recurring failures get fixed at the system level. Team agents fail by tragedy of the commons — the pain is collective, the maintenance is nobody's job — so the owner follows the work. <strong>An agent is not a feature you ship. It is a service you operate.</strong>",
@@ -210,9 +246,23 @@ export const notesData: NotesData = {
     {
       slug: 'spec-quality-is-the-bottleneck-not-implementation-speed',
       title: 'Spec Quality Is the Bottleneck Now, Not Implementation Speed',
-      date: 'Jul 2026',
-      dateISO: '2026-07',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['AI Engineering', 'Agent Architecture', 'Specification'],
+      sources: [
+        {
+          label: 'METR — Measuring the impact of early-2025 AI on experienced developers',
+          href: 'https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/',
+        },
+        {
+          label: 'StrongDM — building software with AI in a software factory',
+          href: 'https://www.strongdm.com/blog/the-strongdm-software-factory-building-software-with-ai',
+        },
+        {
+          label: 'strongdm/attractor — the public natural-language spec repository',
+          href: 'https://github.com/strongdm/attractor',
+        },
+      ],
       content: [
         "The industry is measuring AI-assisted development with the wrong unit of analysis. Code-generation speed is the vanity metric; <a href='https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/' target='_blank' rel='noopener'>the METR result everyone cites</a> — experienced developers who <em>felt</em> 20% faster while measuring slower — isn't evidence that AI doesn't work, it's evidence that implementation speed was never the constraint. When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description itself. <a href='https://www.strongdm.com/blog/the-strongdm-software-factory-building-software-with-ai' target='_blank' rel='noopener'>StrongDM's autonomous pipeline</a> runs on nearly 6,000 lines of <a href='https://github.com/strongdm/attractor' target='_blank' rel='noopener'>public behavioral specification</a> — and that corpus, not the generated code, is the engineering artifact. <strong>The specification becomes the primary artifact; the codebase is a derivative</strong> — closer to a build output than to source.",
         'Building production systems with Cursor and Claude Code has restructured where my own hours go. My leverage stopped correlating with how fast I can type and started correlating with how precisely I can state three things: the goal, the boundary, and what "done" has to prove. The human stays at the two endpoints — specification in, satisfaction judgment out — and everything between is increasingly the machine\'s. This also explains why AI amplifies experts instead of equalizing them: it equalizes execution speed, but execution was already cheap. What it amplifies is specification quality, and specification quality is a direct function of domain depth. If the agent keeps disappointing you, the uncomfortable first question is no longer about the model — it\'s whether you actually specified the thing you wanted.',
@@ -221,9 +271,10 @@ export const notesData: NotesData = {
     {
       slug: 'agent-failures-are-loop-failures',
       title: 'Agent Failures Are Loop Failures, Not Intelligence Failures',
-      date: 'Jul 2026',
-      dateISO: '2026-07',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['Agent Architecture', 'Reliability', 'Distributed Systems'],
+      sources: [{ label: 'First-hand: agent failures debugged over the course of 2026' }],
       content: [
         "Every agent failure I've debugged this year decomposes the same way. The agent didn't lack intelligence — the loop lacked definition. It wandered out of scope because no boundary was stated. It \"finished\" without finishing because nothing defined what done has to prove. Two agents double-executed the same task because nothing marked it claimed. These are Tuesday failures, and none of them are fixed by a smarter model, because <strong>smartness cannot supply a fact that was never specified</strong>. A run an agent can actually be held to has five parts: a goal, a boundary, tools, artifacts, and receipts. Miss one and you haven't delegated work — you've made a wish.",
         'The good news: distributed systems solved these coordination problems decades ago, we just have to notice the mapping. A visible <code>CLAIMED</code> state on a task is a lease, revalidated when the worker returns. "Done" without an attached receipt is self-attestation by the party with the strongest incentive to declare success — so the receipt (the diff, the test run, the artifact link) is non-negotiable, the same way you require an acknowledgement instead of trusting a fire-and-forget write. And the issue tracker you already run is the natural control plane: it has owners, statuses, comments, links, and history built in. <strong>Reliability is engineered into the loop, not summoned from the model.</strong> Make the loop less ambiguous before you ask for a smarter agent.',
@@ -232,9 +283,16 @@ export const notesData: NotesData = {
     {
       slug: 'why-i-made-this-site-readable-by-machines-not-just-humans',
       title: 'Why I Made This Site Readable by Machines, Not Just Humans',
-      date: 'Jul 2026',
-      dateISO: '2026-07',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['AI Engineering', 'SEO', 'Structured Data'],
+      sources: [
+        { label: "This site's own llms.txt", href: 'https://zhaoyu.io/llms.txt' },
+        {
+          label: 'Source for the JSON-LD and structured data described here',
+          href: 'https://github.com/zhaolyu/zhaoyu.io',
+        },
+      ],
       content: [
         "Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root — a plain-text summary of who I am and what I've built, structured for a language model's context window rather than a browser's rendering engine — JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.",
         "The more interesting find while doing this wasn't a feature, it was a bug. My static-site adapter's SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write — silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site's build output is not implied by its source — verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.",
@@ -243,9 +301,14 @@ export const notesData: NotesData = {
     {
       slug: 'the-three-tiers-of-using-ai-and-why-only-two-matter-now',
       title: 'The Three Tiers of Using AI, and Why Only Two of Them Still Differentiate You',
-      date: 'Jul 2026',
-      dateISO: '2026-07',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['AI Engineering', 'Agent Architecture', 'Career'],
+      sources: [
+        {
+          label: 'First-hand: setting AI-adoption standards across a web engineering organization',
+        },
+      ],
       content: [
         'There\'s a real difference between using AI as a faster typist — autocomplete, chat-assisted edits, "fix this bug for me" — and delegating a bounded unit of work to an agent that plans, executes across multiple files, and hands you a diff to review. The first tier is now table stakes; every engineer I work with has a model open in a side pane, and it stopped being a differentiator the moment it became the default. The tiers above it — an agent working a scoped task end-to-end, or several agents running in parallel with their own permission boundaries — are where the actual leverage still lives, because almost nobody has restructured how they delegate work to get there.',
         'As the person who sets AI-adoption standards for my org, I spend almost none of my time on prompting technique. I spend it on the guardrails: what an agent can touch unsupervised, what requires a human review gate before it ships, and what "done" has to prove before I believe it. This site\'s agent-readable rewrite — the notes, the structured data, the build-output bug above — was built the same way: scoped to specific files, verified against the existing type-check, lint, test, and build gates before anything shipped, with the plan surfaced for review rather than pushed silently. <strong>"I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and a review bar — instead of still typing every line yourself — is the one that\'s left.</strong>',
@@ -254,9 +317,16 @@ export const notesData: NotesData = {
     {
       slug: 'building-with-ai-the-compound-advantage',
       title: 'Building with AI: The Compound Advantage',
-      date: 'Feb 2026',
-      dateISO: '2026-02',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
+      sources: [
+        {
+          label: "This site's source, built as described",
+          href: 'https://github.com/zhaolyu/zhaoyu.io',
+        },
+        { label: 'First-hand: building and shipping this site with Claude Code' },
+      ],
       content: [
         "I built most of this site using Claude Code. Not as a novelty — as a deliberate workflow. The components you're reading, the type errors that blocked deployment, the engineering notes you're reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.",
         "The thing I didn't expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the \"is this worth building?\" stage. You just build. The compounding isn't in the individual tasks — it's in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn't change what you can build; it changes how many times you can try.",
@@ -265,9 +335,14 @@ export const notesData: NotesData = {
     {
       slug: 'sovereign-resilience-why-i-over-index-on-edge-architecture',
       title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
-      date: 'Jan 2026',
-      dateISO: '2026-01',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['Architecture', 'Edge Computing', 'Independence'],
+      sources: [
+        {
+          label: 'First-hand: operating an edge-rendered architecture through market-moving events',
+        },
+      ],
       content: [
         "The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn't panic — it degrades gracefully.",
         "I've started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently — full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.",
@@ -276,9 +351,12 @@ export const notesData: NotesData = {
     {
       slug: 'idempotency-in-distributed-systems',
       title: 'Idempotency in Distributed Systems',
-      date: 'Jan 2026',
-      dateISO: '2026-01',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['Backend', 'API Design', 'Reliability'],
+      sources: [
+        { label: 'First-hand: API design for systems that spike on scheduled market events' },
+      ],
       content: [
         'Working on live news infrastructure taught me that <strong>failures are not exceptional — they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" — it\'s "what happens when it does?"',
         "Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn't finished. This matters even more in event-driven systems where the cost of double-processing — a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event — compounds faster than the failure that triggered the retry.",
@@ -287,9 +365,10 @@ export const notesData: NotesData = {
     {
       slug: 'the-url-is-the-source-of-truth',
       title: 'The URL is the Source of Truth',
-      date: 'Dec 2025',
-      dateISO: '2025-12',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['Architecture', 'State Management', 'UX'],
+      sources: [{ label: 'First-hand: URL-driven state in production web applications' }],
       content: [
         'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
         'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Nine years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication — one authoritative writer, every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
@@ -298,9 +377,10 @@ export const notesData: NotesData = {
     {
       slug: 'decoupling-state-from-render-in-llm-streaming',
       title: 'Decoupling State from Render in LLM Streaming',
-      date: 'Oct 2025',
-      dateISO: '2025-10',
+      date: 'Jul 11, 2026',
+      dateISO: '2026-07-11',
       tags: ['React Performance', 'HCI', '60fps'],
+      sources: [{ label: 'First-hand: profiling LLM streaming UIs against the 16ms frame budget' }],
       content: [
         'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
         "<strong>This is a performance trap.</strong> Triggering a reconciliation cycle on every single token blows through the browser's 16ms frame budget. The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously, then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit to the DOM only when the browser was ready to paint.",

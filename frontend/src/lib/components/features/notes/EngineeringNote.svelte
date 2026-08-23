@@ -1,16 +1,20 @@
 <script lang="ts">
+  import type { NoteSource } from '$lib/constants/content';
+
   interface Props {
     title: string;
     date: string;
     tags: string[];
     content: string[];
+    /** The note's receipts. Rendered as a Sources list; never empty. */
+    sources?: NoteSource[];
     /** When provided, the title links to its canonical /blog/{slug} page. */
     slug?: string;
     /** 'h1' on standalone /blog pages where the note is the document's top heading. */
     headingLevel?: 'h1' | 'h3';
   }
 
-  let { title, date, tags, content, slug, headingLevel = 'h3' }: Props = $props();
+  let { title, date, tags, content, sources = [], slug, headingLevel = 'h3' }: Props = $props();
 </script>
 
 <article class="engineering-note">
@@ -38,12 +42,71 @@
       {@html `<p>${paragraph}</p>`}
     {/each}
   </div>
+  {#if sources.length > 0}
+    <aside class="note-sources">
+      <h4 class="sources-heading">Sources</h4>
+      <ul>
+        {#each sources as source (source.label)}
+          <li>
+            {#if source.href}
+              <a href={source.href} target="_blank" rel="noopener">{source.label}</a>
+            {:else}
+              <span>{source.label}</span>
+            {/if}
+          </li>
+        {/each}
+      </ul>
+    </aside>
+  {/if}
   {#if slug}
     <a href="/blog/{slug}" class="permalink">Read as standalone note &rarr;</a>
   {/if}
 </article>
 
 <style>
+  /* Sources are supporting apparatus, not body copy: mono/uppercase heading
+     marks it as a classification, and the list sits a step down in colour so it
+     reads as attribution rather than argument. */
+  .note-sources {
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .sources-heading {
+    margin: 0 0 var(--space-xs);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--type-2xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .note-sources ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .note-sources li {
+    margin-top: var(--space-2xs);
+    color: var(--text-secondary);
+    font-size: var(--type-xs);
+    line-height: var(--leading-relaxed);
+  }
+
+  .note-sources a {
+    color: var(--accent-primary-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .note-sources a:hover,
+  .note-sources a:focus-visible {
+    color: var(--text-primary);
+  }
+
   .engineering-note {
     border-left: 2px solid rgba(59, 130, 246, 0.3);
     padding-left: 1.5rem;
