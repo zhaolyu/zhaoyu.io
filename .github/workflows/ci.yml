@@ -46,15 +46,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -82,15 +82,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -114,15 +114,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -150,15 +150,15 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -195,12 +195,17 @@ jobs:
           echo "  Files: $(find build/ -type f | wc -l)"
           echo "  Directories: $(find build/ -type d | wc -l)"
 
-  # Deploy to Cloudflare Pages after successful build
+  # Deploy to Cloudflare Pages after successful build.
+  # Dependabot PRs run against Dependabot's own secret store, which does not
+  # carry CLOUDFLARE_API_TOKEN, so wrangler fails and drags ci-success down with
+  # it. Skip the preview deploy for them — ci-success counts a skipped Deploy as
+  # a pass, and the merge to main still deploys via cloudflare-pages.yml.
   deploy:
     needs: [build]
     if: |
       (needs.build.result == 'success') &&
-      (github.event.pull_request.draft == false)
+      (github.event.pull_request.draft == false) &&
+      (github.actor != 'dependabot[bot]')
     runs-on: ubuntu-latest
     name: Deploy to Cloudflare Pages
     timeout-minutes: 15
@@ -210,15 +215,15 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
         with:
           package_json_file: frontend/package.json
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version: '24.13.0'
           cache: 'pnpm'
@@ -454,7 +459,8 @@ jobs:
     steps:
       - name: Check all jobs status
         run: |
-          # Check jobs (allow skipped results for draft PRs or path filtering)
+          # Check jobs (allow skipped results for draft PRs, path filtering,
+          # or the Dependabot deploy skip)
           # Only fail if result is "failure", allow "success" or "skipped"
           check_job() {
             local result="$1"
@@ -463,7 +469,7 @@ jobs:
               echo "❌ $job_name failed"
               return 1
             elif [ "$result" == "skipped" ]; then
-              echo "⏭️  $job_name skipped (draft PR or path filtering)"
+              echo "⏭️  $job_name skipped (draft PR, path filtering, or Dependabot)"
               return 0
             elif [ "$result" == "success" ]; then
               echo "✅ $job_name passed"
