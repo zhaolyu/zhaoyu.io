@@ -8,7 +8,7 @@
  * webfonts yourself if you want them.
  */
 :root {
-  --font-sans: 'Geist Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Geist Sans', 'Geist Sans Fallback', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', 'Courier New', monospace;
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;

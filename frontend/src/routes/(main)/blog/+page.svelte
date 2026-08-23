@@ -1,6 +1,6 @@
 <script lang="ts">
   import { notesData } from '$lib/constants/content';
-  import { noteExcerpt } from '$lib/utils';
+  import { noteExcerpt, groupNotesByMonth } from '$lib/utils';
   import {
     PERSON,
     SITE_URL,
@@ -10,6 +10,9 @@
   } from '$lib/constants/structured-data';
 
   const notes = notesData.notes;
+  // Grouped rather than per-row dated: a month that saw several notes would
+  // otherwise print the same date once per row.
+  const noteGroups = groupNotesByMonth(notes);
 
   const canonicalUrl = `${SITE_URL}/blog`;
   const pageTitle = 'Engineering Notes — Zhao Yu';
@@ -58,25 +61,32 @@
     edge systems, AI-agent engineering, and the discipline that holds them together.
   </p>
 
-  <ul class="note-list">
-    {#each notes as note (note.slug)}
-      <li class="note-item">
-        <div class="note-meta">
-          <time>{note.date}</time>
-          <span class="separator">/</span>
-          <div class="tags-container">
-            {#each note.tags as tag (tag)}
-              <span class="tag">{tag}</span>
-            {/each}
-          </div>
-        </div>
-        <h2 class="note-title">
-          <a href="/blog/{note.slug}">{note.title}</a>
+  {#each noteGroups as group (group.monthISO)}
+    <section class="note-group">
+      {#if group.label}
+        <h2 class="group-heading">
+          <time datetime={group.monthISO}>{group.label}</time>
         </h2>
-        <p class="note-excerpt">{noteExcerpt(note, 220)}&hellip;</p>
-      </li>
-    {/each}
-  </ul>
+      {/if}
+      <ul class="note-list">
+        {#each group.notes as note (note.slug)}
+          <li class="note-item">
+            <div class="note-meta">
+              <div class="tags-container">
+                {#each note.tags as tag (tag)}
+                  <span class="tag">{tag}</span>
+                {/each}
+              </div>
+            </div>
+            <h3 class="note-title">
+              <a href="/blog/{note.slug}">{note.title}</a>
+            </h3>
+            <p class="note-excerpt">{noteExcerpt(note, 220)}&hellip;</p>
+          </li>
+        {/each}
+      </ul>
+    </section>
+  {/each}
 </main>
 
 <style>
@@ -117,6 +127,30 @@
     margin-bottom: 4rem;
   }
 
+  /* The month heading carries the date for every note beneath it, so the rows
+     themselves show only tags. Set in mono/uppercase like the other
+     classification labels on the site, and sized down so it reads as an
+     archive divider rather than competing with the note titles. */
+  .note-group {
+    margin-top: var(--space-3xl);
+  }
+
+  .note-group:first-of-type {
+    margin-top: var(--space-xl);
+  }
+
+  .group-heading {
+    margin: 0;
+    padding-bottom: var(--space-xs);
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--type-xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
   .note-list {
     list-style: none;
     padding: 0;
@@ -142,10 +176,6 @@
     margin-bottom: 0.5rem;
   }
 
-  .separator {
-    color: var(--border-color);
-  }
-
   .tags-container {
     display: flex;
     flex-wrap: wrap;
@@ -154,6 +184,14 @@
 
   .tag {
     color: var(--accent-primary-text);
+  }
+
+  /* Tags are the only thing left in the meta row now that the date moved to the
+     month heading, so they need a separator to stop reading as one long string.
+     Matches the interpunct used in the hero badge. */
+  .tag:not(:last-child)::after {
+    content: ' ·';
+    color: var(--border-color);
   }
 
   .note-title {
