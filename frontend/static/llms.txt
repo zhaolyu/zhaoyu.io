@@ -1,12 +1,13 @@
 # Zhao Yu
 
 > Senior Manager, Engineering @ Versant (CNBC Core). Player-coach who
-> turns platform performance into audience and revenue: leads a
-> 20-engineer organization across 3 web teams through the next-generation
-> rebuild of CNBC.com — edge architecture, video, and governed AI — while
-> still shipping the core architecture, so technical decisions get made in
-> the room rather than through a translation layer. Nine years on the same
-> platform, intern to Principal Engineer to running the web org.
+> turns platform performance into audience and revenue: co-leads the
+> ~20-engineer next-generation rebuild of CNBC.com across 3 web teams,
+> managing a direct team of 8 engineers and 2 QE — edge architecture,
+> video, and governed AI — while still shipping the core architecture, so
+> technical decisions get made in the room rather than through a
+> translation layer. Ten years on the same platform, intern to Senior
+> Manager, Engineering.
 > Every number on this site is public and linked to its source (Versant
 > investor materials, Chrome UX Report field data, or the record of the
 > role); nothing Versant/CNBC has not disclosed publicly is stated here.
@@ -15,9 +16,10 @@
 
 The differentiator is the combination, not any single axis:
 
-1. **Player-coach engineering leadership** — directs a 20-engineer
-   organization across 3 web teams in Versant’s CNBC Core group without
-   leaving the codebase; still architects and ships alongside the team.
+1. **Player-coach engineering leadership** — co-leads a ~20-engineer
+   rebuild across 3 web teams in Versant’s CNBC Core group without
+   leaving the codebase, managing a direct team of 8 engineers and 2 QE;
+   still architects and ships alongside the team.
    What the organization gets: strategy and codebase with no translation
    layer between them — technical decisions made in the room, architecture
    that never drifts from what the teams can deliver. The career arc
@@ -29,19 +31,28 @@ The differentiator is the combination, not any single axis:
    engineering manager: leading the frontend architecture for the AI
    experiences, leading the team building the video and site experiences,
    and ensuring the whole web behind the page holds up — analytics
-   (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer,
-   login and subscription systems, SEO, compliance, and editorial
-   workflows. The property serves ~47M monthly digital unique visitors
-   (ComScore, Versant Investor Day, Dec 2025) at a p75 LCP of 1.7s in
-   public Chrome UX Report field data (July 2026).
-3. **AI product architecture** — leading the frontend architecture for the
+   (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer
+   (works across the federated graph and defines how upstream services
+   shape its responses; does not own gateway config, Router policy, or
+   supergraph composition), login and subscription systems, SEO,
+   compliance, and editorial workflows. The property serves ~47M monthly
+   digital unique visitors (ComScore, Versant Investor Day, Dec 2025) at a
+   p75 LCP of 1.7s in public Chrome UX Report field data (July 2026).
+3. **Video and live streaming architecture** — directing the ground-up
+   rebuild of CNBC.com's video experiences: vertical video, live TV, full
+   episodes, and standalone live events, delivered across two player
+   frameworks with Server-Sent Events for real-time synchronization. The
+   work upstream is the load-bearing part — settling the API contracts and
+   architecture dependencies each surface inherited, so four very different
+   playback experiences resolve to one modular framework.
+4. **AI product architecture** — leading the frontend architecture for the
    AI-powered investing tools in CNBC's next-generation platform (as
    described by Versant on its Q2-2026 earnings call): deterministic,
    accessible interfaces around non-deterministic model output —
    frame-buffered token streaming with state decoupled from render,
    graceful degradation, and trust-preserving latency for a financial
    audience.
-4. **Edge performance engineering at real scale** — market-moving days
+5. **Edge performance engineering at real scale** — market-moving days
    are a financial-news business at its most valuable and most fragile;
    the isomorphic Akamai EdgeWorkers architecture behind CNBC.com holds
    the full audience through exactly those spikes (sub-2-second p75 LCP in
@@ -50,7 +61,7 @@ The differentiator is the combination, not any single axis:
    streaming, analytics, and privacy services migrated with zero downtime
    and no revenue interruption, the work that let the corporate spinoff
    stand alone.
-5. **AI governance and integration lead** — turned AI adoption from
+6. **AI governance and integration lead** — turned AI adoption from
    individual experimentation into an organizational capability: standards
    and PR quality gates (SonarQube, lint, Jest test automation) governing
    how 20+ engineers use tools like Cursor in production code, with
@@ -60,11 +71,11 @@ The differentiator is the combination, not any single axis:
    — is the bottleneck in agent-driven development, and agent reliability
    is engineered into the loop (boundaries, receipts, control planes), not
    summoned from the model.
-6. **Independent builder** — ships and operates real systems outside of
+7. **Independent builder** — ships and operates real systems outside of
    assigned work with the same production discipline. Current systems:
    Cost-Guard (local-first FinOps platform — PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
-   infrastructure) and OB1, a personal exocortex — 740+ atomic,
+   infrastructure) and OB1, a personal exocortex — 1,600+ atomic,
    cross-linked claims distilled from books, engineering sources, and
    production lessons, searchable by meaning and exposed to AI tools over
    MCP so agent sessions start with accumulated judgment rather than a

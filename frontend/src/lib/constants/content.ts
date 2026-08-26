@@ -67,11 +67,11 @@ export const heroContent: HeroContent = {
   headline: {
     primary: 'I lead engineering teams that turn platform performance into audience and revenue.',
     accent:
-      'Player-coach: 20 engineers, 3 teams, driving the next-gen CNBC.com rebuild — hands still in the code.',
+      'Player-coach: 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.',
   },
   tagline:
     'Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
-  bio: 'Nine years on CNBC.com, intern to Principal Engineer to running the web organization. I keep the platform fast enough to hold ~47M monthly readers through market-moving events — edge architecture, video, and governed AI, built by teams I lead and still code beside.',
+  bio: 'Ten years on CNBC.com, intern to Senior Manager, Engineering. I keep the platform fast enough to hold ~47M monthly readers through market-moving events — edge architecture, video, and governed AI, built by teams I lead and still code beside.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read the Notes',
@@ -110,17 +110,19 @@ export const performanceMetrics: PerformanceMetric[] = [
     source: SOURCES.cruxCnbc,
   },
   {
-    label: 'Engineers',
-    value: '20',
-    sublabel: '3 web teams · CNBC Core',
-    basis: 'Organization scope as Senior Manager, Engineering',
+    label: 'Direct team',
+    value: '8 + 2 QE',
+    sublabel: 'CNBC Core · Versant',
+    basis:
+      'Direct reports as Senior Manager, Engineering; co-leads the ~20-engineer CNBC.com rebuild across 3 teams',
     source: SOURCES.linkedin,
   },
   {
     label: 'Years shipping',
-    value: '9+',
+    value: '10+',
     sublabel: 'CNBC · NBC News · NBCUniversal',
-    basis: 'Intern in 2016 to Senior Manager, Engineering in 2026, on the same platform',
+    basis:
+      'Intern in March 2016 to Senior Manager, Engineering in April 2026, on the same platform',
     source: SOURCES.linkedin,
   },
 ];
@@ -219,10 +221,13 @@ export const notesData: NotesData = {
       dateISO: '2026-07-11',
       tags: ['Agent Architecture', 'Engineering Management', 'AI Engineering'],
       sources: [
-        { label: 'First-hand: reviewing delegated agent output while managing 3 web teams' },
+        {
+          label:
+            'First-hand: reviewing delegated agent output while co-leading a rebuild across 3 web teams',
+        },
       ],
       content: [
-        "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage 20 engineers across 3 web teams, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
+        "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage a direct team of ten and co-lead a rebuild across three web teams, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
         "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable — completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule — <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
       ],
     },
@@ -371,7 +376,7 @@ export const notesData: NotesData = {
       sources: [{ label: 'First-hand: URL-driven state in production web applications' }],
       content: [
         'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
-        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Nine years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication — one authoritative writer, every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
+        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Ten years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication — one authoritative writer, every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
       ],
     },
     {
@@ -422,7 +427,7 @@ export const careerHistory: CareerHistory = {
       year: 2026,
       role: 'Senior Manager, Engineering',
       company: 'Versant / CNBC',
-      note: 'The synthesis: player-coach role spanning both tracks — a 20-engineer organization across 3 web teams, still hands-on in core architecture.',
+      note: 'The synthesis: player-coach role spanning both tracks — 8 engineers and 2 QE direct, co-leading the ~20-engineer rebuild across 3 web teams, still hands-on in core architecture.',
     },
   ],
 };
@@ -451,7 +456,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the surface Versant’s digital growth strategy rides on.',
+      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the surface Versant’s digital growth strategy rides on.',
     stack: [
       'Isomorphic React',
       'Akamai EdgeWorkers',
@@ -464,6 +469,18 @@ export const builderProjects: BuilderProject[] = [
     metrics: [
       { label: 'Experiences', value: 'AI · Video · Site' },
       { label: 'Integrations', value: 'Analytics · Ads · Identity · Subs' },
+    ],
+  },
+  {
+    title: 'Video & Live Streaming Rebuild',
+    category: 'professional',
+    description:
+      'The ground-up rebuild of CNBC.com’s video experiences: vertical video, live TV, full episodes, and standalone live events, delivered across two player frameworks rather than one. Real-time synchronization runs on Server-Sent Events. The hard part was upstream — settling the API contracts and architecture dependencies each surface inherited, so four very different playback experiences resolve to one modular framework instead of forking into four.',
+    stack: ['Server-Sent Events', 'Live Streaming', 'Player Architecture', 'GraphQL'],
+    status: 'active',
+    metrics: [
+      { label: 'Surfaces', value: 'Vertical · Live TV · Episodes · Events' },
+      { label: 'Sync', value: 'Server-Sent Events' },
     ],
   },
   {
@@ -498,11 +515,11 @@ export const builderProjects: BuilderProject[] = [
     title: 'OB1: Personal Exocortex',
     category: 'independent',
     description:
-      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 740+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,600+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
     stack: ['MCP', 'Embeddings', 'Semantic Search', 'TypeScript'],
     status: 'shipped',
     metrics: [
-      { label: 'Atomic Claims', value: '740+' },
+      { label: 'Atomic Claims', value: '1,600+' },
       { label: 'Agent Access', value: 'MCP' },
     ],
   },
@@ -528,7 +545,7 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'Player-coach by design',
   paragraphs: [
-    'What the business gets from me is both tracks at once. Over nine years at CNBC I deliberately crossed the line most engineers pick a side of — senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. The payoff for the organization: I direct a 20-engineer organization across 3 web teams rebuilding CNBC.com, and because I still architect and ship alongside them, technical decisions get made in the room — no translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
+    'What the business gets from me is both tracks at once. Over ten years at CNBC I deliberately crossed the line most engineers pick a side of — senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. The payoff for the organization: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer rebuild of CNBC.com across 3 web teams, and because I still architect and ship alongside them, technical decisions get made in the room — no translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
     'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code — measurable velocity gains with fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
     'Outside the codebase I am a long-distance runner — a 3:07 marathon and a 50K ultra — and the same discipline carries into multi-year technical transformations.',
   ],
@@ -542,7 +559,7 @@ export interface SocialDescriptions {
 
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
-  meta: 'Senior Manager, Engineering at Versant (CNBC Core). Player-coach leading 20 engineers through the next-gen CNBC.com rebuild: edge, video, governed AI.',
+  meta: 'Senior Manager, Engineering at Versant (CNBC Core). Player-coach: 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.',
   twitter:
     'Senior Manager, Engineering at Versant (CNBC Core). Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
 };
