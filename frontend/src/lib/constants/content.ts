@@ -71,7 +71,7 @@ export const heroContent: HeroContent = {
   },
   tagline:
     'Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
-  bio: 'Ten years on CNBC.com, intern to Senior Manager, Engineering. I keep the platform fast enough to hold ~47M monthly readers through market-moving events — edge architecture, video, and governed AI, built by teams I lead and still code beside.',
+  bio: 'Ten years on CNBC.com, intern to Senior Manager, Engineering — and I crossed the line between building and leading twice, on purpose. I keep the platform fast enough to hold ~47M monthly readers through market-moving events: edge architecture, video, and governed AI, built by teams I lead and still code beside.',
   cta: {
     primary: 'View Selected Work',
     secondary: 'Read the Notes',
@@ -456,7 +456,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the property Versant calls television’s most affluent and educated weekday daytime audience, 27 quarters running.',
+      'Driving the complete redesign of CNBC.com, architecting the new UI/UX end to end with a peer engineering manager: I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and keep the whole web behind the page holding up — analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream: shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation. All of it on the property Versant calls television’s most affluent and educated weekday daytime audience, 27 quarters running.',
     stack: [
       'Isomorphic React',
       'Akamai EdgeWorkers',
@@ -547,6 +547,7 @@ export const narrativeBio: NarrativeBio = {
   paragraphs: [
     'What the business gets from me is both tracks at once. Over ten years at CNBC I deliberately crossed the line most engineers pick a side of — senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. The payoff for the organization: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer rebuild of CNBC.com across 3 web teams, and because I still architect and ship alongside them, technical decisions get made in the room — no translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
     'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code — measurable velocity gains with fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
+    'The coach half is just as deliberate. I recently expanded a mid-level engineer’s scope from single tasks to three concurrent workstreams — video, search, and free preview — and the coaching that mattered was not technical: they were losing rooms they were right in, so we worked on how the work gets presented to design and product until their influence caught up with their judgment. Engineers who can carry a whole surface are how a player-coach scales.',
     'Outside the codebase I am a long-distance runner — a 3:07 marathon and a 50K ultra — and the same discipline carries into multi-year technical transformations.',
   ],
 };

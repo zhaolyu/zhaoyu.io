@@ -19,7 +19,10 @@ The differentiator is the combination, not any single axis:
 1. **Player-coach engineering leadership** — co-leads a ~20-engineer
    rebuild across 3 web teams in Versant’s CNBC Core group without
    leaving the codebase, managing a direct team of 8 engineers and 2 QE;
-   still architects and ships alongside the team.
+   still architects and ships alongside the team. Develops the bench
+   deliberately — most recently growing a mid-level engineer from
+   single-task work to three concurrent workstreams, with coaching aimed
+   at influence with design and product, not just code.
    What the organization gets: strategy and codebase with no translation
    layer between them — technical decisions made in the room, architecture
    that never drifts from what the teams can deliver. The career arc
@@ -35,7 +38,11 @@ The differentiator is the combination, not any single axis:
    (works across the federated graph and defines how upstream services
    shape its responses; does not own gateway config, Router policy, or
    supergraph composition), login and subscription systems, SEO,
-   compliance, and editorial workflows. The property serves ~47M monthly
+   compliance, and editorial workflows. The contract work is concrete: a
+   unified notification query returns alerts already partitioned for
+   display, and a live-events query spans scheduled windows and standalone
+   events, so web, apps, and OTT inherit one implementation of the rules
+   instead of three. The property serves ~47M monthly
    digital unique visitors (ComScore, Versant Investor Day, Dec 2025) at a
    p75 LCP of 1.7s in public Chrome UX Report field data (July 2026).
    Versant describes CNBC's weekday daytime audience as the most affluent
