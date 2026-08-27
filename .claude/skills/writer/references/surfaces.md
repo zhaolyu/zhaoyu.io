@@ -15,8 +15,9 @@ Add a new figure to `SOURCES` (with its public citation) before using it in pros
 | -------------------------------------- | ---------------------------------------------- | --------------------------------------------- |
 | CNBC digital audience                  | ~47M monthly unique visitors (ComScore)        | Versant Investor Day deck, Dec 2025, slide 66 |
 | CNBC.com field performance             | 1.7s p75 LCP, all devices, Jul 2026            | Chrome UX Report (public field data)          |
-| Org                                    | 20 engineers, 3 web teams, CNBC Core (Versant) | LinkedIn / role of record                     |
-| Production years                       | 9+ (intern 2016 → Senior Manager 2026)         | Career timeline                               |
+| Direct team                            | 8 engineers + 2 QE, CNBC Core (Versant)        | LinkedIn / role of record                     |
+| Program scope                          | Co-leads the ~20-engineer CNBC.com rebuild across 3 teams | LinkedIn / role of record          |
+| Production years                       | 10+ (intern Mar 2016 → Senior Manager Apr 2026) | Career timeline                              |
 | Next-gen platform + AI investing tools | Public cover: Versant Q2-2026 earnings call    | Lazarus quote, 6 Aug 2026                     |
 | Running                                | 3:07 marathon, 50K ultra finish                | Personal record                               |
 
@@ -34,8 +35,32 @@ paragraph no longer contains one.
 
 Categories that are never public regardless of the number: subscription ARR,
 subscriber counts, AI-assistant pilot size or pipeline internals, unannounced
-roadmap items, and internal governance metrics. Scope claims like "sole …
+roadmap items, internal governance metrics, and internal architecture topology
+(subgraph counts, service inventories). Scope claims like "sole …
 architect" or "I own the …" are cut for overclaiming, not for disclosure.
+
+**Scope claims are load-bearing and constrained.** Zhao manages a direct team of
+8 engineers and 2 QE and _co-leads_ a ~20-engineer rebuild across three teams.
+Never write "directs", "leads", or "runs" a 20-engineer organization, in page
+copy or in `llms.txt` — `positioning.test.ts` fails the build on every phrasing
+of that claim. Architecture he can describe is not architecture he owns: he
+works _across_ the Apollo Federation supergraph and defines how upstream
+services shape its responses, but does not own gateway config, Router policy,
+or supergraph composition. Use "works across" or "builds against". Do not
+characterize the graph's federation depth or claim cross-entity federation
+across it, and do not name subgraph counts or the service inventory.
+
+The AI assistant is a limited production beta plus org-wide AI governance,
+never a site-wide production surface. Its cohort size, rollout dates, pipeline
+internals and **evaluation suite** are in-person material only: they never go
+on any surface of this site, in any phrasing, however good the detail is.
+Describe the work only at the level Versant has disclosed publicly, which
+`positioning.test.ts` pins to "AI-powered investing tools" in the
+"next-generation platform". What ships publicly is the 0→1 role, the
+cross-functional scope including editorial, and the interface architecture. Do not attribute the observability
+instrumentation or the evaluation criteria to him: the instrumentation is the
+backend team's and the criteria came from editorial. Describe what the system
+ships with, and do not name the vendors.
 The AI work is described only as "leading the frontend architecture for the
 AI-powered investing tools in CNBC's next-generation platform" until CNBC
 announces the product.

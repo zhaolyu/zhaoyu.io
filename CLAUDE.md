@@ -169,6 +169,15 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 ### Security
 
 - No hardcoded secrets — this is a static site; anything in `src/` or `static/` ships to the client.
+- **Scope claims on this site are load-bearing and constrained.** This list is itself public — state each rule without spelling the thing it protects (see the header of `disclosure-guard.test.ts` for why).
+  1. Zhao manages a direct team of 8 engineers and 2 QE and _co-leads_ a ~20-engineer rebuild across three teams. Never write "directs," "leads," or "runs" a 20-engineer organization, in page copy or in `llms.txt`.
+  2. Architecture he can describe is not architecture he owns. He works _across_ the Apollo Federation supergraph and defines how upstream services shape its responses; he does not own gateway config, Router policy, or supergraph composition. Use "works across" or "builds against."
+  3. Do not characterize the graph's federation depth or claim cross-entity federation across it. One subgraph is entity-aware; most contribute independent root fields. Do not name subgraph counts, the entity-aware subgraph, or the service inventory — internal architecture topology is not public.
+  4. The AI assistant is a limited production beta plus org-wide AI governance, never a site-wide production surface. Its cohort size, rollout dates, pipeline internals, and evaluation suite are **in-person material only** — they do not go on any surface of this site, in any phrasing, however impressive they are. Describe the work only at the level Versant has disclosed publicly. What ships publicly is the 0→1 role, the cross-functional scope including editorial, and the interface architecture.
+  5. Do not attribute the observability instrumentation or the evaluation criteria to him — the instrumentation is the backend team's and the criteria came from editorial. Describe what the system ships with, and do not name the vendors.
+  6. Every number stays sourced inline, per the site's own stated standard.
+
+  `positioning.test.ts` fails the build on each retired phrasing; `disclosure-guard.test.ts` catches the unsourced figures.
 - **Disclosure policy (employer facts).** Versant is a public company. Every employer-related number on any surface — copy, `<meta>`, JSON-LD, `llms.txt`, OG cards — carries a public source from `SOURCES` in `content.ts`; nothing Versant/CNBC has not disclosed publicly is stated anywhere. `disclosure-guard.test.ts` holds the deny-list and scans every surface; `content.test.ts` enforces basis + source on metrics. A feature flag is not an exemption: `content.ts` is bundled into client JS whether or not a card renders, so embargoed copy stays out of the repository entirely until it is public.
 - Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).
 - CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
