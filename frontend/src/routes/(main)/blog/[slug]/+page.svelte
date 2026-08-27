@@ -1,7 +1,12 @@
 <script lang="ts">
   import { EngineeringNote } from '$lib/components/features/notes';
   import { noteExcerpt } from '$lib/utils';
-  import { SITE_URL, techArticleJsonLd, jsonLdScript } from '$lib/constants/structured-data';
+  import {
+    SITE_URL,
+    techArticleJsonLd,
+    jsonLdScript,
+    articleOgTags,
+  } from '$lib/constants/structured-data';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -12,6 +17,13 @@
   let cardUrl = $derived(`${SITE_URL}/og/${note.slug}.png`);
   let description = $derived(noteExcerpt(note));
   let articleScript = $derived(jsonLdScript(techArticleJsonLd(note, description)));
+  let ogTags = $derived(
+    articleOgTags({
+      datePublished: note.dateISO,
+      dateModified: note.dateModified,
+      tags: note.tags,
+    }),
+  );
 </script>
 
 <svelte:head>
@@ -23,6 +35,9 @@
   <meta property="og:title" content={`${note.title} — Zhao Yu`} />
   <meta property="og:description" content={description} />
   <meta property="og:image" content={cardUrl} />
+  {#each ogTags as tag (`${tag.property}:${tag.content}`)}
+    <meta property={tag.property} content={tag.content} />
+  {/each}
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content={canonicalUrl} />
   <meta property="twitter:title" content={note.title} />

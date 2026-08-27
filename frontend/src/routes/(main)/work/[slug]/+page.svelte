@@ -1,6 +1,11 @@
 <script lang="ts">
   import { CaseStudyArticle } from '$lib/components/features/case-study';
-  import { SITE_URL, caseStudyJsonLd, jsonLdScript } from '$lib/constants/structured-data';
+  import {
+    SITE_URL,
+    caseStudyJsonLd,
+    jsonLdScript,
+    articleOgTags,
+  } from '$lib/constants/structured-data';
   import type { PageData } from './$types';
 
   let { data }: { data: PageData } = $props();
@@ -9,6 +14,13 @@
   let canonicalUrl = $derived(`${SITE_URL}/work/${study.slug}`);
   let cardUrl = $derived(`${SITE_URL}/og/${study.slug}.png`);
   let studyScript = $derived(jsonLdScript(caseStudyJsonLd(study)));
+  let ogTags = $derived(
+    articleOgTags({
+      datePublished: study.dateISO,
+      dateModified: study.dateModified,
+      tags: study.stack,
+    }),
+  );
 </script>
 
 <svelte:head>
@@ -20,6 +32,9 @@
   <meta property="og:title" content={`${study.title} — Zhao Yu`} />
   <meta property="og:description" content={study.oneLiner} />
   <meta property="og:image" content={cardUrl} />
+  {#each ogTags as tag (`${tag.property}:${tag.content}`)}
+    <meta property={tag.property} content={tag.content} />
+  {/each}
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content={canonicalUrl} />
   <meta property="twitter:title" content={study.title} />

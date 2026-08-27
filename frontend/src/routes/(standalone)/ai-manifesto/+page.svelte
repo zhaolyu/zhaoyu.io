@@ -8,6 +8,7 @@
   import '@fontsource/source-sans-3/700.css';
   import {
     articleJsonLd,
+    articleOgTags,
     jsonLdScript,
     SITE_URL,
     SITE_CARD_IMAGE,
@@ -30,6 +31,12 @@
       keywords: 'AI Engineering, Agent Architecture, Specification, Engineering Leadership',
     }),
   );
+
+  const ogTags = articleOgTags({
+    datePublished: DATE_PUBLISHED,
+    dateModified: DATE_MODIFIED,
+    tags: ['AI Engineering', 'Agent Architecture', 'Specification', 'Engineering Leadership'],
+  });
 
   const principles = [
     {
@@ -85,10 +92,14 @@
   <meta property="og:title" content="AI Thesis — Zhao Yu" />
   <meta property="og:description" content={description} />
   <meta property="og:image" content={SITE_CARD_IMAGE} />
+  {#each ogTags as tag (`${tag.property}:${tag.content}`)}
+    <meta property={tag.property} content={tag.content} />
+  {/each}
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="{SITE_URL}/ai-manifesto" />
   <meta property="twitter:title" content="AI Thesis — Zhao Yu" />
   <meta property="twitter:description" content={description} />
+  <meta property="twitter:image" content={SITE_CARD_IMAGE} />
   <link rel="canonical" href="{SITE_URL}/ai-manifesto" />
 
   <!-- eslint-disable-next-line svelte/no-at-html-tags -- static, self-authored JSON-LD, not user input -->

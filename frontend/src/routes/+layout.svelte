@@ -5,9 +5,16 @@
   // gives Vite's hashed, fingerprinted path, so the preload can never point at
   // a stale file the way a hardcoded href in app.html would.
   import geistSans400 from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url';
+  import { AUTHOR_NAME } from '$lib/constants/structured-data';
 </script>
 
 <svelte:head>
+  <!-- Identity every page shares. Crawlers that build link cards read these
+       from Open Graph rather than the JSON-LD, so they live here once. -->
+  <meta name="author" content={AUTHOR_NAME} />
+  <meta property="og:site_name" content={AUTHOR_NAME} />
+  <meta property="og:locale" content="en_US" />
+
   <link rel="preload" as="font" type="font/woff2" href={geistSans400} crossorigin="anonymous" />
   <link
     rel="alternate"

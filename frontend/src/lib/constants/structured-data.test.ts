@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { resolve, dirname } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import {
   personJsonLd,
@@ -5,6 +8,8 @@ import {
   articleJsonLd,
   jsonLdScript,
   SAME_AS,
+  articleOgTags,
+  AUTHOR_PROFILE,
 } from './structured-data';
 import { notesData } from './content';
 import { caseStudyJsonLd } from './structured-data';
@@ -105,4 +110,72 @@ describe('helpers', () => {
     expect(out.endsWith('</script>')).toBe(true);
     expect(out).toContain('{"a":1}');
   });
+});
+
+describe('articleOgTags', () => {
+  it('carries the author as a profile URL', () => {
+    const tags = articleOgTags({ datePublished: '2026-07-11' });
+    const author = tags.find((t) => t.property === 'article:author');
+    expect(author?.content).toMatch(/^https:\/\//);
+    expect(author?.content).toBe(AUTHOR_PROFILE);
+  });
+
+  it('defaults modified_time to published_time', () => {
+    const tags = articleOgTags({ datePublished: '2026-07-11' });
+    const at = (p: string) => tags.find((t) => t.property === p)?.content;
+    expect(at('article:published_time')).toBe('2026-07-11');
+    expect(at('article:modified_time')).toBe('2026-07-11');
+  });
+
+  it('emits one article:tag per tag, and none when there are none', () => {
+    const withTags = articleOgTags({
+      datePublished: '2026-07-11',
+      tags: ['AI Engineering', 'Reliability'],
+    });
+    expect(withTags.filter((t) => t.property === 'article:tag').map((t) => t.content)).toEqual([
+      'AI Engineering',
+      'Reliability',
+    ]);
+    expect(
+      articleOgTags({ datePublished: '2026-07-11' }).filter((t) => t.property === 'article:tag'),
+    ).toEqual([]);
+  });
+});
+
+/**
+ * The gap this file exists to prevent: three routes declared
+ * og:type="article" and none of them emitted the article namespace, so
+ * LinkedIn's Post Inspector reported the note cards as having no author.
+ * Every route that claims to be an article must render articleOgTags, and
+ * any route promising a large summary card must supply the image for it.
+ */
+describe('article routes keep the promises their head makes', () => {
+  const routes = [
+    'src/routes/(main)/blog/[slug]/+page.svelte',
+    'src/routes/(main)/work/[slug]/+page.svelte',
+    'src/routes/(standalone)/ai-manifesto/+page.svelte',
+  ];
+  const read = (rel: string) =>
+    readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../../../', rel), 'utf8');
+
+  for (const rel of routes) {
+    const source = read(rel);
+
+    it(`${rel} backs og:type=article with the article namespace`, () => {
+      expect(source).toMatch(/og:type"\s+content="article"/);
+      expect(source, 'must render articleOgTags, not hand-rolled article:* tags').toContain(
+        'articleOgTags',
+      );
+      expect(source).toMatch(/\{#each ogTags as tag/);
+    });
+
+    it(`${rel} supplies an image for the card it promises`, () => {
+      if (/twitter:card"\s+content="summary_large_image"/.test(source)) {
+        expect(source, 'summary_large_image with no twitter:image renders blank').toMatch(
+          /twitter:image"/,
+        );
+      }
+      expect(source).toMatch(/og:image"/);
+    });
+  }
 });
