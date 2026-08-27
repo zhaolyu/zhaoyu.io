@@ -38,6 +38,9 @@ The differentiator is the combination, not any single axis:
    compliance, and editorial workflows. The property serves ~47M monthly
    digital unique visitors (ComScore, Versant Investor Day, Dec 2025) at a
    p75 LCP of 1.7s in public Chrome UX Report field data (July 2026).
+   Versant describes CNBC's weekday daytime audience as the most affluent
+   and educated in all of television, a distinction held for 27 consecutive
+   quarters (Q2-2026 earnings call, 6 Aug 2026).
 3. **Video and live streaming architecture** — directing the ground-up
    rebuild of CNBC.com's video experiences across four playback surfaces:
    vertical video, live TV, full episodes, and standalone live events,
@@ -119,7 +122,9 @@ The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
   https://cdn.versantmedia.com/versantmedia/2025-12/Versant%20Investor%20Day%20-%20Full%20Deck%20-%20December%204%202025_vPost_compressed.pdf
 - p75 LCP 1.7s, origin www.cnbc.com, all devices, July 2026: Chrome UX
   Report, rendered at https://treo.sh/sitespeed/www.cnbc.com
-- "Next-generation digital platform … AI-powered investing tools": Versant
+- "Next-generation digital platform … AI-powered investing tools", and "the
+  most affluent and educated weekday daytime audience in all of television,
+  a distinction it has maintained for 27 consecutive quarters": Versant
   Q2-2026 earnings call, 6 Aug 2026 —
   https://www.investing.com/news/transcripts/earnings-call-transcript-versant-media-lifts-2026-outlook-in-q2-2026-93CH-4842245
 - Role and scope: https://linkedin.com/in/zhaolyu

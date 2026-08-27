@@ -456,7 +456,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the surface Versant’s digital growth strategy rides on.',
+      'Driving the complete redesign of CNBC.com — architecting and shaping the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and make sure the whole web behind the page holds up: analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows — so what ships is a great end-user experience, not features bolted onto a shell — on the property Versant calls television’s most affluent and educated weekday daytime audience, 27 quarters running.',
     stack: [
       'Isomorphic React',
       'Akamai EdgeWorkers',
