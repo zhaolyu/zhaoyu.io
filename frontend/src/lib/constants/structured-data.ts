@@ -49,6 +49,46 @@ export function personJsonLd() {
   };
 }
 
+/**
+ * Author identity for the Open Graph article namespace.
+ *
+ * The JSON-LD already carries `author`, but LinkedIn's Post Inspector — and
+ * the Featured-section card it drives — reads Open Graph, not schema.org. A
+ * page that declares `og:type="article"` and then omits `article:*` is making
+ * a promise the rest of the head does not keep, which is what surfaced as a
+ * missing author on the note cards.
+ *
+ * `article:author` is a profile URL by spec, so it points at the LinkedIn
+ * profile rather than repeating the display name.
+ */
+export const AUTHOR_NAME = 'Zhao Yu';
+export const AUTHOR_PROFILE = 'https://linkedin.com/in/zhaolyu';
+
+export interface OgTag {
+  property: string;
+  content: string;
+}
+
+/**
+ * The `article:*` half of an article page's head. Returned as data rather than
+ * markup so every article route renders the same set from one definition, and
+ * so it can be asserted without mounting a component.
+ */
+export function articleOgTags(meta: {
+  /** YYYY-MM-DD */
+  datePublished: string;
+  /** YYYY-MM-DD; defaults to datePublished. */
+  dateModified?: string;
+  tags?: readonly string[];
+}): OgTag[] {
+  return [
+    { property: 'article:author', content: AUTHOR_PROFILE },
+    { property: 'article:published_time', content: meta.datePublished },
+    { property: 'article:modified_time', content: meta.dateModified ?? meta.datePublished },
+    ...(meta.tags ?? []).map((tag) => ({ property: 'article:tag', content: tag })),
+  ];
+}
+
 export function techArticleJsonLd(note: EngineeringNote, description: string) {
   const url = `${SITE_URL}/blog/${note.slug}`;
   const published = note.dateISO;
