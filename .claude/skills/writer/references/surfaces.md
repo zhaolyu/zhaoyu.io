@@ -46,9 +46,18 @@ copy or in `llms.txt` — `positioning.test.ts` fails the build on every phrasin
 of that claim. Architecture he can describe is not architecture he owns: he
 works _across_ the Apollo Federation supergraph and defines how upstream
 services shape its responses, but does not own gateway config, Router policy,
-or supergraph composition. Use "works across" or "builds against". The AI
-assistant is a beta pilot plus org-wide AI governance, never a site-wide
-production surface.
+or supergraph composition. Use "works across" or "builds against". Do not
+characterize the graph's federation depth or claim cross-entity federation
+across it, and do not name subgraph counts or the service inventory.
+
+The AI assistant is a limited production beta plus org-wide AI governance,
+never a site-wide production surface. Its cohort size, rollout dates and
+pipeline internals are not public — describe it only at the level Versant has
+disclosed publicly, which `positioning.test.ts` pins to "AI-powered investing
+tools" in the "next-generation platform". Do not attribute the observability
+instrumentation or the evaluation criteria to him: the instrumentation is the
+backend team's and the criteria came from editorial. Describe what the system
+ships with, and do not name the vendors.
 The AI work is described only as "leading the frontend architecture for the
 AI-powered investing tools in CNBC's next-generation platform" until CNBC
 announces the product.

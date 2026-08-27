@@ -62,7 +62,11 @@ const METRIC_SHAPES: Array<{ pattern: RegExp; kind: string }> = [
     kind: 'subscriber count',
   },
   {
-    pattern: /\b\d[\d,.]*\s?[- ]?(?:subscriber|user|customer)\s+(?:beta|pilot|cohort|trial)/gi,
+    // The qualifier slot is why this is not a two-word match: "200-subscriber
+    // *production* beta" reads as the same disclosure and slipped straight
+    // through the tighter pattern this replaces.
+    pattern:
+      /\b\d[\d,.]*\s?[- ]?(?:subscriber|user|customer)\s+(?:\w+\s+){0,2}?(?:beta|pilot|cohort|trial)/gi,
     kind: 'unannounced pilot size',
   },
   {
@@ -190,6 +194,8 @@ describe('the guard catches the shape, not a memorised value', () => {
     '$72M ARR',
     '185K+ subscribers',
     '450-subscriber beta cohort',
+    '450-subscriber production beta',
+    '450-user limited access pilot',
     '62M monthly uniques',
     'HIT: 91.2%',
     '31% fewer incidents',
