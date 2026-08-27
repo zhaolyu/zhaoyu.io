@@ -475,7 +475,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'Video & Live Streaming Rebuild',
     category: 'professional',
     description:
-      'The ground-up rebuild of CNBC.com’s video experiences: vertical video, live TV, full episodes, and standalone live events, delivered across two player frameworks rather than one. Real-time synchronization runs on Server-Sent Events. The hard part was upstream — settling the API contracts and architecture dependencies each surface inherited, so four very different playback experiences resolve to one modular framework instead of forking into four.',
+      'Four playback surfaces — vertical video, live TV, full episodes, and standalone live events — rebuilt from the ground up across two player frameworks, inside the ~394M monthly digital minutes Versant reported at its December 2025 Investor Day. The hard part was never the player. It was upstream: settling the API contracts and architecture dependencies each surface had inherited separately, so four experiences resolve to one modular framework instead of forking into four.',
     stack: ['Server-Sent Events', 'Live Streaming', 'Player Architecture', 'GraphQL'],
     status: 'active',
     metrics: [
@@ -487,7 +487,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'AI-Powered Investing Tools (Frontend Architecture)',
     category: 'professional',
     description:
-      "Leading the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform — the direct-to-consumer bet Versant has described to investors. In financial products, trust is the conversion metric: my work makes non-deterministic model output feel deterministic — frame-buffered streaming, graceful degradation, latency that never shakes a reader’s confidence in the number on screen.",
+      "Took CNBC's first AI product from zero to one as its only frontend engineer and the product/tech bridge — built front-to-back with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform — the direct-to-consumer bet Versant has described to investors. In financial products, trust is the conversion metric: my work makes non-deterministic model output feel deterministic — frame-buffered streaming, graceful degradation, latency that never shakes a reader’s confidence in the number on screen.",
     stack: ['Streaming UI', 'SSE', 'React', 'HCI'],
     status: 'active',
     metrics: [

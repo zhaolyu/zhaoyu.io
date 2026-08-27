@@ -51,10 +51,13 @@ characterize the graph's federation depth or claim cross-entity federation
 across it, and do not name subgraph counts or the service inventory.
 
 The AI assistant is a limited production beta plus org-wide AI governance,
-never a site-wide production surface. Its cohort size, rollout dates and
-pipeline internals are not public — describe it only at the level Versant has
-disclosed publicly, which `positioning.test.ts` pins to "AI-powered investing
-tools" in the "next-generation platform". Do not attribute the observability
+never a site-wide production surface. Its cohort size, rollout dates, pipeline
+internals and **evaluation suite** are in-person material only: they never go
+on any surface of this site, in any phrasing, however good the detail is.
+Describe the work only at the level Versant has disclosed publicly, which
+`positioning.test.ts` pins to "AI-powered investing tools" in the
+"next-generation platform". What ships publicly is the 0→1 role, the
+cross-functional scope including editorial, and the interface architecture. Do not attribute the observability
 instrumentation or the evaluation criteria to him: the instrumentation is the
 backend team's and the criteria came from editorial. Describe what the system
 ships with, and do not name the vendors.

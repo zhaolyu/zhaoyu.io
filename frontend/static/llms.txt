@@ -39,14 +39,19 @@ The differentiator is the combination, not any single axis:
    digital unique visitors (ComScore, Versant Investor Day, Dec 2025) at a
    p75 LCP of 1.7s in public Chrome UX Report field data (July 2026).
 3. **Video and live streaming architecture** — directing the ground-up
-   rebuild of CNBC.com's video experiences: vertical video, live TV, full
-   episodes, and standalone live events, delivered across two player
-   frameworks with Server-Sent Events for real-time synchronization. The
-   work upstream is the load-bearing part — settling the API contracts and
-   architecture dependencies each surface inherited, so four very different
-   playback experiences resolve to one modular framework.
-4. **AI product architecture** — leading the frontend architecture for the
-   AI-powered investing tools in CNBC's next-generation platform (as
+   rebuild of CNBC.com's video experiences across four playback surfaces:
+   vertical video, live TV, full episodes, and standalone live events,
+   delivered across two player frameworks. These sit inside the ~394M
+   monthly digital minutes Versant reported at its December 2025 Investor
+   Day. The load-bearing work is upstream — settling the API contracts and
+   architecture dependencies each surface had inherited separately, so four
+   very different playback experiences resolve to one modular framework.
+4. **AI product architecture** — took CNBC's first AI product from zero to
+   one as its only frontend engineer and the product/tech bridge, built
+   front-to-back with design, product, backend, and editorial; at a news
+   organization editorial is the constituency that decides whether
+   generative text ships at all. That work is now the frontend architecture
+   for the AI-powered investing tools in CNBC's next-generation platform (as
    described by Versant on its Q2-2026 earnings call): deterministic,
    accessible interfaces around non-deterministic model output —
    frame-buffered token streaming with state decoupled from render,
