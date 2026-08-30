@@ -120,16 +120,20 @@
     margin-bottom: 1rem;
   }
 
+  /* Wraps because it cannot shrink: main is a flex item with the default
+     min-width:auto, so a nowrap meta row floors the whole page at its
+     min-content width — 417px, which overflowed a 320px viewport. */
   .note-meta {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 0.75rem;
+    gap: var(--space-sm);
+    font-size: var(--type-xs);
     font-family: var(--font-mono);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--tracking-wider);
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-xs);
   }
 
   .separator {
@@ -138,7 +142,8 @@
 
   .tags-container {
     display: flex;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
   }
 
   .tag {

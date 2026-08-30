@@ -64,6 +64,10 @@
 <style>
   .blog-post {
     max-width: 48rem;
+    /* A flex item's default min-width:auto refuses to shrink below its
+       content's min-content width. Without this the page cannot narrow past
+       whatever its widest unshrinkable child happens to be. */
+    min-width: 0;
     margin: 0 auto;
     padding: 8rem 1.5rem 6rem;
     color: var(--text-primary);
