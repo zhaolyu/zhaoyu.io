@@ -238,28 +238,32 @@
   }
 
   @media (min-width: 768px) {
+    .metric-value {
+      font-size: var(--type-2xl);
+    }
+  }
+
+  /* The row layout needs about 881px of content box — a 512px text column that
+     does not shrink, a 6rem gap, and 273px of metrics. At 768px only 704px is
+     available, so the metrics used to run 145px past the viewport and give the
+     whole document a horizontal scrollbar. Stay stacked until there is room.
+     (The 768px `grid-template-columns: repeat(2, 1fr)` that used to live here
+     was identical to the base rule and did nothing.) */
+  @media (min-width: 1024px) {
     .skills-content {
       flex-direction: row;
       align-items: center;
-      gap: 6rem;
+      gap: var(--space-4xl);
     }
 
     .skills-text {
       flex-shrink: 0;
     }
-
-    .metrics-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .metric-value {
-      font-size: 2rem;
-    }
   }
 
   @media (max-width: 767px) {
     .skills {
-      padding: 4rem 1.5rem;
+      padding: var(--section-y-mobile) var(--section-x);
     }
   }
 </style>

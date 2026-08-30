@@ -74,7 +74,10 @@
      1 on phones — no per-breakpoint column counts to maintain. */
   .notes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+    /* min() keeps the track from forcing a 19rem column into a narrower
+       container — without it the cards ran 8px past a 320px viewport and gave
+       the whole document a horizontal scrollbar. */
+    grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
     gap: var(--space-lg);
     width: 100%;
     list-style: none;

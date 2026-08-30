@@ -200,16 +200,22 @@
     margin-top: var(--space-2xl);
   }
 
+  /* Wraps rather than overflowing: at 375px the five tabs need 367px inside a
+     343px box, and the last one used to hang 9px past the viewport and give the
+     whole document a horizontal scrollbar. Wrapping holds for any label length;
+     a one-row fit would only hold for these five strings. */
   .tab-container {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     background: var(--bg-secondary);
-    border-radius: 0.5rem;
-    padding: 0.25rem;
+    border-radius: var(--radius-md);
+    padding: var(--space-2xs);
     border: 1px solid var(--border-color);
-    gap: 0.25rem;
+    gap: var(--space-2xs);
     transition:
-      background-color 0.2s,
-      border-color 0.2s;
+      background-color var(--duration-base),
+      border-color var(--duration-base);
   }
 
   :global(.dark) .tab-container {
@@ -218,12 +224,14 @@
   }
 
   .tab-button {
-    padding: 0.375rem 1rem;
-    font-size: 0.75rem;
+    padding: 0.375rem var(--space-md);
+    font-size: var(--type-xs);
     font-family: var(--font-mono);
     text-transform: uppercase;
-    border-radius: 0.375rem;
-    transition: all 0.2s;
+    border-radius: var(--radius-sm);
+    transition:
+      background-color var(--duration-base),
+      color var(--duration-base);
     background: transparent;
     border: none;
     color: var(--text-muted);
@@ -238,8 +246,8 @@
     background: var(--bg-primary);
     color: var(--text-primary);
     transition:
-      background-color 0.2s,
-      color 0.2s;
+      background-color var(--duration-base),
+      color var(--duration-base);
   }
 
   :global(.dark) .tab-button.active {
