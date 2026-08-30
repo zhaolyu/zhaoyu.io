@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { fly, fade } from 'svelte/transition';
-  import { backOut } from 'svelte/easing';
   import { heroContent } from '$lib/constants/content';
   import { handleAnchorNavigation } from '$lib/utils/navigation';
 
@@ -8,93 +6,62 @@
   // no-op when the phrase is absent, so a copy edit cannot break the markup.
   const formattedBio = $derived(
     heroContent.bio
-      .replace(
-        /edge architecture/g,
-        '<strong class="bio-emphasis font-normal">edge architecture</strong>',
-      )
-      .replace(
-        /~47M monthly readers/g,
-        '<span class="bio-link border-b border-blue-500/30 pb-0.5 hover:border-blue-500 transition-colors cursor-default">~47M monthly readers</span>',
-      )
-      .replace(/ships with AI/g, '<strong class="bio-name font-semibold">ships with AI</strong>'),
+      .replace(/edge architecture/g, '<strong class="bio-emphasis">edge architecture</strong>')
+      .replace(/~47M monthly readers/g, '<span class="bio-metric">~47M monthly readers</span>')
+      .replace(/ships with AI/g, '<strong class="bio-name">ships with AI</strong>'),
   );
 </script>
 
 <section
-  class="hero-section relative min-h-screen w-full overflow-hidden flex items-center justify-center border-b hero-section-mobile"
+  class="hero-section relative w-full overflow-hidden flex items-center justify-center border-b"
 >
-  <div class="absolute inset-0 z-0 pointer-events-none">
-    <div
-      class="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"
-    ></div>
-    <div class="absolute inset-0 radial-overlay"></div>
-    <div
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 dark:bg-blue-500/10 blur-[120px] rounded-full animate-pulse duration-[4000ms]"
-    ></div>
+  <div class="hero-backdrop absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+    <div class="hero-grid absolute inset-0"></div>
+    <div class="radial-overlay absolute inset-0"></div>
   </div>
 
-  <div class="relative z-10 text-center px-4 max-w-5xl mx-auto hero-content">
-    <div
-      in:fly={{ y: -20, duration: 800, delay: 0 }}
-      class="hero-badge inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs md:text-sm font-mono mb-8 backdrop-blur-sm"
-    >
-      <span class="relative flex h-2 w-2">
-        <span
-          class="badge-ping animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-        ></span>
-        <span class="badge-ping relative inline-flex rounded-full h-2 w-2"></span>
+  <!-- No entrance reveal here on purpose: the headline is the LCP element, and
+       gating it on hydration would hide the largest paint behind the JS bundle.
+       Below-the-fold sections still use the observeSection reveal. -->
+  <div class="hero-content relative z-10 text-center mx-auto">
+    <div class="hero-badge inline-flex items-center">
+      <span class="badge-status relative flex">
+        <span class="badge-ping absolute inline-flex rounded-full"></span>
+        <span class="badge-dot relative inline-flex rounded-full"></span>
       </span>
       {heroContent.badge}
     </div>
 
-    <h1
-      in:fly={{ y: 20, duration: 800, delay: 200, easing: backOut }}
-      class="hero-headline text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-tight"
-    >
-      {heroContent.headline.primary}<br />
-      <!-- One type step down from the primary line: the tagline is a subhead,
-           and at full h1 size it wraps to six lines on a 390px viewport and
-           pushes the bio and both CTAs off the fold. -->
-      <span
-        class="hero-accent block text-2xl md:text-5xl mt-3 md:mt-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-400 dark:to-indigo-400"
-      >
+    <h1 class="hero-headline">
+      {heroContent.headline.primary}
+      <!-- A subhead, not a second headline: at display size these 15 words ran
+           to three lines and pushed both CTAs past the fold on a 1280x720
+           laptop. Kept inside the h1 so the outline and positioning.test.ts's
+           combined word count are unchanged. -->
+      <span class="hero-subhead block">
         {heroContent.headline.accent}
       </span>
     </h1>
 
-    <p
-      in:fly={{ y: 20, duration: 800, delay: 400 }}
-      class="hero-bio text-lg md:text-2xl font-light tracking-wide max-w-4xl mx-auto leading-relaxed mb-10"
-    >
+    <p class="hero-bio mx-auto">
       <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored bio from content.ts, not user input -->
       {@html formattedBio}
     </p>
 
-    <div
-      in:fly={{ y: 10, duration: 800, delay: 600 }}
-      class="flex flex-col md:flex-row gap-4 justify-center items-center"
-    >
+    <div class="hero-actions flex flex-col md:flex-row justify-center items-center">
       <a
         href="/#work"
         onclick={(e) => handleAnchorNavigation(e, '/#work')}
-        class="px-8 py-3 bg-neutral-900 dark:bg-white text-white dark:text-neutral-950 font-bold rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors w-full md:w-auto"
+        class="cta cta-primary w-full md:w-auto"
       >
         {heroContent.cta.primary}
       </a>
-      <a
-        href="/blog"
-        class="px-8 py-3 border border-neutral-300 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 font-medium rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-900 hover:text-neutral-900 dark:hover:text-white transition-colors w-full md:w-auto"
-      >
-        {heroContent.cta.secondary}
-      </a>
+      <a href="/blog" class="cta cta-secondary w-full md:w-auto"> {heroContent.cta.secondary} </a>
     </div>
 
-    <div
-      in:fade={{ duration: 1000, delay: 1000 }}
-      class="hero-motto hero-motto-spacing flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-[10px] md:text-xs font-mono uppercase tracking-[0.2em]"
-    >
-      <span class="motto-item flex items-center gap-2 cursor-default">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+    <div class="hero-motto flex flex-col md:flex-row justify-center items-center">
+      <span class="motto-item flex items-center">
+        <svg class="motto-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           ><path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -104,9 +71,9 @@
         >
         {heroContent.motto[0]}
       </span>
-      <span class="hidden md:inline text-neutral-300 dark:text-neutral-800">•</span>
-      <span class="motto-item flex items-center gap-2 cursor-default">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      <span class="motto-sep hidden md:inline">•</span>
+      <span class="motto-item flex items-center">
+        <svg class="motto-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           ><path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -116,9 +83,9 @@
         >
         {heroContent.motto[1]}
       </span>
-      <span class="hidden md:inline text-neutral-300 dark:text-neutral-800">•</span>
-      <span class="motto-item flex items-center gap-2 cursor-default">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      <span class="motto-sep hidden md:inline">•</span>
+      <span class="motto-item flex items-center">
+        <svg class="motto-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
           ><path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -133,102 +100,252 @@
 </section>
 
 <style>
+  /* Sized to the copy, not to the viewport. The old min-height: 100vh forced a
+     full screen of scroll before any content and still overflowed, because the
+     content itself ran to 961px. */
   .hero-section {
+    min-height: 85vh;
     background-color: var(--bg-primary);
     border-color: var(--border-color);
     transition:
-      background-color 0.2s,
-      border-color 0.2s;
+      background-color var(--duration-base),
+      border-color var(--duration-base);
   }
+
+  .hero-content {
+    max-width: 64rem;
+    padding-top: var(--space-4xl);
+    padding-right: var(--section-x);
+    padding-bottom: var(--space-2xl);
+    padding-left: var(--section-x);
+  }
+
+  /* ---------- Backdrop ---------- */
+
+  .hero-grid {
+    background-image:
+      linear-gradient(to right, var(--border-subtle) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--border-subtle) 1px, transparent 1px);
+    background-size: var(--space-lg) var(--space-lg);
+  }
+
+  .radial-overlay {
+    background: radial-gradient(circle at 50% 50%, transparent 0%, var(--bg-primary) 70%);
+    transition: background var(--duration-base);
+  }
+
+  /* ---------- Badge ---------- */
 
   .hero-badge {
-    background: var(--accent-primary-10);
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+    padding: var(--space-2xs) var(--space-sm);
     border: 1px solid var(--accent-primary-20);
+    border-radius: var(--radius-full);
+    background: var(--accent-primary-10);
     color: var(--accent-primary-text);
+    font-family: var(--font-mono);
+    font-size: var(--type-xs);
+    backdrop-filter: blur(4px);
     transition:
-      background-color 0.2s,
-      border-color 0.2s,
-      color 0.2s;
+      background-color var(--duration-base),
+      border-color var(--duration-base),
+      color var(--duration-base);
   }
 
-  .badge-ping {
+  .badge-status {
+    width: var(--space-xs);
+    height: var(--space-xs);
+  }
+
+  .badge-ping,
+  .badge-dot {
+    width: 100%;
+    height: 100%;
     background: var(--accent-primary);
   }
 
+  /* The one piece of motion kept in the hero: an 8px status dot, not the
+     600px 4-second blur that used to sit behind the headline. The global
+     reduced-motion rule in app.css stops it. */
+  .badge-ping {
+    opacity: 0.75;
+    animation: badge-ping 1s var(--ease-out) infinite;
+  }
+
+  @keyframes badge-ping {
+    75%,
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Type ---------- */
+
+  .hero-headline {
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+    font-size: var(--type-2xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+    transition: color var(--duration-base);
+  }
+
+  /* One step below the headline and above the bio: classification, then
+     measurement, then description. Solid --accent-primary-text rather than the
+     old gradient — it is the theme-flipped, AA-safe accent, and the gradient
+     was the loudest thing on the page. */
+  .hero-subhead {
+    margin-top: var(--space-sm);
+    color: var(--accent-primary-text);
+    font-size: var(--type-lg);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-normal);
+    transition: color var(--duration-base);
+  }
+
+  .hero-bio {
+    max-width: 62ch;
+    margin-bottom: var(--space-lg);
+    color: var(--text-secondary);
+    font-size: var(--type-md);
+    font-weight: var(--weight-light);
+    line-height: var(--leading-relaxed);
+    transition: color var(--duration-base);
+  }
+
+  /* ---------- Actions ---------- */
+
+  .hero-actions {
+    gap: var(--space-md);
+  }
+
+  .cta {
+    padding: var(--space-sm) var(--space-xl);
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    font-size: var(--type-base);
+    text-decoration: none;
+    transition:
+      background-color var(--duration-base),
+      border-color var(--duration-base),
+      color var(--duration-base);
+  }
+
+  /* --text-primary / --bg-primary already invert between themes, so the solid
+     button stays inverted without a .dark override. */
+  .cta-primary {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    font-weight: var(--weight-bold);
+  }
+
+  .cta-primary:hover {
+    background: var(--text-secondary);
+  }
+
+  .cta-secondary {
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+    font-weight: var(--weight-medium);
+  }
+
+  .cta-secondary:hover {
+    background: var(--surface-raised);
+    color: var(--text-primary);
+  }
+
+  /* ---------- Motto ---------- */
+
+  .hero-motto {
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--type-2xs);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-widest);
+    transition: color var(--duration-base);
+  }
+
   .motto-item {
-    transition: color 0.2s;
+    gap: var(--space-xs);
+    cursor: default;
+    transition: color var(--duration-base);
   }
 
   .motto-item:hover {
     color: var(--accent-primary-text);
   }
 
-  .radial-overlay {
-    background: radial-gradient(circle 800px at 50% 50%, transparent, var(--bg-primary));
-    transition: background 0.2s;
+  .motto-icon {
+    width: var(--space-sm);
+    height: var(--space-sm);
   }
 
-  .hero-headline {
+  .motto-sep {
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Bio emphasis (injected by formattedBio) ---------- */
+
+  :global(.hero-bio .bio-name),
+  :global(.hero-bio .bio-emphasis) {
     color: var(--text-primary);
-    transition: color 0.2s;
+    font-weight: var(--weight-regular);
+    transition: color var(--duration-base);
   }
 
-  .hero-bio {
-    color: var(--text-secondary);
-    transition: color 0.2s;
+  :global(.hero-bio .bio-name) {
+    font-weight: var(--weight-semibold);
   }
 
-  .hero-motto {
-    color: var(--text-muted);
-    transition: color 0.2s;
-  }
-
-  .hero-section-mobile {
-    min-height: 100vh;
-    padding-top: 0;
-  }
-
-  .hero-content {
-    padding-top: 4.5rem;
-    padding-bottom: 2rem;
-  }
-
-  @media (min-width: 768px) {
-    .hero-content {
-      padding-top: 5rem;
-      padding-bottom: 0;
-    }
-  }
-
-  .hero-motto-spacing {
-    margin-top: 1rem;
-  }
-
-  @media (min-width: 768px) {
-    .hero-motto-spacing {
-      margin-top: 5rem;
-    }
-  }
-
-  /* Bio text colors that adapt to theme */
-  :global(.bio-name) {
-    color: var(--text-primary);
-    transition: color 0.2s;
-  }
-
-  :global(.bio-emphasis) {
-    color: var(--text-primary);
-    transition: color 0.2s;
-  }
-
-  :global(.bio-link) {
+  :global(.hero-bio .bio-metric) {
+    padding-bottom: var(--space-2xs);
+    border-bottom: 1px solid var(--accent-primary-30);
     color: var(--text-primary);
     transition:
-      color 0.2s,
-      border-color 0.2s;
+      color var(--duration-base),
+      border-color var(--duration-base);
   }
 
-  :global(.bio-link:hover) {
-    color: var(--text-primary);
+  :global(.hero-bio .bio-metric:hover) {
+    border-bottom-color: var(--accent-primary);
+  }
+
+  /* ---------- Responsive ---------- */
+
+  @media (min-width: 768px) {
+    .hero-badge {
+      font-size: var(--type-sm);
+    }
+
+    .hero-headline {
+      font-size: var(--type-3xl);
+      margin-bottom: var(--space-lg);
+    }
+
+    .hero-subhead {
+      margin-top: var(--space-md);
+      font-size: var(--type-xl);
+    }
+
+    .hero-bio {
+      font-size: var(--type-lg);
+    }
+
+    .hero-motto {
+      gap: var(--space-2xl);
+      font-size: var(--type-xs);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-headline {
+      font-size: var(--type-4xl);
+    }
   }
 </style>
