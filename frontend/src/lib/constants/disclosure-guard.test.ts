@@ -62,9 +62,11 @@ const METRIC_SHAPES: Array<{ pattern: RegExp; kind: string }> = [
     kind: 'subscriber count',
   },
   {
-    // The qualifier slot is why this is not a two-word match: "200-subscriber
-    // *production* beta" reads as the same disclosure and slipped straight
-    // through the tighter pattern this replaces.
+    // The qualifier slot is why this is not a two-word match: an
+    // "<n>-subscriber *production* beta" reads as the same disclosure and
+    // slipped straight through the tighter pattern this replaces. The real
+    // figure stays out of this file like every other one — the invented
+    // "450-subscriber production beta" case below is what proves the slot works.
     pattern:
       /\b\d[\d,.]*\s?[- ]?(?:subscriber|user|customer)\s+(?:\w+\s+){0,2}?(?:beta|pilot|cohort|trial)/gi,
     kind: 'unannounced pilot size',
