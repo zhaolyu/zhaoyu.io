@@ -90,11 +90,12 @@ The differentiator is the combination, not any single axis:
    assigned work with the same production discipline. Current systems:
    Cost-Guard (local-first FinOps platform — PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
-   infrastructure) and OB1, a personal exocortex — 1,600+ atomic,
-   cross-linked claims distilled from books, engineering sources, and
-   production lessons, searchable by meaning and exposed to AI tools over
-   MCP so agent sessions start with accumulated judgment rather than a
-   blank context window.
+   infrastructure) and OB1, the retrieval layer over a personal
+   exocortex — 1,700 atomic, cross-linked claims distilled from books,
+   engineering sources, and production lessons. The vault stays the
+   source of truth; OB1 projects it into Supabase and serves it over MCP,
+   so any client — Claude, ChatGPT, Cursor, phone — starts with
+   accumulated judgment rather than a blank context window.
 
 ## Key pages
 
