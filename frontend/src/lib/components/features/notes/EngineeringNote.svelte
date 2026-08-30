@@ -15,6 +15,11 @@
   }
 
   let { title, date, tags, content, sources = [], slug, headingLevel = 'h3' }: Props = $props();
+
+  /* Essay-lane blocks arrive as their own markup (h2, ul, ol, blockquote);
+     wrapping those in <p> is invalid HTML the browser would mis-nest. Plain
+     strings stay wrapped, so the two-paragraph corpus renders unchanged. */
+  const BLOCK_RE = /^<(h[1-6]|ul|ol|blockquote|pre|figure)\b/;
 </script>
 
 <article class="engineering-note">
@@ -39,7 +44,7 @@
   <div class="note-content">
     {#each content as paragraph (paragraph)}
       <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored note content from content.ts, not user input -->
-      {@html `<p>${paragraph}</p>`}
+      {@html BLOCK_RE.test(paragraph) ? paragraph : `<p>${paragraph}</p>`}
     {/each}
   </div>
   {#if sources.length > 0}
@@ -168,6 +173,28 @@
   .note-content :global(a:hover),
   .note-content :global(a:focus-visible) {
     text-decoration-color: currentColor;
+  }
+
+  /* Essay-lane block elements. Headings step down from the note title; lists
+     keep body colour and rhythm. Scoped to .note-content so nothing outside
+     the {@html} region inherits them. */
+  .note-content :global(h2) {
+    margin: 2.25rem 0 0.75rem;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .note-content :global(ul),
+  .note-content :global(ol) {
+    margin: 0 0 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .note-content :global(li) {
+    margin-top: 0.5rem;
+    line-height: 1.75;
   }
 
   .note-title a {

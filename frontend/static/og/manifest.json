@@ -5,7 +5,23 @@
     "eyebrow": "SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE",
     "subtitle": "Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.",
     "title": "Zhao Yu",
-    "footnote": ["Low Latency", "High Leverage", "Deep Focus"]
+    "footnote": [
+      "Low Latency",
+      "High Leverage",
+      "Deep Focus"
+    ]
+  },
+  "your-checks-are-lying-to-you": {
+    "slug": "your-checks-are-lying-to-you",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · AUG 30, 2026",
+    "title": "Your Checks Are Lying to You",
+    "subtitle": "",
+    "footnote": [
+      "Reliability",
+      "Verification",
+      "AI Engineering"
+    ]
   },
   "reinforcement-anchors-beat-emphasis-in-system-prompts": {
     "slug": "reinforcement-anchors-beat-emphasis-in-system-prompts",
@@ -13,7 +29,11 @@
     "eyebrow": "ENGINEERING NOTE · AUG 14, 2026",
     "title": "Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt",
     "subtitle": "",
-    "footnote": ["System Prompt Architecture", "LLM Mechanics", "AI Engineering"]
+    "footnote": [
+      "System Prompt Architecture",
+      "LLM Mechanics",
+      "AI Engineering"
+    ]
   },
   "the-agent-run-is-the-new-unit-of-work": {
     "slug": "the-agent-run-is-the-new-unit-of-work",
@@ -21,7 +41,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "The Agent Run Is the New Unit of Work — and Reviewing It Is Management",
     "subtitle": "",
-    "footnote": ["Agent Architecture", "Engineering Management", "AI Engineering"]
+    "footnote": [
+      "Agent Architecture",
+      "Engineering Management",
+      "AI Engineering"
+    ]
   },
   "agents-degrade-quietly-maintenance-is-where-value-compounds": {
     "slug": "agents-degrade-quietly-maintenance-is-where-value-compounds",
@@ -29,7 +53,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Agents Degrade Quietly: Maintenance Is Where the Value Compounds",
     "subtitle": "",
-    "footnote": ["Agent Architecture", "Reliability", "Engineering Management"]
+    "footnote": [
+      "Agent Architecture",
+      "Reliability",
+      "Engineering Management"
+    ]
   },
   "spec-quality-is-the-bottleneck-not-implementation-speed": {
     "slug": "spec-quality-is-the-bottleneck-not-implementation-speed",
@@ -37,7 +65,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Spec Quality Is the Bottleneck Now, Not Implementation Speed",
     "subtitle": "",
-    "footnote": ["AI Engineering", "Agent Architecture", "Specification"]
+    "footnote": [
+      "AI Engineering",
+      "Agent Architecture",
+      "Specification"
+    ]
   },
   "agent-failures-are-loop-failures": {
     "slug": "agent-failures-are-loop-failures",
@@ -45,7 +77,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Agent Failures Are Loop Failures, Not Intelligence Failures",
     "subtitle": "",
-    "footnote": ["Agent Architecture", "Reliability", "Distributed Systems"]
+    "footnote": [
+      "Agent Architecture",
+      "Reliability",
+      "Distributed Systems"
+    ]
   },
   "why-i-made-this-site-readable-by-machines-not-just-humans": {
     "slug": "why-i-made-this-site-readable-by-machines-not-just-humans",
@@ -53,7 +89,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Why I Made This Site Readable by Machines, Not Just Humans",
     "subtitle": "",
-    "footnote": ["AI Engineering", "SEO", "Structured Data"]
+    "footnote": [
+      "AI Engineering",
+      "SEO",
+      "Structured Data"
+    ]
   },
   "the-three-tiers-of-using-ai-and-why-only-two-matter-now": {
     "slug": "the-three-tiers-of-using-ai-and-why-only-two-matter-now",
@@ -61,7 +101,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "The Three Tiers of Using AI, and Why Only Two of Them Still Differentiate You",
     "subtitle": "",
-    "footnote": ["AI Engineering", "Agent Architecture", "Career"]
+    "footnote": [
+      "AI Engineering",
+      "Agent Architecture",
+      "Career"
+    ]
   },
   "building-with-ai-the-compound-advantage": {
     "slug": "building-with-ai-the-compound-advantage",
@@ -69,7 +113,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Building with AI: The Compound Advantage",
     "subtitle": "",
-    "footnote": ["AI Engineering", "Productivity", "Meta"]
+    "footnote": [
+      "AI Engineering",
+      "Productivity",
+      "Meta"
+    ]
   },
   "sovereign-resilience-why-i-over-index-on-edge-architecture": {
     "slug": "sovereign-resilience-why-i-over-index-on-edge-architecture",
@@ -77,7 +125,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Sovereign Resilience: Why I Over-Index on Edge Architecture",
     "subtitle": "",
-    "footnote": ["Architecture", "Edge Computing", "Independence"]
+    "footnote": [
+      "Architecture",
+      "Edge Computing",
+      "Independence"
+    ]
   },
   "idempotency-in-distributed-systems": {
     "slug": "idempotency-in-distributed-systems",
@@ -85,7 +137,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Idempotency in Distributed Systems",
     "subtitle": "",
-    "footnote": ["Backend", "API Design", "Reliability"]
+    "footnote": [
+      "Backend",
+      "API Design",
+      "Reliability"
+    ]
   },
   "the-url-is-the-source-of-truth": {
     "slug": "the-url-is-the-source-of-truth",
@@ -93,7 +149,11 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "The URL is the Source of Truth",
     "subtitle": "",
-    "footnote": ["Architecture", "State Management", "UX"]
+    "footnote": [
+      "Architecture",
+      "State Management",
+      "UX"
+    ]
   },
   "decoupling-state-from-render-in-llm-streaming": {
     "slug": "decoupling-state-from-render-in-llm-streaming",
@@ -101,6 +161,10 @@
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
     "title": "Decoupling State from Render in LLM Streaming",
     "subtitle": "",
-    "footnote": ["React Performance", "HCI", "60fps"]
+    "footnote": [
+      "React Performance",
+      "HCI",
+      "60fps"
+    ]
   }
 }

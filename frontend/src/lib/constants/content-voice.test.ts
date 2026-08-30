@@ -54,12 +54,15 @@ const BANNED_PHRASES = [
 /** The corpus's dominant rhetorical move — fine once, a tic twice. */
 const X_NOT_Y = /\bis not\b[^.;]{2,60}?,\s*it(?:'s| is)\b/gi;
 
-const governed = notesData.notes.filter(isGoverned);
 const allNotes = notesData.notes;
+/** The two-paragraph corpus form. Essays carry their own contract below. */
+const standardNotes = allNotes.filter((n) => n.format !== 'essay');
+const essays = allNotes.filter((n) => n.format === 'essay');
+const governed = standardNotes.filter(isGoverned);
 
-describe('note shape (every note)', () => {
+describe('note shape (standard notes)', () => {
   it('runs exactly two paragraphs', () => {
-    for (const note of allNotes) {
+    for (const note of standardNotes) {
       expect(note.content.length, `${note.slug} has ${note.content.length} paragraphs`).toBe(2);
     }
   });
@@ -71,9 +74,55 @@ describe('note shape (every note)', () => {
   });
 
   it('never uses a heading, a list, or a code block inside a note', () => {
-    for (const note of allNotes) {
+    for (const note of standardNotes) {
       for (const para of note.content) {
         expect(para, `${note.slug} contains block markup`).not.toMatch(/<(h[1-6]|ul|ol|li|pre)\b/i);
+      }
+    }
+  });
+});
+
+describe('essay shape (format: essay)', () => {
+  // The essay lane is governed, not exempt. An ungoverned lane would be a
+  // fail-open at the voice layer: a post could ship with no contract at all
+  // while the suite stayed green — the exact defect the first essay documents.
+  const isBlock = (chunk: string) => /^<(h[1-6]|ul|ol|blockquote|pre|figure)\b/.test(chunk);
+
+  it('runs long-form: at least eight blocks, two section headings, 900-2500 words', () => {
+    for (const essay of essays) {
+      expect(
+        essay.content.length,
+        `${essay.slug} has ${essay.content.length} blocks`,
+      ).toBeGreaterThanOrEqual(8);
+      const headings = essay.content.filter((c) => /^<h2\b/.test(c)).length;
+      expect(headings, `${essay.slug} has ${headings} h2 sections`).toBeGreaterThanOrEqual(2);
+      const words = essay.content.reduce((sum, c) => sum + wordCount(c), 0);
+      expect(words, `${essay.slug} is ${words} words`).toBeGreaterThanOrEqual(900);
+      expect(words, `${essay.slug} is ${words} words`).toBeLessThanOrEqual(2500);
+    }
+  });
+
+  it('uses block markup only as whole blocks, never inside a paragraph', () => {
+    for (const essay of essays) {
+      for (const chunk of essay.content) {
+        if (isBlock(chunk)) continue;
+        expect(chunk, `${essay.slug} embeds block markup mid-paragraph`).not.toMatch(
+          /<(h[1-6]|ul|ol|li|pre)\b/i,
+        );
+      }
+    }
+  });
+
+  it('closes on an emphasised rule and keeps em dashes to three per paragraph', () => {
+    for (const essay of essays) {
+      const last = essay.content[essay.content.length - 1];
+      expect(last, `${essay.slug} does not close on an emphasised rule`).toMatch(/<strong>/);
+      for (const [i, chunk] of essay.content.entries()) {
+        if (isBlock(chunk)) continue;
+        const dashes = countOf(chunk, /—/g);
+        expect(dashes, `${essay.slug} block ${i + 1} has ${dashes} em dashes`).toBeLessThanOrEqual(
+          3,
+        );
       }
     }
   });
@@ -159,7 +208,11 @@ describe('the rationing tier is reachable', () => {
     // file would pass while enforcing nothing, which is the failure mode the
     // site's own writing warns about — a gate that never rejects is not a gate.
     expect(VOICE_RULES_FROM).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-    const newest = allNotes.reduce((max, n) => (n.dateISO > max ? n.dateISO : max), '');
+    // Scoped to the standard lane: essays are governed unconditionally by the
+    // essay-shape block above (no date gate), so that lane cannot go exempt.
+    // Any unknown future format value falls into standardNotes and meets the
+    // strict rules — the partition fails closed, not open.
+    const newest = standardNotes.reduce((max, n) => (n.dateISO > max ? n.dateISO : max), '');
     expect(newest < VOICE_RULES_FROM || governed.length > 0).toBe(true);
   });
 });

@@ -114,6 +114,7 @@ The differentiator is the combination, not any single axis:
 
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
+- [Your Checks Are Lying to You](https://zhaoyu.io/blog/your-checks-are-lying-to-you)
 - [Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt](https://zhaoyu.io/blog/reinforcement-anchors-beat-emphasis-in-system-prompts)
 - [The Agent Run Is the New Unit of Work — and Reviewing It Is Management](https://zhaoyu.io/blog/the-agent-run-is-the-new-unit-of-work)
 - [Agents Degrade Quietly: Maintenance Is Where the Value Compounds](https://zhaoyu.io/blog/agents-degrade-quietly-maintenance-is-where-value-compounds)
