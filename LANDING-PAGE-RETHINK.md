@@ -117,6 +117,14 @@ test updates. Improves the smell without changing what the page argues first.
 and low-risk), structure second. B is a fallback if A feels like too much motion before
 the next-gen rebuild ships.
 
+**Either option folds in the em-dash scrub.** The em dash is banned for new prose as of
+2026-08-31 (writer skill non-negotiable 6; `content-voice.test.ts` enforces zero for
+notes dated from the cutoff). Surface copy (hero, bio, projects, persona, footer, meta)
+has no date field to grandfather by, so it gets scrubbed the moment the register pass
+rewrites it. The shipped notes keep their dashes until each is next edited; a dedicated
+scrub of the two essays is a separate editorial decision, since it rewrites published
+prose.
+
 ## Test and surface impact (Option A)
 
 - `positioning.test.ts` — shared title/employer string, 40-word headline cap, one-figure

@@ -54,22 +54,49 @@ when the paragraph contains apostrophes (matches the existing file).
 
 ## Banned and rationed
 
-**Banned outright:** "In today's fast-paced world," "let's dive in," "delve," "landscape"
-(figurative), "unlock," "game-changer," "seamless," "robust" as filler, "leverage" as a
-verb where "use" works, "supercharge," "at scale" without a number attached, exclamation
-points, rhetorical questions used as transitions.
+**Banned outright:** the em dash (see below), "In today's fast-paced world," "let's dive
+in," "delve," "landscape" (figurative), "unlock," "game-changer," "seamless," "robust" as
+filler, "leverage" as a verb where "use" works, "supercharge," "at scale" without a number
+attached, exclamation points, rhetorical questions used as transitions.
+
+## No em dashes
+
+Banned in anything written or edited from 2026-08-31 on, at any density, in titles and
+prose alike. En dashes and double hyphens used as dashes count; `--` inside `<code>` is
+the one exemption. The dash was a house ration for a while, and the ration lost the
+argument: readers now take the glyph itself as the signature of machine-written prose,
+and a tell is a tell whatever the count. `content-voice.test.ts` enforces zero for every
+note dated on or after the cutoff.
+
+Replacing a dash is restructuring, not punctuation-swapping:
+
+- **Two sentences.** The strongest fix and the usual one. Most dashes splice a coda onto
+  a sentence that was already finished; let it end, start the next.
+- **A comma**, when the aside is genuinely subordinate.
+- **Parentheses**, when it is a true parenthetical. Rare: more than one pair per piece is
+  its own tic.
+- **A colon**, only where the second half delivers what the first half promises, and only
+  within the hinge budget below.
+
+The trap: swapping every dash for a colon or semicolon keeps the exact rhythm that made
+the prose read machine-made, because the tell was never only the glyph. It was the
+interruption-before-reframe move underneath it. A paragraph that needed five dashes
+needs shorter sentences, not five colons.
+
+Grandfathered notes keep their dashes, but the grandfathering is provenance, not
+preference: when you edit a shipped paragraph for any other reason, take its dashes out
+on the way through.
 
 **Rationed — these are house signatures that turn into tics when overused:**
 
 | Device | Cap per note | Why |
 |---|---|---|
 | `X is not Y, it's Z` | 1 | Already the dominant move in the corpus |
-| Em dash | ~2 per paragraph | Beyond that the prose reads machine-made |
 | Tricolon ("faster, cheaper, more reliable") | 1, only if all three are load-bearing | Padding otherwise |
 | Aphorism / paragraph-final punchline | 1 per piece, at the end | Two competing aphorisms cancel out; a punchline every paragraph is the top agent tell |
 | Structural signposting | 0 | "Two lessons:," "The general shape:," "Two objections worth pre-empting" |
-| Mid-sentence colon as drumroll | ~1 per paragraph | Stacks with em dashes into a hinge-every-sentence rhythm |
-| Colon-subtitle title | — | Vary against the `X, Not Y` pattern across consecutive notes |
+| Mid-sentence colon as drumroll | ~1 per paragraph | Stacks with semicolons into a hinge-every-sentence rhythm; not a landing slot for evicted dashes |
+| Colon-subtitle title | 1 | Vary against the `X, Not Y` pattern across consecutive notes |
 
 ## Cadence — the tell that outranks vocabulary
 
@@ -83,16 +110,14 @@ stretches for the closing rule to land against. When a paragraph's last sentence
 quotable, ask whether it is *the* quotable sentence — if not, cut it or demote it into a
 subordinate clause.
 
-**Vary the em dash's shape, not just its count.** That same draft ran below the corpus's
-em-dash density and still read wrong, because 9 of 11 dash-bearing sentences used the same
-move: a single late-sentence dash introducing a coda, seven of them literally `— and`. A
-human writer varies position — paired parentheticals, an early interruption, a dash that
-lands mid-clause. One rhythm on repeat is the tell.
-
-**Count the hinges.** Em dashes, mid-sentence colons, and semicolons all do the same
-work — an interruption before a reframe. Individually rationed, collectively they stack.
-Under one per 30 words and the prose reads breathless. The first essay ran one per 28
-before editing, one per 38 after.
+**Count the hinges.** Mid-sentence colons and semicolons do the work the em dash used to
+do: an interruption before a reframe. The ban does not transfer the dash's budget to
+them. Individually rationed, collectively they stack; more than one hinge per 30 words
+and the prose reads breathless. The first essay ran one per 28 before editing, one per
+38 after. The pre-ban history is why the substitution trap is real: a draft once ran
+below the old density cap and still read machine-made, because 9 of its 11 dashes made
+the identical late-sentence coda move. The rhythm was the tell, and rhythm survives a
+change of glyph.
 
 **Vary paragraph length (essay lane).** A wall of same-sized paragraphs reads like
 documentation even when every sentence is good. A one-sentence paragraph after a dense
@@ -129,6 +154,6 @@ These are checks you run, not impressions you form. From `frontend/`:
 pnpm vitest run src/lib/constants/content-voice.test.ts
 ```
 
-That gate covers density and per-paragraph caps. It cannot see cadence, so read the draft's
+That gate covers the dash ban and the per-paragraph caps. It cannot see cadence, so read the draft's
 paragraph-final sentences as a list — pull them out, stack them, and count how many are
 epigrams. More than one and the piece needs cutting, whatever the suite says.

@@ -60,6 +60,24 @@ const standardNotes = allNotes.filter((n) => n.format !== 'essay');
 const essays = allNotes.filter((n) => n.format === 'essay');
 const governed = standardNotes.filter(isGoverned);
 
+/**
+ * The em dash graduated from rationed to banned: readers now take the glyph
+ * itself as the signature of machine-written prose, and a tell is a tell at
+ * any density. Same grandfathering-by-date pattern as VOICE_RULES_FROM, so
+ * notes that shipped with dashes keep them; nothing dated from here on ships
+ * with one. The per-paragraph caps and density ceiling below stay in force as
+ * ratchets over the grandfathered window.
+ */
+const EM_DASH_BAN_FROM = '2026-08-31';
+
+const dashBanned = allNotes.filter((n) => n.dateISO >= EM_DASH_BAN_FROM);
+
+/** Dash checks skip <code> spans: CLI flags legitimately contain `--`. */
+const withoutCode = (html: string) => html.replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, ' ');
+
+/** Em dash, en dash, or double hyphen: every glyph that does the dash's job. */
+const DASH = /—|–|--/;
+
 describe('note shape (standard notes)', () => {
   it('runs exactly two paragraphs', () => {
     for (const note of standardNotes) {
@@ -232,6 +250,18 @@ describe(`voice rationing (notes dated ${VOICE_RULES_FROM} or later)`, () => {
   });
 });
 
+describe(`the em-dash ban (notes dated ${EM_DASH_BAN_FROM} or later)`, () => {
+  it('ships no em dash, en dash, or double hyphen outside <code>', () => {
+    for (const note of dashBanned) {
+      expect(note.title, `${note.slug} title carries a dash`).not.toMatch(DASH);
+      for (const [i, chunk] of note.content.entries()) {
+        const hits = countOf(withoutCode(chunk), new RegExp(DASH.source, 'g'));
+        expect(hits, `${note.slug} block ${i + 1} carries ${hits} dash(es)`).toBe(0);
+      }
+    }
+  });
+});
+
 describe('the rationing tier is reachable', () => {
   it('names a cutoff that new notes will actually cross', () => {
     // Guards the grandfathering itself: if every note were exempt forever this
@@ -244,5 +274,11 @@ describe('the rationing tier is reachable', () => {
     // strict rules — the partition fails closed, not open.
     const newest = standardNotes.reduce((max, n) => (n.dateISO > max ? n.dateISO : max), '');
     expect(newest < VOICE_RULES_FROM || governed.length > 0).toBe(true);
+  });
+
+  it('names a dash-ban cutoff that new notes will actually cross', () => {
+    expect(EM_DASH_BAN_FROM).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    const newest = allNotes.reduce((max, n) => (n.dateISO > max ? n.dateISO : max), '');
+    expect(newest < EM_DASH_BAN_FROM || dashBanned.length > 0).toBe(true);
   });
 });

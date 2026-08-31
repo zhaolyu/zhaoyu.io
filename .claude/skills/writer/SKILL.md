@@ -24,7 +24,7 @@ before shipping. The one-line version: describe the work, never sell the worker 
 a sentence that couldn't survive on lethain.com unedited is marketing, and marketing
 is the register this site does not ship.
 
-## The five non-negotiables
+## The six non-negotiables
 
 1. **Claim first.** Sentence one states the claim or the observed failure. No windup, no
    "recently I've been thinking about," no definition of the topic.
@@ -42,6 +42,12 @@ is the register this site does not ship.
    aphorism in the piece. A punchline at the end of every paragraph is the single
    strongest agent tell there is; see the cadence rule in
    [references/voice.md](references/voice.md).
+6. **No em dashes. None.** Readers now take the glyph itself as the signature of
+   machine-written prose, whatever the density, so it graduated from rationed to banned
+   (2026-08-31; en dashes and double hyphens count too). Restructure the sentence
+   instead of swapping punctuation: usually two sentences, sometimes a comma, rarely a
+   colon. The gate enforces zero for anything dated from the cutoff on; the replacement
+   moves and the one trap are in [references/voice.md](references/voice.md).
 
 ## The measured shape of a note
 
@@ -81,12 +87,13 @@ The shape, measured from the corpus:
 | Words | 1,200–1,600 (hard range 900–2,500) |
 | `<h2>` sections | 3–5 |
 | Lists | at most one `<ul>` and one `<ol>` |
-| Em dashes | under 18 per 1,000 words |
+| Em dashes | 0 (banned; non-negotiable 6) |
 | Paragraph-final aphorisms | 1, at the end |
 
 `content-voice.test.ts` enforces the block count, heading count, word range, whole-block
-markup, the closing `<strong>` rule, a two-per-paragraph em-dash cap that counts each
-`<li>` as its own paragraph, and the density ceiling. **When a draft trips one of those,
+markup, the closing `<strong>` rule, and the zero-dash ban for anything dated 2026-08-31
+or later. The old two-per-paragraph em-dash cap and density ceiling stay in the suite as
+ratchets over the grandfathered corpus. **When a draft trips one of those,
 fix the prose — never widen the gate.** The first essay shipped with the cap set to 3
 because 3 was what the draft happened to need, and with list blocks skipped entirely, so
 the densest block in the piece went unmeasured. That is the same defect the essay itself
