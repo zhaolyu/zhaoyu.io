@@ -116,7 +116,12 @@ machine-made even when every individual sentence is good.
 4. **Write both paragraphs**, then run the line-level checks in
    [references/voice.md](references/voice.md) and the calibration checks in
    [references/calibration.md](references/calibration.md).
-5. **Ship it** using [references/publish.md](references/publish.md) — content.ts, llms.txt,
+5. **Get judged.** Run the `writer-judge` skill in a context that did not author the
+   draft (the authoring session spawns a fresh subagent; see the judge's own SKILL.md
+   for the independence rules and verdict contract). Blocking findings get fixed and
+   re-judged; the verdict goes in the PR body. Self-review is self-attestation — the
+   deterministic gates are the floor, the judge is the review.
+6. **Ship it** using [references/publish.md](references/publish.md) — content.ts, llms.txt,
    OG regeneration, tests. Skipping the OG step breaks `og.test.ts`.
 
 ## Titles and tags
