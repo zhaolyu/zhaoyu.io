@@ -35,7 +35,7 @@
       </div>
       <h2 class="section-title">Let's Build Something.</h2>
       <p class="section-subtitle">
-        I work where agent-era engineering meets a high-scale news platform: verification, interface
+        I work where agent-era engineering meets a national news platform: verification, interface
         performance, and the discipline that keeps machine work trustworthy. If you have strong
         opinions on any of the above, reach out.
       </p>

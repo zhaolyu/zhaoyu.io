@@ -683,7 +683,7 @@ export const agentEraModels: AgentEraModel[] = [
   },
   {
     title: 'The receipts rule',
-    line: '"Done" without an attached artifact is self-attestation by the party most motivated to claim success.',
+    line: '"Done" without an attached artifact is the worker vouching for itself; the review happens on the diff, the test run, and the artifact.',
     slug: 'the-agent-run-is-the-new-unit-of-work',
   },
   {
@@ -693,7 +693,7 @@ export const agentEraModels: AgentEraModel[] = [
   },
   {
     title: 'Spec quality is the bottleneck',
-    line: 'When agents can build from any precise description, the specification becomes the primary artifact and the codebase a derivative.',
+    line: 'When agents can build from any sufficiently precise description, the specification becomes the primary artifact and the codebase a derivative.',
     slug: 'spec-quality-is-the-bottleneck-not-implementation-speed',
   },
   {
@@ -729,7 +729,7 @@ export const footerManifesto: FooterManifestoItem[] = [
   },
   {
     title: 'Spec > Speed',
-    body: 'When agents produce working code from any precise description, the specification is the primary artifact and typing speed stops being the constraint.',
+    body: 'When agents produce working code from any sufficiently precise description, the specification is the primary artifact and typing speed stops being the constraint.',
   },
 ];
 
