@@ -243,6 +243,23 @@ export const notesData: NotesData = {
       ],
     },
     {
+      slug: 'agents-re-derive-judgment-you-already-paid-for',
+      title: 'Agents Re-Derive Judgment You Already Paid For',
+      date: 'Aug 30, 2026',
+      dateISO: '2026-08-30',
+      tags: ['Agent Architecture', 'AI Engineering', 'Retrieval'],
+      sources: [
+        {
+          label:
+            'First-hand: OB1, the retrieval layer over a personal exocortex — 1,700 claims and 8,281 wiki-links, measured 30 Aug 2026',
+        },
+      ],
+      content: [
+        'Every agent session starts from a blank context window, so it re-derives judgment you already paid for. You settle a tradeoff in March; in August an agent proposes the option you rejected, reasoning its way there with full confidence and none of the history. The usual diagnosis is that the model needs memory, and the usual fix is a longer prompt — paste the standing decisions at the top and hope attention holds. Both miss the mechanism: the judgment that bears on a question is rarely lexically close to it. <strong>Risk parity distributing risk rather than capital and capacity-aware load balancing distributing work by headroom share no keywords and the same shape.</strong> BM25 cannot cross that gap, because it scores the words and the transferable part was never in the words.',
+        'So the vault of 1,700 claims stays in git, and OB1 projects it into Supabase behind MCP, so Claude, ChatGPT, and my phone all retrieve the same judgment. A claim is one assertable proposition, named by a filename that states it, hand-typed as claim, pattern, tension, or anti-pattern — <strong>nothing derives that type, which is why it carries judgment</strong>: a thing is an anti-pattern because someone decided it was. Retrieval embeds the query, ranks with pgvector, then expands one hop along the wiki-links, so a claim reached by a <code>parallels</code> edge surfaces even when its similarity is low; 2,777 of the 8,281 edges cross domains, the ones worth the hop. On 15 August a reduce pass was about to generalize a second claim about legibility inverting felt value — retrieval returned <code>prevented-loss-invisibility</code>, already established on an external source, and the output became an enrichment instead of a duplicate. <strong>The judgment you have to remember to look up is judgment you do not have.</strong>',
+      ],
+    },
+    {
       slug: 'reinforcement-anchors-beat-emphasis-in-system-prompts',
       title: 'Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt',
       date: 'Aug 14, 2026',
@@ -566,14 +583,14 @@ export const builderProjects: BuilderProject[] = [
     ],
   },
   {
-    title: 'OB1: Personal Exocortex',
+    title: 'OB1: Exocortex Retrieval Layer',
     category: 'independent',
     description:
-      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,600+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
-    stack: ['MCP', 'Embeddings', 'Semantic Search', 'TypeScript'],
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,700 atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
+    stack: ['MCP', 'Supabase', 'pgvector', 'TypeScript'],
     status: 'shipped',
     metrics: [
-      { label: 'Atomic Claims', value: '1,600+' },
+      { label: 'Atomic Claims', value: '1,700' },
       { label: 'Agent Access', value: 'MCP' },
     ],
   },

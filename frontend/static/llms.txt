@@ -90,11 +90,12 @@ The differentiator is the combination, not any single axis:
    assigned work with the same production discipline. Current systems:
    Cost-Guard (local-first FinOps platform — PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
-   infrastructure) and OB1, a personal exocortex — 1,600+ atomic,
-   cross-linked claims distilled from books, engineering sources, and
-   production lessons, searchable by meaning and exposed to AI tools over
-   MCP so agent sessions start with accumulated judgment rather than a
-   blank context window.
+   infrastructure) and OB1, the retrieval layer over a personal
+   exocortex — 1,700 atomic, cross-linked claims distilled from books,
+   engineering sources, and production lessons. The vault stays the
+   source of truth; OB1 projects it into Supabase and serves it over MCP,
+   so any client — Claude, ChatGPT, Cursor, phone — starts with
+   accumulated judgment rather than a blank context window.
 
 ## Key pages
 
@@ -115,6 +116,7 @@ The differentiator is the combination, not any single axis:
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
 - [Your Checks Are Lying to You](https://zhaoyu.io/blog/your-checks-are-lying-to-you)
+- [Agents Re-Derive Judgment You Already Paid For](https://zhaoyu.io/blog/agents-re-derive-judgment-you-already-paid-for)
 - [Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt](https://zhaoyu.io/blog/reinforcement-anchors-beat-emphasis-in-system-prompts)
 - [The Agent Run Is the New Unit of Work — and Reviewing It Is Management](https://zhaoyu.io/blog/the-agent-run-is-the-new-unit-of-work)
 - [Agents Degrade Quietly: Maintenance Is Where the Value Compounds](https://zhaoyu.io/blog/agents-degrade-quietly-maintenance-is-where-value-compounds)

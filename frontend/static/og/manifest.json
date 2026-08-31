@@ -23,6 +23,18 @@
       "AI Engineering"
     ]
   },
+  "agents-re-derive-judgment-you-already-paid-for": {
+    "slug": "agents-re-derive-judgment-you-already-paid-for",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · AUG 30, 2026",
+    "title": "Agents Re-Derive Judgment You Already Paid For",
+    "subtitle": "",
+    "footnote": [
+      "Agent Architecture",
+      "AI Engineering",
+      "Retrieval"
+    ]
+  },
   "reinforcement-anchors-beat-emphasis-in-system-prompts": {
     "slug": "reinforcement-anchors-beat-emphasis-in-system-prompts",
     "kind": "note",
