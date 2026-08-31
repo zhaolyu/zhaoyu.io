@@ -210,7 +210,7 @@
                       <span class="empty-detail">
                         Snapshots arrive via an HMAC-signed GitHub Actions dispatch &rarr; ingestion
                         API &rarr; ElectricSQL, then replicate into this in-browser Postgres
-                        (PGlite). The pipeline is live — the publishing workflow just hasn't been
+                        (PGlite). The pipeline is live; the publishing workflow just hasn't been
                         dispatched recently.
                       </span>
                     {/if}

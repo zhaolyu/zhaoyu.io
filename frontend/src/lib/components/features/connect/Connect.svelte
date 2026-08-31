@@ -36,7 +36,7 @@
       <h2 class="section-title">Let's Build Something.</h2>
       <p class="section-subtitle">
         I work at the intersection of UI performance, AI integration, and high-scale news media. If
-        you have strong opinions on any of the above — reach out.
+        you have strong opinions on any of the above, reach out.
       </p>
 
       <div class="status-block">

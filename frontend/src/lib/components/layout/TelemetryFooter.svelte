@@ -49,7 +49,7 @@
         <a href="/rss.xml">RSS</a>
       </div>
       <p class="copyright">
-        © {new Date().getFullYear()} Zhao Yu —
+        © {new Date().getFullYear()} Zhao Yu ·
         <span>Hand-coded with Svelte. Deployed to Cloudflare Edge.</span>
       </p>
     </div>
