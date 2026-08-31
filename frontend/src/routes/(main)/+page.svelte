@@ -38,7 +38,7 @@
   <meta property="og:url" content="{SITE_URL}/" />
   <meta
     property="og:title"
-    content="Zhao Yu — Senior Manager, Engineering at Versant (CNBC Core). Player-coach engineering leader."
+    content="Zhao Yu · Senior Manager, Engineering at Versant (CNBC Core)"
   />
   <meta property="og:description" content={metaDescription} />
   <meta property="og:image" content={SITE_CARD_IMAGE} />
@@ -46,7 +46,7 @@
   <meta property="twitter:url" content="{SITE_URL}/" />
   <meta
     property="twitter:title"
-    content="Zhao Yu — Senior Manager, Engineering at Versant (CNBC Core)"
+    content="Zhao Yu · Senior Manager, Engineering at Versant (CNBC Core)"
   />
   <meta property="twitter:description" content={twitterDescription} />
   <meta property="twitter:image" content={SITE_CARD_IMAGE} />
@@ -57,15 +57,17 @@
   {@html personScript}
 </svelte:head>
 
+<!-- Craft-first order: the writing and the mental models lead; the résumé
+     material (About, then the sourced numbers) sits at the end, stated once. -->
 <main id="main" class="main-container">
   <Hero />
-  <Skills />
-  <WorkSection />
   <EngineeringNotes />
   <CodeManifesto>
     <LatencySim />
   </CodeManifesto>
+  <WorkSection />
   <PersonaSection />
+  <Skills />
   <Connect />
 </main>
 

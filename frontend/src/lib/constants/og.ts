@@ -6,7 +6,7 @@
  * survived a hero rewrite still advertising the old tagline. Rendered to PNG by
  * scripts/generate-og-images.mjs via the prerendered /og/<slug> routes.
  */
-import { notesData, heroContent } from '$lib/constants/content';
+import { notesData, heroContent, roleLine } from '$lib/constants/content';
 import { CASE_STUDIES } from '$lib/constants/case-studies';
 import { visibleItems } from '$lib/utils/feature-flags';
 
@@ -27,10 +27,10 @@ function siteCard(): OgCard {
   return {
     slug: SITE_CARD_SLUG,
     kind: 'profile',
-    eyebrow: heroContent.badge,
+    eyebrow: roleLine,
     subtitle: heroContent.tagline,
     title: 'Zhao Yu',
-    footnote: heroContent.motto,
+    footnote: ['Agents', 'Edge Architecture', 'Reliability'],
   };
 }
 

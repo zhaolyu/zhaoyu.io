@@ -23,15 +23,15 @@
       <div class="skills-text">
         <div class="skills-badge">
           <span class="badge-dot"></span>
-          <p class="badge-text">Impact at Scale</p>
+          <p class="badge-text">Receipts</p>
         </div>
         <h2 class="skills-headline">
           The numbers,<br />
           <span class="highlight-blue">with receipts.</span>
         </h2>
         <p class="skills-description">
-          Every figure here is public and linked to its source — Versant's investor materials,
-          Chrome UX Report field data, or the record of the role. Nothing that isn't
+          Every figure here is public and linked to its source: Versant's investor materials, Chrome
+          UX Report field data, or the record of the role. Nothing that isn't
           <span class="highlight-text">publicly disclosed</span> is stated.
         </p>
       </div>

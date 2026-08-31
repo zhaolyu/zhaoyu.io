@@ -1,7 +1,14 @@
 # Landing page rethink — audit and proposal
 
-Status: proposal, awaiting Zhao's direction on the open decisions at the bottom.
-Produced on the `claude/zhaoyu-landing-page-audit-hek2li` branch, 2026-08-31.
+Status: **Option A implemented** on this branch, 2026-08-31, at Zhao's direction.
+The open decisions at the bottom were resolved as follows: Option A in one pass; the
+`<title>`, OG card eyebrow, meta and JSON-LD keep the role line as finding aids while the
+page body leads with craft; the hero thesis anchors on the receipts rule ("Engineering
+notes with receipts"); and the metrics grid survives as a quiet "Receipts" section at the
+end of the page, after About, rather than as section 2. The em-dash scrub shipped with
+it, corpus-wide: all 13 notes, every surface, llms.txt, and the AI manifesto, with
+`content-voice.test.ts` now enforcing zero dashes across the whole corpus. The audit
+below is kept as the record of why.
 Companion change, already landed on this branch: the `writer` skill now calibrates
 against named writers (`.claude/skills/writer/references/calibration.md`) — Larson for
 register, Koe for readability — and its register test ("would this sentence survive on

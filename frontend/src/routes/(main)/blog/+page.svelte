@@ -15,9 +15,9 @@
   const noteGroups = groupNotesByMonth(notes);
 
   const canonicalUrl = `${SITE_URL}/blog`;
-  const pageTitle = 'Engineering Notes — Zhao Yu';
+  const pageTitle = 'Engineering Notes · Zhao Yu';
   const description =
-    'Engineering notes by Zhao Yu — architectural decisions, performance constraints, and AI-agent engineering lessons from production news systems at national scale.';
+    'Engineering notes by Zhao Yu: architectural decisions, performance constraints, and AI-agent engineering lessons from production news systems at national scale.';
 
   const blogScript = jsonLdScript({
     '@context': 'https://schema.org',
@@ -57,7 +57,7 @@
   <a href="/" class="back-link">&larr; zhaoyu.io</a>
   <h1>Engineering Notes</h1>
   <p class="index-description">
-    Architectural decisions, performance constraints, and trade-offs from production — CNBC-scale
+    Architectural decisions, performance constraints, and trade-offs from production: CNBC-scale
     edge systems, AI-agent engineering, and the discipline that holds them together.
   </p>
 

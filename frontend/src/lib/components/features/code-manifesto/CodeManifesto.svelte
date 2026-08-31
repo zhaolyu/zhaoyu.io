@@ -35,7 +35,7 @@
     <div class="manifesto-content">
       <div class="manifesto-header">
         <div class="header-content">
-          <p class="section-badge">How I work</p>
+          <p class="section-badge">Mental models</p>
           <h2 class="section-title">Strong opinions, weakly held.</h2>
         </div>
 

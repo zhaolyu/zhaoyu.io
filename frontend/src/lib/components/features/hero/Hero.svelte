@@ -6,9 +6,8 @@
   // no-op when the phrase is absent, so a copy edit cannot break the markup.
   const formattedBio = $derived(
     heroContent.bio
-      .replace(/edge architecture/g, '<strong class="bio-emphasis">edge architecture</strong>')
-      .replace(/~47M monthly readers/g, '<span class="bio-metric">~47M monthly readers</span>')
-      .replace(/ships with AI/g, '<strong class="bio-name">ships with AI</strong>'),
+      .replace(/still ships/g, '<strong class="bio-emphasis">still ships</strong>')
+      .replace(/carries a receipt/g, '<span class="bio-metric">carries a receipt</span>'),
   );
 </script>
 
@@ -24,14 +23,6 @@
        gating it on hydration would hide the largest paint behind the JS bundle.
        Below-the-fold sections still use the observeSection reveal. -->
   <div class="hero-content relative z-10 text-center mx-auto">
-    <div class="hero-badge inline-flex items-center">
-      <span class="badge-status relative flex">
-        <span class="badge-ping absolute inline-flex rounded-full"></span>
-        <span class="badge-dot relative inline-flex rounded-full"></span>
-      </span>
-      {heroContent.badge}
-    </div>
-
     <h1 class="hero-headline">
       {heroContent.headline.primary}
       <!-- A subhead, not a second headline: at display size these 15 words ran
@@ -50,51 +41,19 @@
 
     <div class="hero-actions flex flex-col md:flex-row justify-center items-center">
       <a
-        href="/#work"
-        onclick={(e) => handleAnchorNavigation(e, '/#work')}
+        href="/#notes"
+        onclick={(e) => handleAnchorNavigation(e, '/#notes')}
         class="cta cta-primary w-full md:w-auto"
       >
         {heroContent.cta.primary}
       </a>
-      <a href="/blog" class="cta cta-secondary w-full md:w-auto"> {heroContent.cta.secondary} </a>
-    </div>
-
-    <div class="hero-motto flex flex-col md:flex-row justify-center items-center">
-      <span class="motto-item flex items-center">
-        <svg class="motto-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M13 10V3L4 14h7v7l9-11h-7z"
-          /></svg
-        >
-        {heroContent.motto[0]}
-      </span>
-      <span class="motto-sep hidden md:inline">•</span>
-      <span class="motto-item flex items-center">
-        <svg class="motto-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          /></svg
-        >
-        {heroContent.motto[1]}
-      </span>
-      <span class="motto-sep hidden md:inline">•</span>
-      <span class="motto-item flex items-center">
-        <svg class="motto-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          ><path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-          /></svg
-        >
-        {heroContent.motto[2]}
-      </span>
+      <a
+        href="/#work"
+        onclick={(e) => handleAnchorNavigation(e, '/#work')}
+        class="cta cta-secondary w-full md:w-auto"
+      >
+        {heroContent.cta.secondary}
+      </a>
     </div>
   </div>
 </section>
@@ -132,53 +91,6 @@
   .radial-overlay {
     background: radial-gradient(circle at 50% 50%, transparent 0%, var(--bg-primary) 70%);
     transition: background var(--duration-base);
-  }
-
-  /* ---------- Badge ---------- */
-
-  .hero-badge {
-    gap: var(--space-xs);
-    margin-bottom: var(--space-md);
-    padding: var(--space-2xs) var(--space-sm);
-    border: 1px solid var(--accent-primary-20);
-    border-radius: var(--radius-full);
-    background: var(--accent-primary-10);
-    color: var(--accent-primary-text);
-    font-family: var(--font-mono);
-    font-size: var(--type-xs);
-    backdrop-filter: blur(4px);
-    transition:
-      background-color var(--duration-base),
-      border-color var(--duration-base),
-      color var(--duration-base);
-  }
-
-  .badge-status {
-    width: var(--space-xs);
-    height: var(--space-xs);
-  }
-
-  .badge-ping,
-  .badge-dot {
-    width: 100%;
-    height: 100%;
-    background: var(--accent-primary);
-  }
-
-  /* The one piece of motion kept in the hero: an 8px status dot, not the
-     600px 4-second blur that used to sit behind the headline. The global
-     reduced-motion rule in app.css stops it. */
-  .badge-ping {
-    opacity: 0.75;
-    animation: badge-ping 1s var(--ease-out) infinite;
-  }
-
-  @keyframes badge-ping {
-    75%,
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
   }
 
   /* ---------- Type ---------- */
@@ -258,49 +170,12 @@
     color: var(--text-primary);
   }
 
-  /* ---------- Motto ---------- */
-
-  .hero-motto {
-    gap: var(--space-md);
-    margin-top: var(--space-xl);
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--type-2xs);
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-widest);
-    transition: color var(--duration-base);
-  }
-
-  .motto-item {
-    gap: var(--space-xs);
-    cursor: default;
-    transition: color var(--duration-base);
-  }
-
-  .motto-item:hover {
-    color: var(--accent-primary-text);
-  }
-
-  .motto-icon {
-    width: var(--space-sm);
-    height: var(--space-sm);
-  }
-
-  .motto-sep {
-    color: var(--ink-faint);
-  }
-
   /* ---------- Bio emphasis (injected by formattedBio) ---------- */
 
-  :global(.hero-bio .bio-name),
   :global(.hero-bio .bio-emphasis) {
     color: var(--text-primary);
     font-weight: var(--weight-regular);
     transition: color var(--duration-base);
-  }
-
-  :global(.hero-bio .bio-name) {
-    font-weight: var(--weight-semibold);
   }
 
   :global(.hero-bio .bio-metric) {
@@ -319,10 +194,6 @@
   /* ---------- Responsive ---------- */
 
   @media (min-width: 768px) {
-    .hero-badge {
-      font-size: var(--type-sm);
-    }
-
     .hero-headline {
       font-size: var(--type-3xl);
       margin-bottom: var(--space-lg);
@@ -335,11 +206,6 @@
 
     .hero-bio {
       font-size: var(--type-lg);
-    }
-
-    .hero-motto {
-      gap: var(--space-2xl);
-      font-size: var(--type-xs);
     }
   }
 

@@ -61,12 +61,12 @@ attached, exclamation points, rhetorical questions used as transitions.
 
 ## No em dashes
 
-Banned in anything written or edited from 2026-08-31 on, at any density, in titles and
-prose alike. En dashes and double hyphens used as dashes count; `--` inside `<code>` is
-the one exemption. The dash was a house ration for a while, and the ration lost the
-argument: readers now take the glyph itself as the signature of machine-written prose,
-and a tell is a tell whatever the count. `content-voice.test.ts` enforces zero for every
-note dated on or after the cutoff.
+Banned at any density, in titles and prose alike. En dashes and double hyphens used as
+dashes count; `--` inside `<code>` is the one exemption. The dash was a house ration for
+a while, and the ration lost the argument: readers now take the glyph itself as the
+signature of machine-written prose, and a tell is a tell whatever the count. The shipped
+corpus was scrubbed on 2026-08-31 and `content-voice.test.ts` enforces zero across every
+note, old and new.
 
 Replacing a dash is restructuring, not punctuation-swapping:
 
@@ -83,9 +83,8 @@ the prose read machine-made, because the tell was never only the glyph. It was t
 interruption-before-reframe move underneath it. A paragraph that needed five dashes
 needs shorter sentences, not five colons.
 
-Grandfathered notes keep their dashes, but the grandfathering is provenance, not
-preference: when you edit a shipped paragraph for any other reason, take its dashes out
-on the way through.
+Surface copy outside `notesData` (the AI manifesto, case studies) is scrubbed as it gets
+touched: any paragraph you edit for another reason loses its dashes on the way through.
 
 **Rationed — these are house signatures that turn into tics when overused:**
 

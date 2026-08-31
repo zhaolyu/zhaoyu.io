@@ -46,8 +46,9 @@ is the register this site does not ship.
    machine-written prose, whatever the density, so it graduated from rationed to banned
    (2026-08-31; en dashes and double hyphens count too). Restructure the sentence
    instead of swapping punctuation: usually two sentences, sometimes a comma, rarely a
-   colon. The gate enforces zero for anything dated from the cutoff on; the replacement
-   moves and the one trap are in [references/voice.md](references/voice.md).
+   colon. The shipped corpus was scrubbed on 2026-08-31 and the gate enforces zero across
+   every note; the replacement moves and the one trap are in
+   [references/voice.md](references/voice.md).
 
 ## The measured shape of a note
 
@@ -91,9 +92,8 @@ The shape, measured from the corpus:
 | Paragraph-final aphorisms | 1, at the end |
 
 `content-voice.test.ts` enforces the block count, heading count, word range, whole-block
-markup, the closing `<strong>` rule, and the zero-dash ban for anything dated 2026-08-31
-or later. The old two-per-paragraph em-dash cap and density ceiling stay in the suite as
-ratchets over the grandfathered corpus. **When a draft trips one of those,
+markup, the closing `<strong>` rule, and the zero-dash ban across the whole corpus (the
+shipped notes were scrubbed on 2026-08-31, so there is no grandfathered set). **When a draft trips one of those,
 fix the prose — never widen the gate.** The first essay shipped with the cap set to 3
 because 3 was what the draft happened to need, and with list blocks skipped entirely, so
 the densest block in the piece went unmeasured. That is the same defect the essay itself

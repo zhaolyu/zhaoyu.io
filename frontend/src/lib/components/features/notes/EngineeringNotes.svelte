@@ -19,10 +19,10 @@
 </script>
 
 <section id="notes" class="engineering-notes" bind:this={notesSection}>
-  <SectionHeader badge="Digital Garden" headline="Engineering Notes." accentText="" />
+  <SectionHeader badge="Writing" headline="Engineering Notes." accentText="" />
   <div class="section-description">
-    A collection of architectural decisions, performance constraints, and trade-offs I've
-    encountered in production.
+    Architectural decisions, performance constraints, and trade-offs from production. Every note
+    carries a receipt.
   </div>
 
   <!-- Always rendered so the notes prerender; the reveal is animation-only.
