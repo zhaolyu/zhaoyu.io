@@ -35,8 +35,9 @@
       </div>
       <h2 class="section-title">Let's Build Something.</h2>
       <p class="section-subtitle">
-        I work at the intersection of UI performance, AI integration, and high-scale news media. If
-        you have strong opinions on any of the above, reach out.
+        I work where agent-era engineering meets a high-scale news platform: verification, interface
+        performance, and the discipline that keeps machine work trustworthy. If you have strong
+        opinions on any of the above, reach out.
       </p>
 
       <div class="status-block">
@@ -47,7 +48,7 @@
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
           <span class="status-value"
-            >The UI Factory, Akamai EdgeWorkers, and sub-1:25 half-marathon splits.</span
+            >Fail-open checks, agent verification loops, and sub-1:25 half-marathon splits.</span
           >
         </div>
       </div>

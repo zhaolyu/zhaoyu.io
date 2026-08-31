@@ -661,28 +661,75 @@ export const personaData: PersonaItem[] = [
   },
 ];
 
+export interface AgentEraModel {
+  title: string;
+  /** One sentence stating the model; the linked note carries the argument. */
+  line: string;
+  /** Slug of the note that owns the model. */
+  slug: string;
+}
+
+/**
+ * The named models the recent notes built, linked to the note that owns each.
+ * Rendered above the code standards, which are the platform-era foundations
+ * these grew out of. Reuse these names; a model that changes its name between
+ * appearances stops compounding.
+ */
+export const agentEraModels: AgentEraModel[] = [
+  {
+    title: 'Fail-open checks',
+    line: 'A check whose "did not run" is indistinguishable from "passed" is worse than no check, because its record closes the question.',
+    slug: 'your-checks-are-lying-to-you',
+  },
+  {
+    title: 'The receipts rule',
+    line: '"Done" without an attached artifact is self-attestation by the party most motivated to claim success.',
+    slug: 'the-agent-run-is-the-new-unit-of-work',
+  },
+  {
+    title: 'Loop failures, not intelligence failures',
+    line: 'Agents fail for missing boundaries, definitions of done, and receipts; reliability is engineered into the loop, not summoned from the model.',
+    slug: 'agent-failures-are-loop-failures',
+  },
+  {
+    title: 'Spec quality is the bottleneck',
+    line: 'When agents can build from any precise description, the specification becomes the primary artifact and the codebase a derivative.',
+    slug: 'spec-quality-is-the-bottleneck-not-implementation-speed',
+  },
+  {
+    title: 'Judgment you already paid for',
+    line: 'Settled tradeoffs must be retrievable by meaning, not memory, or every agent session re-derives them from a blank context window.',
+    slug: 'agents-re-derive-judgment-you-already-paid-for',
+  },
+];
+
 export interface FooterManifestoItem {
   title: string;
   body: string;
 }
 
-/** Footer manifesto blurbs — the single source for TelemetryFooter's grid. */
+/**
+ * Footer manifesto blurbs — the single source for TelemetryFooter's grid.
+ * The forward echo: the agent-era models, so the last thing a reader sees
+ * points where the work is going. The platform-era foundations live in the
+ * Mental Models section's code standards.
+ */
 export const footerManifesto: FooterManifestoItem[] = [
   {
-    title: 'Latency Is the Enemy of Trust',
-    body: 'Performance is a feature, not an afterthought. The critical rendering path is the product; I architect for it first.',
+    title: 'Fail-Closed > Fail-Open',
+    body: 'A check that cannot say "I could not run" certifies nothing; its green eventually hides the failure it was hired to catch.',
   },
   {
-    title: 'URL > Store',
-    body: 'The URL is the only reliable single source of truth. I prefer URL-driven state to eliminate desynchronization bugs.',
+    title: 'Receipts > Done',
+    body: 'An agent declaring "done" is self-attestation, so the diff, the test run, and the artifact are non-negotiable.',
   },
   {
-    title: 'WET > DRY',
-    body: 'I value strategic duplication over premature, leaky abstractions. Clarity and composition beat complex "God Components."',
+    title: 'Loop > Model',
+    body: 'Agent failures are loop failures, so reliability comes from boundaries, definitions of done, and receipts, not from a smarter model.',
   },
   {
-    title: 'Server > Client',
-    body: "I ship HTML, not just JSON (SvelteKit here, Akamai EdgeWorkers at work), and optimize for the browser's critical rendering path.",
+    title: 'Spec > Speed',
+    body: 'When agents produce working code from any precise description, the specification is the primary artifact and typing speed stops being the constraint.',
   },
 ];
 
@@ -806,25 +853,28 @@ const Page = async () => {
     },
     ai: {
       key: 'ai',
-      title: 'PLAN-FIRST AI',
-      bad: `// ❌ The Vibe Coder
-// 1. Code doesn't work.
-// 2. Paste error into Claude.
-// 3. Accept whatever it generates.
-// 4. Hope it doesn't break prod.
-// 5. Repeat.
+      title: 'RECEIPTS > DONE',
+      bad: `// ❌ Self-Attestation
+// Agent: "All tests pass. Task complete."
+//
+// You did not watch the tests run. The party
+// most motivated to declare success is
+// the only witness to it.
 
-// This is not AI-augmented engineering.
-// This is technical debt generation at scale.`,
-      good: `// ✅ The Orchestrator
-// 1. Define the spec (types, contracts, edge cases).
-// 2. Prompt with full context, not just the error.
-// 3. Review every line. Understand every diff.
-// 4. Run tests. Check coverage. Verify intent.
+const result = await agent.run(task);
+markComplete(task); // on its word`,
+      good: `// ✅ The Receipts Rule
+// "Done" ships with artifacts, or it isn't done.
 
-// Rule: If you can't explain what it wrote,
-// you don't own the code; it does.`,
-      note: 'AI is a force multiplier, not a replacement for taste. Every AI-assisted commit must pass the same review bar as a human-written one.',
+const result = await agent.run(task);
+review({
+  diff: result.diff,         // what changed
+  testRun: result.testLog,   // proof it ran
+  artifact: result.buildUrl, // the thing itself
+});
+// Accept or reject on evidence you can open,
+// not on a status the worker assigned itself.`,
+      note: 'An agent declaring "done" is self-attestation by the party most motivated to claim success. The receipt (the diff, the test run, the artifact) is what gets reviewed.',
     },
   },
 };
