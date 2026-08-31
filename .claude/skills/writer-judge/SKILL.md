@@ -101,6 +101,13 @@ register, and a floor violation. The expected findings live in
 read that file, and the invoking author compares the judge's findings against it. A
 judge that passes the fixture is broken: do not trust its PASS on the real draft.
 
+**Validation record.** First run, 2026-08-31, fresh fable-tier subagent reading this
+skill cold: FAILed the fixture with anchored findings covering the full answer key plus
+a scope-claim catch the key had not listed, and independently FAILed a shipped essay on
+cadence (8 paragraph-final epigrams counted, arithmetic shown) with receipts verified
+against the fetched primary sources. Both verdicts matched the contract; the essay's
+blocking findings were fixed the same day.
+
 ### Known-dirty fixture (calibration only; never publish any part of it)
 
 > **Faster Ships Mean Better Teams**

@@ -123,7 +123,8 @@ appear (`llms-links.test.ts` enforces both).
 
 Reuse before inventing:
 
-`AI Engineering` · `Agent Architecture` · `Reliability` · `Engineering Management` ·
+`AI Engineering` · `Agent Architecture` · `Reliability` · `Verification` ·
+`Engineering Management` ·
 `Architecture` · `Distributed Systems` · `LLM Mechanics` · `System Prompt Architecture` ·
 `Specification` · `HCI` · `React Performance` · `State Management` · `API Design` ·
 `Backend` · `Edge Computing` · `Performance` · `Productivity` · `Career` · `SEO` ·
