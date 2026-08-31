@@ -170,6 +170,13 @@ export interface NoteSource {
 export interface EngineeringNote {
   slug: string;
   title: string;
+  /**
+   * 'note' (default): the two-paragraph corpus form, fully voice-governed.
+   * 'essay': long-form with block markup, governed by its own contract in
+   * content-voice.test.ts — a lane with no enforced contract would be exactly
+   * the fail-open the first essay describes.
+   */
+  format?: 'note' | 'essay';
   /** Display date, e.g. "Jul 11, 2026" */
   date: string;
   /** ISO 8601 date (YYYY-MM-DD) for schema.org datePublished */
@@ -188,6 +195,53 @@ export interface NotesData {
 
 export const notesData: NotesData = {
   notes: [
+    {
+      slug: 'your-checks-are-lying-to-you',
+      title: 'Your Checks Are Lying to You',
+      date: 'Aug 30, 2026',
+      dateISO: '2026-08-30',
+      format: 'essay',
+      tags: ['Reliability', 'Verification', 'AI Engineering'],
+      sources: [
+        {
+          label: 'Warren Buffett, Berkshire Hathaway shareholder letter, 2008 — the OFHEO passage',
+          href: 'https://www.berkshirehathaway.com/letters/2008ltr.pdf',
+        },
+        {
+          label: 'Will Larson — Agents as scaffolding for recurring tasks (lethain.com)',
+          href: 'https://lethain.com/agents-as-scaffolding/',
+        },
+        {
+          label:
+            'First-hand: a 24-instance fail-open ledger kept over one month across scripts, CI jobs, and agent pipelines',
+        },
+      ],
+      content: [
+        "Run this in any repo with a gating script: <code>./check.sh | head -40; echo $?</code>. If the gate fails you will likely still see <code>0</code> — that is <code>head</code>'s exit status, not the gate's. I measured this on a real gate in my own stack: run directly, exit 1; piped through a pager for readability, exit 0. The gate was correct. The call site threw its verdict away, and everything downstream recorded a pass.",
+        'That is the failure class this post is about. I call it a fail-open check: a check whose “did not run” is indistinguishable from “passed.” Over one month I logged twenty-four named instances in one small stack of scripts, CI jobs, and agent pipelines — not, I think, because the stack is unusually bad, but because I gave the class a name and started writing instances down. Once you have the shape, you see it everywhere.',
+        '<h2>Green is ambiguous by construction</h2>',
+        'The instances are boringly diverse, which is the point:',
+        '<ul><li>A wrapper around a nightly embedding job logged success unconditionally and discarded stderr. The job had been dying mid-batch — at exit 0 — behind months of healthy-looking logs.</li><li>A style lint reported clean on its first run because a comment line broke the grep over its own pattern file. Zero banned patterns were matched against anything. The check had not passed; it had not run. The recorded outcome was identical either way.</li><li>A link checker printed every finding to stdout and exited 0. Three downstream consumers read the exit code. None read the text.</li></ul>',
+        'The general shape: <strong>the absence of a result gets recorded as the presence of a lesser one.</strong> A checker has three honest outcomes — found problems, found nothing after actually looking, and could not look. Most tooling gives it two exit states, so “could not look” gets folded into whichever side the error handling happens to land on. When it lands on green, the result is strictly worse than no check at all. A missing check is a visible gap — anyone who asks “what verifies this?” finds nothing and knows the question is open. A fail-open check produces a false record that closes the question, and the record is what stops anyone from looking again.',
+        '<h2>The artifact is the camouflage</h2>',
+        'These survive for months because the failure produces an artifact, and the artifact is what conceals it.',
+        'A test suite in that same stack wrote its “real build” case to the shipped deliverable instead of a fixture. Run to confirm an unrelated change was safe, it passed — and in passing silently rebuilt the deliverable against different inputs, evicting real content. Nothing failed, nothing warned; the output was a plausible, well-formed, freshly-dated file. A test that writes outside its fixture directory is an unreviewed production change with a green checkmark.',
+        'Another: a curated export, built on a cloud machine, sat in the repo vouching for its build script — which had never once executed locally, because it used <code>tomllib</code> (Python 3.11+) against a local 3.9.6. Dead at import. Its own test suite failed 9 of 14 cases the same way, and nobody read past the “5 passed.” Two lessons: an artifact is not evidence its producer runs <em>here</em>, and a pass count is only meaningful next to its total.',
+        "This is not a tooling quirk; it is how oversight fails generally. <a href='https://www.berkshirehathaway.com/letters/2008ltr.pdf' target='_blank' rel='noopener'>Buffett's 2008 shareholder letter</a> describes OFHEO, a regulator created to oversee exactly two companies, staffed with more than a hundred people with no other assignment. It published a self-congratulatory review of its first decade — and, on Buffett's telling, entirely missed that Fannie and Freddie were cooking the books. Headcount measures effort applied, not failures found. A decade of confident clean reports is exactly what a dead check produces.",
+        'The ranking error underneath is universal: crashes and blank fields at the bad end of the severity scale, mostly-correct output at the good end. Ranked by expected damage, the order inverts. A crash routes immediately to a human who now knows something is wrong; the output that looks complete routes to acceptance, consuming exactly the attention budget that would have caught it.',
+        '<h2>The sneakiest variant: the check that cannot see the defect</h2>',
+        'The instances above fail by not running or not examining. The subtler ones run perfectly — against a scope that excludes the defect.',
+        "My own site's CI config carried <code>.github/**</code> in its <code>paths-ignore</code> list, alongside <code>**.md</code> and <code>LICENSE</code>. Reasonable on its face: editing a workflow file doesn't change the application. It meant the one change class able to delete a job, loosen a trigger, or drop a required check was the only class that merged with nothing run against it. A weakened gate and an intact one produce identical clean history — and the history reads clean precisely for the changes that could make it read clean falsely.",
+        "More of the same shape, none of it configured by anyone: a frontmatter parser whose regex read only the <em>first</em> item of every YAML block list, so a health metric was computed over a universe 16% smaller than it claimed — and printed roughly 78% either way: a narrowed scope and an intact one produce the same shape of number. A list API that returned the first 20 items with <code>has_more: true</code> — and returned the identical page when handed its own continuation cursor. Nothing consumed the one field that contradicted the roster, and I nearly filed a report that four scheduled jobs had vanished. They were on page two. And <code>git log --since='7 days ago'</code> on a fresh CI clone reported 1,618 files authored that week; the true figure was 32. The clone was shallow — history began two days earlier, and the entire repo dated as new.",
+        'The design-time test for all of these: <strong>if this control were wrong, what would tell me?</strong> If the honest answer is “the same green output I get when it is right,” you do not have a check. You have a green light wired to the wall.',
+        '<h2>The field guide</h2>',
+        'Rules that have held up, each earned by at least one instance above:',
+        "<ol><li><strong>Three outcomes, never two.</strong> Passed / failed / could-not-run — and could-not-run must be loud. This applies per item, too: an input your checker cannot parse must land in <em>undetermined</em>, never in a benign bucket like “no findings.”</li><li><strong>Assert the condition, not the reaching of the line.</strong> Emit success only after verifying the thing you claim — and match the invariant's shape to what consumers depend on. An embedding backfill satisfied its count-shaped post-condition (pending reached zero) while writing the same vector for forty different documents. A count cannot see a content defect.</li><li><strong>Every emitted marker needs a named consumer.</strong> A <code>has_more</code> flag, a truncation marker, a warning line — a signal nobody reads is worse than no signal, because it looks like coverage.</li><li><strong>Test the check against known-dirty input, from the position it actually runs in.</strong> Both checks I wrote to catch this class missed their own motivating cases on first run; only fixtures with known answers caught it. And a detector validated on a laptop can still be unrunnable at its scheduled call site — testing the detector is not testing the detection.</li><li><strong>A control's scope must include the control.</strong> Whatever decides what gets checked — a path filter, a sampling rule, a pagination default — is the best-hidden place for this defect.</li><li><strong>Spend verification on the fix.</strong> The patch that closes a fail-open is itself fresh, unverified check code, written under pressure with attention on the old defect. In my log, remediation builds are where new instances concentrate.</li></ol>",
+        "Two objections worth pre-empting. “So write more checks” — no; the fix for this class is a contract on the checks you have, not a headcount of new detectors, and every new detector is new surface for the same defect. And “we have a runbook for this” — a written policy with no enforcing mechanism is not a missing check, it is a fail-open one: it occupies the slot where verification would report, and readers take its existence as evidence the boundary holds. Often the strongest move is not a better check at all: restructure so the bad output cannot be produced. <a href='https://lethain.com/agents-as-scaffolding/' target='_blank' rel='noopener'>Will Larson describes</a> catching an agent mis-forwarding alerts and, rather than adding an eval he knew would work, moving the filtering into a deterministic script so the agent never sees what it might mishandle. A check leaves the failure mode alive behind a gate; a restructure removes it.",
+        'One honesty note: the same month produced two defects I deliberately did not log — they failed <em>closed</em>: costly, but they never certified a falsehood. A ledger that absorbs every nearby defect stops measuring the thing it names.',
+        '<strong>A clean report from a check that cannot say “I could not run” is not evidence of anything. Build checks whose silence is impossible — or their green is eventually the thing that hides the failure they were hired to catch.</strong>',
+      ],
+    },
     {
       slug: 'reinforcement-anchors-beat-emphasis-in-system-prompts',
       title: 'Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt',
