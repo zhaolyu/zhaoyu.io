@@ -1,7 +1,8 @@
 # Shipping a note
 
-All commands run from `frontend/`. Steps 1–3 are required for a new note; skipping step 3
-fails `og.test.ts`.
+All commands run from `frontend/`. Steps 1–4 are required for a new note; skipping step 3
+fails `og.test.ts`, and skipping step 4 ships unreviewed prose — the one thing this site
+says it never does.
 
 ## 1. Add the note to `content.ts`
 
@@ -42,7 +43,16 @@ This writes `static/og/<slug>.png` and updates `static/og/manifest.json`. Commit
 `og.test.ts` compares the manifest against the current card definitions, so a title or tag
 edit on an *existing* note also requires this step.
 
-## 4. Verify
+## 4. Run the writer judge
+
+Invoke the `writer-judge` skill from a context that did not author the draft — the
+authoring session spawns a fresh subagent at the authoring tier or above, per the
+judge's SKILL.md. Fix blocking findings and re-judge; paste the final verdict and
+findings table into the PR body. First use of a new judge context: run its known-dirty
+calibration fixture first and check the result against the judge's expected-findings
+reference — a judge that passes the fixture is broken.
+
+## 5. Verify
 
 ```bash
 pnpm test && pnpm check && pnpm lint && pnpm format

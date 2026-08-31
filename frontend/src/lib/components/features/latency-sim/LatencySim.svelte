@@ -134,8 +134,8 @@
         <p class="section-badge">See it: latency demo</p>
         <h3 class="section-title">Latency is the enemy of trust.</h3>
         <p class="section-description">
-          Don't just tell stakeholders the architecture is better —
-          <strong>show them.</strong>
+          Don't just tell stakeholders the architecture is better.
+          <strong>Show them.</strong>
           Switch modes to feel the difference between a naive socket connection and a frame-buffered stream.
         </p>
 

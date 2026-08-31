@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { ogCards, ogCard, noteCard, caseStudyCard, SITE_CARD_SLUG } from './og';
-import { notesData, heroContent } from './content';
+import { notesData, heroContent, roleLine } from './content';
 import { CASE_STUDIES } from './case-studies';
 import { visibleItems } from '$lib/utils/feature-flags';
 
@@ -35,7 +35,7 @@ describe('og card definitions', () => {
     // the old accent line. That is the regression this asserts against.
     const site = ogCard(SITE_CARD_SLUG)!;
     expect(site.subtitle).toBe(heroContent.tagline);
-    expect(site.eyebrow).toBe(heroContent.badge);
+    expect(site.eyebrow).toBe(roleLine);
   });
 
   it('gives note cards their own title and tags', () => {

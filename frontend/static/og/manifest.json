@@ -3,12 +3,12 @@
     "slug": "site",
     "kind": "profile",
     "eyebrow": "SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE",
-    "subtitle": "Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.",
+    "subtitle": "Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.",
     "title": "Zhao Yu",
     "footnote": [
-      "Low Latency",
-      "High Leverage",
-      "Deep Focus"
+      "Agents",
+      "Edge Architecture",
+      "Reliability"
     ]
   },
   "your-checks-are-lying-to-you": {
@@ -51,7 +51,7 @@
     "slug": "the-agent-run-is-the-new-unit-of-work",
     "kind": "note",
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
-    "title": "The Agent Run Is the New Unit of Work — and Reviewing It Is Management",
+    "title": "The Agent Run Is the New Unit of Work, and Reviewing It Is Management",
     "subtitle": "",
     "footnote": [
       "Agent Architecture",

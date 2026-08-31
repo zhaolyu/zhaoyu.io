@@ -19,7 +19,7 @@ Add a new figure to `SOURCES` (with its public citation) before using it in pros
 | Program scope                          | Co-leads the ~20-engineer CNBC.com rebuild across 3 teams | LinkedIn / role of record          |
 | Production years                       | 10+ (intern Mar 2016 → Senior Manager Apr 2026) | Career timeline                              |
 | Next-gen platform + AI investing tools | Public cover: Versant Q2-2026 earnings call    | Lazarus quote, 6 Aug 2026                     |
-| Running                                | 3:07 marathon, 50K ultra finish                | Personal record                               |
+| Running                                | 3:07 marathon, 50K ultra finish; a sub-1:25 half is the stated goal, never claimed as achieved | Personal record |
 
 **The rule is an allowlist, not a list of forbidden strings.** A number about
 the employer ships only if it is in the table above, with a basis and a public
@@ -123,7 +123,8 @@ appear (`llms-links.test.ts` enforces both).
 
 Reuse before inventing:
 
-`AI Engineering` · `Agent Architecture` · `Reliability` · `Engineering Management` ·
+`AI Engineering` · `Agent Architecture` · `Reliability` · `Verification` ·
+`Engineering Management` ·
 `Architecture` · `Distributed Systems` · `LLM Mechanics` · `System Prompt Architecture` ·
 `Specification` · `HCI` · `React Performance` · `State Management` · `API Design` ·
 `Backend` · `Edge Computing` · `Performance` · `Productivity` · `Career` · `SEO` ·

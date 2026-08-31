@@ -19,10 +19,11 @@
 </script>
 
 <section id="notes" class="engineering-notes" bind:this={notesSection}>
-  <SectionHeader badge="Digital Garden" headline="Engineering Notes." accentText="" />
+  <SectionHeader badge="Writing" headline="Engineering Notes." accentText="" />
   <div class="section-description">
-    A collection of architectural decisions, performance constraints, and trade-offs I've
-    encountered in production.
+    Architectural decisions, performance constraints, and trade-offs from production. Every note
+    carries a receipt. The working thesis behind them:
+    <a class="thesis-link" href="/ai-manifesto">The Factory Is Going Dark &rarr;</a>
   </div>
 
   <!-- Always rendered so the notes prerender; the reveal is animation-only.
@@ -51,6 +52,17 @@
     transition:
       background-color var(--duration-base),
       color var(--duration-base);
+  }
+
+  .section-description .thesis-link {
+    color: var(--accent-primary-text);
+    text-decoration: none;
+    font-weight: var(--weight-medium);
+  }
+
+  .section-description .thesis-link:hover,
+  .section-description .thesis-link:focus-visible {
+    text-decoration: underline;
   }
 
   .section-description {

@@ -16,7 +16,15 @@ lineage — the Pyramid Principle by way of [lethain](https://lethain.com/pyrami
 false authority, and [Willison](https://simonwillison.net/2022/Nov/6/what-to-blog-about/)
 on shipping the thing you built rather than polishing drafts forever.
 
-## The five non-negotiables
+The voice is calibrated against named writers, not an abstract standard:
+[references/calibration.md](references/calibration.md) holds the per-writer moves —
+Will Larson (lethain) for register, Dan Koe for hooks and readability — including the
+moves that are deliberately **not** adopted. Every draft runs its calibration check
+before shipping. The one-line version: describe the work, never sell the worker —
+a sentence that couldn't survive on lethain.com unedited is marketing, and marketing
+is the register this site does not ship.
+
+## The six non-negotiables
 
 1. **Claim first.** Sentence one states the claim or the observed failure. No windup, no
    "recently I've been thinking about," no definition of the topic.
@@ -33,6 +41,13 @@ on shipping the thing you built rather than polishing drafts forever.
    wrapped in `<strong>`. It must not restate the title, and it must be the *only*
    aphorism in the piece. A punchline at the end of every paragraph is the single
    strongest agent tell there is; see the cadence rule in
+   [references/voice.md](references/voice.md).
+6. **No em dashes. None.** Readers now take the glyph itself as the signature of
+   machine-written prose, whatever the density, so it graduated from rationed to banned
+   (2026-08-31; en dashes and double hyphens count too). Restructure the sentence
+   instead of swapping punctuation: usually two sentences, sometimes a comma, rarely a
+   colon. The shipped corpus was scrubbed on 2026-08-31 and the gate enforces zero across
+   every note; the replacement moves and the one trap are in
    [references/voice.md](references/voice.md).
 
 ## The measured shape of a note
@@ -73,12 +88,12 @@ The shape, measured from the corpus:
 | Words | 1,200–1,600 (hard range 900–2,500) |
 | `<h2>` sections | 3–5 |
 | Lists | at most one `<ul>` and one `<ol>` |
-| Em dashes | under 18 per 1,000 words |
+| Em dashes | 0 (banned; non-negotiable 6) |
 | Paragraph-final aphorisms | 1, at the end |
 
 `content-voice.test.ts` enforces the block count, heading count, word range, whole-block
-markup, the closing `<strong>` rule, a two-per-paragraph em-dash cap that counts each
-`<li>` as its own paragraph, and the density ceiling. **When a draft trips one of those,
+markup, the closing `<strong>` rule, and the zero-dash ban across the whole corpus (the
+shipped notes were scrubbed on 2026-08-31, so there is no grandfathered set). **When a draft trips one of those,
 fix the prose — never widen the gate.** The first essay shipped with the cap set to 3
 because 3 was what the draft happened to need, and with list blocks skipped entirely, so
 the densest block in the piece went unmeasured. That is the same defect the essay itself
@@ -99,8 +114,14 @@ machine-made even when every individual sentence is good.
 3. **Draft the title from the claim, not the topic.** "Thoughts on Agents" is a failure.
    "Agent Failures Are Loop Failures, Not Intelligence Failures" is the bar.
 4. **Write both paragraphs**, then run the line-level checks in
-   [references/voice.md](references/voice.md).
-5. **Ship it** using [references/publish.md](references/publish.md) — content.ts, llms.txt,
+   [references/voice.md](references/voice.md) and the calibration checks in
+   [references/calibration.md](references/calibration.md).
+5. **Get judged.** Run the `writer-judge` skill in a context that did not author the
+   draft (the authoring session spawns a fresh subagent; see the judge's own SKILL.md
+   for the independence rules and verdict contract). Blocking findings get fixed and
+   re-judged; the verdict goes in the PR body. Self-review is self-attestation — the
+   deterministic gates are the floor, the judge is the review.
+6. **Ship it** using [references/publish.md](references/publish.md) — content.ts, llms.txt,
    OG regeneration, tests. Skipping the OG step breaks `og.test.ts`.
 
 ## Titles and tags

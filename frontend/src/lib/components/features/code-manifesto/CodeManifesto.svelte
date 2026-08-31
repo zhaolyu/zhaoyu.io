@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
-  import { codeStandards, personaData } from '$lib/constants/content';
+  import { codeStandards, personaData, agentEraModels } from '$lib/constants/content';
 
   /**
    * "How I work": the operating principles in prose, the code standards as
@@ -24,7 +24,7 @@
       dry: 'avoid-hasty-abstractions.tsx',
       server: 'edge-first-architecture.ts',
       latency: 'performance-is-trust.ts',
-      ai: 'plan-first-ai.ts',
+      ai: 'receipts-over-done.ts',
     };
     return fileMap[tab] || 'philosophy.ts';
   };
@@ -35,7 +35,7 @@
     <div class="manifesto-content">
       <div class="manifesto-header">
         <div class="header-content">
-          <p class="section-badge">How I work</p>
+          <p class="section-badge">Mental models</p>
           <h2 class="section-title">Strong opinions, weakly held.</h2>
         </div>
 
@@ -51,6 +51,24 @@
           {/each}
         </div>
       </div>
+
+      <!-- Two tiers: the agent-era models the notes built, each linking to the
+           note that owns it, then the platform-era code standards they grew
+           out of (the tabbed viewer below). -->
+      <div class="models-strip">
+        <p class="models-label">Agent-era · each model earned in a note</p>
+        <div class="models-grid">
+          {#each agentEraModels as model (model.slug)}
+            <a class="model-card" href={`/blog/${model.slug}`}>
+              <h3 class="model-title">{model.title}</h3>
+              <p class="model-line">{model.line}</p>
+              <span class="model-cta">Read the note &rarr;</span>
+            </a>
+          {/each}
+        </div>
+      </div>
+
+      <p class="foundations-label">Platform-era foundations, still load-bearing:</p>
 
       <div class="principles-grid">
         {#each personaData as item (item.title)}
@@ -165,6 +183,73 @@
     .principles-grid {
       grid-template-columns: repeat(2, 1fr);
     }
+  }
+
+  /* ── Agent-era models strip ── */
+
+  .models-strip {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .models-label,
+  .foundations-label {
+    font-family: var(--font-mono);
+    font-size: var(--type-xs);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .foundations-label {
+    margin-bottom: var(--space-lg);
+  }
+
+  .models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: var(--space-md);
+  }
+
+  .model-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--bg-secondary);
+    text-decoration: none;
+    transition:
+      border-color var(--duration-base),
+      background-color var(--duration-base);
+  }
+
+  .model-card:hover,
+  .model-card:focus-visible {
+    border-color: var(--text-muted);
+    background: var(--bg-primary);
+  }
+
+  .model-title {
+    font-size: var(--type-base);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+  }
+
+  .model-line {
+    font-size: var(--type-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--text-secondary);
+    font-weight: var(--weight-light);
+  }
+
+  .model-cta {
+    margin-top: auto;
+    padding-top: var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: var(--type-xs);
+    color: var(--accent-primary-text);
   }
 
   .principle-card {

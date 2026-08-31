@@ -2,7 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { heroContent, socialDescriptions, narrativeBio, builderProjects } from './content';
+import {
+  heroContent,
+  roleLine,
+  socialDescriptions,
+  narrativeBio,
+  builderProjects,
+} from './content';
 import { personJsonLd } from './structured-data';
 import { FEATURE_FLAGS } from './config';
 
@@ -23,13 +29,18 @@ const EMPLOYER = 'Versant';
 const SCOPE = /CNBC Core/;
 
 describe('hero', () => {
-  it('states audience, outcome and method in at most 40 words', () => {
+  it('leads with the craft thesis in at most 40 words, with no résumé claims', () => {
     const headline = `${heroContent.headline.primary} ${heroContent.headline.accent}`;
     expect(words(headline)).toBeLessThanOrEqual(40);
-    // audience + outcome live in the primary line; the method (edge, video,
-    // governed AI) is named by the accent line or the bio directly beneath it
-    expect(heroContent.headline.primary).toMatch(/teams|platforms/);
-    expect(`${heroContent.headline.accent} ${heroContent.bio}`).toMatch(/edge|video|AI/);
+    // The hero names the standard (receipts) and the subject matter, grounded
+    // in the platform. The role and scope deliberately do not appear here:
+    // they live in About and on the finding-aid surfaces (meta, JSON-LD,
+    // llms.txt), asserted below. A résumé phrase reappearing in the hero is
+    // the regression this block exists to catch.
+    expect(headline).toMatch(/receipt/i);
+    expect(headline).toMatch(/agents|edge|reliability/i);
+    expect(headline).toMatch(/CNBC/);
+    expect(headline).not.toMatch(/senior manager|versant|QE|20-engineer|player-coach/i);
   });
 
   it('carries at most one figure in the bio', () => {
@@ -37,13 +48,17 @@ describe('hero', () => {
     expect(figures.length).toBeLessThanOrEqual(1);
   });
 
-  it('names the title and employer as facts', () => {
-    // The badge carries the literal title/employer/org line; the bio is free
-    // to read as prose as long as it stays anchored to the platform.
-    expect(heroContent.badge).toMatch(/SENIOR MANAGER, ENGINEERING/);
-    expect(heroContent.badge).toMatch(/VERSANT/);
-    expect(heroContent.badge).toMatch(/CNBC CORE/);
-    expect(heroContent.bio).toMatch(/CNBC/);
+  it('keeps the bio on the craft, not the résumé', () => {
+    expect(heroContent.bio).toMatch(/receipt/);
+    expect(heroContent.bio).not.toMatch(/senior manager|versant|QE|20-engineer/i);
+  });
+
+  it('keeps the role line intact for the finding-aid surfaces', () => {
+    // The OG card eyebrow, <title>, meta and JSON-LD still state the role as
+    // fact; craft-first is about placement, not about hiding the job.
+    expect(roleLine).toMatch(/SENIOR MANAGER, ENGINEERING/);
+    expect(roleLine).toMatch(/VERSANT/);
+    expect(roleLine).toMatch(/CNBC CORE/);
   });
 });
 
@@ -60,9 +75,10 @@ describe('one story on every surface', () => {
     // Scope claims are load-bearing and constrained: a direct team of 8
     // engineers and 2 QE, co-leading a ~20-engineer rebuild across 3 teams.
     // Both halves are asserted, because dropping either one is how the claim
-    // drifts back into "runs a 20-engineer org".
+    // drifts back into "runs a 20-engineer org". The hero no longer carries
+    // the claim (craft-first restructure, 2026-08-31): on-page it is stated
+    // once, in About, and the agent-facing surfaces keep it verbatim.
     const surfaces: Array<[string, string]> = [
-      ['hero accent', heroContent.headline.accent],
       ['narrative bio', narrativeBio.paragraphs[0]],
       ['meta description', socialDescriptions.meta],
       ['llms.txt', llms],

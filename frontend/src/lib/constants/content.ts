@@ -41,7 +41,6 @@ export const SOURCES = {
 } as const satisfies Record<string, Source>;
 
 export interface HeroContent {
-  badge: string;
   headline: {
     primary: string;
     accent: string;
@@ -53,30 +52,33 @@ export interface HeroContent {
     primary: string;
     secondary: string;
   };
-  motto: string[];
 }
 
 /**
- * Hero copy. Written for a Director / Head-of-Engineering reader: role and
- * outcomes up front, the still-ships differentiator second, no internal
- * specifics. The headline (primary + accent) is held to 40 words by
- * positioning.test.ts; the bio carries at most one number.
+ * The role line, kept off the hero on purpose: it lives on the finding-aid
+ * surfaces (OG card eyebrow, <title>, meta, JSON-LD, llms.txt) and in About.
+ */
+export const roleLine = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE';
+
+/**
+ * Hero copy. Craft-first: the page leads with the writing and the standard it
+ * holds itself to, not the résumé. Role and scope are stated once, in About,
+ * and on the agent-facing surfaces. The headline (primary + accent) is held
+ * to 40 words by positioning.test.ts; the bio carries at most one figure.
  */
 export const heroContent: HeroContent = {
-  badge: 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE',
   headline: {
-    primary: 'I lead engineering teams that turn platform performance into audience and revenue.',
+    primary: 'Engineering notes with receipts.',
     accent:
-      'Player-coach: 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.',
+      'Mental models from ten years of building CNBC.com: agents, edge architecture, reliability.',
   },
   tagline:
-    'Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
-  bio: 'Ten years on CNBC.com, intern to Senior Manager, Engineering — and I crossed the line between building and leading twice, on purpose. I keep the platform fast enough to hold ~47M monthly readers through market-moving events: edge architecture, video, and governed AI, built by teams I lead and still code beside.',
+    'Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.',
+  bio: "I'm an engineering manager who still ships, and this site is where I write down what production teaches me. Every claim carries a receipt: a number, a named system, or an incident I can point at. If a green check can lie to you, it eventually will; the notes start there.",
   cta: {
-    primary: 'View Selected Work',
-    secondary: 'Read the Notes',
+    primary: 'Read the Notes',
+    secondary: 'View Selected Work',
   },
-  motto: ['Low Latency', 'High Leverage', 'Deep Focus'],
 };
 
 export interface PerformanceMetric {
@@ -98,7 +100,7 @@ export const performanceMetrics: PerformanceMetric[] = [
     value: '47M',
     sublabel: 'CNBC digital · ComScore',
     basis:
-      'U.S. average monthly unique visitors, Sept 2024–Aug 2025, as reported at Versant Investor Day',
+      'U.S. average monthly unique visitors, Sept 2024 to Aug 2025, as reported at Versant Investor Day',
     source: SOURCES.versantInvestorDay2025,
   },
   {
@@ -106,7 +108,7 @@ export const performanceMetrics: PerformanceMetric[] = [
     value: '1.7s',
     sublabel: 'cnbc.com · CrUX field data',
     basis:
-      'Chrome UX Report, all devices, July 2026 — 85% of page loads inside the 2.5s "good" threshold',
+      'Chrome UX Report, all devices, July 2026, with 85% of page loads inside the 2.5s "good" threshold',
     source: SOURCES.cruxCnbc,
   },
   {
@@ -204,11 +206,11 @@ export const notesData: NotesData = {
       tags: ['Reliability', 'Verification', 'AI Engineering'],
       sources: [
         {
-          label: 'Warren Buffett, Berkshire Hathaway shareholder letter, 2008 — the OFHEO passage',
+          label: 'Warren Buffett, Berkshire Hathaway shareholder letter, 2008 · the OFHEO passage',
           href: 'https://www.berkshirehathaway.com/letters/2008ltr.pdf',
         },
         {
-          label: 'Will Larson — Agents as scaffolding for recurring tasks (lethain.com)',
+          label: 'Will Larson · Agents as scaffolding for recurring tasks (lethain.com)',
           href: 'https://lethain.com/agents-as-scaffolding/',
         },
         {
@@ -217,28 +219,28 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        "Run this in any repo with a gating script: <code>./check.sh | head -40; echo $?</code>. If the gate fails, you still see <code>0</code> — without <code>pipefail</code>, <code>$?</code> is <code>head</code>'s exit status, not the gate's. I measured it on a real gate in my own stack: run directly, exit 1; piped through a pager for readability, exit 0. The gate was correct. The call site threw its verdict away, and everything downstream recorded a pass.",
-        'I call this a fail-open check: a check whose “did not run” is indistinguishable from “passed.” Over one month I logged twenty-four named instances in one small stack of scripts, CI jobs, and agent pipelines — not, I think, because the stack is unusually bad, but because I gave the class a name and started writing instances down.',
+        "Run this in any repo with a gating script: <code>./check.sh | head -40; echo $?</code>. If the gate fails, you still see <code>0</code>, because without <code>pipefail</code>, <code>$?</code> is <code>head</code>'s exit status, not the gate's. I measured it on a real gate in my own stack: run directly, exit 1; piped through a pager for readability, exit 0. The gate was correct. The call site threw its verdict away, and everything downstream recorded a pass.",
+        'I call this a fail-open check: a check whose “did not run” is indistinguishable from “passed.” Over one month I logged twenty-four named instances in one small stack of scripts, CI jobs, and agent pipelines. Not, I think, because the stack is unusually bad, but because I gave the class a name and started writing instances down.',
         '<h2>Green is ambiguous by construction</h2>',
         'Three from the same month:',
-        '<ul><li>A wrapper around a nightly embedding job logged success unconditionally and discarded stderr. The job had been dying mid-batch — at exit 0 — behind months of healthy-looking logs.</li><li>A style lint reported clean on its first run because a comment line broke the grep over its own pattern file. Zero banned patterns were matched against anything. The check had not passed; it had not run. The recorded outcome was identical either way.</li><li>A link checker printed every finding to stdout and exited 0. Three downstream consumers read the exit code. None read the text.</li></ul>',
-        'The general shape: <strong>the absence of a result gets recorded as the presence of a lesser one.</strong> A checker has three honest outcomes — found problems, found nothing after actually looking, and could not look. Most tooling gives it two exit states, so “could not look” gets folded into whichever side the error handling happens to land on. When it lands on green, the result is strictly worse than no check at all. A missing check is a visible gap: anyone who asks “what verifies this?” finds nothing and knows the question is open. A fail-open check produces a false record that closes the question, and the record is what stops anyone from looking again.',
+        '<ul><li>A wrapper around a nightly embedding job logged success unconditionally and discarded stderr. The job had been dying mid-batch, at exit 0, behind months of healthy-looking logs.</li><li>A style lint reported clean on its first run because a comment line broke the grep over its own pattern file. Zero banned patterns were matched against anything. The check had not passed; it had not run. The recorded outcome was identical either way.</li><li>A link checker printed every finding to stdout and exited 0. Three downstream consumers read the exit code. None read the text.</li></ul>',
+        '<strong>The absence of a result gets recorded as the presence of a lesser one.</strong> A checker has three honest outcomes: found problems, found nothing after actually looking, and could not look. Most tooling gives it two exit states, so “could not look” gets folded into whichever side the error handling happens to land on. When it lands on green, the result is strictly worse than no check at all: a fail-open check produces a false record that closes the question, and the record is what stops anyone from looking again. A missing check, by contrast, is a visible gap. Anyone who asks “what verifies this?” finds nothing and knows the question is open.',
         '<h2>The artifact is the camouflage</h2>',
-        'These survive for months because the failure produces an artifact, and the artifact conceals it. A test suite in that same stack wrote its “real build” case to the shipped deliverable instead of a fixture. Run to confirm an unrelated change was safe, it passed, and in passing silently rebuilt the deliverable against different inputs, evicting real content. Nothing failed, nothing warned; the output was a plausible, well-formed, freshly-dated file. A test that writes outside its fixture directory is an unreviewed production change with a green checkmark.',
-        'A curated export, built on a cloud machine, sat in the repo vouching for its build script — which had never once executed locally, because it used <code>tomllib</code> (Python 3.11+) against a local 3.9.6. Dead at import. Its own test suite failed 9 of 14 cases the same way, and nobody read past the “5 passed.” An artifact is not evidence its producer runs <em>here</em>, and a pass count means nothing without its total.',
-        "This is not a tooling quirk; it is how oversight fails generally. <a href='https://www.berkshirehathaway.com/letters/2008ltr.pdf' target='_blank' rel='noopener'>Buffett's 2008 shareholder letter</a> describes OFHEO, a regulator created to oversee exactly two companies, staffed with more than a hundred people with no other assignment. It published a self-congratulatory review of its first decade — and, on Buffett's telling, entirely missed that Fannie and Freddie were cooking the books. Headcount measures effort applied, not failures found.",
+        'These survive for months because the failure produces an artifact, and the artifact conceals it. A test suite in that same stack wrote its “real build” case to the shipped deliverable instead of a fixture, which makes it an unreviewed production change wearing a green checkmark. Run to confirm an unrelated change was safe, it passed, and in passing silently rebuilt the deliverable against different inputs, evicting real content. Nothing failed, nothing warned; the output was a plausible, well-formed, freshly-dated file.',
+        'A curated export, built on a cloud machine, sat in the repo vouching for its build script, but an artifact is not evidence its producer runs <em>here</em>: the script used <code>tomllib</code> (Python 3.11+) against a local 3.9.6 and had never once executed locally. Dead at import. Its own test suite failed 9 of 14 cases the same way, and nobody read past the “5 passed” to ask out of how many.',
+        "This is not a tooling quirk; it is how oversight fails generally, because headcount measures effort applied, not failures found. <a href='https://www.berkshirehathaway.com/letters/2008ltr.pdf' target='_blank' rel='noopener'>Buffett's 2008 shareholder letter</a> describes OFHEO, a regulator created to oversee exactly two companies, staffed with more than a hundred people with no other assignment. It published a glowing review of its own first decade and, on Buffett's telling, entirely missed that both companies had spent years misstating their earnings.",
         'The ranking error underneath is universal: crashes and blank fields at the bad end of the severity scale, mostly-correct output at the good end. Ranked by expected damage, the order inverts. A crash routes immediately to a human who now knows something is wrong; the output that looks complete routes to acceptance, consuming exactly the attention budget that would have caught it.',
         '<h2>The sneakiest variant: the check that cannot see the defect</h2>',
-        'The instances above fail by not running or not examining. The subtler ones run perfectly — against a scope that excludes the defect.',
-        "My own site's CI config carried <code>.github/**</code> in its <code>paths-ignore</code> list, alongside <code>**.md</code> and <code>LICENSE</code>. Reasonable on its face: editing a workflow file doesn't change the application. It meant the one change class able to delete a job, loosen a trigger, or drop a required check was the only class that merged with nothing run against it. A weakened gate and an intact one leave identical clean history.",
-        'More of the same shape, none of it configured by anyone: a frontmatter parser whose regex read only the <em>first</em> item of every YAML block list, so a health metric was computed over a universe 16% smaller than it claimed — and printed roughly 78% either way. A list API returned the first 20 items with <code>has_more: true</code>, then returned the identical page when handed its own continuation cursor. Nothing consumed the one field that contradicted the roster, and I nearly filed a report that four scheduled jobs had vanished. They were on page two.',
+        'The instances above fail by not running or not examining. The subtler ones run perfectly, against a scope that excludes the defect.',
+        "My own site's CI config carried <code>.github/**</code> in its <code>paths-ignore</code> list, alongside <code>**.md</code> and <code>LICENSE</code>. Reasonable on its face: editing a workflow file doesn't change the application. It meant the one change class able to delete a job, loosen a trigger, or drop a required check was the only class that merged with nothing run against it; a weakened gate and an intact one leave identical clean history, so nothing in the record would ever have surfaced it.",
+        'The same scope failure arises with nobody configuring it: a frontmatter parser whose regex read only the <em>first</em> item of every YAML block list computed a health metric over a universe 16% smaller than it claimed, and printed roughly 78% either way. A list API returned the first 20 items with <code>has_more: true</code>, then returned the identical page when handed its own continuation cursor. Nothing consumed the one field that contradicted the roster, and I nearly filed a report that four scheduled jobs had vanished. They were on page two.',
         "And <code>git log --since='7 days ago' --diff-filter=A --name-only</code> on a fresh CI clone reported 1,618 files added that week; the true figure was 32. The clone was shallow, so its boundary commit appeared to add the entire repo at once.",
-        'The design-time test for all of these: <strong>if this control were wrong, what would tell me?</strong> If the honest answer is “the same green output I get when it is right,” you do not have a check. You have a green light wired to the wall.',
+        'The design-time test for all of these: <strong>if this control were wrong, what would tell me?</strong> If the honest answer is “the same green output I get when it is right,” you do not have a check so much as a green light wired to the wall.',
         '<h2>The field guide</h2>',
         'Rules that have held up, each earned by at least one instance above:',
-        "<ol><li><strong>Three outcomes, never two.</strong> Passed / failed / could-not-run — and could-not-run must be loud. This applies per item, too: an input your checker cannot parse must land in <em>undetermined</em>, never in a benign bucket like “no findings.”</li><li><strong>Assert the condition, not the reaching of the line.</strong> Emit success only after verifying the thing you claim, and match the invariant's shape to what consumers depend on. An embedding backfill satisfied its count-shaped post-condition (pending reached zero) while writing the same vector for forty different documents. A count cannot see a content defect.</li><li><strong>Every emitted marker needs a named consumer.</strong> A <code>has_more</code> flag, a truncation marker, a warning line — a signal nobody reads is worse than no signal, because it looks like coverage.</li><li><strong>Test the check against known-dirty input, from the position it actually runs in.</strong> Both checks I wrote to catch this class missed their own motivating cases on first run; only fixtures with known answers caught it. And a detector validated on a laptop can still be unrunnable at its scheduled call site; testing the detector is not testing the detection.</li><li><strong>A control's scope must include the control.</strong> Whatever decides what gets checked — a path filter, a sampling rule, a pagination default — is the best-hidden place for this defect.</li><li><strong>Spend verification on the fix.</strong> The patch that closes a fail-open is itself fresh, unverified check code, written under pressure with attention on the old defect. In my log, remediation builds are where new instances concentrate.</li></ol>",
-        "“So write more checks” is the wrong response — the fix for this class is a contract on the checks you have, not a headcount of new detectors, and every new detector is new surface for the same defect. “We have a runbook for this” is worse: a written policy with no enforcing mechanism is not a missing check, it is a fail-open one, occupying the slot where verification would report while readers take its existence as evidence the boundary holds. Often the strongest move is not a better check at all: restructure so the bad output cannot be produced. <a href='https://lethain.com/agents-as-scaffolding/' target='_blank' rel='noopener'>Will Larson describes</a> catching an agent mis-forwarding alerts and, rather than adding an eval he knew would work, moving the filtering into a deterministic script so the agent never sees what it might mishandle. A check leaves the failure mode alive behind a gate; a restructure removes it.",
-        'The same month produced two defects I deliberately did not log: they failed <em>closed</em>. Costly, but they never certified a falsehood, and a ledger that absorbs every nearby defect stops measuring the thing it names.',
+        "<ol><li><strong>Three outcomes, never two.</strong> Passed / failed / could-not-run, and could-not-run must be loud. This applies per item, too: an input your checker cannot parse must land in <em>undetermined</em>, never in a benign bucket like “no findings.”</li><li><strong>Assert the condition, not the reaching of the line.</strong> Emit success only after verifying the thing you claim, and match the invariant's shape to what consumers depend on. An embedding backfill satisfied its count-shaped post-condition (pending reached zero) while writing the same vector for forty different documents. A count cannot see a content defect.</li><li><strong>Every emitted marker needs a named consumer.</strong> A <code>has_more</code> flag, a truncation marker, a warning line: a signal nobody reads is worse than no signal, because it looks like coverage.</li><li><strong>Test the check against known-dirty input, from the position it actually runs in.</strong> Both checks I wrote to catch this class missed their own motivating cases on first run; only fixtures with known answers caught it. And a detector validated on a laptop can still be unrunnable at its scheduled call site; testing the detector is not testing the detection.</li><li><strong>A control's scope must include the control.</strong> Whatever decides what gets checked (a path filter, a sampling rule, a pagination default) is the best-hidden place for this defect.</li><li><strong>Spend verification on the fix.</strong> The patch that closes a fail-open is itself fresh, unverified check code, written under pressure with attention on the old defect. In my log, remediation builds are where new instances concentrate.</li></ol>",
+        "“So write more checks” is the wrong response. The fix for this class is a contract on the checks you have, not a headcount of new detectors, and every new detector is new surface for the same defect. “We have a runbook for this” is worse: a written policy with no enforcing mechanism is not a missing check, it is a fail-open one, occupying the slot where verification would report while readers take its existence as evidence the boundary holds. Often the strongest move is not a better check at all: restructure so the bad output cannot be produced. <a href='https://lethain.com/agents-as-scaffolding/' target='_blank' rel='noopener'>Will Larson describes</a> catching an agent mis-forwarding alerts and, rather than adding an eval he knew would work, moving the filtering into a deterministic script so the agent never sees what it might mishandle. The check would have left the failure mode alive behind a gate; the restructure removed it from the system.",
+        'The same month produced two defects I deliberately did not log: they failed <em>closed</em>. Costly, but they never certified a falsehood, and logging them anyway would have blurred what the ledger measures.',
         '<strong>A clean report from a check that cannot say “I could not run” is not evidence of anything. Build checks that cannot fail quietly, or their green eventually becomes the thing that hides the failure they were hired to catch.</strong>',
       ],
     },
@@ -251,12 +253,12 @@ export const notesData: NotesData = {
       sources: [
         {
           label:
-            'First-hand: OB1, the retrieval layer over a personal exocortex — 1,700 claims and 8,281 wiki-links, measured 30 Aug 2026',
+            'First-hand: OB1, the retrieval layer over a personal exocortex, at 1,700 claims and 8,281 wiki-links, measured 30 Aug 2026',
         },
       ],
       content: [
-        'Every agent session starts from a blank context window, so it re-derives judgment you already paid for. You settle a tradeoff in March; in August an agent proposes the option you rejected, reasoning its way there with full confidence and none of the history. The usual diagnosis is that the model needs memory, and the usual fix is a longer prompt — paste the standing decisions at the top and hope attention holds. Both miss the mechanism: the judgment that bears on a question is rarely lexically close to it. <strong>Risk parity distributing risk rather than capital and capacity-aware load balancing distributing work by headroom share no keywords and the same shape.</strong> BM25 cannot cross that gap, because it scores the words and the transferable part was never in the words.',
-        'So the vault of 1,700 claims stays in git, and OB1 projects it into Supabase behind MCP, so Claude, ChatGPT, and my phone all retrieve the same judgment. A claim is one assertable proposition, named by a filename that states it, hand-typed as claim, pattern, tension, or anti-pattern — <strong>nothing derives that type, which is why it carries judgment</strong>: a thing is an anti-pattern because someone decided it was. Retrieval embeds the query, ranks with pgvector, then expands one hop along the wiki-links, so a claim reached by a <code>parallels</code> edge surfaces even when its similarity is low; 2,777 of the 8,281 edges cross domains, the ones worth the hop. On 15 August a reduce pass was about to generalize a second claim about legibility inverting felt value — retrieval returned <code>prevented-loss-invisibility</code>, already established on an external source, and the output became an enrichment instead of a duplicate. <strong>The judgment you have to remember to look up is judgment you do not have.</strong>',
+        'Every agent session starts from a blank context window, so it re-derives judgment you already paid for. You settle a tradeoff in March; in August an agent proposes the option you rejected, reasoning its way there with full confidence and none of the history. The usual diagnosis is that the model needs memory, and the usual fix is a longer prompt: paste the standing decisions at the top and hope attention holds. Both miss the mechanism: the judgment that bears on a question is rarely lexically close to it. <strong>Risk parity distributing risk rather than capital and capacity-aware load balancing distributing work by headroom share no keywords and the same shape.</strong> BM25 cannot cross that gap, because it scores the words and the transferable part was never in the words.',
+        'So the vault of 1,700 claims stays in git, and OB1 projects it into Supabase behind MCP, so Claude, ChatGPT, and my phone all retrieve the same judgment. A claim is one assertable proposition, named by a filename that states it, hand-typed as claim, pattern, tension, or anti-pattern. <strong>Nothing derives that type, which is why it carries judgment</strong>: a thing is an anti-pattern because someone decided it was. Retrieval embeds the query, ranks with pgvector, then expands one hop along the wiki-links, so a claim reached by a <code>parallels</code> edge surfaces even when its similarity is low; 2,777 of the 8,281 edges cross domains, the ones worth the hop. On 15 August a reduce pass was about to generalize a second claim about legibility inverting felt value. Retrieval returned <code>prevented-loss-invisibility</code>, already established on an external source, and the output became an enrichment instead of a duplicate. <strong>The judgment you have to remember to look up is judgment you do not have.</strong>',
       ],
     },
     {
@@ -267,7 +269,7 @@ export const notesData: NotesData = {
       tags: ['System Prompt Architecture', 'LLM Mechanics', 'AI Engineering'],
       sources: [
         {
-          label: 'Salesforce — lessons from 20,000 enterprise agent deployments',
+          label: 'Salesforce · lessons from 20,000 enterprise agent deployments',
           href: 'https://www.salesforce.com/news/stories/ai-lessons-building-enterprise-agents/',
         },
         {
@@ -281,13 +283,13 @@ export const notesData: NotesData = {
         { label: 'First-hand: compressing a production system prompt from ~4,000 to ~1,300 words' },
       ],
       content: [
-        "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to — and when that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. <a href='https://www.salesforce.com/news/stories/ai-lessons-building-enterprise-agents/' target='_blank' rel='noopener'>Salesforce found this same escalation</a> across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less — which is only surprising if you believed the length was buying compliance in the first place.",
-        "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: <a href='https://arxiv.org/abs/2104.09864' target='_blank' rel='noopener'>RoPE</a>, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and <a href='https://arxiv.org/abs/2307.03172' target='_blank' rel='noopener'>retrieval accuracy for a fact placed mid-context drops by more than 20 points</a> compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction — Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
+        "Production system prompts bloat by a predictable mechanism. The model does something wrong, so you add an instruction telling it not to. When that doesn't stick, you add a more forcefully worded one. <code>NEVER do X.</code> In capitals. With exclamation points. <a href='https://www.salesforce.com/news/stories/ai-lessons-building-enterprise-agents/' target='_blank' rel='noopener'>Salesforce found this same escalation</a> across 20,000 enterprise agent deployments, and found it does not work: <strong>an LLM does not process typographic emphasis the way a human reader does.</strong> Capitalization and punctuation are just more tokens, not a signal that reliably overrides competing considerations during generation. So the instruction fails again, another one gets appended, and the prompt accumulates. I took one production prompt from roughly 4,000 words to roughly 1,300 and it got <em>more</em> reliable, not less. That is only surprising if you believed the length was buying compliance in the first place.",
+        "What actually carries a constraint is position, not volume. Attention has a measurable front-and-back bias: <a href='https://arxiv.org/abs/2104.09864' target='_blank' rel='noopener'>RoPE</a>, the positional encoding most current models use, decays in a way that puts tokens far from both ends of the sequence into a systematically lower-attention zone, and <a href='https://arxiv.org/abs/2307.03172' target='_blank' rel='noopener'>retrieval accuracy for a fact placed mid-context drops by more than 20 points</a> compared to the same fact at the start or end. A constraint's <em>location</em> is load-bearing in a way its wording is not. So the rewrite was tiered rather than shortened: identity and non-negotiable constraints at the edges, task detail in the middle, and reinforcement anchors placed to survive attention decay across a long multi-turn conversation rather than only the first exchange. The other half of the compression was subtraction. Salesforce's corollary is that <strong>anything you can draw as a flowchart belongs in code, not in a prompt</strong>, because code executes identically every time and no wording does. A context window is an attention budget for the run, not a junk drawer for everything that once went wrong.",
       ],
     },
     {
       slug: 'the-agent-run-is-the-new-unit-of-work',
-      title: 'The Agent Run Is the New Unit of Work — and Reviewing It Is Management',
+      title: 'The Agent Run Is the New Unit of Work, and Reviewing It Is Management',
       date: 'Jul 11, 2026',
       dateISO: '2026-07-11',
       tags: ['Agent Architecture', 'Engineering Management', 'AI Engineering'],
@@ -298,8 +300,8 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        "The genuinely new moment in AI-assisted engineering is not the chat answer — you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management — because that is what it is: supervising labor you did not perform. I manage a direct team of ten and co-lead a rebuild across three web teams, and the skills that job demands — scoping delegation, setting a review bar, calibrating trust per worker — are now individual-contributor skills too.",
-        "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable — completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule — <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
+        "The genuinely new moment in AI-assisted engineering is not the chat answer; you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management, because that is what it is: supervising labor you did not perform. I manage a direct team of ten and co-lead a rebuild across three web teams, and the skills that job demands (scoping delegation, setting a review bar, calibrating trust per worker) are now individual-contributor skills too.",
+        "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable: completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule: <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
       ],
     },
     {
@@ -315,8 +317,8 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        'Building an agent produces a visible artifact — there was nothing, now there is a working agent — so it reads as progress. Maintaining one produces no artifact; at best, nothing happens. So effort flows to building, and the felt value inverts the real value. A well-built agent nobody maintains degrades on a schedule: its context sources go stale, its permissions drift wider than its job, its instructions calcify into a patch pile. A modestly-built agent someone reviews weekly <strong>compounds</strong> — each pass prunes a failure mode and sharpens the job. This is the oldest lesson in operations wearing a new costume: prevented loss is invisible, which is why nobody celebrates the on-call review that kept the incident from existing.',
-        "The corrective is ownership, and it decomposes into four responsibilities I now require for any agent near production work: <strong>define the job narrowly</strong> (a vague agent is an unowned agent waiting to happen); <strong>curate the diet</strong> — what it reads, which examples it learns from, including rejected outputs so it learns what <em>not</em> to do; <strong>manage permissions proportional to stakes</strong> — draft-only and write-access are different categories, and write access is earned inside a narrow job, not granted because a demo looked good; and <strong>run the review loop</strong>, where one-off failures get fixed at the output level but recurring failures get fixed at the system level. Team agents fail by tragedy of the commons — the pain is collective, the maintenance is nobody's job — so the owner follows the work. <strong>An agent is not a feature you ship. It is a service you operate.</strong>",
+        'Building an agent produces a visible artifact (there was nothing, now there is a working agent), so it reads as progress. Maintaining one produces no artifact; at best, nothing happens. So effort flows to building, and the felt value inverts the real value. A well-built agent nobody maintains degrades on a schedule: its context sources go stale, its permissions drift wider than its job, its instructions calcify into a patch pile. A modestly-built agent someone reviews weekly <strong>compounds</strong>: each pass prunes a failure mode and sharpens the job. This is the oldest lesson in operations wearing a new costume: prevented loss is invisible, which is why nobody celebrates the on-call review that kept the incident from existing.',
+        "The corrective is ownership, and it decomposes into four responsibilities I now require for any agent near production work. <strong>Define the job narrowly</strong>: a vague agent is an unowned agent waiting to happen. <strong>Curate the diet</strong>: what it reads, which examples it learns from, including rejected outputs so it learns what <em>not</em> to do. <strong>Manage permissions proportional to stakes</strong>: draft-only and write access are different categories, and write access is earned inside a narrow job, not granted because a demo looked good. And <strong>run the review loop</strong>, where one-off failures get fixed at the output level but recurring failures get fixed at the system level. Team agents fail by tragedy of the commons (the pain is collective, the maintenance is nobody's job), so the owner follows the work. <strong>An agent is not a feature you ship. It is a service you operate.</strong>",
       ],
     },
     {
@@ -327,21 +329,21 @@ export const notesData: NotesData = {
       tags: ['AI Engineering', 'Agent Architecture', 'Specification'],
       sources: [
         {
-          label: 'METR — Measuring the impact of early-2025 AI on experienced developers',
+          label: 'METR · Measuring the impact of early-2025 AI on experienced developers',
           href: 'https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/',
         },
         {
-          label: 'StrongDM — building software with AI in a software factory',
+          label: 'StrongDM · building software with AI in a software factory',
           href: 'https://www.strongdm.com/blog/the-strongdm-software-factory-building-software-with-ai',
         },
         {
-          label: 'strongdm/attractor — the public natural-language spec repository',
+          label: 'strongdm/attractor · the public natural-language spec repository',
           href: 'https://github.com/strongdm/attractor',
         },
       ],
       content: [
-        "The industry is measuring AI-assisted development with the wrong unit of analysis. Code-generation speed is the vanity metric; <a href='https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/' target='_blank' rel='noopener'>the METR result everyone cites</a> — experienced developers who <em>felt</em> 20% faster while measuring slower — isn't evidence that AI doesn't work, it's evidence that implementation speed was never the constraint. When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description itself. <a href='https://www.strongdm.com/blog/the-strongdm-software-factory-building-software-with-ai' target='_blank' rel='noopener'>StrongDM's autonomous pipeline</a> runs on nearly 6,000 lines of <a href='https://github.com/strongdm/attractor' target='_blank' rel='noopener'>public behavioral specification</a> — and that corpus, not the generated code, is the engineering artifact. <strong>The specification becomes the primary artifact; the codebase is a derivative</strong> — closer to a build output than to source.",
-        'Building production systems with Cursor and Claude Code has restructured where my own hours go. My leverage stopped correlating with how fast I can type and started correlating with how precisely I can state three things: the goal, the boundary, and what "done" has to prove. The human stays at the two endpoints — specification in, satisfaction judgment out — and everything between is increasingly the machine\'s. This also explains why AI amplifies experts instead of equalizing them: it equalizes execution speed, but execution was already cheap. What it amplifies is specification quality, and specification quality is a direct function of domain depth. If the agent keeps disappointing you, the uncomfortable first question is no longer about the model — it\'s whether you actually specified the thing you wanted.',
+        "The industry is measuring AI-assisted development with the wrong unit of analysis. Code-generation speed is the vanity metric; <a href='https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/' target='_blank' rel='noopener'>the METR result everyone cites</a> (experienced developers who <em>felt</em> 20% faster while measuring slower) isn't evidence that AI doesn't work, it's evidence that implementation speed was never the constraint. When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description itself. <a href='https://www.strongdm.com/blog/the-strongdm-software-factory-building-software-with-ai' target='_blank' rel='noopener'>StrongDM's autonomous pipeline</a> runs on nearly 6,000 lines of <a href='https://github.com/strongdm/attractor' target='_blank' rel='noopener'>public behavioral specification</a>, and that corpus, not the generated code, is the engineering artifact. <strong>The specification becomes the primary artifact; the codebase is a derivative</strong>, closer to a build output than to source.",
+        'Building production systems with Cursor and Claude Code has restructured where my own hours go. My leverage stopped correlating with how fast I can type and started correlating with how precisely I can state three things: the goal, the boundary, and what "done" has to prove. The human stays at the two endpoints, specification in and satisfaction judgment out, and everything between is increasingly the machine\'s. This also explains why AI amplifies experts instead of equalizing them: it equalizes execution speed, but execution was already cheap. What it amplifies is specification quality, and specification quality is a direct function of domain depth. If the agent keeps disappointing you, the uncomfortable first question is no longer about the model. It\'s whether you actually specified the thing you wanted.',
       ],
     },
     {
@@ -352,8 +354,8 @@ export const notesData: NotesData = {
       tags: ['Agent Architecture', 'Reliability', 'Distributed Systems'],
       sources: [{ label: 'First-hand: agent failures debugged over the course of 2026' }],
       content: [
-        "Every agent failure I've debugged this year decomposes the same way. The agent didn't lack intelligence — the loop lacked definition. It wandered out of scope because no boundary was stated. It \"finished\" without finishing because nothing defined what done has to prove. Two agents double-executed the same task because nothing marked it claimed. These are Tuesday failures, and none of them are fixed by a smarter model, because <strong>smartness cannot supply a fact that was never specified</strong>. A run an agent can actually be held to has five parts: a goal, a boundary, tools, artifacts, and receipts. Miss one and you haven't delegated work — you've made a wish.",
-        'The good news: distributed systems solved these coordination problems decades ago, we just have to notice the mapping. A visible <code>CLAIMED</code> state on a task is a lease, revalidated when the worker returns. "Done" without an attached receipt is self-attestation by the party with the strongest incentive to declare success — so the receipt (the diff, the test run, the artifact link) is non-negotiable, the same way you require an acknowledgement instead of trusting a fire-and-forget write. And the issue tracker you already run is the natural control plane: it has owners, statuses, comments, links, and history built in. <strong>Reliability is engineered into the loop, not summoned from the model.</strong> Make the loop less ambiguous before you ask for a smarter agent.',
+        "Every agent failure I've debugged this year decomposes the same way. The agent didn't lack intelligence. The loop lacked definition. It wandered out of scope because no boundary was stated. It \"finished\" without finishing because nothing defined what done has to prove. Two agents double-executed the same task because nothing marked it claimed. These are Tuesday failures, and none of them are fixed by a smarter model, because <strong>smartness cannot supply a fact that was never specified</strong>. A run an agent can actually be held to has five parts: a goal, a boundary, tools, artifacts, and receipts. Miss one and you haven't delegated work. You've made a wish.",
+        'The good news: distributed systems solved these coordination problems decades ago, we just have to notice the mapping. A visible <code>CLAIMED</code> state on a task is a lease, revalidated when the worker returns. "Done" without an attached receipt is self-attestation by the party with the strongest incentive to declare success, so the receipt (the diff, the test run, the artifact link) is non-negotiable, the same way you require an acknowledgement instead of trusting a fire-and-forget write. And the issue tracker you already run is the natural control plane: it has owners, statuses, comments, links, and history built in. <strong>Reliability is engineered into the loop, not summoned from the model.</strong> Make the loop less ambiguous before you ask for a smarter agent.',
       ],
     },
     {
@@ -370,8 +372,8 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        "Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root — a plain-text summary of who I am and what I've built, structured for a language model's context window rather than a browser's rendering engine — JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.",
-        "The more interesting find while doing this wasn't a feature, it was a bug. My static-site adapter's SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write — silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site's build output is not implied by its source — verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.",
+        "Recruiters and hiring pipelines increasingly route through an AI agent before a human ever opens a tab. A portfolio site built only for a person scrolling and reading is now serving half its actual audience. So I added the other half: an <code>llms.txt</code> at the site root (a plain-text summary of who I am and what I've built, structured for a language model's context window rather than a browser's rendering engine), JSON-LD <code>Person</code> schema on every page, and real canonical URLs for these notes at <code>/blog/{slug}</code> instead of leaving them buried as anchors inside one long scrolling page. Same content, now individually addressable, cacheable, and citable.",
+        "The more interesting find while doing this wasn't a feature, it was a bug. My static-site adapter's SPA fallback page and the prerendered root route both wanted the filename <code>index.html</code>, and the fallback was winning the write, silently replacing the real homepage (title, description, Open Graph tags, all of it) with an empty shell at build time. Every crawler and every link preview had been getting nothing. The fix was a one-line rename, but the lesson generalizes: <strong>a static site's build output is not implied by its source, so verify what actually ships</strong>, especially at the config layer nobody re-reads after initial setup.",
       ],
     },
     {
@@ -386,8 +388,8 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        'There\'s a real difference between using AI as a faster typist — autocomplete, chat-assisted edits, "fix this bug for me" — and delegating a bounded unit of work to an agent that plans, executes across multiple files, and hands you a diff to review. The first tier is now table stakes; every engineer I work with has a model open in a side pane, and it stopped being a differentiator the moment it became the default. The tiers above it — an agent working a scoped task end-to-end, or several agents running in parallel with their own permission boundaries — are where the actual leverage still lives, because almost nobody has restructured how they delegate work to get there.',
-        'As the person who sets AI-adoption standards for my org, I spend almost none of my time on prompting technique. I spend it on the guardrails: what an agent can touch unsupervised, what requires a human review gate before it ships, and what "done" has to prove before I believe it. This site\'s agent-readable rewrite — the notes, the structured data, the build-output bug above — was built the same way: scoped to specific files, verified against the existing type-check, lint, test, and build gates before anything shipped, with the plan surfaced for review rather than pushed silently. <strong>"I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and a review bar — instead of still typing every line yourself — is the one that\'s left.</strong>',
+        'There\'s a real difference between using AI as a faster typist (autocomplete, chat-assisted edits, "fix this bug for me") and delegating a bounded unit of work to an agent that plans, executes across multiple files, and hands you a diff to review. The first tier is now table stakes; every engineer I work with has a model open in a side pane, and it stopped being a differentiator the moment it became the default. The tiers above it, an agent working a scoped task end-to-end or several agents running in parallel with their own permission boundaries, are where the actual leverage still lives, because almost nobody has restructured how they delegate work to get there.',
+        'As the person who sets AI-adoption standards for my org, I spend almost none of my time on prompting technique. I spend it on the guardrails: what an agent can touch unsupervised, what requires a human review gate before it ships, and what "done" has to prove before I believe it. This site\'s agent-readable rewrite was built the same way: the notes, the structured data, and the build-output bug above were scoped to specific files, verified against the existing type-check, lint, test, and build gates before anything shipped, with the plan surfaced for review rather than pushed silently. <strong>"I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and a review bar, instead of still typing every line yourself, is the one that\'s left.</strong>',
       ],
     },
     {
@@ -404,8 +406,8 @@ export const notesData: NotesData = {
         { label: 'First-hand: building and shipping this site with Claude Code' },
       ],
       content: [
-        "I built most of this site using Claude Code. Not as a novelty — as a deliberate workflow. The components you're reading, the type errors that blocked deployment, the engineering notes you're reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.",
-        "The thing I didn't expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the \"is this worth building?\" stage. You just build. The compounding isn't in the individual tasks — it's in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn't change what you can build; it changes how many times you can try.",
+        "I built most of this site using Claude Code. Not as a novelty; as a deliberate workflow. The components you're reading, the type errors that blocked deployment, the engineering notes you're reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.",
+        "The thing I didn't expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the \"is this worth building?\" stage. You just build. The compounding isn't in the individual tasks; it's in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn't change what you can build; it changes how many times you can try.",
       ],
     },
     {
@@ -420,8 +422,8 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        "The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn't panic — it degrades gracefully.",
-        "I've started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently — full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.",
+        "The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn't panic; it degrades gracefully.",
+        "I've started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently: full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.",
       ],
     },
     {
@@ -434,8 +436,8 @@ export const notesData: NotesData = {
         { label: 'First-hand: API design for systems that spike on scheduled market events' },
       ],
       content: [
-        'Working on live news infrastructure taught me that <strong>failures are not exceptional — they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" — it\'s "what happens when it does?"',
-        "Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn't finished. This matters even more in event-driven systems where the cost of double-processing — a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event — compounds faster than the failure that triggered the retry.",
+        'Working on live news infrastructure taught me that <strong>failures are not exceptional; they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" It\'s "what happens when it does?"',
+        "Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn't finished. This matters even more in event-driven systems where the cost of double-processing (a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event) compounds faster than the failure that triggered the retry.",
       ],
     },
     {
@@ -447,7 +449,7 @@ export const notesData: NotesData = {
       sources: [{ label: 'First-hand: URL-driven state in production web applications' }],
       content: [
         'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
-        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Ten years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication — one authoritative writer, every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
+        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Ten years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication, one authoritative writer with every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
       ],
     },
     {
@@ -492,13 +494,13 @@ export const careerHistory: CareerHistory = {
       year: 2025,
       role: 'Principal Engineer',
       company: 'Versant / CNBC',
-      note: 'Deliberate return to the technical track through the spinoff — kept architecture judgment current.',
+      note: 'Deliberate return to the technical track through the spinoff, to keep architecture judgment current.',
     },
     {
       year: 2026,
       role: 'Senior Manager, Engineering',
       company: 'Versant / CNBC',
-      note: 'The synthesis: player-coach role spanning both tracks — 8 engineers and 2 QE direct, co-leading the ~20-engineer rebuild across 3 web teams, still hands-on in core architecture.',
+      note: 'The synthesis: a player-coach role spanning both tracks, still hands-on in core architecture.',
     },
   ],
 };
@@ -527,7 +529,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Driving the complete redesign of CNBC.com, architecting the new UI/UX end to end with a peer engineering manager: I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and keep the whole web behind the page holding up — analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream: shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation. All of it on the property Versant calls television’s most affluent and educated weekday daytime audience, 27 quarters running.',
+      'Driving the complete redesign of CNBC.com, architecting the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and keep the whole web behind the page holding up: analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream, in shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation.',
     stack: [
       'Isomorphic React',
       'Akamai EdgeWorkers',
@@ -546,7 +548,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'Video & Live Streaming Rebuild',
     category: 'professional',
     description:
-      'Four playback surfaces — vertical video, live TV, full episodes, and standalone live events — rebuilt from the ground up across two player frameworks, inside the ~394M monthly digital minutes Versant reported at its December 2025 Investor Day. The hard part was never the player. It was upstream: settling the API contracts and architecture dependencies each surface had inherited separately, so four experiences resolve to one modular framework instead of forking into four.',
+      'Four playback surfaces (vertical video, live TV, full episodes, and standalone live events) rebuilt from the ground up across two player frameworks, inside the ~394M monthly digital minutes Versant reported at its December 2025 Investor Day. The hard part was never the player. It was upstream: settling the API contracts and architecture dependencies each surface had inherited separately, so four experiences resolve to one modular framework instead of forking into four.',
     stack: ['Server-Sent Events', 'Live Streaming', 'Player Architecture', 'GraphQL'],
     status: 'active',
     metrics: [
@@ -558,7 +560,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'AI-Powered Investing Tools (Frontend Architecture)',
     category: 'professional',
     description:
-      "Took CNBC's first AI product from zero to one as its only frontend engineer and the product/tech bridge — built front-to-back with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform — the direct-to-consumer bet Versant has described to investors. In financial products, trust is the conversion metric: my work makes non-deterministic model output feel deterministic — frame-buffered streaming, graceful degradation, latency that never shakes a reader’s confidence in the number on screen.",
+      "Took CNBC's first AI product from zero to one as its only frontend engineer and the product/tech bridge, built front-to-back with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform. In financial products, trust is the conversion metric. My work makes non-deterministic model output feel deterministic: frame-buffered streaming, graceful degradation, latency that never shakes a reader’s confidence in the number on screen.",
     stack: ['Streaming UI', 'SSE', 'React', 'HCI'],
     status: 'active',
     metrics: [
@@ -574,7 +576,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'Infrastructure & Privacy Separation',
     category: 'professional',
     description:
-      'When the corporate spinoff needed CNBC’s digital business to stand alone, I directed the 4-month, 3-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company with zero downtime — compliance obligations met, no revenue interruption, no user-visible seam.',
+      'When the corporate spinoff needed CNBC’s digital business to stand alone, I directed the 4-month, 3-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company with zero downtime, compliance obligations met, no revenue interruption, no user-visible seam.',
     stack: ['GCP', 'Zero Downtime', 'GDPR/CCPA Compliance', 'Cloud Architecture'],
     status: 'completed',
     metrics: [
@@ -586,7 +588,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'OB1: Exocortex Retrieval Layer',
     category: 'independent',
     description:
-      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,700 atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,700 atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window.',
     stack: ['MCP', 'Supabase', 'pgvector', 'TypeScript'],
     status: 'shipped',
     metrics: [
@@ -598,7 +600,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'Cost-Guard: FinOps Platform',
     category: 'experiment',
     description:
-      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development — the same governed workflow I set for my org, proven on my own infrastructure.',
+      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development, the same governed workflow I set for my org, proven on my own infrastructure.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
     status: 'in-progress',
     metrics: [
@@ -616,10 +618,10 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: 'Player-coach by design',
   paragraphs: [
-    'What the business gets from me is both tracks at once. Over ten years at CNBC I deliberately crossed the line most engineers pick a side of — senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. The payoff for the organization: I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer rebuild of CNBC.com across 3 web teams, and because I still architect and ship alongside them, technical decisions get made in the room — no translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
-    'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code — measurable velocity gains with fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
-    'The coach half is just as deliberate. I recently expanded a mid-level engineer’s scope from single tasks to three concurrent workstreams — video, search, and free preview — and the coaching that mattered was not technical: they were losing rooms they were right in, so we worked on how the work gets presented to design and product until their influence caught up with their judgment. Engineers who can carry a whole surface are how a player-coach scales.',
-    'Outside the codebase I am a long-distance runner — a 3:07 marathon and a 50K ultra — and the same discipline carries into multi-year technical transformations.',
+    'What the business gets from me is both tracks at once. Over ten years at CNBC I deliberately crossed the line most engineers pick a side of: senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer rebuild of CNBC.com across 3 web teams, and because I still architect and ship alongside them, technical decisions get made in the room. No translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
+    'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code, with measurable velocity gains and fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
+    'The coach half is just as deliberate. I recently expanded a mid-level engineer’s scope from single tasks to three concurrent workstreams (video, search, and free preview), and the coaching that mattered was not technical: they were losing rooms they were right in, so we worked on how the work gets presented to design and product until their influence caught up with their judgment. Engineers who can carry a whole surface are how a player-coach scales.',
+    'Outside the codebase I am a long-distance runner, with a 3:07 marathon and a 50K ultra, and the same discipline carries into multi-year technical transformations.',
   ],
 };
 
@@ -631,9 +633,9 @@ export interface SocialDescriptions {
 
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
-  meta: 'Senior Manager, Engineering at Versant (CNBC Core). Player-coach: 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.',
+  meta: 'Senior Manager, Engineering at Versant (CNBC Core). 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.',
   twitter:
-    'Senior Manager, Engineering at Versant (CNBC Core). Player-coach engineering leader: edge architecture, video, and governed AI for a national financial audience.',
+    'Senior Manager, Engineering at Versant (CNBC Core). Engineering notes with receipts: agents, edge architecture, reliability.',
 };
 
 export interface PersonaItem {
@@ -646,16 +648,58 @@ export const personaData: PersonaItem[] = [
   {
     title: 'Latency Is the Enemy of Trust',
     body: [
-      "Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt — and doubt is churn. Every millisecond removed is a unit of audience confidence restored.",
+      "Whether it's a financial ticker during a market spike or a UI transition on a slow network, delay creates doubt, and doubt is churn. Every millisecond removed is a unit of audience confidence restored.",
       'Operationally that means standards, budgets, and repeatability over one-off heroics: UI production run like manufacturing, not craftsmanship.',
     ],
   },
   {
     title: 'The Bridge',
     body: [
-      "I operate at the intersection of Product and Engineering. I don't build to spec — I partner with product leaders to define what is technically possible at scale.",
-      'I translate edge configuration into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong — engineering earns its seat by speaking the business’s language.',
+      "I operate at the intersection of Product and Engineering. I don't build to spec; I partner with product leaders to define what is technically possible at scale.",
+      'I translate edge configuration into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong. Engineering earns its seat by speaking the business’s language.',
     ],
+  },
+];
+
+export interface AgentEraModel {
+  title: string;
+  /** One sentence stating the model; the linked note carries the argument. */
+  line: string;
+  /** Slug of the note that owns the model. */
+  slug: string;
+}
+
+/**
+ * The named models the recent notes built, linked to the note that owns each.
+ * Rendered above the code standards, which are the platform-era foundations
+ * these grew out of. Reuse these names; a model that changes its name between
+ * appearances stops compounding.
+ */
+export const agentEraModels: AgentEraModel[] = [
+  {
+    title: 'Fail-open checks',
+    line: 'A check whose "did not run" is indistinguishable from "passed" is worse than no check, because its record closes the question.',
+    slug: 'your-checks-are-lying-to-you',
+  },
+  {
+    title: 'The receipts rule',
+    line: '"Done" without an attached artifact is the worker vouching for itself; the review happens on the diff, the test run, and the artifact.',
+    slug: 'the-agent-run-is-the-new-unit-of-work',
+  },
+  {
+    title: 'Loop failures, not intelligence failures',
+    line: 'Agents fail for missing boundaries, definitions of done, and receipts; reliability is engineered into the loop, not summoned from the model.',
+    slug: 'agent-failures-are-loop-failures',
+  },
+  {
+    title: 'Spec quality is the bottleneck',
+    line: 'When agents can build from any sufficiently precise description, the specification becomes the primary artifact and the codebase a derivative.',
+    slug: 'spec-quality-is-the-bottleneck-not-implementation-speed',
+  },
+  {
+    title: 'Judgment you already paid for',
+    line: 'Settled tradeoffs must be retrievable by meaning, not memory, or every agent session re-derives them from a blank context window.',
+    slug: 'agents-re-derive-judgment-you-already-paid-for',
   },
 ];
 
@@ -664,23 +708,28 @@ export interface FooterManifestoItem {
   body: string;
 }
 
-/** Footer manifesto blurbs — the single source for TelemetryFooter's grid. */
+/**
+ * Footer manifesto blurbs — the single source for TelemetryFooter's grid.
+ * The forward echo: the agent-era models, so the last thing a reader sees
+ * points where the work is going. The platform-era foundations live in the
+ * Mental Models section's code standards.
+ */
 export const footerManifesto: FooterManifestoItem[] = [
   {
-    title: 'Latency Is the Enemy of Trust',
-    body: 'Performance is a feature, not an afterthought. The critical rendering path is the product; I architect for it first.',
+    title: 'Fail-Closed > Fail-Open',
+    body: 'A check that cannot say "I could not run" certifies nothing; its green eventually hides the failure it was hired to catch.',
   },
   {
-    title: 'URL > Store',
-    body: 'The URL is the only reliable single source of truth. I prefer URL-driven state to eliminate desynchronization bugs.',
+    title: 'Receipts > Done',
+    body: 'An agent declaring "done" is self-attestation, so the diff, the test run, and the artifact are non-negotiable.',
   },
   {
-    title: 'WET > DRY',
-    body: 'I value strategic duplication over premature, leaky abstractions. Clarity and composition beat complex "God Components."',
+    title: 'Loop > Model',
+    body: 'Agent failures are loop failures, so reliability comes from boundaries, definitions of done, and receipts, not from a smarter model.',
   },
   {
-    title: 'Server > Client',
-    body: "I ship HTML, not just JSON — SvelteKit here, Akamai EdgeWorkers at work — and optimize for the browser's critical rendering path.",
+    title: 'Spec > Speed',
+    body: 'When agents produce working code from any sufficiently precise description, the specification is the primary artifact and typing speed stops being the constraint.',
   },
 ];
 
@@ -800,29 +849,32 @@ const Page = async () => {
   // Total: 800ms (the slowest one). Not 1800ms.
   return <Layout hero={hero} ticker={ticker} news={news} />;
 };`,
-      note: 'If the UI stutters, the user disengages. Latency is not a technical problem — it is a trust problem.',
+      note: 'If the UI stutters, the user disengages. Latency is not a technical problem; it is a trust problem.',
     },
     ai: {
       key: 'ai',
-      title: 'PLAN-FIRST AI',
-      bad: `// ❌ The Vibe Coder
-// 1. Code doesn't work.
-// 2. Paste error into Claude.
-// 3. Accept whatever it generates.
-// 4. Hope it doesn't break prod.
-// 5. Repeat.
+      title: 'RECEIPTS > DONE',
+      bad: `// ❌ Self-Attestation
+// Agent: "All tests pass. Task complete."
+//
+// You did not watch the tests run. The party
+// most motivated to declare success is
+// the only witness to it.
 
-// This is not AI-augmented engineering.
-// This is technical debt generation at scale.`,
-      good: `// ✅ The Orchestrator
-// 1. Define the spec (types, contracts, edge cases).
-// 2. Prompt with full context, not just the error.
-// 3. Review every line. Understand every diff.
-// 4. Run tests. Check coverage. Verify intent.
+const result = await agent.run(task);
+markComplete(task); // on its word`,
+      good: `// ✅ The Receipts Rule
+// "Done" ships with artifacts, or it isn't done.
 
-// Rule: If you can't explain what it wrote,
-// you don't own the code — it does.`,
-      note: 'AI is a force multiplier, not a replacement for taste. Every AI-assisted commit must pass the same review bar as a human-written one.',
+const result = await agent.run(task);
+review({
+  diff: result.diff,         // what changed
+  testRun: result.testLog,   // proof it ran
+  artifact: result.buildUrl, // the thing itself
+});
+// Accept or reject on evidence you can open,
+// not on a status the worker assigned itself.`,
+      note: 'An agent declaring "done" is self-attestation by the party most motivated to claim success. The receipt (the diff, the test run, the artifact) is what gets reviewed.',
     },
   },
 };

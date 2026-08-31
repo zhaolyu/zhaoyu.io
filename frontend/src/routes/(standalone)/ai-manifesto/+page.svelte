@@ -23,7 +23,7 @@
 
   const articleScript = jsonLdScript(
     articleJsonLd({
-      headline: 'The Factory Is Going Dark — a Working Thesis on AI-Augmented Engineering',
+      headline: 'The Factory Is Going Dark: a Working Thesis on AI-Augmented Engineering',
       description,
       path: '/ai-manifesto',
       datePublished: DATE_PUBLISHED,
@@ -42,41 +42,41 @@
     {
       num: '01',
       title: 'The Spec Is the Artifact',
-      body: 'When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description. The specification becomes the primary engineering artifact; the codebase is a derivative — closer to a build output than to source.',
+      body: 'When agents can produce working code from any sufficiently precise description, the bottleneck moves upstream to the description. The specification becomes the primary engineering artifact; the codebase is a derivative, closer to a build output than to source.',
     },
     {
       num: '02',
       title: 'Fix the Loop, Not the Model',
-      body: 'Agent failures are ambiguity failures of the loop, not intelligence failures of the agent. Smartness cannot supply a fact that was never specified. A real run has a goal, a boundary, tools, artifacts, and receipts — miss one and you made a wish, not a delegation.',
+      body: 'Agent failures are ambiguity failures of the loop, not intelligence failures of the agent. Smartness cannot supply a fact that was never specified. A real run has a goal, a boundary, tools, artifacts, and receipts; miss one and you made a wish, not a delegation.',
     },
     {
       num: '03',
       title: '"Done" Requires a Receipt',
-      body: 'An agent declaring success is self-attestation by the party with the strongest incentive to call the job done. No diff, no test run, no artifact — no "done." The same review bar applies whether the author was a human or a machine.',
+      body: 'An agent declaring success is self-attestation by the party with the strongest incentive to call the job done. No diff, no test run, no artifact: no "done." The same review bar applies whether the author was a human or a machine.',
     },
     {
       num: '04',
       title: 'Deterministic Shells, Non-Deterministic Cores',
-      body: 'Non-deterministic output demands a deterministic, accessible interface as its stability layer. The UI is a contract, not a display — that is what makes streaming AI trustworthy enough for a national financial-news audience.',
+      body: 'Non-deterministic output demands a deterministic, accessible interface as its stability layer. The UI is a contract, not a display. That is what makes streaming AI trustworthy enough for a national financial-news audience.',
     },
     {
       num: '05',
       title: 'AI Is a Motorcycle, Not an Equalizer',
-      body: 'AI equalizes execution speed — but execution was already cheap. What it amplifies is specification quality, which is a direct function of domain depth. It makes experts more productive faster than it makes novices competent. Keep earning the depth.',
+      body: 'AI equalizes execution speed, but execution was already cheap. What it amplifies is specification quality, which is a direct function of domain depth. It makes experts more productive faster than it makes novices competent. Keep earning the depth.',
     },
   ];
 
   const rememberItems = [
-    'Casual AI use is already table stakes — only the delegation tiers differentiate',
+    'Casual AI use is already table stakes; only the delegation tiers differentiate',
     'Reliability is engineered into the loop, not summoned from the model',
     'AI makes experts more productive faster than it makes novices competent',
     'Memory and context architecture beat model selection',
-    'English is now a programming language — write it with an engineer’s precision',
+    'English is now a programming language; write it with an engineer’s precision',
   ];
 
   const butAlsoItems = [
     'Some engineering decisions only emerge from contact with the code',
-    'A brownfield system is its own specification — respect what running code encodes',
+    'A brownfield system is its own specification; respect what running code encodes',
     'AI-expanded scope carries errors you may not be qualified to catch',
     'Single-trial outcomes cannot grade a decision process',
     'Your worth is not your throughput',
@@ -84,12 +84,12 @@
 </script>
 
 <svelte:head>
-  <title>AI Thesis — Zhao Yu</title>
+  <title>AI Thesis · Zhao Yu</title>
   <meta name="description" content={description} />
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{SITE_URL}/ai-manifesto" />
-  <meta property="og:title" content="AI Thesis — Zhao Yu" />
+  <meta property="og:title" content="AI Thesis · Zhao Yu" />
   <meta property="og:description" content={description} />
   <meta property="og:image" content={SITE_CARD_IMAGE} />
   {#each ogTags as tag (`${tag.property}:${tag.content}`)}
@@ -97,7 +97,7 @@
   {/each}
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="{SITE_URL}/ai-manifesto" />
-  <meta property="twitter:title" content="AI Thesis — Zhao Yu" />
+  <meta property="twitter:title" content="AI Thesis · Zhao Yu" />
   <meta property="twitter:description" content={description} />
   <meta property="twitter:image" content={SITE_CARD_IMAGE} />
   <link rel="canonical" href="{SITE_URL}/ai-manifesto" />
@@ -149,7 +149,7 @@
 
     <!-- REALITY CHECK -->
     <section class="section">
-      <div class="section-label">Stay Grounded — The Balance</div>
+      <div class="section-label">Stay Grounded · The Balance</div>
       <div class="reality-cards">
         <div class="reality-card hype">
           <h3>Remember This</h3>
@@ -175,9 +175,9 @@
       <div class="quote-block">
         <p>
           "I use AI" stopped being the differentiator. Whether you can hand an agent a boundary and
-          a review bar — instead of still typing every line yourself — is the one that's left.
+          a review bar, instead of still typing every line yourself, is the one that's left.
         </p>
-        <span class="attr">— from my claim vault, on where the leverage moved</span>
+        <span class="attr">from my claim vault, on where the leverage moved</span>
       </div>
     </section>
 
@@ -481,7 +481,7 @@
   }
 
   .reality-card li::before {
-    content: '—';
+    content: '·';
     position: absolute;
     left: 0;
     color: var(--m-text-dim);

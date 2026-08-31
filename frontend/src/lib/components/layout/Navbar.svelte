@@ -12,9 +12,9 @@
 
   // Writing is one click from anywhere; sections in page order.
   const navLinks = [
-    { name: '/work', href: '/#work' },
     { name: '/writing', href: '/blog' },
-    { name: '/how-i-work', href: '/#manifesto' },
+    { name: '/mental-models', href: '/#manifesto' },
+    { name: '/work', href: '/#work' },
     { name: '/about', href: '/#about' },
     { name: '/ai-thesis', href: '/ai-manifesto' },
     { name: '/contact', href: '/#connect' },

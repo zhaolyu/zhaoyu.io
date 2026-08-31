@@ -1,9 +1,8 @@
 <script lang="ts">
-  import { footerManifesto } from '$lib/constants/content';
-  import { performanceMetrics } from '$lib/constants/content';
+  import { footerManifesto, notesData } from '$lib/constants/content';
 
-  /** The one figure the footer repeats is the public audience number, sourced. */
-  const audience = performanceMetrics.find((m) => m.value === '47M');
+  /** The footer points forward: the newest note, not a repeated résumé figure. */
+  const latest = notesData.notes[0];
 </script>
 
 <footer class="terminal-footer">
@@ -23,16 +22,12 @@
           <span class="s-label">ENGINEERING</span>
           <span class="s-value">Sr. Manager, Engineering @ Versant</span>
         </div>
-        {#if audience}
-          <div class="status-item">
-            <span class="s-label">SCALE</span>
-            <span class="s-value">
-              <a class="s-link" href={audience.source.href} target="_blank" rel="noopener">
-                {audience.value} monthly uniques · ComScore
-              </a>
-            </span>
-          </div>
-        {/if}
+        <div class="status-item">
+          <span class="s-label">LATEST_NOTE</span>
+          <span class="s-value">
+            <a class="s-link" href={`/blog/${latest.slug}`}>{latest.title}</a>
+          </span>
+        </div>
       </div>
       <div class="status-group">
         <div class="status-item">
@@ -49,8 +44,10 @@
         <a href="/rss.xml">RSS</a>
       </div>
       <p class="copyright">
-        © {new Date().getFullYear()} Zhao Yu —
-        <span>Hand-coded with Svelte. Deployed to Cloudflare Edge.</span>
+        © {new Date().getFullYear()} Zhao Yu ·
+        <span
+          >Built with Svelte and Claude Code, reviewed by hand. Deployed to Cloudflare Edge.</span
+        >
       </p>
     </div>
   </div>

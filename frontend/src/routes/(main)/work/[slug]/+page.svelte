@@ -24,12 +24,12 @@
 </script>
 
 <svelte:head>
-  <title>{study.title} — Zhao Yu</title>
+  <title>{study.title} · Zhao Yu</title>
   <meta name="description" content={study.oneLiner} />
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content={canonicalUrl} />
-  <meta property="og:title" content={`${study.title} — Zhao Yu`} />
+  <meta property="og:title" content={`${study.title} · Zhao Yu`} />
   <meta property="og:description" content={study.oneLiner} />
   <meta property="og:image" content={cardUrl} />
   {#each ogTags as tag (`${tag.property}:${tag.content}`)}

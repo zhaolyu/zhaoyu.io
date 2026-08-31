@@ -60,6 +60,19 @@ const standardNotes = allNotes.filter((n) => n.format !== 'essay');
 const essays = allNotes.filter((n) => n.format === 'essay');
 const governed = standardNotes.filter(isGoverned);
 
+/**
+ * The em dash graduated from rationed to banned: readers now take the glyph
+ * itself as the signature of machine-written prose, and a tell is a tell at
+ * any density. The ban started date-gated (2026-08-31) so shipped notes would
+ * not retro-fail; the whole corpus was then scrubbed the same day, so it now
+ * holds unconditionally and the old per-paragraph caps are retired as
+ * strictly weaker.
+ */
+const withoutCode = (html: string) => html.replace(/<code\b[^>]*>[\s\S]*?<\/code>/gi, ' ');
+
+/** Em dash, en dash, or double hyphen: every glyph that does the dash's job. */
+const DASH = /—|–|--/;
+
 describe('note shape (standard notes)', () => {
   it('runs exactly two paragraphs', () => {
     for (const note of standardNotes) {
@@ -113,47 +126,10 @@ describe('essay shape (format: essay)', () => {
     }
   });
 
-  /**
-   * The em-dash ration is per paragraph-equivalent, and a list is many of those
-   * inside one string. Splitting it into items is what lets the ration apply to
-   * every unit of prose; skipping list blocks instead would leave the densest
-   * part of an essay unmeasured, which is this essay's own rule 5 — a control's
-   * scope must include the control.
-   */
-  const proseUnits = (chunk: string): string[] =>
-    chunk.match(/<li\b[^>]*>[\s\S]*?<\/li>/gi) ?? [chunk];
-
-  it('closes on an emphasised rule and keeps em dashes to two per paragraph', () => {
+  it('closes on an emphasised rule', () => {
     for (const essay of essays) {
       const last = essay.content[essay.content.length - 1];
       expect(last, `${essay.slug} does not close on an emphasised rule`).toMatch(/<strong>/);
-      for (const [i, chunk] of essay.content.entries()) {
-        for (const [u, unit] of proseUnits(chunk).entries()) {
-          const dashes = countOf(unit, /—/g);
-          expect(
-            dashes,
-            `${essay.slug} block ${i + 1} unit ${u + 1} has ${dashes} em dashes`,
-          ).toBeLessThanOrEqual(2);
-        }
-      }
-    }
-  });
-
-  /**
-   * A per-unit cap cannot see the tell it is aimed at: one dash in every
-   * sentence passes the cap everywhere and still reads machine-made. Density
-   * over the whole piece does see it. The ceiling is the spec's own ration
-   * (~2 per 110-160 word paragraph) expressed per thousand words.
-   */
-  it('keeps em-dash density under the spec ration', () => {
-    for (const essay of essays) {
-      const words = essay.content.reduce((sum, c) => sum + wordCount(c), 0);
-      const dashes = essay.content.reduce((sum, c) => sum + countOf(c, /—/g), 0);
-      const per1k = (dashes / words) * 1000;
-      expect(
-        per1k,
-        `${essay.slug} runs ${per1k.toFixed(1)} em dashes per 1000 words`,
-      ).toBeLessThanOrEqual(18);
     }
   });
 });
@@ -186,15 +162,6 @@ describe('banned constructions (every note)', () => {
 });
 
 describe(`voice rationing (notes dated ${VOICE_RULES_FROM} or later)`, () => {
-  it('keeps em dashes to two per paragraph', () => {
-    for (const note of governed) {
-      for (const [i, para] of note.content.entries()) {
-        const dashes = countOf(para, /—/g);
-        expect(dashes, `${note.slug} ¶${i + 1} has ${dashes} em dashes`).toBeLessThanOrEqual(2);
-      }
-    }
-  });
-
   it('closes on an emphasised rule, without over-emphasising', () => {
     for (const note of governed) {
       const emphasis = countOf(note.content.join(' '), /<strong>/g);
@@ -228,6 +195,18 @@ describe(`voice rationing (notes dated ${VOICE_RULES_FROM} or later)`, () => {
       const words = note.title.split(/\s+/).filter(Boolean).length;
       expect(words, `${note.slug} title is ${words} words`).toBeGreaterThanOrEqual(6);
       expect(words, `${note.slug} title is ${words} words`).toBeLessThanOrEqual(14);
+    }
+  });
+});
+
+describe('the em-dash ban (whole corpus)', () => {
+  it('ships no em dash, en dash, or double hyphen outside <code>', () => {
+    for (const note of allNotes) {
+      expect(note.title, `${note.slug} title carries a dash`).not.toMatch(DASH);
+      for (const [i, chunk] of note.content.entries()) {
+        const hits = countOf(withoutCode(chunk), new RegExp(DASH.source, 'g'));
+        expect(hits, `${note.slug} block ${i + 1} carries ${hits} dash(es)`).toBe(0);
+      }
     }
   });
 });
