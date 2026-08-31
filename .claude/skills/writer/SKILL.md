@@ -26,10 +26,14 @@ on shipping the thing you built rather than polishing drafts forever.
 3. **Never invent a receipt.** Do not fabricate a metric, headcount, dollar figure, date,
    or outcome. If a claim needs a number you don't have, ask, or write the sentence so it
    doesn't need one. Verified figures are listed in [references/surfaces.md](references/surfaces.md).
-4. **Two paragraphs.** Every note in the corpus is exactly two. No headers, no bullets,
-   no code blocks inside a note.
-5. **Close on a rule.** The last sentence is a compressed, quotable rule — usually wrapped
-   in `<strong>`. It must not restate the title.
+4. **Two paragraphs — unless it is an essay.** The note lane is exactly two, with no
+   headers, bullets, or code blocks. The essay lane (`format: 'essay'`) is the only
+   exception and carries its own contract — see [Long-form essays](#long-form-essays).
+5. **Close on a rule, once.** The last sentence is a compressed, quotable rule — usually
+   wrapped in `<strong>`. It must not restate the title, and it must be the *only*
+   aphorism in the piece. A punchline at the end of every paragraph is the single
+   strongest agent tell there is; see the cadence rule in
+   [references/voice.md](references/voice.md).
 
 ## The measured shape of a note
 
@@ -53,6 +57,37 @@ happens. Mechanism is the paragraph's job; a paragraph that only asserts is unfi
 **Paragraph 2** — the corrective, its evidence, and the closing rule. This is where the
 first-person experience lands ("I took one production prompt from ~4,000 words to ~1,300"),
 where an outside source gets cited if there is one, and where the note earns its last line.
+
+## Long-form essays
+
+`format: 'essay'` is the lane for a piece that carries a taxonomy — several instances of
+one failure class, a field guide, an argument that needs sections. Reach for it only when
+two paragraphs genuinely cannot hold the material; the note is still the default, and a
+thin essay is worse than a dense note.
+
+The shape, measured from the corpus:
+
+| | Target |
+|---|---|
+| Blocks | 18–25 |
+| Words | 1,200–1,600 (hard range 900–2,500) |
+| `<h2>` sections | 3–5 |
+| Lists | at most one `<ul>` and one `<ol>` |
+| Em dashes | under 18 per 1,000 words |
+| Paragraph-final aphorisms | 1, at the end |
+
+`content-voice.test.ts` enforces the block count, heading count, word range, whole-block
+markup, the closing `<strong>` rule, a two-per-paragraph em-dash cap that counts each
+`<li>` as its own paragraph, and the density ceiling. **When a draft trips one of those,
+fix the prose — never widen the gate.** The first essay shipped with the cap set to 3
+because 3 was what the draft happened to need, and with list blocks skipped entirely, so
+the densest block in the piece went unmeasured. That is the same defect the essay itself
+warns about, committed by its own checker.
+
+Structure is carried by the headings, not by sentences that announce it. Delete
+"That is the failure class this post is about," "Two lessons:," "Two objections worth
+pre-empting," "More of the same shape" — an essay that narrates its own outline reads
+machine-made even when every individual sentence is good.
 
 ## Procedure
 
