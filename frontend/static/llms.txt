@@ -14,9 +14,7 @@
 > investor materials, Chrome UX Report field data, or the record of the
 > role); nothing Versant/CNBC has not disclosed publicly is stated here.
 
-## Positioning
-
-The differentiator is the combination, not any single axis:
+## Scope of work
 
 1. **Player-coach engineering leadership**: co-leads a ~20-engineer
    rebuild across 3 web teams in Versant's CNBC Core group without
@@ -24,10 +22,7 @@ The differentiator is the combination, not any single axis:
    still architects and ships alongside the team. Develops the bench
    deliberately, most recently growing a mid-level engineer from
    single-task work to three concurrent workstreams, with coaching aimed
-   at influence with design and product, not just code.
-   What the organization gets: strategy and codebase with no translation
-   layer between them, technical decisions made in the room, architecture
-   that never drifts from what the teams can deliver. The career arc
+   at influence with design and product, not just code. The career arc
    deliberately crossed both tracks first: senior engineer → engineering
    manager → Principal Engineer (an intentional return to the technical
    track) → Senior Manager, Engineering.
