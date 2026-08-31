@@ -66,8 +66,36 @@ points, rhetorical questions used as transitions.
 | `X is not Y, it's Z` | 1 | Already the dominant move in the corpus |
 | Em dash | ~2 per paragraph | Beyond that the prose reads machine-made |
 | Tricolon ("faster, cheaper, more reliable") | 1, only if all three are load-bearing | Padding otherwise |
-| Aphorism / closing-rule cadence | 1, at the end | Two competing aphorisms cancel out |
+| Aphorism / paragraph-final punchline | 1 per piece, at the end | Two competing aphorisms cancel out; a punchline every paragraph is the top agent tell |
+| Structural signposting | 0 | "Two lessons:," "The general shape:," "Two objections worth pre-empting" |
+| Mid-sentence colon as drumroll | ~1 per paragraph | Stacks with em dashes into a hinge-every-sentence rhythm |
 | Colon-subtitle title | — | Vary against the `X, Not Y` pattern across consecutive notes |
+
+## Cadence — the tell that outranks vocabulary
+
+Banned-word lists catch the obvious drafts. What actually makes prose read machine-made is
+rhythm, and it is measurable.
+
+**One aphorism per piece, at the end.** The first essay drafted here ended 14 of its 17
+paragraphs on an epigram. Every line was defensible alone; together they read as generated,
+because human long-form lets most paragraphs do their work and stop. The reader needs flat
+stretches for the closing rule to land against. When a paragraph's last sentence is
+quotable, ask whether it is *the* quotable sentence — if not, cut it or demote it into a
+subordinate clause.
+
+**Vary the em dash's shape, not just its count.** That same draft ran below the corpus's
+em-dash density and still read wrong, because 9 of 11 dash-bearing sentences used the same
+move: a single late-sentence dash introducing a coda, seven of them literally `— and`. A
+human writer varies position — paired parentheticals, an early interruption, a dash that
+lands mid-clause. One rhythm on repeat is the tell.
+
+**Count the hinges.** Em dashes, mid-sentence colons, and semicolons all do the same
+work — an interruption before a reframe. Individually rationed, collectively they stack.
+Under one per 30 words and the prose reads breathless. The first essay ran one per 28
+before editing, one per 38 after.
+
+**Don't narrate the outline.** Headings carry structure. A sentence whose job is to
+announce the next sentence is throat-clearing even when it sounds confident.
 
 ## The last line
 
@@ -87,3 +115,15 @@ Preserve the note's claim unless explicitly asked to change it — a note that h
 linked from `llms.txt`, RSS, and its OG card. Changing the *title* changes the OG image and
 requires regeneration; changing the *slug* breaks canonical URLs and inbound links, so treat
 slug edits as a deliberate migration, not a tidy-up.
+
+## Measuring a draft
+
+These are checks you run, not impressions you form. From `frontend/`:
+
+```bash
+pnpm vitest run src/lib/constants/content-voice.test.ts
+```
+
+That gate covers density and per-paragraph caps. It cannot see cadence, so read the draft's
+paragraph-final sentences as a list — pull them out, stack them, and count how many are
+epigrams. More than one and the piece needs cutting, whatever the suite says.

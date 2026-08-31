@@ -113,17 +113,47 @@ describe('essay shape (format: essay)', () => {
     }
   });
 
-  it('closes on an emphasised rule and keeps em dashes to three per paragraph', () => {
+  /**
+   * The em-dash ration is per paragraph-equivalent, and a list is many of those
+   * inside one string. Splitting it into items is what lets the ration apply to
+   * every unit of prose; skipping list blocks instead would leave the densest
+   * part of an essay unmeasured, which is this essay's own rule 5 — a control's
+   * scope must include the control.
+   */
+  const proseUnits = (chunk: string): string[] =>
+    chunk.match(/<li\b[^>]*>[\s\S]*?<\/li>/gi) ?? [chunk];
+
+  it('closes on an emphasised rule and keeps em dashes to two per paragraph', () => {
     for (const essay of essays) {
       const last = essay.content[essay.content.length - 1];
       expect(last, `${essay.slug} does not close on an emphasised rule`).toMatch(/<strong>/);
       for (const [i, chunk] of essay.content.entries()) {
-        if (isBlock(chunk)) continue;
-        const dashes = countOf(chunk, /—/g);
-        expect(dashes, `${essay.slug} block ${i + 1} has ${dashes} em dashes`).toBeLessThanOrEqual(
-          3,
-        );
+        for (const [u, unit] of proseUnits(chunk).entries()) {
+          const dashes = countOf(unit, /—/g);
+          expect(
+            dashes,
+            `${essay.slug} block ${i + 1} unit ${u + 1} has ${dashes} em dashes`,
+          ).toBeLessThanOrEqual(2);
+        }
       }
+    }
+  });
+
+  /**
+   * A per-unit cap cannot see the tell it is aimed at: one dash in every
+   * sentence passes the cap everywhere and still reads machine-made. Density
+   * over the whole piece does see it. The ceiling is the spec's own ration
+   * (~2 per 110-160 word paragraph) expressed per thousand words.
+   */
+  it('keeps em-dash density under the spec ration', () => {
+    for (const essay of essays) {
+      const words = essay.content.reduce((sum, c) => sum + wordCount(c), 0);
+      const dashes = essay.content.reduce((sum, c) => sum + countOf(c, /—/g), 0);
+      const per1k = (dashes / words) * 1000;
+      expect(
+        per1k,
+        `${essay.slug} runs ${per1k.toFixed(1)} em dashes per 1000 words`,
+      ).toBeLessThanOrEqual(18);
     }
   });
 });
