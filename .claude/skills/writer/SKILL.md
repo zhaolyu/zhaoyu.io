@@ -16,6 +16,14 @@ lineage — the Pyramid Principle by way of [lethain](https://lethain.com/pyrami
 false authority, and [Willison](https://simonwillison.net/2022/Nov/6/what-to-blog-about/)
 on shipping the thing you built rather than polishing drafts forever.
 
+The voice is calibrated against named writers, not an abstract standard:
+[references/calibration.md](references/calibration.md) holds the per-writer moves —
+Will Larson (lethain) for register, Dan Koe for hooks and readability — including the
+moves that are deliberately **not** adopted. Every draft runs its calibration check
+before shipping. The one-line version: describe the work, never sell the worker —
+a sentence that couldn't survive on lethain.com unedited is marketing, and marketing
+is the register this site does not ship.
+
 ## The five non-negotiables
 
 1. **Claim first.** Sentence one states the claim or the observed failure. No windup, no
@@ -99,7 +107,8 @@ machine-made even when every individual sentence is good.
 3. **Draft the title from the claim, not the topic.** "Thoughts on Agents" is a failure.
    "Agent Failures Are Loop Failures, Not Intelligence Failures" is the bar.
 4. **Write both paragraphs**, then run the line-level checks in
-   [references/voice.md](references/voice.md).
+   [references/voice.md](references/voice.md) and the calibration checks in
+   [references/calibration.md](references/calibration.md).
 5. **Ship it** using [references/publish.md](references/publish.md) — content.ts, llms.txt,
    OG regeneration, tests. Skipping the OG step breaks `og.test.ts`.
 

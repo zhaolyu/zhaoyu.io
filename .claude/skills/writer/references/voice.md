@@ -94,6 +94,11 @@ work — an interruption before a reframe. Individually rationed, collectively t
 Under one per 30 words and the prose reads breathless. The first essay ran one per 28
 before editing, one per 38 after.
 
+**Vary paragraph length (essay lane).** A wall of same-sized paragraphs reads like
+documentation even when every sentence is good. A one-sentence paragraph after a dense
+one is a beat, not thinness — use it where the argument turns. The two-paragraph note
+lane is exempt; its density is the form.
+
 **Don't narrate the outline.** Headings carry structure. A sentence whose job is to
 announce the next sentence is throat-clearing even when it sounds confident.
 
