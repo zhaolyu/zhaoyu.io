@@ -16,8 +16,6 @@
 
 ## Scope of work
 
-The current areas of work:
-
 1. **Player-coach engineering leadership**: co-leads a ~20-engineer
    rebuild across 3 web teams in Versant's CNBC Core group without
    leaving the codebase, managing a direct team of 8 engineers and 2 QE;
