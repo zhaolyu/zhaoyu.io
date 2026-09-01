@@ -134,8 +134,9 @@
 
     <!-- Epigraph -->
     <p class="epigraph">
-      Software is heading toward what Dan Shapiro calls the dark factory: agents doing the
-      implementation, humans holding the two endpoints.
+      Software is heading toward the dark factory, to borrow Dan Shapiro's name for it. This page
+      argues for one stop short of his version: agents doing the implementation, humans holding the
+      two endpoints.
       <br /><br />
       My job:
       <strong
@@ -210,7 +211,7 @@
           >A Motorcycle for the Mind</a
         >: Jobs' bicycle with an engine, and still needing a rider.
         <br />
-        Not borrowings, but worth reading in full:
+        Also worth reading in full:
         <a
           href="https://shumer.dev/something-big-is-happening"
           target="_blank"
