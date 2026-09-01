@@ -45,12 +45,39 @@ AUTH=(-H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}"
 
 # --- Assert the token actually got us past Access before testing anything -----
 # Without this the whole run is theatre: every later assertion would be made
-# against a login page.
-home_body="$(curl -sS "${AUTH[@]}" -L --max-time 30 "$BASE/" || true)"
-[ -n "$home_body" ] || die_cannot_run "empty response from $BASE/"
-case "$home_body" in
-  *cloudflareaccess*|*"<title>Sign in"*)
-    die_cannot_run "Access challenged the request; the service token is missing, wrong, or not authorised for this application" ;;
+# against a login page. Access answers an unauthenticated request with a 302 to
+# its login page rather than a 401, so status alone does not say what went
+# wrong. The redirect carries a signed `meta` JWT whose `service_token_status`
+# distinguishes the two failures that need different fixes, and reporting
+# "Access challenged" without it sends the reader to re-check the credential
+# when the credential may be fine.
+headers="$(curl -sS "${AUTH[@]}" -D- -o /dev/null --max-time 30 "$BASE/models" 2>/dev/null || true)"
+[ -n "$headers" ] || die_cannot_run "no response from $BASE/models"
+
+location="$(printf '%s' "$headers" | tr -d '\r' | sed -n 's/^[Ll]ocation: //p' | tail -1)"
+case "$location" in
+  *cloudflareaccess.com*)
+    evaluated="$(printf '%s' "$location" | python3 -c '
+import sys, base64, json, re
+loc = sys.stdin.read()
+m = re.search(r"[?&]meta=([^&]+)", loc)
+if not m:
+    print("unknown"); raise SystemExit
+try:
+    payload = m.group(1).split(".")[1]
+    payload += "=" * (-len(payload) % 4)
+    print(str(json.loads(base64.urlsafe_b64decode(payload)).get("service_token_status")).lower())
+except Exception:
+    print("unknown")
+' 2>/dev/null || echo unknown)"
+    case "$evaluated" in
+      false)
+        die_cannot_run "Cloudflare Access did not evaluate the service token at all (service_token_status=false in its own challenge, with the headers present). The token value is not the problem: the Access application covering this hostname has no Service Auth policy naming it. Zero Trust > Access > Applications > the app for this hostname > Policies > add a policy with action Service Auth and an include rule naming the token." ;;
+      true)
+        die_cannot_run "Cloudflare Access evaluated the service token and rejected it (service_token_status=true). The Client ID or Secret is wrong, or the token has expired or been revoked. Reissue under Zero Trust > Access > Service Auth and update both repository secrets." ;;
+      *)
+        die_cannot_run "Access challenged the request and its reason could not be decoded. Check the Service Auth policy on the application covering this hostname." ;;
+    esac ;;
 esac
 echo "ok: authenticated past Cloudflare Access"
 
