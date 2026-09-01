@@ -16,7 +16,7 @@ the way it works now"), while speculative pieces hedge openly ("I'm worried abou
 certainty is the only unacceptable option.
 
 **No credentialing.** The résumé is elsewhere on the page. Scope appears only when it is
-the evidence — "I manage a direct team of ten and co-lead a rebuild across three web teams,
+the evidence — "I manage a direct team of ten and co-lead a rebuild across three teams,
 and the skills that job demands are now IC skills too" works because the headcount is the
 argument. State it the way the résumé does; see the scope-claim rule in
 [surfaces.md](surfaces.md), which `positioning.test.ts` enforces.
