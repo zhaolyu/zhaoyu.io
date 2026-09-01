@@ -14,8 +14,15 @@
     SITE_CARD_IMAGE,
   } from '$lib/constants/structured-data';
 
-  /** First published with the page (git: 2026-02-11); bump on substantive edits. */
-  const DATE_PUBLISHED = '2026-02-11';
+  /**
+   * First published with the page; bump DATE_MODIFIED on substantive edits.
+   * Corrected 2026-09-01: this read 2026-02-11 and cited git as its source,
+   * but `git log --diff-filter=A` puts the file's first commit at 2026-02-20.
+   * The date is rendered to readers and asserted as schema.org datePublished,
+   * so a nine-day drift against its own named receipt is the one error this
+   * site cannot make.
+   */
+  const DATE_PUBLISHED = '2026-02-20';
   const DATE_MODIFIED = '2026-08-19';
 
   const description =
@@ -187,7 +194,17 @@
         These are my operating principles, argued from ten years of production systems and tested
         daily against real work.
         <br />
-        Influences worth reading in full:
+        Two of the framings are not mine. The dark factory, including this page's title, is Dan Shapiro's
+        <a
+          href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/"
+          target="_blank"
+          rel="noopener noreferrer">The Five Levels: from Spicy Autocomplete to the Dark Factory</a
+        >. The motorcycle in principle 05 is Naval Ravikant's
+        <a href="https://nav.al/ai" target="_blank" rel="noopener noreferrer"
+          >A Motorcycle for the Mind</a
+        >, itself an upgrade of Jobs' bicycle.
+        <br />
+        Also worth reading in full:
         <a
           href="https://shumer.dev/something-big-is-happening"
           target="_blank"
