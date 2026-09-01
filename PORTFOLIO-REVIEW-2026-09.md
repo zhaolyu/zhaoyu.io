@@ -322,27 +322,78 @@ gets re-derived, not relayed.
 
 ---
 
-## 5. Decisions that need Zhao
+## 5. Decisions — resolved 2026-09-01
 
-1. **The four case-study blockers** (P0.1) — period, ratification, cutover mechanics, regrets + team boundary. Nothing else on the list unlocks as much value.
-2. **Identity strip** (P0.2) — role line under the hero CTAs, or leave the hero pure craft and rely on `<title>` plus About? Recommendation: add it. Scannability and craft-first are not the same axis.
-3. **Thin notes** (P0.3) — upgrade all five, or merge three into one? Recommendation: merge `url` + `idempotency` + `sovereign-resilience` into one distributed-systems-reasoning note; upgrade the other two.
-4. **`/models` as a page, a landing section, or both?** Recommendation: both — a full page for depth, a four-card teaser on the landing page.
-5. **Résumé/CV** (P3) — PDF, `/now` page, or neither?
-6. **Tensions** (P2.1) — which two or three are publishable? Some of the vault's sharpest tensions touch personal strategy and stay private.
+Zhao answered four of the six. Recorded here so the spec is the record:
 
----
+| #   | Decision       | Answer                                                                                                                                                                                                                                                                                                                                |
+| --- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2   | Identity strip | **Add one line under the hero CTAs** — `roleLine` + location, secondary weight, sans. Craft-first body order unchanged.                                                                                                                                                                                                               |
+| 3   | Thin notes     | **Merge three, upgrade two.** `the-url-is-the-source-of-truth` + `idempotency-in-distributed-systems` + `sovereign-resilience…` become one distributed-systems-reasoning note; `decoupling-state-from-render…` and `building-with-ai-the-compound-advantage` get public receipts in place. Old slugs redirect; no published URL dies. |
+| 4   | Models surface | **Full `/models` page plus a landing teaser.** Prerendered page with 8–10 models; four-card teaser between the writing and the work.                                                                                                                                                                                                  |
+| 5   | Résumé         | **A `/now` page.** No PDF. Fits the craft-first register, carries the currency signal, and needs no artifact kept in sync with `content.ts`.                                                                                                                                                                                          |
 
-## 6. Suggested sequencing
+Still open:
 
-| PR  | Contents                                         | Blocked on          |
-| --- | ------------------------------------------------ | ------------------- |
-| 1   | P0.2 identity strip + contact, P0.4 number basis | —                   |
-| 2   | P0.1 case study                                  | Zhao's four answers |
-| 3   | P0.3 receipts pass on the five thin notes        | decision 3          |
-| 4   | P1.1 `/models` page + landing teaser + tests     | decision 4          |
-| 5   | P1.2 first long-form note against a new model    | PR 4                |
-| 6   | P2.2 `/work` index, `/infra` in nav              | PR 2                |
-| 7   | P2.1 tensions                                    | decision 6          |
+1. **The four case-study blockers** (P0.1) — unchanged, and still the single highest-value unlock on the list.
+2. **Tensions** (P2.1) — which two or three are publishable. Candidates are proposed in §6.3.
 
-PR 1 is unblocked and can start now.
+## 6. What is still needed from Zhao, precisely
+
+Everything else in this spec can be built without further input. This is the complete list
+of what cannot.
+
+### 6.1 The case study — four facts (unblocks P0.1, and PR 6 behind it)
+
+From `CASE-STUDY-DRAFT-nextgen-migration.md`. Each is one to three sentences from memory;
+none of it can be inferred, and the site does not ship invented receipts.
+
+1. **Period.** What display years does the migration cover — e.g. "2022 to 2024"? No public source pins this.
+2. **Ratification.** Who made or signed off the call, in one clause? "I architected" is shipped copy; the decision section should say how the decision was _carried_ — an architecture review, a staff-plus forum, a director sign-off.
+3. **Cutover mechanics.** One or two honest sentences on how zero downtime was actually achieved. Progressive traffic shifting? Route by route? Percentage ramp? What was the rollback story at the edge?
+4. **Regrets, and the team boundary.** The two sections a skeptical senior reader checks first:
+   - _Regrets_ — either (a) what did the edge runtime make harder than expected: local development parity, debugging at the PoP, observability into worker execution? or (b) what would you sequence differently: which surface migrated first, and was it the right first surface?
+   - _Team boundary_ — which teams built the worker runtime integration, the origin API changes, and the cutover tooling? The scope rules apply: describe what was yours precisely, credit the rest explicitly.
+
+### 6.2 One line of biography (unblocks PR 1, which is otherwise ready to start)
+
+**Location** for the identity strip — city or metro, however you want it stated
+("New York", "NYC", "New York, NY"). One string; nothing else about PR 1 is blocked.
+
+### 6.3 Which tensions to publish (unblocks P2.1)
+
+The vault holds 61 tension-type notes. Most are publishable in principle; a few touch
+personal strategy and stay private. Rather than an open question, three candidates that
+are clean, cross-domain, and genuinely unresolved:
+
+- **Systematising judgment vs. preserving adaptive judgment.** A rule-based process removes emotional interference and, by the same mechanism, removes the judgment that adapts when the regime shifts. Engineering has the identical tension in automated remediation.
+- **Concentration vs. diversification of attention.** Senior evaluation is dominated by one or two visible flagship efforts, which argues for concentration; the compounding case argues for surface area. Both are true and they do not reconcile.
+- **Depth vs. adaptability as the durable edge.** Layer-below understanding is a permanent advantage because abstractions leak; relearning capacity is the hedge when the layer itself is replaced. These recommend different investments of the same hours.
+
+Pick two or three, or name your own. The bar is that each states both positions in their
+strongest form, says why it is not resolved, and does not conclude.
+
+### 6.4 Optional, improves the work but does not block it
+
+- **A first-hand number for the streaming note** (P0.3). Public receipts exist for the 16 ms frame budget, but a measured figure from your own profiling — dropped frames before and after, or tokens per second sustained — is a stronger receipt than a spec citation.
+- **`/now` page inputs** (P3). I can draft it from active projects and the vault's reading state, but what you are actually working on and reading this month is yours to confirm before it ships.
+- **Vault figure basis** (P0.4). The site says "1,700 claims" on the OB1 card and in `llms.txt` with no basis. Three defensible counts exist depending on the rule: 2,028 files, 1,760 assertion-type notes, and 8,863 claim-to-claim links (14,819 by `vault.py density`, which counts every link including navigation). **The fix is to state the counting rule alongside the number**, the way the `agents-re-derive-judgment` note already does with "measured 30 Aug 2026" — not to swap in a bigger number. Tell me which rule you want to be canonical, or I will use assertion-type notes and claim-to-claim links and say so.
+
+## 7. Suggested sequencing
+
+Decisions 2 to 5 are resolved, so most of this is now unblocked.
+
+| PR  | Contents                                                          | Blocked on                             |
+| --- | ----------------------------------------------------------------- | -------------------------------------- |
+| 1   | P0.2 identity strip + contact link, P0.4 vault figure basis       | **§6.2 location string** (one word)    |
+| 2   | P0.3 merge three notes into one, upgrade two with public receipts | — ready                                |
+| 3   | P1.1 `/models` page + landing teaser + `models.test.ts`           | — ready                                |
+| 4   | P1.2 first long-form note against a new model                     | PR 3                                   |
+| 5   | P3 `/now` page                                                    | §6.4 inputs, confirmable at draft time |
+| 6   | P0.1 case study                                                   | **§6.1 four facts**                    |
+| 7   | P2.2 `/work` index, `/infra` in nav                               | PR 6                                   |
+| 8   | P2.1 tensions                                                     | **§6.3 pick two or three**             |
+
+PRs 2 and 3 can start immediately and carry the most weight against the brief. PR 1 needs
+one string. PR 6 is the highest-value item on the list and is the only one that needs real
+work from Zhao rather than a decision.
