@@ -25,7 +25,7 @@
     <p class="mechanism">{model.mechanism}</p>
   {/if}
 
-  <ul class="receipts">
+  <ul class="receipts" class:compact>
     {#each model.receipts as receipt (receipt.domain + receipt.text)}
       <li class="receipt">
         <span class="domain">{receipt.domain}</span>
@@ -105,6 +105,30 @@
     gap: var(--space-2xs);
     padding-top: var(--space-xs);
     border-top: 1px solid var(--border-subtle);
+  }
+
+  /* Compact cards carry the domains only, so a stacked list of labels each
+     under its own rule reads as rows whose content failed to load. Inline
+     them as a chip row instead: the claim a teaser makes is "this pays off
+     in these domains", which is a set, not a sequence. */
+  .receipts.compact {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-2xs);
+    padding-top: var(--space-xs);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .receipts.compact .receipt {
+    padding-top: 0;
+    border-top: none;
+  }
+
+  /* Muted mono chips at this size ran together into one string. Colour is what
+     separates them on the note cards; same treatment here. */
+  .receipts.compact .domain {
+    color: var(--accent-primary-text);
   }
 
   .domain {

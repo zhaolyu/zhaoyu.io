@@ -48,28 +48,36 @@
 </section>
 
 <style>
+  /* Matches the notes section: the whole section is constrained and centred, so
+     the header, the description and the grid share one left edge. Before this
+     the header sat full-bleed at the page edge, the description was centred and
+     the grid was centred in its own container: three alignments in one section,
+     where every sibling section has one. */
   .mental-models {
     padding: var(--section-y) var(--section-x);
+    max-width: 72rem;
+    margin: 0 auto;
     background: var(--bg-primary);
+    scroll-margin-top: var(--space-3xl);
   }
 
   .section-description {
-    max-width: 60ch;
-    margin: 0 auto var(--space-xl);
+    max-width: 42rem;
+    margin: 0 0 var(--space-3xl);
     font-size: var(--type-md);
     line-height: var(--leading-relaxed);
     color: var(--text-secondary);
-    text-align: center;
   }
 
   .models-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    /* auto-fill and min(19rem, 100%) mirror the notes grid, so the two card
+       rows on the landing page break at the same widths. */
+    grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
     gap: var(--space-lg);
-    max-width: 72rem;
-    /* min-width:0 lets the grid narrow past its content instead of overflowing. */
+    width: 100%;
     min-width: 0;
-    margin: 0 auto;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
@@ -80,12 +88,11 @@
   }
 
   .all-models-link {
-    display: block;
+    display: inline-block;
     margin-top: var(--space-xl);
     font-family: var(--font-mono);
     font-size: var(--type-sm);
     color: var(--accent-primary-text);
-    text-align: center;
     text-decoration: none;
   }
 
@@ -97,7 +104,6 @@
     margin: var(--space-2xs) 0 0;
     font-size: var(--type-xs);
     color: var(--text-muted);
-    text-align: center;
   }
 
   @media (max-width: 768px) {

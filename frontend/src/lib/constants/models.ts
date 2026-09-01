@@ -211,8 +211,12 @@ export const MENTAL_MODELS: MentalModel[] = [
   },
 ];
 
-/** The four shown on the landing page. Order is the registry's order. */
-export const TEASER_COUNT = 4;
+/**
+ * The three shown on the landing page. Three, not four: the landing grid
+ * resolves to three columns at desktop widths, so a fourth card orphans onto
+ * a row of its own and reads as a layout bug rather than a teaser.
+ */
+export const TEASER_COUNT = 3;
 
 export function teaserModels(): MentalModel[] {
   return MENTAL_MODELS.slice(0, TEASER_COUNT);

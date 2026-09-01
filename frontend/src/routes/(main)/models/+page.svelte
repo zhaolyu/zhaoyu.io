@@ -71,7 +71,11 @@
     max-width: 52rem;
     min-width: 0;
     margin: 0 auto;
-    padding: var(--space-4xl) var(--section-x) var(--space-5xl);
+    /* Matches /blog: heavier above the title than below the last card, and
+       both steps lighter on mobile. This was inverted (96 top / 128 bottom),
+       which sat the page 32px higher than its sibling and left twice the dead
+       space at the end of a phone scroll. */
+    padding: var(--space-5xl) var(--section-x) var(--space-4xl);
     background: var(--bg-primary);
     color: var(--text-primary);
   }
@@ -117,5 +121,11 @@
   .models-list > li {
     display: flex;
     min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .models-page {
+      padding: var(--space-4xl) var(--section-x) var(--space-3xl);
+    }
   }
 </style>
