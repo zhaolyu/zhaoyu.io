@@ -206,13 +206,18 @@ This is dashboard work; nothing in this repo can do it.
 
 Tokens expire (1 year by default). Renewal is the same three steps.
 
-### Make the check blocking
+### The check is blocking
 
-The workflow step ships with `continue-on-error: true` because the token does not exist
-yet, and a step that fails every run gets ignored, which is worse than no step. Once the
-secrets are set and one run reports `PASS`, **drop `continue-on-error` from the
-`Smoke-test the preview deployment` step in `ci.yml`.** Until then the check is advisory
-and says so in its own output.
+It shipped advisory (`continue-on-error: true`) while the token did not exist, because a
+step that fails every run gets ignored, which is worse than no step. The first `PASS`
+landed 2026-09-01 and `continue-on-error` was removed in the same change, so the step now
+fails the job on exit 1 **and** on exit 2. Could-not-run fails deliberately: once the
+token exists, absent or rejected credentials mean something broke rather than something
+is pending, and a check that goes quiet at exactly that moment is the failure it was
+built to catch.
+
+If the token is ever revoked or expires, this step is the thing that will tell you, by
+failing the build with the reason in its own output.
 
 ### Running it by hand
 

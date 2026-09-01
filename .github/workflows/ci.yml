@@ -344,13 +344,15 @@ jobs:
       # against a page containing none of the site. The script treats that as
       # could-not-run, never as a pass, and is the only thing that exercises
       # static/_redirects, which Cloudflare evaluates at the edge and no unit
-      # test can reach. Non-blocking today because the service token is not yet
-      # issued; make it blocking (drop continue-on-error) once it is.
+      # test can reach. Blocking as of 2026-09-01, after the first PASS: exit 2
+      # (could not run) fails the step too, because once the token exists a
+      # missing credential means something broke rather than something is
+      # pending, and a check that goes quiet then is the failure it exists for.
       - name: Smoke-test the preview deployment
         if: |
           steps.deployment.outputs.environment == 'preview' &&
           steps.extract-urls.outcome == 'success'
-        continue-on-error: true
+        continue-on-error: false
         env:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
