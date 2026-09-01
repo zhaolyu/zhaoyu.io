@@ -48,9 +48,10 @@ AUTH=(-H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}"
 # against a login page. Access answers an unauthenticated request with a 302 to
 # its login page rather than a 401, so status alone does not say what went
 # wrong. The redirect carries a signed `meta` JWT whose `service_token_status`
-# distinguishes the two failures that need different fixes, and reporting
-# "Access challenged" without it sends the reader to re-check the credential
-# when the credential may be fine.
+# narrows it: false means the token was not accepted (either no Service Auth
+# policy admits it, or the value is bad), true means a valid token was presented
+# and the policy still refused. It does not isolate a single cause on its own,
+# and the message says so rather than sending the reader to one of them.
 headers="$(curl -sS "${AUTH[@]}" -D- -o /dev/null --max-time 30 "$BASE/models" 2>/dev/null || true)"
 [ -n "$headers" ] || die_cannot_run "no response from $BASE/models"
 
@@ -72,9 +73,9 @@ except Exception:
 ' 2>/dev/null || echo unknown)"
     case "$evaluated" in
       false)
-        die_cannot_run "Cloudflare Access did not evaluate the service token at all (service_token_status=false in its own challenge, with the headers present). The token value is not the problem: the Access application covering this hostname has no Service Auth policy naming it. Zero Trust > Access > Applications > the app for this hostname > Policies > add a policy with action Service Auth and an include rule naming the token." ;;
+        die_cannot_run "Cloudflare Access did not accept the service token (service_token_status=false in its own challenge, with the headers present). That field does not isolate a single cause, so check both: the application covering this hostname may have no policy whose action is Service Auth naming this token (an Allow policy ignores service tokens entirely), or the Client ID or Secret may be wrong, expired or revoked. Zero Trust > Access > Applications > this hostname > Policies, and Zero Trust > Access > Service Auth." ;;
       true)
-        die_cannot_run "Cloudflare Access evaluated the service token and rejected it (service_token_status=true). The Client ID or Secret is wrong, or the token has expired or been revoked. Reissue under Zero Trust > Access > Service Auth and update both repository secrets." ;;
+        die_cannot_run "Cloudflare Access validated a service token but still refused the request (service_token_status=true). The credential is good and the policy does not admit it; check the include rules on the Service Auth policy for this application." ;;
       *)
         die_cannot_run "Access challenged the request and its reason could not be decoded. Check the Service Auth policy on the application covering this hostname." ;;
     esac ;;
