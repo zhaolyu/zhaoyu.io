@@ -135,7 +135,7 @@
     "slug": "the-url-is-the-source-of-truth",
     "kind": "note",
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
-    "title": "The URL Is the Source of Truth, and the Front End Is a Distributed System",
+    "title": "The Front End Is a Distributed System, Starting with the URL",
     "subtitle": "",
     "footnote": [
       "Architecture",

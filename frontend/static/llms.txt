@@ -123,7 +123,7 @@ The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 - [Agents Degrade Quietly: Maintenance Is Where the Value Compounds](https://zhaoyu.io/blog/agents-degrade-quietly-maintenance-is-where-value-compounds)
 - [Spec Quality Is the Bottleneck Now, Not Implementation Speed](https://zhaoyu.io/blog/spec-quality-is-the-bottleneck-not-implementation-speed)
 - [Agent Failures Are Loop Failures, Not Intelligence Failures](https://zhaoyu.io/blog/agent-failures-are-loop-failures)
-- [The URL Is the Source of Truth, and the Front End Is a Distributed System](https://zhaoyu.io/blog/the-url-is-the-source-of-truth)
+- [The Front End Is a Distributed System, Starting with the URL](https://zhaoyu.io/blog/the-url-is-the-source-of-truth)
 - [Decoupling State from Render in LLM Streaming](https://zhaoyu.io/blog/decoupling-state-from-render-in-llm-streaming)
 
 ## Sources for the numbers above
