@@ -4,7 +4,8 @@
 > engineering notes on this site. The site leads with the writing: mental
 > models and production lessons on agents, edge architecture, and
 > reliability, every claim carrying a receipt. The role behind it: co-leads
-> the ~20-engineer next-generation rebuild of CNBC.com across 3 web teams,
+> the ~20-engineer next-generation rebuild of CNBC.com across 3 teams (web,
+> video, and market data),
 > managing a direct team of 8 engineers and 2 QE, spanning edge
 > architecture, video, and governed AI, while still shipping the core
 > architecture, so technical decisions get made in the room rather than
@@ -17,7 +18,8 @@
 ## Scope of work
 
 1. **Player-coach engineering leadership**: co-leads a ~20-engineer
-   rebuild across 3 web teams in Versant's CNBC Core group without
+   rebuild across 3 teams (web, video, and market data) in Versant's CNBC
+   Core group without
    leaving the codebase, managing a direct team of 8 engineers and 2 QE;
    still architects and ships alongside the team. Develops the bench
    deliberately, most recently growing a mid-level engineer from
