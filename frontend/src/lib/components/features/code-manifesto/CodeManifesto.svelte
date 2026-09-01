@@ -6,6 +6,11 @@
    * "How I work": the operating principles in prose, the code standards as
    * before/after pairs, and — via `children` — an interactive demo of one of
    * them (the latency simulator) so the section shows as well as tells.
+   *
+   * Badged "In code" rather than "Mental models" since /models shipped. These
+   * are the worked examples underneath a rule, which is a different job from
+   * stating the rule, and the section reads as a demotion only if you think a
+   * receipt ranks below the claim it supports.
    */
   let { children }: { children?: Snippet } = $props();
 
@@ -35,7 +40,7 @@
     <div class="manifesto-content">
       <div class="manifesto-header">
         <div class="header-content">
-          <p class="section-badge">Mental models</p>
+          <p class="section-badge">In code</p>
           <h2 class="section-title">Strong opinions, weakly held.</h2>
         </div>
 

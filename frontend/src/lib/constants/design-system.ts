@@ -107,6 +107,13 @@ export const DESIGN_SYSTEM_CARDS: DesignSystemCard[] = [
     viewport: { width: 1200, height: 600 },
   },
   {
+    slug: 'model-card',
+    name: 'Model card',
+    group: 'Components',
+    subtitle: 'Rule, mechanism, two-domain receipts and provenance; full and compact',
+    viewport: { width: 1200, height: 900 },
+  },
+  {
     slug: 'section-header',
     name: 'Section header',
     group: 'Components',

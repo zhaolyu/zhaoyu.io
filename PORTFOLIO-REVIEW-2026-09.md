@@ -125,7 +125,7 @@ deleted.
 
 ### F7 — Two working artifacts are unreachable
 
-- `/infra` — the Cost-Guard dashboard (PGlite + ElectricSQL, live sync, what-if simulator) is not in `navLinks` and not in `sitemap.xml`. It is genuinely impressive and effectively unlisted.
+- `/infra` — the Cost-Guard dashboard (PGlite + ElectricSQL, live sync, what-if simulator) is not in `navLinks`, so it is reachable only by typing the URL. **Correction (2026-09-01):** an earlier draft of this document also counted its absence from `sitemap.xml` as a defect. It is not. `sitemap.xml/+server.ts` excludes it deliberately and says why in a comment: the page sets `<meta name="robots" content="noindex">`, and a sitemap entry would contradict that signal. Only the navigation half of this finding stands.
 - `/work` — `ROUTES.WORK` exists and `/work/{slug}` renders, but there is no `/work` index. The first published case study will have no parent page.
 
 ### F8 — Number drift against the site's own standard

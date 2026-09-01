@@ -2,6 +2,7 @@
   import TokenGrid from '$lib/components/design-system/TokenGrid.svelte';
   import BuilderCard from '$lib/components/features/builder/BuilderCard.svelte';
   import { NoteExcerptCard } from '$lib/components/features/notes';
+  import { ModelCard } from '$lib/components/features/models';
   import {
     SectionHeader,
     StatCard,
@@ -12,6 +13,7 @@
   } from '$lib/components/ui';
   import { tokenGroups } from '$lib/constants/design-tokens';
   import { builderProjects, notesData, type BuilderProject } from '$lib/constants/content';
+  import { MENTAL_MODELS } from '$lib/constants/models';
   import type { ChartPoint, DataColumn, StatusTone } from '$lib/types';
 
   let { data } = $props();
@@ -192,6 +194,21 @@
         {#each notesData.notes.slice(0, 3) as note (note.slug)}
           <NoteExcerptCard {note} />
         {/each}
+      </div>
+    </section>
+  {:else if data.card.slug === 'model-card'}
+    <section class="ds-section">
+      <h2>Light</h2>
+      <div class="ds-grid">
+        <ModelCard model={MENTAL_MODELS[0]} />
+        <ModelCard model={MENTAL_MODELS[2]} compact />
+      </div>
+    </section>
+    <section class="ds-section dark ds-dark-scope">
+      <h2>Dark</h2>
+      <div class="ds-grid">
+        <ModelCard model={MENTAL_MODELS[0]} />
+        <ModelCard model={MENTAL_MODELS[2]} compact />
       </div>
     </section>
   {:else if data.card.slug === 'section-header'}
