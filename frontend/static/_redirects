@@ -1,0 +1,15 @@
+# Permanent redirects for note slugs retired by a merge (Cloudflare Pages).
+# Evaluated before static assets are served, so the old canonical URLs keep
+# resolving. PUBLISHING.md: a published slug is never deleted, only forwarded.
+#
+# 2026-09-01: three thin notes merged into one argument about the front end
+# as a distributed system. The URL note kept its slug; the other two forward.
+#
+# static/og/idempotency-in-distributed-systems.png and
+# static/og/sovereign-resilience-why-i-over-index-on-edge-architecture.png are
+# deliberately kept, though the manifest no longer lists them. A card already
+# scraped by LinkedIn or X is still referenced by its old absolute URL, so
+# deleting the file breaks the preview on posts that shipped before the merge.
+# Same reasoning as the legacy flat og-image.png, which og.test.ts pins.
+/blog/idempotency-in-distributed-systems  /blog/the-url-is-the-source-of-truth  301
+/blog/sovereign-resilience-why-i-over-index-on-edge-architecture  /blog/the-url-is-the-source-of-truth  301
