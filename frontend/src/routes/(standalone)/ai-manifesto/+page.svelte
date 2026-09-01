@@ -14,9 +14,21 @@
     SITE_CARD_IMAGE,
   } from '$lib/constants/structured-data';
 
-  /** First published with the page (git: 2026-02-11); bump on substantive edits. */
-  const DATE_PUBLISHED = '2026-02-11';
-  const DATE_MODIFIED = '2026-08-19';
+  /**
+   * When THIS thesis was published, which is not when the URL first had a page
+   * on it. Bump DATE_MODIFIED on substantive edits, this file's prose included.
+   *
+   * Corrected twice on 2026-09-01. It read 2026-02-11, a date nothing ever
+   * touched this file on: 803cf8c introduced it months later, so it was
+   * invented rather than drifted. The first correction moved it to 2026-02-20,
+   * the file's first commit, which is a right answer to the wrong question. On
+   * that date this route served a restyled third-party essay headed "Something
+   * Big Is Happening"; c3019a1 says as much in its own message. Continuity of
+   * URL is not continuity of authorship, and dating this thesis to February
+   * would also place it one day after the Naval piece principle 05 borrows.
+   */
+  const DATE_PUBLISHED = '2026-07-11';
+  const DATE_MODIFIED = '2026-09-01';
 
   const description =
     "Zhao Yu's working thesis on AI-augmented engineering: specification quality as the bottleneck, agent loops and receipts, and deterministic interfaces around non-deterministic systems.";
@@ -122,8 +134,9 @@
 
     <!-- Epigraph -->
     <p class="epigraph">
-      Software is heading toward the dark factory: agents doing the implementation, humans holding
-      the two endpoints.
+      Software is heading toward the dark factory, to borrow Dan Shapiro's name for it. This page
+      argues for one stop short of his version: agents doing the implementation, humans holding the
+      two endpoints.
       <br /><br />
       My job:
       <strong
@@ -187,7 +200,18 @@
         These are my operating principles, argued from ten years of production systems and tested
         daily against real work.
         <br />
-        Influences worth reading in full:
+        Two of the framings are not mine. The dark factory, including this page's title, comes from Dan
+        Shapiro's
+        <a
+          href="https://www.danshapiro.com/blog/2026/01/the-five-levels-from-spicy-autocomplete-to-the-software-factory/"
+          target="_blank"
+          rel="noopener noreferrer">The Five Levels: from Spicy Autocomplete to the Dark Factory</a
+        >. The motorcycle in principle 05 comes from Naval Ravikant with Nivi,
+        <a href="https://nav.al/ai" target="_blank" rel="noopener noreferrer"
+          >A Motorcycle for the Mind</a
+        >: Jobs' bicycle with an engine, and still needing a rider.
+        <br />
+        Also worth reading in full:
         <a
           href="https://shumer.dev/something-big-is-happening"
           target="_blank"

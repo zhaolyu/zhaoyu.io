@@ -131,40 +131,16 @@
       "Meta"
     ]
   },
-  "sovereign-resilience-why-i-over-index-on-edge-architecture": {
-    "slug": "sovereign-resilience-why-i-over-index-on-edge-architecture",
-    "kind": "note",
-    "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
-    "title": "Sovereign Resilience: Why I Over-Index on Edge Architecture",
-    "subtitle": "",
-    "footnote": [
-      "Architecture",
-      "Edge Computing",
-      "Independence"
-    ]
-  },
-  "idempotency-in-distributed-systems": {
-    "slug": "idempotency-in-distributed-systems",
-    "kind": "note",
-    "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
-    "title": "Idempotency in Distributed Systems",
-    "subtitle": "",
-    "footnote": [
-      "Backend",
-      "API Design",
-      "Reliability"
-    ]
-  },
   "the-url-is-the-source-of-truth": {
     "slug": "the-url-is-the-source-of-truth",
     "kind": "note",
     "eyebrow": "ENGINEERING NOTE · JUL 11, 2026",
-    "title": "The URL is the Source of Truth",
+    "title": "The Front End Is a Distributed System, Starting with the URL",
     "subtitle": "",
     "footnote": [
       "Architecture",
-      "State Management",
-      "UX"
+      "Distributed Systems",
+      "State Management"
     ]
   },
   "decoupling-state-from-render-in-llm-streaming": {

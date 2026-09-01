@@ -397,59 +397,52 @@ export const notesData: NotesData = {
       title: 'Building with AI: The Compound Advantage',
       date: 'Jul 11, 2026',
       dateISO: '2026-07-11',
+      dateModified: '2026-09-01',
       tags: ['AI Engineering', 'Productivity', 'Meta'],
       sources: [
+        {
+          label:
+            'METR, Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity (arXiv 2507.09089)',
+          href: 'https://arxiv.org/abs/2507.09089',
+        },
+        {
+          label: 'METR, developer productivity experiment design update, Feb 2026',
+          href: 'https://metr.org/blog/2026-02-24-uplift-update/',
+        },
         {
           label: "This site's source, built as described",
           href: 'https://github.com/zhaolyu/zhaoyu.io',
         },
-        { label: 'First-hand: building and shipping this site with Claude Code' },
       ],
       content: [
-        "I built most of this site using Claude Code. Not as a novelty; as a deliberate workflow. The components you're reading, the type errors that blocked deployment, the engineering notes you're reading: almost all of it happened through a tight loop of prompting, reviewing, and committing. My job was taste and judgment, not keystrokes.",
-        "The thing I didn't expect was the <em>qualitative</em> shift, not just the speed. When implementation cost drops low enough, you stop filtering ideas at the \"is this worth building?\" stage. You just build. The compounding isn't in the individual tasks; it's in the number of experiments you run. An engineer who ships 10 experiments a week learns differently than one who ships 2. AI doesn't change what you can build; it changes how many times you can try.",
+        "I built most of this site through Claude Code as a deliberate workflow: the components, the type errors that blocked deploys, and the notes themselves all went through the same loop of prompting and review. The obvious claim to make about that is speed, and the best available evidence does not support it. <a href='https://arxiv.org/abs/2507.09089' target='_blank' rel='noopener'>METR ran a randomized controlled trial on sixteen experienced open-source developers across 246 real tasks in their own repositories</a> and measured them 19% <em>slower</em> with AI tools than without. Those developers had forecast a 24% speedup before they started, and once the work was done they estimated they had been 20% faster.",
+        "What changed for me was the filter. When a first version costs little enough, an idea stops being killed at the worth-building stage and starts being killed by contact with something running, and the second filter is both later and far more informative, because a running version answers questions a plan cannot. The compounding lives in the attempt count rather than in any single task, which is exactly what a stopwatch on one task cannot see: it measures the task in front of it and says nothing about how many got tried. METR's own <a href='https://metr.org/blog/2026-02-24-uplift-update/' target='_blank' rel='noopener'>February 2026 update</a> reports that developers are likely more sped up now than in early 2025, while selection effects leave the size of that increase uncertain. I have no measured attempt count of my own to put against theirs. <strong>Count the things you tried, not the speed you felt.</strong>",
       ],
     },
     {
-      slug: 'sovereign-resilience-why-i-over-index-on-edge-architecture',
-      title: 'Sovereign Resilience: Why I Over-Index on Edge Architecture',
+      slug: 'the-url-is-the-source-of-truth',
+      title: 'The Front End Is a Distributed System, Starting with the URL',
       date: 'Jul 11, 2026',
       dateISO: '2026-07-11',
-      tags: ['Architecture', 'Edge Computing', 'Independence'],
+      dateModified: '2026-09-01',
+      tags: ['Architecture', 'Distributed Systems', 'State Management'],
       sources: [
+        {
+          label: 'Martin Kleppmann, Designing Data-Intensive Applications, Ch.5 (Replication)',
+          href: 'https://dataintensive.net/',
+        },
+        {
+          label:
+            'IETF httpapi draft: the Idempotency-Key HTTP header field (revision 07, expired April 2026)',
+          href: 'https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/',
+        },
         {
           label: 'First-hand: operating an edge-rendered architecture through market-moving events',
         },
       ],
       content: [
-        "The CNBC architecture I maintain runs at the edge: request handling, personalization logic, and cache invalidation all execute as close to the user as possible. No single region, no single cloud dependency, no single point of failure. When us-east-1 degrades during a market-moving event, traffic routes around it. The system doesn't panic; it degrades gracefully.",
-        "I've started applying the same pattern to my own work. A skill portfolio concentrated in one employer, one domain, one team is a <strong>single point of failure</strong>. Redundancy at the edge means building capabilities that can execute independently: full-stack range, local-first tooling, systems you own outright. Not as a hedge against any specific outcome, but because optionality compounds quietly until the moment it matters all at once.",
-      ],
-    },
-    {
-      slug: 'idempotency-in-distributed-systems',
-      title: 'Idempotency in Distributed Systems',
-      date: 'Jul 11, 2026',
-      dateISO: '2026-07-11',
-      tags: ['Backend', 'API Design', 'Reliability'],
-      sources: [
-        { label: 'First-hand: API design for systems that spike on scheduled market events' },
-      ],
-      content: [
-        'Working on live news infrastructure taught me that <strong>failures are not exceptional; they are scheduled</strong>. When a Fed rate decision drops at 2pm, every monitoring system, every analytics pipeline, every content update fires simultaneously. Network partitions happen. Acknowledgements get dropped. The question is never "will this request fail?" It\'s "what happens when it does?"',
-        "Idempotency keys are the answer. The design rule I now apply to every API: <strong>the client should always be able to safely retry.</strong> If handing you the same request twice produces different side effects, the design isn't finished. This matters even more in event-driven systems where the cost of double-processing (a duplicate trade entry, a duplicate webhook delivery, a duplicate analytics event) compounds faster than the failure that triggered the retry.",
-      ],
-    },
-    {
-      slug: 'the-url-is-the-source-of-truth',
-      title: 'The URL is the Source of Truth',
-      date: 'Jul 11, 2026',
-      dateISO: '2026-07-11',
-      tags: ['Architecture', 'State Management', 'UX'],
-      sources: [{ label: 'First-hand: URL-driven state in production web applications' }],
-      content: [
-        'In modern SPAs, we often over-engineer state management stores (Redux, Zustand) for data that belongs in the URL. If a user filters a dashboard by "Status: Active" and refreshes the page, that filter should persist. If they send the link to a colleague, the colleague should see the same filtered view.',
-        'If the state is not in the URL, it is ephemeral. My rule of thumb: <strong>If it changes the data payload, it belongs in the query string.</strong> Client-side stores should be reserved for truly transient UI states (like whether a modal is open or a menu is expanded), not for data definition. Ten years on high-traffic news pages gave me the distributed-systems framing for why this keeps being right: URL-as-truth is single-leader replication, one authoritative writer with every view a follower. A constellation of client stores each holding its own copy of the filter is multi-leader replication, and you inherit its signature failure mode: divergence with no conflict-resolution story.',
+        'Filter a dashboard, refresh the page, and the filter is gone. Send the link to a colleague and they see a different view. The usual diagnosis is that the state was never persisted, and the usual fix is a client store, which handles the reload and misses the mechanism. Holding that filter in the URL is single-leader replication: <strong>one authoritative location owns the value, every view is a follower, and rendering is a read.</strong> Holding it in a store, plus the derived copies other components keep, is multi-leader replication. <em>Designing Data-Intensive Applications</em> takes up multi-leader setups inside its replication chapter and calls write conflicts their biggest problem, which is where the difficulty lands. You get concurrent writers with no total order between them, and no log to replay when the copies disagree.',
+        "The browser sits behind a network nobody controls, so a request that times out has not necessarily failed, and a payment the reader submits twice still has to land once. The IETF's httpapi working group took an <a href='https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/' target='_blank' rel='noopener'><code>Idempotency-Key</code> header draft</a> to revision 07 across four years and let it expire there, which says more about the problem than a finished standard would. What it encodes is that a client can repeat a request without the server applying the work twice. Rendering at the edge is a blast-radius decision before it is a performance one, and every time I have watched a region degrade during a market event, what mattered was that traffic routed around it instead of queueing behind it. None of this is new work. It is replication and failure domains, arriving in a codebase where nobody uses those words. <strong>You cannot reuse a solved problem you do not recognize.</strong>",
       ],
     },
     {
@@ -457,11 +450,20 @@ export const notesData: NotesData = {
       title: 'Decoupling State from Render in LLM Streaming',
       date: 'Jul 11, 2026',
       dateISO: '2026-07-11',
+      dateModified: '2026-09-01',
       tags: ['React Performance', 'HCI', '60fps'],
-      sources: [{ label: 'First-hand: profiling LLM streaming UIs against the 16ms frame budget' }],
+      sources: [
+        {
+          label: 'web.dev, Measure performance with the RAIL model (frame budget)',
+          href: 'https://web.dev/articles/rail',
+        },
+        {
+          label: 'First-hand: profiling LLM streaming UIs against the frame budget',
+        },
+      ],
       content: [
-        'The naive approach to building an AI chat interface is to connect a Server-Sent Events (SSE) stream directly to a React state setter. Every time a new token chunk arrives (often at sub-50ms intervals), you call <code>setState(prev => prev + chunk)</code>.',
-        "<strong>This is a performance trap.</strong> Triggering a reconciliation cycle on every single token blows through the browser's 16ms frame budget. The solution is to decouple ingestion from rendering. We utilized a mutable <code>useRef</code> buffer to capture high-velocity incoming chunks synchronously, then used a throttled flush mechanism (synced with <code>requestAnimationFrame</code>) to commit to the DOM only when the browser was ready to paint.",
+        "The naive way to build a streaming AI interface is to pipe a Server-Sent Events stream straight into a React state setter: a chunk arrives, <code>setState(prev => prev + chunk)</code> fires, the component re-renders. At sub-50ms token intervals that is twenty or more reconciliation passes a second, each one walking the tree to diff a string that grew by a few characters. The frame budget makes the arithmetic unforgiving. Sixty frames per second leaves 16ms per frame, and <a href='https://web.dev/articles/rail' target='_blank' rel='noopener'>the browser claims roughly 6ms of that for its own rendering work</a>, so application code has about 10ms to do everything else. A pass that overruns the budget does not render late. The frame is dropped.",
+        'The fix is to stop treating arrival and display as the same event. I buffer incoming chunks in a mutable <code>useRef</code>, which accepts writes synchronously without scheduling anything, then flush to state on a <code>requestAnimationFrame</code> tick, so the DOM is written at most once per frame and only when the browser is about to paint. Throughput and render frequency come apart: the stream arrives as fast as the model emits, and the interface still paints on a steady cadence. This separation is older than React and older than LLMs, since a game loop makes the same split between simulation and draw. <strong>When the producer is faster than the consumer, the answer is a buffer and a clock, not a faster consumer.</strong>',
       ],
     },
   ],

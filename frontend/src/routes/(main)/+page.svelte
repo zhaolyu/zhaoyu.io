@@ -4,6 +4,7 @@
   import { Skills } from '$lib/components/features/skills';
   import { WorkSection } from '$lib/components/features/work';
   import { EngineeringNotes } from '$lib/components/features/notes';
+  import { MentalModels } from '$lib/components/features/models';
   import { CodeManifesto } from '$lib/components/features/code-manifesto';
   import { LatencySim } from '$lib/components/features/latency-sim';
   import { PersonaSection } from '$lib/components/features/persona';
@@ -58,10 +59,15 @@
 </svelte:head>
 
 <!-- Craft-first order: the writing and the mental models lead; the résumé
-     material (About, then the sourced numbers) sits at the end, stated once. -->
+     material (About, then the sourced numbers) sits at the end, stated once.
+     Models sit directly under the writing, and the code standards follow them:
+     the standards are the worked examples a model cashes out into, not peers
+     of the models themselves. Two sections cannot both be "mental models," so
+     the manifesto badge names what it actually shows. -->
 <main id="main" class="main-container">
   <Hero />
   <EngineeringNotes />
+  <MentalModels />
   <CodeManifesto>
     <LatencySim />
   </CodeManifesto>

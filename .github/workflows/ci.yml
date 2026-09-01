@@ -339,6 +339,36 @@ jobs:
           echo "atomic_url=$ATOMIC_URL" >> $GITHUB_OUTPUT
           echo "✅ Extracted preview URL: $(cat $GITHUB_OUTPUT | grep preview_url | cut -d'=' -f2-)"
 
+      # The preview sits behind Cloudflare Access, so an unauthenticated fetch
+      # returns the login page with HTTP 200 and every naive assertion passes
+      # against a page containing none of the site. The script treats that as
+      # could-not-run, never as a pass, and is the only thing that exercises
+      # static/_redirects, which Cloudflare evaluates at the edge and no unit
+      # test can reach. Blocking as of 2026-09-01, after the first PASS: exit 2
+      # (could not run) fails the step too, because once the token exists a
+      # missing credential means something broke rather than something is
+      # pending, and a check that goes quiet then is the failure it exists for.
+      - name: Smoke-test the preview deployment
+        if: |
+          steps.deployment.outputs.environment == 'preview' &&
+          steps.extract-urls.outcome == 'success'
+        continue-on-error: false
+        env:
+          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          # GitHub runs this block under `set -e`, so capture the status on the
+          # same line: a bare invocation would abort the step before the case
+          # below could tell could-not-run apart from failed.
+          status=0
+          bash .github/scripts/smoke-preview.sh "${{ steps.extract-urls.outputs.preview_url }}" || status=$?
+          case "$status" in
+            0) echo "::notice::Preview smoke test passed" ;;
+            2) echo "::warning::Preview smoke test could not run. It reported the reason above; it did not pass." ;;
+            *) echo "::error::Preview smoke test failed" ;;
+          esac
+          exit $status
+
       - name: Record GitHub deployment (View deployment button)
         if: |
           steps.deploy.outcome == 'success' &&

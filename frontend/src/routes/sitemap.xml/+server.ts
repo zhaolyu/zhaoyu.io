@@ -29,6 +29,7 @@ export function GET() {
   const staticEntries = [
     urlEntry(ROUTES.HOME, 'weekly', '1.0', newestNoteDate),
     urlEntry(ROUTES.BLOG, 'weekly', '0.8', newestNoteDate),
+    urlEntry(ROUTES.MODELS, 'monthly', '0.8'),
     urlEntry(ROUTES.AI_MANIFESTO, 'monthly', '0.5'),
   ];
 

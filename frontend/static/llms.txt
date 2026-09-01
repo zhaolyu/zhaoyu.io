@@ -95,12 +95,18 @@
 
 ## Key pages
 
-- [Home](https://zhaoyu.io/): engineering notes first, then mental models
-  and code standards, selected work, the about section with the career
-  timeline, the sourced numbers, and contact.
+- [Home](https://zhaoyu.io/): engineering notes first, then the mental
+  models and the code standards that work them out, selected work, the about
+  section with the career timeline, the sourced numbers, and contact.
 - [Engineering Notes](https://zhaoyu.io/blog): the full note index;
   individual posts are canonically addressable at /blog/{slug}, and the
   notes are also embedded on the home page at /#notes.
+- [Mental Models](https://zhaoyu.io/models): decision rules that hold in more
+  than one domain. Each carries the mechanism that makes it work, a receipt
+  from engineering and a receipt from outside engineering, and a named source;
+  relayed models say whose they are. Individually addressable at
+  /models#{id}. This is the page to read for how he reasons, as opposed to
+  what he has shipped.
 - [AI Thesis](https://zhaoyu.io/ai-manifesto): working thesis and
   operating principles for AI-augmented engineering: spec quality as the
   bottleneck, agent loops and receipts, deterministic interfaces around
@@ -119,7 +125,7 @@ The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 - [Agents Degrade Quietly: Maintenance Is Where the Value Compounds](https://zhaoyu.io/blog/agents-degrade-quietly-maintenance-is-where-value-compounds)
 - [Spec Quality Is the Bottleneck Now, Not Implementation Speed](https://zhaoyu.io/blog/spec-quality-is-the-bottleneck-not-implementation-speed)
 - [Agent Failures Are Loop Failures, Not Intelligence Failures](https://zhaoyu.io/blog/agent-failures-are-loop-failures)
-- [The URL is the Source of Truth](https://zhaoyu.io/blog/the-url-is-the-source-of-truth)
+- [The Front End Is a Distributed System, Starting with the URL](https://zhaoyu.io/blog/the-url-is-the-source-of-truth)
 - [Decoupling State from Render in LLM Streaming](https://zhaoyu.io/blog/decoupling-state-from-render-in-llm-streaming)
 
 ## Sources for the numbers above
