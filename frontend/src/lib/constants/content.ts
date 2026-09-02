@@ -488,7 +488,7 @@ export const careerHistory: CareerHistory = {
     { year: 2019, role: 'Senior Engineer', company: 'CNBC' },
     {
       year: 2021,
-      role: 'Engineering Manager',
+      role: 'Senior Manager, Engineering',
       company: 'NBCUniversal',
       note: 'First management tour.',
     },
