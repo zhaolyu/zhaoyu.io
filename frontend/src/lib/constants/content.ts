@@ -122,7 +122,7 @@ export const performanceMetrics: PerformanceMetric[] = [
   {
     label: 'Years shipping',
     value: '10+',
-    sublabel: 'CNBC · NBC News · NBCUniversal',
+    sublabel: 'CNBC · NBCUniversal',
     basis:
       'Intern in March 2016 to Senior Manager, Engineering in April 2026, on the same platform',
     source: SOURCES.linkedin,
@@ -148,7 +148,7 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC.com Next-Gen Migration',
       description:
-        'Market-moving days are a financial-news business at its most valuable and most fragile. I architected CNBC.com’s migration from a legacy client-side monolith to an isomorphic Akamai Edge architecture, moving business and rendering logic to the network edge, so the platform holds its full audience through exactly those spikes: sub-2-second p75 LCP in public field data, zero downtime through the cutover, and no lost sessions or ad impressions at the moments the audience is largest.',
+        'Market-moving days are a financial-news business at its most valuable and most fragile. I architected CNBC.com’s migration from a legacy client-side monolith to an isomorphic Akamai Edge architecture, moving business and rendering logic to the network edge, so the platform holds its full audience through exactly those spikes: sub-2-second p75 LCP in public field data, and zero downtime through the cutover.',
       tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
       metrics: [
         { label: 'P75 LCP (CRUX)', value: '1.7s' },
@@ -485,7 +485,7 @@ export const careerHistory: CareerHistory = {
   points: [
     { year: 2016, role: 'Intern', company: 'CNBC' },
     { year: 2017, role: 'Software Engineer', company: 'CNBC' },
-    { year: 2019, role: 'Senior Engineer', company: 'NBC News' },
+    { year: 2019, role: 'Senior Engineer', company: 'CNBC' },
     {
       year: 2021,
       role: 'Engineering Manager',
