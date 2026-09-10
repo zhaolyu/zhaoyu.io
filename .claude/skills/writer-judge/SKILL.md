@@ -61,6 +61,24 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
    with no source (invented receipt), and a source that does not actually support the
    sentence citing it (decorative citation). Employer-related figures not in the
    verified table are a disclosure risk on top.
+
+   **A third failure, and empirically the commonest: an asserted mechanism or sequence
+   no artifact records.** Not a wrong number, a wrong *story* — coherent, plausible, and
+   absent from the history. Across ten passes on 2026-09-10 this was the blocking finding
+   almost every time, and the deterministic gates were green throughout. Two moves catch
+   it:
+
+   - **Tense tripwire.** Flag every **still, already, the whole time, never repaired,
+     predates, now** and any other claim about history. That word *is* the claim. Resolve
+     the incident to a commit and read `git show <commit>^:<file>`. A draft that verified
+     a rule "still fires" against the file at HEAD was wrong: the function was created by
+     the fix commit. Reading HEAD and narrating it as the past passes every other check.
+   - **Causal direction.** For "X made Y happen", prove Y did not predate X. Two separate
+     drafts credited a change with a coupling that existed before it, one of them in a
+     commit that had *removed* the relevant section.
+
+   Both are blocking when they fail. Neither is visible from the prose, so the artifact
+   has to be opened at the right revision every time.
 3. **Cadence arithmetic** (from `../writer/references/voice.md`):
    - Extract every paragraph-final sentence as a list. Count the epigrams. More than
      one per piece blocks.
