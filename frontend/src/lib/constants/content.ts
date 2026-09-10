@@ -569,11 +569,11 @@ export const builderProjects: BuilderProject[] = [
     title: 'OB1: Personal Exocortex',
     category: 'independent',
     description:
-      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,600+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,700+ atomic, cross-linked claims, searchable by meaning and exposed to my AI tools over MCP. Every agent I delegate to starts with my accumulated judgment instead of a blank context window — which is how one player-coach compounds instead of burning out.',
     stack: ['MCP', 'Embeddings', 'Semantic Search', 'TypeScript'],
     status: 'shipped',
     metrics: [
-      { label: 'Atomic Claims', value: '1,600+' },
+      { label: 'Atomic Claims', value: '1,700+' },
       { label: 'Agent Access', value: 'MCP' },
     ],
   },
