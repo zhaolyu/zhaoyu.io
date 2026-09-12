@@ -125,7 +125,13 @@ const SWEEP = [
   'match_thoughts',
   'thoughts table',
 ];
+// --allow covers sweep terms as well as slugs: a name the site already carries in
+// shipped copy (content.ts names the retrieval layer and the vault) is not a leak
+// on a proof card, and the author says so on the command line rather than the
+// guard guessing.
+const allowLower = new Set([...allow].map((s) => s.toLowerCase()));
 for (const term of SWEEP) {
+  if (allowLower.has(term.toLowerCase())) continue;
   const re = new RegExp(
     `(?<![A-Za-z0-9_])${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![A-Za-z0-9_])`,
     'gi',
