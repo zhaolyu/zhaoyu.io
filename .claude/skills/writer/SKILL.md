@@ -41,6 +41,14 @@ is the register this site does not ship.
    way, every one with the deterministic gates green. Read
    [references/receipts.md](references/receipts.md) before writing any sentence that says
    how something worked or what caused what.
+   **A first-hand receipt names where and on what.** Every `sources` entry whose label
+   begins "First-hand" carries `ref` (a commit sha, sha range, or `file:line`), `host`
+   (windows, wsl, linux, macos, ci: the host the mechanism was verified on), and
+   `verified_on` (YYYY-MM-DD). `frontend/scripts/draft-lint.mjs` refuses a draft
+   without them, and `content-voice.test.ts` refuses a note dated on or after the
+   schema's cutoff without them, from the same module. Measured 2026-09-11: a note
+   whose only first-hand source was a label cleared three judges with a mechanism that
+   was true on the judges' host and false on the incident's.
 4. **Two paragraphs — unless it is an essay.** The note lane is exactly two, with no
    headers, bullets, or code blocks. The essay lane (`format: 'essay'`) is the only
    exception and carries its own contract — see [Long-form essays](#long-form-essays).

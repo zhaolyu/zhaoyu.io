@@ -79,6 +79,18 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
 
    Both are blocking when they fail. Neither is visible from the prose, so the artifact
    has to be opened at the right revision every time.
+
+   **A fourth, measured 2026-09-11: a mechanism verified on the wrong host.** The same
+   tool can behave differently on the two sides of one machine (Git for Windows' awk
+   strips `\r`; Linux awk keeps it), so a note verified in WSL attributed a Linux
+   mechanism to a Windows incident and cleared three judges who all verified in WSL.
+   Two rules follow. Every first-hand source in the draft carries `ref`, `host`, and
+   `verified_on` (the receipt schema, enforced by `scripts/draft-lint.mjs` and by
+   `content-voice.test.ts` for notes dated on or after its cutoff); a first-hand claim
+   without them is an invented receipt. And the judge verifies a mechanism on the host
+   the source names, not the host the judge happens to be on; when they differ and the
+   judge cannot reach the named host, the finding is COULD-NOT-RUN for that claim, never
+   a pass. The verdict states the host every mechanism was checked on.
 3. **Cadence arithmetic** (from `../writer/references/voice.md`):
    - Extract every paragraph-final sentence as a list. Count the epigrams. More than
      one per piece blocks.

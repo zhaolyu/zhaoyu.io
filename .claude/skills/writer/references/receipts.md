@@ -10,7 +10,7 @@ had one shape: a causal story written first and verified afterwards. The determi
 gates were green on all of them, because a fabricated mechanism has the same word count
 as a real one.
 
-## The five traps
+## The six traps
 
 **1. Check the exit code before citing anything from a run.** A non-zero exit means the
 script aborted partway, so its runtime and line count describe a truncated run, not the
@@ -54,6 +54,19 @@ tracked inside it." Three figures in one run were invented, mis-sourced, or embe
 and every one made the argument stronger than the evidence did. **If a detail improves
 the story, that is the signal to reread the source, not to keep it.**
 
+**6. A mechanism has a host. Name it, and test a cross-platform tool on the host the
+incident ran on.** Measured 2026-09-11 and 12. Same GNU Awk 5.3.2 on the two sides of one
+machine: Git for Windows opens files in text mode and strips ``, so a `$`-anchored pattern
+matches a CRLF line there; Linux gawk preserves ``, so the same pattern misses. A note
+verified in WSL attributed the Linux mechanism to a Windows incident and cleared three judge
+passes, because all three judges verified in WSL. Its author then called the correct Windows
+record fabricated, on the strength of a Linux test. Two friction entries for one incident
+recorded contradictory mechanisms, each right on its own host.
+
+> **Whenever a sentence describes what a tool did, the host it did it on is part of the
+> claim.** Put it in the receipt (`host:`), and when the incident ran on a different host
+> from the one you are verifying on, run the test there before the sentence is written.
+
 ## Then check the fit in the other direction
 
 The traps above ask whether the evidence supports the sentence. They do not catch the
@@ -78,7 +91,8 @@ someone checks the history. Invert it.
 1. Start from an incident already written down. A dated log entry with a root cause is
    most of a paragraph before you write a word.
 2. State the rule that incident taught, in its record's own words.
-3. Verify every mechanism in it against the artifact at the right revision.
+3. Verify every mechanism in it against the artifact at the right revision, on the
+   right host.
 4. Only now look for external corroboration, and drop it if it does not fit the rule you
    already have.
 
