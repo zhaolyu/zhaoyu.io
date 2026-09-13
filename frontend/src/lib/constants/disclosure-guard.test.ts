@@ -3,6 +3,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname, sep } from 'node:path';
 import { performanceMetrics } from './content';
+import { METRIC_SHAPES, stripIllustrativeCode, stripUrls, makeExempt } from './disclosure-shapes';
 
 /**
  * Disclosure guard — allowlist, not deny-list.
@@ -55,81 +56,17 @@ const SURFACES = [
 });
 
 /**
- * Shapes that read as an employer claim. Each describes a kind of number, so
- * the list stays publishable — and it generalises: a future "185K subscribers"
- * trips the same rule any other subscriber count does, which a literal never would.
+ * The shapes, the exemptions, and the strippers live in ./disclosure-shapes.ts,
+ * one source shared with scripts/artifact-guard.mjs, which runs the same scan on
+ * a page that is not in the site yet. The coverage proof at the bottom of this
+ * file is what holds that module to this test's expectations: the shapes it
+ * must catch and the personal or sourced figures it must leave alone.
  */
-const METRIC_SHAPES: Array<{ pattern: RegExp; kind: string }> = [
-  {
-    pattern: /\$\s?\d[\d,.]*\s?(?:[–—-]\s?\d[\d,.]*\s?)?[MBK]?\+?\s*(?:ARR|revenue|subscription)/gi,
-    kind: 'revenue or ARR',
-  },
-  {
-    pattern: /\b\d[\d,.]*\s?[MK]\+?\s*(?:premium\s+|paying\s+)?subscribers?\b/gi,
-    kind: 'subscriber count',
-  },
-  {
-    // The qualifier slot is why this is not a two-word match: an
-    // "<n>-subscriber *production* beta" reads as the same disclosure and
-    // slipped straight through the tighter pattern this replaces. The real
-    // figure stays out of this file like every other one — the invented
-    // "450-subscriber production beta" case below is what proves the slot works.
-    pattern:
-      /\b\d[\d,.]*\s?[- ]?(?:subscriber|user|customer)\s+(?:\w+\s+){0,2}?(?:beta|pilot|cohort|trial)/gi,
-    kind: 'unannounced pilot size',
-  },
-  {
-    pattern: /\b\d[\d,.]*\s?[MBK]\+?\s*(?:monthly\s+|daily\s+)?(?:unique|visitor|user|reader)/gi,
-    kind: 'audience scale',
-  },
-  {
-    pattern: /\b\d[\d,.]*\s?%\s*(?:cache|hit\b)|\bHIT:\s*\d/gi,
-    kind: 'cache-hit rate',
-  },
-  {
-    pattern: /\b\d[\d,.]*\s?%\s*(?:velocity|fewer|faster|more|defects?|incidents?)/gi,
-    kind: 'internal governance metric',
-  },
-  {
-    pattern:
-      /\b(?:p\d{2}\s*)?(?:LCP|TTFB|INP|CLS)\b[^.\d]{0,20}\d[\d.]*\s?(?:s|ms)?|\b\d[\d.]*\s?(?:s|ms)\s*(?:LCP|TTFB|INP)\b/gi,
-    kind: 'field performance figure',
-  },
-  { pattern: /\bTop\s+\d+\s?%/gi, kind: 'ranking superlative' },
-];
 
 /** Values a public source already backs, via performanceMetrics (basis + SOURCES). */
 const SOURCED_VALUES = performanceMetrics.map((m) => m.value.toLowerCase());
 
-/**
- * Numbers that are not employer claims and never needed a source. Each entry
- * says why it is here — an unexplained exemption is how a deny-list rots.
- */
-const NOT_EMPLOYER_CLAIMS: Array<{ text: string; why: string }> = [
-  { text: '50K ultra', why: 'an ultramarathon distance, a personal fact' },
-  { text: '20% faster', why: "the METR study's own figure, cited inline to its source" },
-];
-
-/** Prose in an illustrative code block asserts nothing about production. */
-const stripIllustrativeCode = (text: string) => text.replace(/<code>[\s\S]*?<\/code>/g, ' ');
-/** URL-encoded characters (%20) look like percentages to a regex. */
-const stripUrls = (text: string) => text.replace(/https?:\/\/\S+/g, ' ');
-
-/**
- * A sourced value exempts a match only when it appears as a *complete* figure.
- * Substring matching is not safe here: performanceMetrics carries short values
- * like a team size of "20", and a pilot-cohort claim beginning "20…" contains it
- * as a substring — which silently exempted a real leak shape until this was
- * tightened.
- * The lookarounds require the value not to be a fragment of a longer number.
- */
-const escapeRe = (v: string) => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const asWholeFigure = (value: string) =>
-  new RegExp(`(?<![\\d.])${escapeRe(value)}(?![\\d.%])`, 'i');
-
-const exempt = (match: string) =>
-  SOURCED_VALUES.some((v) => asWholeFigure(v).test(match)) ||
-  NOT_EMPLOYER_CLAIMS.some((e) => match.toLowerCase().includes(e.text.toLowerCase()));
+const exempt = makeExempt(performanceMetrics.map((m) => m.value));
 
 describe('disclosure guard (allowlist)', () => {
   for (const { rel, text } of SURFACES) {
