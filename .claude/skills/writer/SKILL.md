@@ -34,6 +34,21 @@ is the register this site does not ship.
 3. **Never invent a receipt.** Do not fabricate a metric, headcount, dollar figure, date,
    or outcome. If a claim needs a number you don't have, ask, or write the sentence so it
    doesn't need one. Verified figures are listed in [references/surfaces.md](references/surfaces.md).
+   **A mechanism is a receipt too.** The harder failure is not a made-up number but a
+   true-sounding *causal story* no artifact records — crediting a change with a cost that
+   predated it, or describing how something worked by reading the file at HEAD and
+   narrating it as the past. Ten judge passes across two notes on 2026-09-10 failed this
+   way, every one with the deterministic gates green. Read
+   [references/receipts.md](references/receipts.md) before writing any sentence that says
+   how something worked or what caused what.
+   **A first-hand receipt names where and on what.** Every `sources` entry whose label
+   begins "First-hand" carries `ref` (a commit sha, sha range, or `file:line`), `host`
+   (windows, wsl, linux, macos, ci: the host the mechanism was verified on), and
+   `verified_on` (YYYY-MM-DD). `frontend/scripts/draft-lint.mjs` refuses a draft
+   without them, and `content-voice.test.ts` refuses a note dated on or after the
+   schema's cutoff without them, from the same module. Measured 2026-09-11: a note
+   whose only first-hand source was a label cleared three judges with a mechanism that
+   was true on the judges' host and false on the incident's.
 4. **Two paragraphs — unless it is an essay.** The note lane is exactly two, with no
    headers, bullets, or code blocks. The essay lane (`format: 'essay'`) is the only
    exception and carries its own contract — see [Long-form essays](#long-form-essays).
@@ -107,7 +122,14 @@ machine-made even when every individual sentence is good.
 ## Procedure
 
 1. **Find the claim.** One sentence, falsifiable, that you actually believe. If you can't
-   write it, there's no note yet — say so rather than padding.
+   write it, there's no note yet — say so rather than padding. Prefer starting from an
+   incident already written down and stating the rule it taught, over picking a thesis and
+   hunting for a receipt that fits it; a receipt recruited to fit a thesis looks like it
+   fits until someone checks the history. See
+   [references/receipts.md](references/receipts.md).
+1b. **Verify the receipts before drafting prose.** Every mechanism, sequence and figure,
+   against the artifact at the right revision. This is cheap here and expensive after the
+   prose exists, because a wrong mechanism usually takes the paragraph's structure with it.
 2. **Structure before prose** — Larson's own drafting practice: plot the two paragraphs'
    load (claim + mechanism / corrective + rule) and the hook, iterate on *that* until it
    holds, then write. Restructuring an outline is cheap; restructuring finished prose isn't.
