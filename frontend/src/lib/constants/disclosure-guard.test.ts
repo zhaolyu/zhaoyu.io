@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, sep } from 'node:path';
 import { performanceMetrics } from './content';
 
 /**
@@ -45,7 +45,14 @@ const SURFACES = [
   resolve(here, '../../../static/llms.txt'),
   ...walk(resolve(here, '../../routes')),
   ...walk(resolve(here, '../../lib/components')),
-].map((abs) => ({ rel: abs.slice(abs.indexOf('/src/') + 1), text: readFileSync(abs, 'utf8') }));
+].map((abs) => {
+  // A Windows walk returns paths with the platform separator, and the
+  // assertions below compare POSIX spellings, so the self-check that this file
+  // scans ProjectCard.svelte read false on that host while every per-surface
+  // scan still ran. Normalise once so the guard reads the same everywhere.
+  const posix = abs.split(sep).join('/');
+  return { rel: posix.slice(posix.indexOf('/src/') + 1), text: readFileSync(abs, 'utf8') };
+});
 
 /**
  * Shapes that read as an employer claim. Each describes a kind of number, so
