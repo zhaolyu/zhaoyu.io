@@ -112,6 +112,20 @@ describe('note sources and dates (3.1)', () => {
     }
   });
 
+  it('resolves every inline /blog/ link in note prose to a real slug', () => {
+    // The cross-note link graph was held together by review until this ran.
+    // A rotted internal link is the fail-open shape the corpus argues about:
+    // the page still renders, so nothing reports that the target is gone.
+    const slugs = new Set(notesData.notes.map((n) => n.slug));
+    for (const note of notesData.notes) {
+      for (const block of note.content) {
+        for (const [, slug] of block.matchAll(/href=['"]\/blog\/([^'"#?]+)['"]/g)) {
+          expect(slugs, `${note.slug} links to /blog/${slug}`).toContain(slug);
+        }
+      }
+    }
+  });
+
   it('does not reuse one source label twice within a note', () => {
     for (const note of notesData.notes) {
       const labels = note.sources.map((s) => s.label);
