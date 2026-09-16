@@ -11,6 +11,18 @@
       "Reliability"
     ]
   },
+  "two-checks-reported-zero-and-neither-was-looking": {
+    "slug": "two-checks-reported-zero-and-neither-was-looking",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · SEP 2026",
+    "title": "Two Checks Reported Zero and Neither Was Looking Where It Mattered",
+    "subtitle": "",
+    "footnote": [
+      "Verification",
+      "Reliability",
+      "AI Engineering"
+    ]
+  },
   "your-checks-are-lying-to-you": {
     "slug": "your-checks-are-lying-to-you",
     "kind": "note",
