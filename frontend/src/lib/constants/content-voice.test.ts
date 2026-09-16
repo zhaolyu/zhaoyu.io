@@ -222,6 +222,44 @@ describe('draft-lint agrees with this gate', () => {
       ).toEqual([]);
     }
   });
+
+  it('rejects the unlinked-source label that content.test.ts rejects', () => {
+    // The two gates drifted: lintReceipts detected first-hand case-insensitively
+    // while content.test.ts requires /^(First-hand|This site)/, so a lowercase
+    // label cleared the pre-merge lint and failed the suite on commit. Both
+    // fixtures below carry a complete receipt, so the label form is the only
+    // thing under test.
+    const receipt = { ref: 'abc1234', host: 'windows', verified_on: '2026-09-15' };
+    const lower = lintReceipts({
+      dateISO: '2026-09-15',
+      sources: [{ label: 'first-hand: a lowercase label', ...receipt }],
+    });
+    expect(lower.map((f) => f.rule)).toContain('source-label');
+
+    const proper = lintReceipts({
+      dateISO: '2026-09-15',
+      sources: [{ label: 'First-hand: a properly cased label', ...receipt }],
+    });
+    expect(proper).toEqual([]);
+
+    // Detection must stay case-insensitive: the wrong casing is a label defect,
+    // never a licence to skip the receipt rules.
+    const lowerNoReceipt = lintReceipts({
+      dateISO: '2026-09-15',
+      sources: [{ label: 'first-hand: no receipt at all' }],
+    });
+    expect(lowerNoReceipt.map((f) => f.rule)).toEqual(
+      expect.arrayContaining(['source-label', 'receipt-ref', 'receipt-host', 'receipt-date']),
+    );
+
+    // A linked source is a citation, not the author's own practice, so the
+    // label form does not apply to it.
+    const linked = lintReceipts({
+      dateISO: '2026-09-15',
+      sources: [{ label: 'Cloudflare, shard and conquer', href: 'https://example.com' }],
+    });
+    expect(linked).toEqual([]);
+  });
 });
 
 describe('the rationing tier is reachable', () => {

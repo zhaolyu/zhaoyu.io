@@ -177,7 +177,20 @@ export function lintNote(note: NoteLike): Finding[] {
   return f;
 }
 
+/**
+ * Detection stays case-insensitive on purpose. A label written `first-hand` is
+ * still a first-hand source and still owes ref/host/verified_on; matching it
+ * strictly here would let the wrong casing skip the receipt rules altogether,
+ * turning a gate divergence into a fail-open. Casing is enforced separately,
+ * by LABEL_FORM.
+ */
 const FIRSTHAND = /^first-hand\b/i;
+/**
+ * The form content.test.ts requires of any source carrying no href. Stated
+ * here so draft-lint rejects exactly what the merge gate rejects: before this,
+ * a lowercase label passed the pre-merge lint and failed the suite on commit.
+ */
+const LABEL_FORM = /^(First-hand|This site)/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
@@ -196,8 +209,14 @@ export function lintReceipts(note: NoteLike): Finding[] {
       detail: 'no sources; every note carries at least one',
     });
   sources.forEach((s, i) => {
-    if (!FIRSTHAND.test(String(s.label || ''))) return;
     const where = `sources[${i}]`;
+    if (s.href === undefined && !LABEL_FORM.test(String(s.label || '')))
+      f.push({
+        rule: 'source-label',
+        where,
+        detail: 'unlinked source must start with "First-hand" or "This site"',
+      });
+    if (!FIRSTHAND.test(String(s.label || ''))) return;
     if (!s.ref || typeof s.ref !== 'string')
       f.push({
         rule: 'receipt-ref',
