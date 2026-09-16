@@ -167,6 +167,15 @@ export const projectsData: ProjectsData = {
 export interface NoteSource {
   label: string;
   href?: string;
+  /**
+   * Receipt schema for a first-hand source, enforced by `draft-lint` always and
+   * by content-voice.test.ts for notes dated on or after RECEIPT_SCHEMA_FROM.
+   * `host` is part of the claim: a mechanism verified on one host is not
+   * evidence about another.
+   */
+  ref?: string;
+  host?: string;
+  verified_on?: string;
 }
 
 export interface EngineeringNote {
@@ -197,6 +206,47 @@ export interface NotesData {
 
 export const notesData: NotesData = {
   notes: [
+    {
+      slug: 'two-checks-reported-zero-and-neither-was-looking',
+      title: 'Two Checks Reported Zero and Neither Was Looking Where It Mattered',
+      date: 'Sep 2026',
+      dateISO: '2026-09-15',
+      tags: ['Verification', 'Reliability', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            'First-hand: scheduled-run pricing tool, two host-specific causes of an empty result',
+          ref: 'ca416cea3775f9f8c71bbf5d957db19075145883',
+          host: 'Windows 10, Git Bash (MSYS)',
+          verified_on: '2026-09-15',
+        },
+        {
+          label:
+            'First-hand: script-consumer retire audit, amendment widening the scan to workflow files',
+          ref: '9e470c8bb11013956a9884393718c2bd299bec9d',
+          host: 'Windows 10 (record read); Ubuntu (landing gates measured, not re-measured here)',
+          verified_on: '2026-09-15',
+        },
+        {
+          label:
+            'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
+          ref: 'ba643ca5:ops/audits/script-consumer-audit-2026-09-01.md',
+          host: 'Windows 10',
+          verified_on: '2026-09-15',
+        },
+        {
+          label:
+            'First-hand: disclosure guard roster assertion failing closed on a Windows path walk',
+          ref: '377aa96e63c09c85b278cf3f8a4f1579ee0d08a1',
+          host: 'Windows 10',
+          verified_on: '2026-09-15',
+        },
+      ],
+      content: [
+        '<p>Two of my own checks spent this month returning a confident nothing. The tool that prices each scheduled run found no runs at all and said so. It carried two independent defects, either of which alone was enough: its pattern was anchored to the start of the first message and the app had begun prepending a preamble, and the transcript directory it derived under Git Bash slugged to a leading dash where the real one began with a drive letter. On the run I measured the directory miss came first, so no transcript was ever opened and no run was ever priced. The other was a retire pass that counts callers before deleting a script. It searched the directories I keep instructions in, counted zero for a checker that a workflow file invoked on every pull request, and deleted it. That gate then failed on every pull request for eleven days while the default branch stayed green.</p>',
+        '<p>Five days into those eleven, the weekly re-run scanned fifty scripts, found none without a caller, and recorded the clean row. Both of these checks printed their scope. The pricing tool named the directory it had searched and the audit row listed every path its method covered, and neither zero was worth anything, because a printed scope reports what the check believes it examined. A third check on the site carried the same family of path bug and behaved nothing like them. It asserted that one named file had to appear in the roster it had just built, the assertion went false on Windows, and the suite went red and the commit hook rejected every commit from that host. So <strong>a check that can return zero needs one assertion about its own scope that fails closed, or its zero is unreadable.</strong></p>',
+      ],
+    },
     {
       slug: 'your-checks-are-lying-to-you',
       title: 'Your Checks Are Lying to You',

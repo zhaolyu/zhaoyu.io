@@ -118,6 +118,7 @@
 
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
+- [Two Checks Reported Zero and Neither Was Looking](https://zhaoyu.io/blog/two-checks-reported-zero-and-neither-was-looking)
 - [Your Checks Are Lying to You](https://zhaoyu.io/blog/your-checks-are-lying-to-you)
 - [Agents Re-Derive Judgment You Already Paid For](https://zhaoyu.io/blog/agents-re-derive-judgment-you-already-paid-for)
 - [Reinforcement Anchors Beat Emphasis: Compressing a Production System Prompt](https://zhaoyu.io/blog/reinforcement-anchors-beat-emphasis-in-system-prompts)
