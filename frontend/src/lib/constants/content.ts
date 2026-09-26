@@ -207,8 +207,8 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
-      slug: 'a-generator-that-never-converges-is-reading-an-undeclared-default',
-      title: 'A Generator That Never Converges Is Reading an Undeclared Default',
+      slug: 'nobody-declared-the-line-endings',
+      title: 'Nobody Declared the Line Endings, and a Generator Never Converged',
       date: 'Sep 2026',
       dateISO: '2026-09-26',
       tags: ['Reliability', 'Verification', 'Architecture'],

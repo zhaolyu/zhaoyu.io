@@ -11,11 +11,11 @@
       "Reliability"
     ]
   },
-  "a-generator-that-never-converges-is-reading-an-undeclared-default": {
-    "slug": "a-generator-that-never-converges-is-reading-an-undeclared-default",
+  "nobody-declared-the-line-endings": {
+    "slug": "nobody-declared-the-line-endings",
     "kind": "note",
     "eyebrow": "ENGINEERING NOTE · SEP 2026",
-    "title": "A Generator That Never Converges Is Reading an Undeclared Default",
+    "title": "Nobody Declared the Line Endings, and a Generator Never Converged",
     "subtitle": "",
     "footnote": [
       "Reliability",
