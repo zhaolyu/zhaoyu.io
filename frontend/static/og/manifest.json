@@ -11,6 +11,18 @@
       "Reliability"
     ]
   },
+  "a-generator-that-never-converges-is-reading-an-undeclared-default": {
+    "slug": "a-generator-that-never-converges-is-reading-an-undeclared-default",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · SEP 2026",
+    "title": "A Generator That Never Converges Is Reading an Undeclared Default",
+    "subtitle": "",
+    "footnote": [
+      "Reliability",
+      "Verification",
+      "Architecture"
+    ]
+  },
   "two-checks-reported-zero-and-neither-was-looking": {
     "slug": "two-checks-reported-zero-and-neither-was-looking",
     "kind": "note",
