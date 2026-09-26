@@ -52,6 +52,47 @@ named consumer; a judgment recorded nowhere is coverage that only looks like cov
 
 Run in order. Every finding must quote its evidence or show its arithmetic.
 
+0. **Worth test** (from "What a note is for" in `../writer/SKILL.md`). Run it first:
+   a draft that fails it is not worth the rest of the rubric, however well it is made.
+   Four checks, each blocking:
+   - **The author's own lesson, both halves.** Write the lesson line, one sentence
+     taken from the draft: "The author now does (or believes) X instead of Y." Y is the
+     author's own earlier practice or belief, stated in the draft; first person or "my"
+     makes the ownership clear, an agentless sentence does not. A habit the draft
+     attributes to other people ("the usual fix is…") counts only if the draft says the
+     author held it too. A note that reports how a system behaved, or tells the reader
+     what to do, without the author's own before and after, is a finding or advice.
+     FAIL it and quote the lesson line you could not complete.
+   - **Honest about adoption.** A lesson still being learned is a legitimate note; one
+     presented as settled practice that nothing records is an invented receipt. So: if
+     the draft says or implies the author changed a practice, that change traces to an
+     artifact (a commit, a landed rule or check, a changed config or process file) cited
+     in the sources or reachable from them. Open it at the revision. A change made in one
+     system counts, even when the lesson line generalizes it. If the change is not
+     adopted yet, the draft says so plainly. A closing rule stated as a settled
+     conclusion ("So a check needs…") with no adoption status either way counts as
+     implying adoption. A source that is only a label, with no commit or file behind it,
+     is not reachable. FAIL when the draft implies an adoption the record does not show,
+     or when the "now" it states is not what the artifact did.
+     (Missing `ref`, `host` or `verified_on` fields are step 2's finding, not this one.)
+   - **Visibly from building agentic systems.** The incident or the lesson comes from
+     building agentic systems or the flows around them: the harness, delegation,
+     verification and evaluation, routines, the tooling an AI engineer runs. The draft
+     names that context in its own words, for example what the system does in the
+     author's agent work ("the generator that writes the baseline instructions my coding
+     agents read"). Cues a reader has to decode do not count, and neither does a link
+     that is visible only in the commits.
+   - **Not already said.** Search `notesData` in `frontend/src/lib/constants/content.ts`
+     for a shipped note or essay that teaches the same lesson or spends the same
+     receipts. The same rule counts as the same lesson even when the draft adds a nuance,
+     if the draft does not name the nuance as its addition. If one does, the draft says
+     what it adds and links to it rather than retelling it; otherwise FAIL, naming the
+     note.
+
+   The verdict opens with the lesson line and its status: **adopted**, with the artifact
+   that records it, or **in progress**, as the draft states it. Both go into the PR body
+   with the rest of the verdict, so the merged PRs double as the author's record of what
+   was learned and what has actually changed, which is the second reader the note is for.
 1. **Claim test.** State the draft's claim in one sentence after one read. If you
    cannot, or the claim is a topic rather than an assertion someone could dispute,
    FAIL. A note with no falsifiable claim has no reason to ship.
