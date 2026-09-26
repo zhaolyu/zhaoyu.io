@@ -207,6 +207,30 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'nobody-declared-the-line-endings',
+      title: 'Nobody Declared the Line Endings, and a Generator Never Converged',
+      date: 'Sep 2026',
+      dateISO: '2026-09-26',
+      tags: ['Reliability', 'Verification', 'Architecture'],
+      sources: [
+        {
+          label:
+            'First-hand: workspace code generator that could not converge on a Windows checkout, the two attribute fixes, and the friction entry recording the mechanism per host',
+          ref: '7ae065e, 49ba0b5, b4cfe1d',
+          host: 'Windows 10, Git Bash (MSYS), GNU Awk 5.3.2',
+          verified_on: '2026-09-26',
+        },
+        {
+          label: 'Git documentation, gitattributes: the text and eol attributes',
+          href: 'https://git-scm.com/docs/gitattributes',
+        },
+      ],
+      content: [
+        '<p>A code generator in my workspace judged its own output stale on every run and rewrote it. The repository carried no <code>.gitattributes</code> at all, so every text file took its line endings from whatever <code>core.autocrlf</code> the clone had. Mine was a Windows clone that inherited <code>core.autocrlf=true</code> from the system config, and nearly every text file came out CRLF. The generator brackets its managed block with sentinel comments, extracts the current block with <code>awk</code>, and compares it byte for byte against its template with <code>cmp</code>. Git for Windows ships an <code>awk</code> that opens files in text mode and drops the carriage return, so the extracted block came out LF while the template it was measured against stayed CRLF. The two could never compare equal, every run judged the block stale, and the rewrite put back the same CRLF block for the next run to reject.</p>',
+        "<p>The fix was one file, and it changed no line of the generator. <a href='https://git-scm.com/docs/gitattributes' target='_blank' rel='noopener'>Git's documentation</a> is explicit that <code>core.autocrlf</code> and <code>core.eol</code> decide line endings only where the attributes do not, and no attribute covered the template. The first fix, half an hour earlier, had been for a different generator that baked a stray carriage return into its output. It pinned three paths: the one that broke, and two more pinned pre-emptively. The template this generator compared against was in none of them. The second fix put a repo-wide <code>* text=auto eol=lf</code> above that list and kept the three lines beneath it. None of the affected files had ever been committed carrying a carriage return, so the damage only existed on disk. <strong>A path list can only name what someone already had in mind, and the thing that breaks next is the one it could not have named.</strong></p>",
+      ],
+    },
+    {
       slug: 'two-checks-reported-zero-and-neither-was-looking',
       title: 'Two Checks Reported Zero and Neither Was Looking Where It Mattered',
       date: 'Sep 2026',

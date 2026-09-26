@@ -11,6 +11,18 @@
       "Reliability"
     ]
   },
+  "nobody-declared-the-line-endings": {
+    "slug": "nobody-declared-the-line-endings",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · SEP 2026",
+    "title": "Nobody Declared the Line Endings, and a Generator Never Converged",
+    "subtitle": "",
+    "footnote": [
+      "Reliability",
+      "Verification",
+      "Architecture"
+    ]
+  },
   "two-checks-reported-zero-and-neither-was-looking": {
     "slug": "two-checks-reported-zero-and-neither-was-looking",
     "kind": "note",
