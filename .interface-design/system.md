@@ -4,13 +4,13 @@ How the site is built to look, and where each rule lives. Rewritten 2026-10-04: 
 version (Feb 2026) predated the craft-first rethink and described a hero badge, motto chips,
 staggered entrances, numeric spacing names and a "no shadows" rule that no longer exist.
 
-| Question | Answer lives in |
-|---|---|
-| What the site should feel like, and why | [`brief.md`](brief.md): intent, measured references, principles P1–P9 with checks |
-| Token values | `frontend/src/app.css` (the only source of truth) |
-| Token index for previews | `frontend/src/lib/constants/design-tokens.ts`, kept honest by `design-tokens.test.ts` |
-| Component previews | `/design-system/{card}`, registered in `frontend/src/lib/constants/design-system.ts` |
-| Copy | `frontend/src/lib/constants/content.ts`, through the `writer` skill |
+| Question                                | Answer lives in                                                                       |
+| --------------------------------------- | ------------------------------------------------------------------------------------- |
+| What the site should feel like, and why | [`brief.md`](brief.md): intent, measured references, principles P1–P9 with checks     |
+| Token values                            | `frontend/src/app.css` (the only source of truth)                                     |
+| Token index for previews                | `frontend/src/lib/constants/design-tokens.ts`, kept honest by `design-tokens.test.ts` |
+| Component previews                      | `/design-system/{card}`, registered in `frontend/src/lib/constants/design-system.ts`  |
+| Copy                                    | `frontend/src/lib/constants/content.ts`, through the `writer` skill                   |
 
 Never hardcode a colour, size, radius, shadow, duration, width or spacing value in a
 component. Reach for a token; if none fits, add it to `app.css` and register it.
@@ -31,16 +31,16 @@ evidence and the author's identity within ten seconds.
 
 ## Token families
 
-| Family | Tokens | Rule |
-|---|---|---|
-| Colour roles | `--bg-*`, `--text-*`, `--border-color`, `--accent-*`, `--status-*` | Roles, not hues. `.dark` swaps values only. |
-| Accent as text | `--accent-primary-text`, `--accent-{professional,independent,experiment}` | Theme-flipped for AA. `--accent-primary-light` is for fills, dots and borders only. |
-| Surfaces | `--surface-raised`, `--scrim-*`, `--border-subtle\|soft`, `--ink-*` | Ink-on-surface alphas that invert under `.dark`. |
-| Type | `--type-2xs…4xl`, `--leading-*`, `--tracking-*`, `--weight-*` | Size, leading and tracking are separate; they do not pair one-to-one. |
-| Spacing | `--space-2xs…5xl` | Step names; the scale is non-linear. |
-| Rhythm | `--section-y`, `--section-y-lg`, `--section-y-mobile`, `--section-x` | `-lg` only for sections that deliberately breathe more. |
-| **Layout** | `--content-max`, `--measure-prose` | One section width, one reading measure (see below). |
-| Radius, elevation, motion | `--radius-*`, `--shadow-*`, `--duration-*`, `--ease-*` | Shadows are redefined under `.dark`. |
+| Family                    | Tokens                                                                    | Rule                                                                                |
+| ------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Colour roles              | `--bg-*`, `--text-*`, `--border-color`, `--accent-*`, `--status-*`        | Roles, not hues. `.dark` swaps values only.                                         |
+| Accent as text            | `--accent-primary-text`, `--accent-{professional,independent,experiment}` | Theme-flipped for AA. `--accent-primary-light` is for fills, dots and borders only. |
+| Surfaces                  | `--surface-raised`, `--scrim-*`, `--border-subtle\|soft`, `--ink-*`       | Ink-on-surface alphas that invert under `.dark`.                                    |
+| Type                      | `--type-2xs…4xl`, `--leading-*`, `--tracking-*`, `--weight-*`             | Size, leading and tracking are separate; they do not pair one-to-one.               |
+| Spacing                   | `--space-2xs…5xl`                                                         | Step names; the scale is non-linear.                                                |
+| Rhythm                    | `--section-y`, `--section-y-lg`, `--section-y-mobile`, `--section-x`      | `-lg` only for sections that deliberately breathe more.                             |
+| **Layout**                | `--content-max`, `--measure-prose`                                        | One section width, one reading measure (see below).                                 |
+| Radius, elevation, motion | `--radius-*`, `--shadow-*`, `--duration-*`, `--ease-*`                    | Shadows are redefined under `.dark`.                                                |
 
 The palette is still the stock Tailwind values; replacing them with the site's own ground,
 ink and accent is a planned, separate change (brief §6).
@@ -49,11 +49,11 @@ ink and accent is a planned, separate change (brief §6).
 
 ## Typography roles
 
-| Role | Face | Where |
-|---|---|---|
-| Interface and headings | Geist Sans (`--font-sans`) | Nav, buttons, section and note titles, cards |
-| Reading | Source Serif 4 (`--font-serif`) | Note bodies and case-study paragraphs only |
-| Measured values and identifiers | Geist Mono (`--font-mono`) | Figures, code, commit shas, dates |
+| Role                            | Face                            | Where                                        |
+| ------------------------------- | ------------------------------- | -------------------------------------------- |
+| Interface and headings          | Geist Sans (`--font-sans`)      | Nav, buttons, section and note titles, cards |
+| Reading                         | Source Serif 4 (`--font-serif`) | Note bodies and case-study paragraphs only   |
+| Measured values and identifiers | Geist Mono (`--font-mono`)      | Figures, code, commit shas, dates            |
 
 Reading text is `--type-md` (18px) at `--weight-regular`, in `--text-primary`, with
 `--leading-relaxed`, inside `--measure-prose`. Hierarchy on cards stays

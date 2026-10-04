@@ -11,22 +11,27 @@ frontend/            ← all commands run from here
   src/
     lib/
       components/
+        design-system/ # preview-only helpers (TokenGrid) for /design-system
         features/    # feature-scoped Svelte components
         layout/      # nav, footer, wrappers
         ui/          # generic reusable primitives
-      constants/     # config.ts, content.ts, routes.ts
+      constants/     # content.ts (all site copy), config.ts, design-tokens.ts, design-system.ts, og.ts, models.ts, case-studies.ts …
       stores/        # scroll.ts, theme.ts
-      types/         # api.ts, common.ts, cost-guard.ts
+      types/         # common.ts, cost-guard.ts, dashboard.ts
       utils/         # pure utility functions
       db.svelte.ts        # Cost-Guard PGlite + ElectricSQL sync engine (runes class)
       hud.svelte.ts       # Architect HUD telemetry state (runes class)
       simulator.svelte.ts # cost what-if simulator state (runes class)
     routes/
-      (main)/        # main layout group: landing page + blog/[slug]/
+      (main)/        # main layout group: landing page, blog/[slug]/, work/[slug]/, models/
       (standalone)/  # ai-manifesto (own layout)
       infra/         # Cost-Guard dashboard (prerendered shell; PGlite is imported on mount)
-      sitemap.xml/   # prerendered +server.ts endpoint (the only server route)
+      design-system/ # one prerendered preview per registered card (Claude Design hand-off)
+      og/            # OG card pages + cards.json, rendered by `pnpm og`
+      sitemap.xml/   # prerendered +server.ts endpoints (sitemap.xml, rss.xml, og/cards.json)
+      rss.xml/
       +layout.ts
+.interface-design/   ← visual brief (brief.md) and design-system doc (system.md), repo root
 ```
 
 ### Case studies
@@ -39,7 +44,7 @@ words, ≥1 https source, related notes must resolve). A `featureFlag` hides a
 study from the page, sitemap, OG set, and llms.txt together; embargoed studies
 stay out of the repo entirely (same disclosure policy as content.ts).
 
-There is no backend in this repo: the site is fully static (adapter-static, SPA fallback + prerender). `sitemap.xml/+server.ts` is prerendered at build time; there are no runtime API endpoints.
+There is no backend in this repo: the site is fully static (adapter-static, SPA fallback + prerender). The `+server.ts` endpoints (`sitemap.xml`, `rss.xml`, `og/cards.json`) are prerendered at build time; there are no runtime API endpoints.
 
 ### Imports
 
@@ -60,7 +65,9 @@ pnpm lint:fix        # lint + autofix
 pnpm format          # prettier
 pnpm test            # all tests
 pnpm vitest run src/lib/utils/navigation.test.ts  # single file
-pnpm build           # build
+pnpm build           # build (prebuild regenerates static/tokens.css from app.css)
+pnpm og              # regenerate OG cards after a build (hero tagline, note titles/tags)
+pnpm design-system   # after a build: write the /design-system preview bundle
 ```
 
 ---
@@ -102,11 +109,16 @@ Plan (and get approval) before coding when: multi-file changes, new features tou
 | Type                        | `--type-2xs…4xl`, `--leading-*`, `--tracking-*`, `--weight-*`             | Size/leading/tracking are separate — they don't pair 1:1.                                                                  |
 | Spacing                     | `--space-2xs…5xl`                                                         | Step names, never numeric: the scale is non-linear.                                                                        |
 | Rhythm                      | `--section-y`, `--section-y-lg`, `--section-y-mobile`, `--section-x`      | `-lg` only for sections that deliberately breathe more.                                                                    |
+| Layout                      | `--content-max`, `--measure-prose`                                        | One outer width so every section shares one left edge; one reading measure (65ch) for note and case-study prose.           |
 | Radius / elevation / motion | `--radius-*`, `--shadow-*`, `--duration-*`, `--ease-*`                    | Shadows are redefined under `.dark`.                                                                                       |
+
+**Faces:** `--font-sans` (Geist) for UI and headings, `--font-serif` (Source Serif 4) for note and case-study reading text only, `--font-mono` (Geist Mono) for measured values and identifiers. Both text faces have metric-matched fallbacks guarded by `font-metrics.test.ts`; re-measure them, never nudge, if a font changes.
+
+**Intent and rules:** `.interface-design/brief.md` is the visual brief (feel, measured references, principles P1–P9 with checks, owner decisions); `.interface-design/system.md` maps where each rule lives. The palette is still the stock Tailwind values; replacing it is a planned, separate change.
 
 ### Rules that are enforced by tests
 
-- `design-tokens.ts` mirrors `app.css` so previews can enumerate tokens. `design-tokens.test.ts` parses `app.css` and **fails on drift** — add a token to a covered family and you must register it.
+- `design-tokens.ts` mirrors `app.css` so previews can enumerate tokens. `design-tokens.test.ts` parses `app.css` and **fails on drift** — add a token to a covered family and you must register it. A new token family also needs a line in `frontend/.design-sync/conventions.md` (`design-system-styles.test.ts`), and `static/tokens.css` must be regenerated (`pnpm tokens`, or any `pnpm build`; `tokens-css.test.ts`).
 - Type hierarchy on cards: **classification > measurement > description**. Mono is reserved for measured values and identifiers; descriptive labels use sans. Don't put everything in mono-uppercase.
 - Sections render their content **always**; reveals are animation-only, gated on `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`. Never hide content behind `{#if visible}` — it won't prerender.
 
@@ -134,6 +146,23 @@ rewrite ships, the `writer-judge` skill renders an independent verdict from a co
 that did not author the draft (maker-checker for prose); the deterministic tests are the
 floor, the judge is the review, and its verdict goes in the PR body.
 
+How that runs in practice:
+
+- Write the draft to a scratch file that lists each field, any code or test changes that
+  ship with it, and a provenance line per factual assertion. Spawn a fresh judge per draft;
+  every fresh judge runs the calibration fixture first, and the author checks it against
+  `expected-findings.md` before trusting the verdict.
+- Blocking findings are fixed in the prose and re-judged. Changing a gate so a draft passes
+  is widening, and is blocked unless it is a recorded owner policy change.
+- Paste the final verdict table into the PR body verbatim, with a disposition for every
+  advisory (taken, overruled with a reason, owner decision, or follow-up). Disclose any
+  edit made after the verdict, or re-judge it.
+
+**The hero** leads with the thesis (`heroContent.headline.primary`). The role appears in
+the hero only as the quiet identity line under the CTAs (`heroContent.identity`, which must
+equal `roleTitle` and carry no scope claim); `roleTitle` is the one human-facing spelling of
+the role, `roleLine` the all-caps OG eyebrow. A hero or tagline edit needs `pnpm og`.
+
 ---
 
 ## Utilities
@@ -147,6 +176,7 @@ floor, the judge is the review, and its verdict goes in the PR body.
 - `cost-guard-display.ts` – Cost-Guard snapshot display formatting
 - `feature-flags.ts` – filters content items by `FEATURE_FLAGS` (config.ts)
 - `note-excerpt.ts` – strips HTML and truncates a note for excerpt cards
+- `note-groups.ts` – groups notes by month for the archive's date headings
 
 New utils require a colocated `*.test.ts` with ≥90% coverage.
 
@@ -181,6 +211,7 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
   6. Every number stays sourced inline, per the site's own stated standard.
 
   `positioning.test.ts` fails the build on each retired phrasing; `disclosure-guard.test.ts` catches the unsourced figures.
+
 - **Disclosure policy (employer facts).** Versant is a public company. Every employer-related number on any surface — copy, `<meta>`, JSON-LD, `llms.txt`, OG cards — carries a public source from `SOURCES` in `content.ts`; nothing Versant/CNBC has not disclosed publicly is stated anywhere. `disclosure-guard.test.ts` holds the deny-list and scans every surface; `content.test.ts` enforces basis + source on metrics. A feature flag is not an exemption: `content.ts` is bundled into client JS whether or not a card renders, so embargoed copy stays out of the repository entirely until it is public.
 - Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).
 - CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
