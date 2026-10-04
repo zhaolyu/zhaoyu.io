@@ -236,3 +236,18 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 - Colocate test files as `*.test.ts` or `*.spec.ts` next to source.
 - Use ES module `import`; no `require()`.
 - Test utils, stores, and the `sitemap.xml` server route. Do not test `.svelte` files.
+- `$app/environment` is stubbed in tests; code that reads `browser` mocks it:
+  `vi.mock('$app/environment', () => ({ browser: true }))`.
+- Git hooks (`frontend/.husky/`, installed by `pnpm install`): pre-commit runs
+  lint-staged, `check`, `lint` and `test`; pre-push refuses a direct push to `main`.
+
+### Verifying UI work
+
+- Check phone (390px) and desktop widths, light and dark (`.dark` on `<html>`), with
+  reduced motion and with JavaScript off: content must stay visible.
+- `pnpm build && pnpm preview` is the production check (prerender and CSP problems only
+  show there). Stop the preview server before rebuilding and start a fresh one after: a
+  server left running across a rebuild serves HTML that points at assets the new build
+  deleted, so the page renders unstyled and looks like a CSS regression.
+- Measure what a change claims (section edges, characters per line, the fold) and put the
+  numbers in the PR.
