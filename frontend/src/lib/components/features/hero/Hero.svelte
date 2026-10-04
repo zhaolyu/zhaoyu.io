@@ -2,13 +2,7 @@
   import { heroContent } from '$lib/constants/content';
   import { handleAnchorNavigation } from '$lib/utils/navigation';
 
-  // Light emphasis on the two phrases that carry the story; each replace is a
-  // no-op when the phrase is absent, so a copy edit cannot break the markup.
-  const formattedBio = $derived(
-    heroContent.bio
-      .replace(/still ships/g, '<strong class="bio-emphasis">still ships</strong>')
-      .replace(/carries a receipt/g, '<span class="bio-metric">carries a receipt</span>'),
-  );
+  const { identity } = heroContent;
 </script>
 
 <section
@@ -34,10 +28,7 @@
       </span>
     </h1>
 
-    <p class="hero-bio mx-auto">
-      <!-- eslint-disable-next-line svelte/no-at-html-tags -- self-authored bio from content.ts, not user input -->
-      {@html formattedBio}
-    </p>
+    <p class="hero-bio mx-auto">{heroContent.bio}</p>
 
     <div class="hero-actions flex flex-col md:flex-row justify-center items-center">
       <a
@@ -55,6 +46,13 @@
         {heroContent.cta.secondary}
       </a>
     </div>
+
+    <!-- Identity, stated once and quietly: under the CTAs, at secondary weight,
+         so the thesis is what the page says first and the role is there for
+         anyone who looks for it. -->
+    <p class="hero-identity">
+      {identity.name} · {identity.role} · {identity.location}
+    </p>
   </div>
 </section>
 
@@ -170,25 +168,17 @@
     color: var(--text-primary);
   }
 
-  /* ---------- Bio emphasis (injected by formattedBio) ---------- */
+  /* ---------- Identity ---------- */
 
-  :global(.hero-bio .bio-emphasis) {
-    color: var(--text-primary);
+  /* Description tier, below the bio: sans, muted, the smallest text in the
+     hero. A fact for the reader who goes looking, not a badge. */
+  .hero-identity {
+    margin-top: var(--space-xl);
+    color: var(--text-muted);
+    font-size: var(--type-sm);
     font-weight: var(--weight-regular);
+    line-height: var(--leading-relaxed);
     transition: color var(--duration-base);
-  }
-
-  :global(.hero-bio .bio-metric) {
-    padding-bottom: var(--space-2xs);
-    border-bottom: 1px solid var(--accent-primary-30);
-    color: var(--text-primary);
-    transition:
-      color var(--duration-base),
-      border-color var(--duration-base);
-  }
-
-  :global(.hero-bio .bio-metric:hover) {
-    border-bottom-color: var(--accent-primary);
   }
 
   /* ---------- Responsive ---------- */

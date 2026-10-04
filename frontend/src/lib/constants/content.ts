@@ -52,32 +52,47 @@ export interface HeroContent {
     primary: string;
     secondary: string;
   };
+  /** The quiet identity line under the CTAs: a fact stated once, never a badge. */
+  identity: {
+    name: string;
+    role: string;
+    location: string;
+  };
 }
 
-/**
- * The role line, kept off the hero on purpose: it lives on the finding-aid
- * surfaces (OG card eyebrow, <title>, meta, JSON-LD, llms.txt) and in About.
- */
+/** The OG card eyebrow: the role of record in the card's all-caps register. */
 export const roleLine = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE';
 
 /**
- * Hero copy. Craft-first: the page leads with the writing and the standard it
- * holds itself to, not the résumé. Role and scope are stated once, in About,
- * and on the agent-facing surfaces. The headline (primary + accent) is held
- * to 40 words by positioning.test.ts; the bio carries at most one figure.
+ * The role of record in sentence case, spelled once for every human-facing
+ * surface: <title>, og/twitter titles, meta, the hero identity line, Connect.
+ * Title only; team size and program scope stay in About and the meta copy.
+ */
+export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
+
+/**
+ * Hero copy. Craft-first: the thesis leads and is the largest thing on the
+ * screen. Identity sits under the CTAs at secondary weight, so anyone looking
+ * for who wrote this finds it without it being what the page says first
+ * (PORTFOLIO-REVIEW-2026-09.md, P0.2). Scope is stated once, in About, and on
+ * the agent-facing surfaces. The headline (primary + accent) is held to 40
+ * words by positioning.test.ts; the bio carries at most one figure.
  */
 export const heroContent: HeroContent = {
   headline: {
-    primary: 'Engineering notes with receipts.',
-    accent:
-      'Mental models from ten years of building CNBC.com: agents, edge architecture, reliability.',
+    primary: 'If a green check can lie to you, it eventually will.',
+    accent: 'Engineering notes with receipts on verification, agents, and reliability.',
   },
-  tagline:
-    'Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.',
-  bio: "I'm an engineering manager who still ships, and this site is where I write down what production teaches me. Every claim carries a receipt: a number, a named system, or an incident I can point at. If a green check can lie to you, it eventually will; the notes start there.",
+  tagline: 'If a green check can lie to you, it eventually will.',
+  bio: 'The lie is quiet: a gate whose “did not run” reads as a pass, or a search that reported zero because it was looking in the wrong place. Each note names its receipt, the incident or source it came from. The Models section collects the rules that held up.',
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
+  },
+  identity: {
+    name: 'Zhao Yu',
+    role: roleTitle,
+    location: 'NYC',
   },
 };
 
@@ -252,8 +267,7 @@ export const notesData: NotesData = {
           verified_on: '2026-09-15',
         },
         {
-          label:
-            'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
+          label: 'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
           ref: 'ba643ca5:ops/audits/script-consumer-audit-2026-09-01.md',
           host: 'Windows 10',
           verified_on: '2026-09-15',
@@ -709,9 +723,8 @@ export interface SocialDescriptions {
 
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
-  meta: 'Senior Manager, Engineering at Versant (CNBC Core). 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.',
-  twitter:
-    'Senior Manager, Engineering at Versant (CNBC Core). Engineering notes with receipts: agents, edge architecture, reliability.',
+  meta: `${roleTitle}. 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.`,
+  twitter: `${roleTitle}. Engineering notes with receipts: verification, agents, reliability.`,
 };
 
 export interface PersonaItem {

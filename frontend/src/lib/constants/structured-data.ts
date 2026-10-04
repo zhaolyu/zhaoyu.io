@@ -3,7 +3,7 @@
  * so the agent-facing layer cannot drift from the human-facing copy and the
  * required keys are asserted once (structured-data.test.ts).
  */
-import { heroContent, socialDescriptions, type EngineeringNote } from '$lib/constants/content';
+import { socialDescriptions, type EngineeringNote } from '$lib/constants/content';
 import type { CaseStudy } from '$lib/constants/case-studies';
 
 export const SITE_URL = 'https://zhaoyu.io';
@@ -41,9 +41,10 @@ export function personJsonLd() {
     jobTitle: 'Senior Manager, Engineering',
     sameAs: [...SAME_AS],
     worksFor: { '@type': 'Organization', name: 'Versant Media / CNBC' },
-    // The same story the hero and meta description tell — role and scope,
-    // no internal specifics (see content.ts header).
-    description: `${socialDescriptions.meta} ${heroContent.bio}`,
+    // Role, scope and the receipts standard, no internal specifics (see the
+    // content.ts header). The hero bio is not appended: it leans on the page
+    // around it (its antecedent is the h1, and it names the Models section).
+    description: socialDescriptions.meta,
     knowsAbout: [...KNOWS_ABOUT],
     image: SITE_CARD_IMAGE,
   };

@@ -3,11 +3,11 @@
     "slug": "site",
     "kind": "profile",
     "eyebrow": "SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE",
-    "subtitle": "Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.",
+    "subtitle": "If a green check can lie to you, it eventually will.",
     "title": "Zhao Yu",
     "footnote": [
+      "Verification",
       "Agents",
-      "Edge Architecture",
       "Reliability"
     ]
   },

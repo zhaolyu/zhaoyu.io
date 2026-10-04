@@ -81,10 +81,13 @@ a flag hides a card, not the shipped bundle.
 display ("Aug 14, 2026"), `dateISO` is a full `YYYY-MM-DD`, and every note carries at least
 one `sources` entry. RSS sorts defensively but the array is maintained newest-first.
 
-**Hero** (`heroContent`) — badge is the title line, all caps, separated by `·`. `headline.primary`
-is a short declarative sentence ending in a period. `headline.accent` is the positioning
-claim, one line. `bio` is one dense paragraph, 40–60 words, at most one figure (enforced by
-`positioning.test.ts`), ending on what the reader gets. `motto` is three two-word phrases.
+**Hero** (`heroContent`) — `headline.primary` is the thesis: a short declarative sentence
+ending in a period, the largest text on the page, never the role. `headline.accent` names the
+standard and the subjects, one line. `bio` is one dense paragraph, 40–60 words, at most one
+figure (enforced by `positioning.test.ts`), ending on what the reader gets. `identity` is the
+one quiet line under the CTAs: name, `roleTitle`, location, at secondary weight. It states the
+role of record and nothing more; team size and scope stay in About (enforced by
+`positioning.test.ts`). `tagline` is the OG card subtitle.
 
 **Projects** (`projectsData.projects`) — `description` is one paragraph, 55–80 words,
 structured as: what was architected → the technical move → the measured result. Two `metrics`

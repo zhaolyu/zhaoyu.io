@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from '$app/environment';
+  import { roleTitle } from '$lib/constants/content';
 
   let copied = $state(false);
   const email = 'zhaolyu@gmail.com';
@@ -43,7 +44,7 @@
       <div class="status-block">
         <div class="status-row">
           <span class="status-key">Currently:</span>
-          <span class="status-value">Senior Manager, Engineering at Versant (CNBC Core).</span>
+          <span class="status-value">{roleTitle}.</span>
         </div>
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
