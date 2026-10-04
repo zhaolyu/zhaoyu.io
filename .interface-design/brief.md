@@ -178,6 +178,11 @@ tested rule); nothing hides content or competes with it.
 
 ## 6. Decisions only Zhao can make
 
+**Decided 2026-10-04:** reading face, Source Serif 4 for note and case-study prose (Geist
+stays for UI and headings); palette, later in its own PR; scope of the first pass,
+foundations only (P1 reading page, P6 one grid, the `system.md` rewrite, the Hero preview
+card). The options as originally posed:
+
 1. **Reading face.** Keep Geist Sans for everything and fix size, weight and measure; or
    add a serif text face for prose and keep Geist for UI (the lethain/brandur split),
    self-hosted via `@fontsource` so the CSP does not change. **Recommendation: add the
@@ -193,6 +198,11 @@ tested rule); nothing hides content or competes with it.
 ---
 
 ## 7. Rollout (PR-sized)
+
+Status: step 1 and step 5 shipped in PR #90 (`--content-max`, `--measure-prose`, the
+serif reading treatment, every section on one left edge, the Hero card). Steps 2–4 are
+next.
+
 
 1. Note page reading experience (P1) and the shared grid/header (P6).
 2. Mono and uppercase pass (P2, P4); nav in plain words.

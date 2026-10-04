@@ -112,13 +112,15 @@
     color: var(--text-primary);
   }
 
+  /* The article is the product (brief P1): the text block holds a reading
+     measure, not the page width. */
   .engineering-note {
-    border-left: 2px solid rgba(59, 130, 246, 0.3);
-    padding-left: 1.5rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    max-width: 48rem;
-    margin: 3rem 0;
+    border-left: 2px solid var(--accent-primary-30);
+    padding-left: var(--space-lg);
+    padding-top: var(--space-xs);
+    padding-bottom: var(--space-xs);
+    max-width: calc(var(--measure-prose) + var(--space-lg));
+    margin: var(--space-2xl) 0;
   }
 
   .note-header {
@@ -155,11 +157,14 @@
     color: var(--accent-primary-text);
   }
 
+  /* A real document title: it was 20px, smaller than the home page's section
+     headings. Sans over a serif body, the lethain/brandur split. */
   .note-title {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: var(--type-2xl);
+    font-weight: var(--weight-bold);
     color: var(--text-primary);
-    line-height: 1.3;
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
   }
 
   /* Inline citations inside note paragraphs (injected via {@html}). */
@@ -179,11 +184,12 @@
      keep body colour and rhythm. Scoped to .note-content so nothing outside
      the {@html} region inherits them. */
   .note-content :global(h2) {
-    margin: 2.25rem 0 0.75rem;
+    margin: var(--space-2xl) 0 var(--space-sm);
     color: var(--text-primary);
-    font-size: 1.25rem;
-    font-weight: 600;
-    line-height: 1.3;
+    font-family: var(--font-sans);
+    font-size: var(--type-xl);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
   }
 
   .note-content :global(ul),
@@ -221,10 +227,16 @@
     text-decoration: underline;
   }
 
+  /* Reading text: serif at 18px, regular weight, full ink. It was 16px at
+     weight 300 in --text-secondary; none of the eight measured references sets
+     body text below 400. */
   .note-content {
-    color: var(--text-secondary);
-    line-height: 1.75;
-    font-weight: 300;
+    max-width: var(--measure-prose);
+    color: var(--text-primary);
+    font-family: var(--font-serif);
+    font-size: var(--type-md);
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-relaxed);
   }
 
   .note-content :global(p) {
@@ -240,8 +252,8 @@
     padding: 0.125rem 0.25rem;
     border-radius: 0.25rem;
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    color: #93c5fd;
+    font-size: var(--type-sm);
+    color: var(--text-primary);
   }
 
   .note-content :global(strong) {
@@ -256,7 +268,7 @@
     }
 
     .note-title {
-      font-size: 1.125rem;
+      font-size: var(--type-xl);
     }
   }
 </style>

@@ -118,7 +118,7 @@
 
 <style>
   .connect-section {
-    padding: 6rem 1.5rem;
+    padding: var(--section-y) var(--section-x);
     border-top: 1px solid var(--border-color);
     background: var(--bg-primary);
     color: var(--text-primary);
@@ -130,7 +130,9 @@
   }
 
   .connect-container {
-    max-width: 64rem;
+    /* Same content edge as the self-padded sections: the outer width less the
+       gutter this section already pads with. */
+    max-width: calc(var(--content-max) - 2 * var(--section-x));
     margin: 0 auto;
     text-align: center;
   }
@@ -427,7 +429,7 @@
 
   @media (max-width: 768px) {
     .connect-section {
-      padding: 4rem 1rem;
+      padding: var(--section-y-mobile) var(--section-x);
     }
 
     .terminal-content {

@@ -44,7 +44,7 @@
 <style>
   .engineering-notes {
     padding: var(--section-y-lg) var(--section-x);
-    max-width: 72rem;
+    max-width: var(--content-max);
     margin: 0 auto;
     background: var(--bg-primary);
     color: var(--text-primary);

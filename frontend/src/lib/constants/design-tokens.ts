@@ -298,6 +298,17 @@ export const spacingTokens: TokenGroup = {
   ],
 };
 
+export const layoutTokens: TokenGroup = {
+  id: 'layout',
+  title: 'Layout widths',
+  description:
+    'One outer width so every section shares one left edge, and one reading measure so long-form prose stays inside 60–75 characters a line.',
+  tokens: [
+    { name: 'content-max', value: '72rem', usage: 'Outer width of every landing section' },
+    { name: 'measure-prose', value: '65ch', usage: 'Line length of note and case-study prose' },
+  ],
+};
+
 export const typeTokens: TokenGroup = {
   id: 'type',
   title: 'Type scale',
@@ -404,6 +415,7 @@ export const tokenGroups: TokenGroup[] = [
   typeTokens,
   typeRhythmTokens,
   spacingTokens,
+  layoutTokens,
   radiusTokens,
   elevationTokens,
   motionTokens,
@@ -424,6 +436,8 @@ export const tokenGroups: TokenGroup[] = [
  */
 export const COVERED_PREFIXES = [
   'space-',
+  'content-',
+  'measure-',
   'type-',
   'leading-',
   'tracking-',

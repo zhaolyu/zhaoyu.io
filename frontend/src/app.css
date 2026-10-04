@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 @import '@fontsource/geist-sans';
 @import '@fontsource/geist-mono';
+/* Reading face for long-form prose (note and case-study bodies). 400 for text,
+   its italic for <em>, 600 for <strong>. UI and headings stay in Geist. */
+@import '@fontsource/source-serif-4/400.css';
+@import '@fontsource/source-serif-4/400-italic.css';
+@import '@fontsource/source-serif-4/600.css';
 
 /* ==========================================================================
    Metric-matched fallbacks (CLS)
@@ -37,6 +42,29 @@
   line-gap-override: 9.61%;
 }
 
+/* The same treatment for the reading face. Source Serif 4 reads its metrics
+   from the shipped woff (hhea, identical to OS/2 typo with USE_TYPO_METRICS):
+
+     Source Serif 4  upm 1000  asc 1036  desc -335  gap 0
+
+   The fallback is Times New Roman, or Liberation Serif on Linux, which is
+   metric-compatible with it. size-adjust is measured, not derived: canvas
+   measureText over the notes' own prose at 18px.
+
+     measured over 45 blocks / 28,832 chars of note copy:
+     Source Serif 4 243,021px vs Liberation Serif 205,940px -> 118.01%
+
+   Vertical overrides are divided by that factor: 1036/1180.1, 335/1180.1, 0.
+   Re-measure if the font, its subset or the note corpus changes materially. */
+@font-face {
+  font-family: 'Source Serif 4 Fallback';
+  src: local('Times New Roman'), local('Times'), local('Liberation Serif');
+  size-adjust: 118.01%;
+  ascent-override: 87.79%;
+  descent-override: 28.39%;
+  line-gap-override: 0%;
+}
+
 /* ==========================================================================
    Theme Configuration
    ========================================================================== */
@@ -47,6 +75,7 @@
 @theme {
   --font-sans: 'Geist Sans', 'Geist Sans Fallback', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', 'Courier New', monospace;
+  --font-serif: 'Source Serif 4', 'Source Serif 4 Fallback', Georgia, serif;
 }
 
 :root {
@@ -265,6 +294,15 @@
   --section-y-lg: var(--space-5xl);
   --section-y-mobile: var(--space-3xl);
   --section-x: var(--space-lg);
+
+  /* ==========================================================================
+	   Layout widths
+	   One outer width for every section, so every section shares one left
+	   edge (the brief's P6; they had drifted to 64rem, 72rem and 1200px), and
+	   one reading measure for long-form prose (P1: 60-75 characters a line).
+	   ========================================================================== */
+  --content-max: 72rem;
+  --measure-prose: 65ch;
 
   /* ==========================================================================
 	   Surfaces & Scrims
@@ -513,7 +551,7 @@ a:focus-visible {
 
 /* Centered max-width container */
 .section-container {
-  max-width: 75rem; /* 1200px */
+  max-width: var(--content-max);
   margin: 0 auto;
   width: 100%;
 }
