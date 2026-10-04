@@ -11,6 +11,18 @@
       "Reliability"
     ]
   },
+  "fan-out-multiplies-whatever-each-unit-pays-to-start": {
+    "slug": "fan-out-multiplies-whatever-each-unit-pays-to-start",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · OCT 2026",
+    "title": "Fan-Out Multiplies Whatever Each Unit Pays to Start",
+    "subtitle": "",
+    "footnote": [
+      "Distributed Systems",
+      "Performance",
+      "Reliability"
+    ]
+  },
   "nobody-declared-the-line-endings": {
     "slug": "nobody-declared-the-line-endings",
     "kind": "note",
