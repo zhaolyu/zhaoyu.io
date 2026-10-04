@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import {
   FONT_FILES,
+  FALLBACK_FAMILIES,
   buildStylesCss,
   declaredTokens,
   referencedTokens,
@@ -61,6 +62,14 @@ describe('bundle styles.css', () => {
     expect(measured, 'app.css should still declare a measured size-adjust').toBeTruthy();
     expect(stylesCss).toContain("font-family: 'Geist Sans Fallback'");
     expect(stylesCss).toContain(`size-adjust: ${measured}`);
+  });
+
+  it('ships every fallback face app.css declares, so --font-serif resolves in a design', () => {
+    for (const family of FALLBACK_FAMILIES) {
+      expect(appCss, `app.css should declare '${family}'`).toContain(`font-family: '${family}'`);
+      expect(stylesCss).toContain(`font-family: '${family}'`);
+    }
+    expect(stylesCss).toContain("font-family: 'Source Serif 4'");
   });
 
   it('names the font files it declares, and they exist to be copied', () => {

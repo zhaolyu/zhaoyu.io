@@ -1,442 +1,110 @@
 # File Organization
 
-## Directory Structure
+Last verified against the code on 2026-10-04. `CLAUDE.md` (repo root) is authoritative.
+
+> This page replaces an older version that described folders the repo never had
+> (`src/lib/services/`, `routes/api/`, `routes/about/`, `api-demo/`, `comparison/`,
+> `ui/Button.svelte`, `utils/date.ts`).
+
+## Repository
 
 ```
 zhaoyu.io/
-├── frontend/
-│   ├── .cursor/              # Cursor AI documentation and rules
-│   ├── static/               # Static assets (images, fonts, etc.)
-│   ├── src/
-│   │   ├── lib/              # Shared code
-│   │   │   ├── components/   # Reusable components
-│   │   │   │   ├── ui/       # Base UI components (Button, Card, etc.)
-│   │   │   │   ├── layout/   # Layout components (Navbar, Footer, ThemeToggle)
-│   │   │   │   └── features/ # Feature-specific shared components
-│   │   │   ├── stores/        # Svelte stores (theme, user, etc.)
-│   │   │   ├── utils/        # Utility functions (date, format, validation)
-│   │   │   ├── services/     # API clients & external services
-│   │   │   │   └── api/      # API client and endpoints
-│   │   │   ├── types/        # TypeScript type definitions
-│   │   │   └── constants/    # Shared constants (routes, config)
-│   │   ├── routes/           # File-based routing
-│   │   │   ├── +layout.svelte # Root layout
-│   │   │   ├── +layout.ts     # Root layout data
-│   │   │   ├── +page.svelte   # Home page (/)
-│   │   │   ├── +error.svelte  # Global error page
-│   │   │   ├── about/
-│   │   │   │   └── +page.svelte # About page (/about)
-│   │   │   ├── blog/          # Feature: Blog
-│   │   │   │   ├── +layout.svelte # Blog-specific layout
-│   │   │   │   ├── +page.svelte   # Blog listing
-│   │   │   │   ├── [slug]/
-│   │   │   │   │   ├── +page.svelte # Blog post detail
-│   │   │   │   │   └── +page.ts     # Data loading
-│   │   │   │   └── components/      # Blog-specific components
-│   │   │   ├── api-demo/      # Feature: API Demo
-│   │   │   │   ├── +page.svelte
-│   │   │   │   └── components/
-│   │   │   ├── comparison/    # Feature: Comparison
-│   │   │   │   ├── +page.svelte
-│   │   │   │   └── components/
-│   │   │   └── api/           # API routes organized by feature
-│   │   │       ├── test/      # Legacy endpoint
-│   │   │       ├── demo/      # Demo API endpoint
-│   │   │       └── blog/      # Blog API endpoint
-│   │   ├── app.html          # HTML template
-│   │   ├── app.css           # Global styles
-│   │   └── app.d.ts          # TypeScript app types
-│   ├── svelte.config.js      # SvelteKit configuration
-│   ├── vite.config.js        # Vite configuration
-│   ├── package.json          # Dependencies and scripts
-│   └── tsconfig.json         # TypeScript configuration
+├── CLAUDE.md, AGENTS.md      # agent instructions (CLAUDE.md is the source of truth)
+├── .interface-design/        # brief.md (visual intent) and system.md (design-system rules)
+├── .claude/skills/           # writer, writer-judge, research, distribute
+├── .github/workflows/        # ci.yml, cloudflare-pages.yml, cost-guard.yml
+└── frontend/                 # the SvelteKit app; every command runs from here
 ```
 
-## Source Directory (`src/`)
+## `frontend/`
 
-### `src/routes/`
+```
+frontend/
+├── .cursor/                  # these docs, Cursor rules and commands
+├── .design-sync/             # Claude Design hand-off: config.json, conventions.md, NOTES.md
+├── .husky/                   # pre-commit (lint-staged, check, lint, test), pre-push (blocks main)
+├── scripts/                  # Node scripts: tokens, OG images, design-system bundle, draft-lint, artifact-guard
+├── static/                   # served as-is: _headers, _redirects, llms.txt, robots.txt, tokens.css, og/
+├── src/
+│   ├── app.html              # shell + inline theme-init script (hash pinned in the CSP)
+│   ├── app.css               # all design tokens and global styles
+│   ├── app.print.css         # print styles
+│   ├── lib/                  # see below
+│   └── routes/               # see below
+├── svelte.config.js          # adapter-static, prerender, CSP
+├── vite.config.js            # sveltekit() + tailwindcss(), port 5173
+└── vitest.config.ts          # jsdom, globals, $lib alias
+```
 
-File-based routing in SvelteKit. Each directory with a `+page.svelte` file becomes a route.
-
-**Structure**:
-
-- `+page.svelte` → `/` (home)
-- `about/+page.svelte` → `/about`
-- `blog/+page.svelte` → `/blog`
-- `blog/[slug]/+page.svelte` → `/blog/[slug]` (dynamic route)
-
-**Feature-based Organization**:
-Routes are organized by feature, with feature-specific components co-located:
-
-- `blog/` - Blog feature with listing, detail pages, and components
-- `api-demo/` - API demo feature with its own components
-- `comparison/` - Comparison feature with its own components
-
-See [Patterns](PATTERNS.md) for complete route examples.
-
-### `src/lib/components/`
-
-Reusable Svelte components organized by purpose.
-
-**Structure**:
+## `src/lib/`
 
 ```
 lib/
 ├── components/
-│   ├── index.ts              # Main barrel export (re-exports ui/ and layout/)
-│   ├── ui/                   # Base UI components (Button, Card, etc.)
-│   │   ├── Button.svelte
-│   │   ├── Card.svelte
-│   │   └── index.ts          # Barrel exports
-│   ├── layout/               # Layout components
-│   │   ├── Navbar.svelte
-│   │   ├── ThemeToggle.svelte
-│   │   └── index.ts          # Barrel exports
-│   └── features/             # Feature-specific shared components
-│       └── api-demo/
-│           └── index.ts
+│   ├── index.ts              # re-exports ui/ and layout/ (not features/)
+│   ├── ui/                   # primitives: SectionHeader, StatCard, StatusPill, DataTable,
+│   │                         #   Segmented, BrowserMock, TokenStream, chart/{ChartFrame,AnnotatedLineChart}
+│   ├── layout/               # Navbar, StandaloneNavbar, TelemetryFooter, ThemeToggle
+│   ├── features/<name>/      # one folder per feature, each with index.ts
+│   │                         #   (hero, work, notes, models, case-study, skills, persona, connect,
+│   │                         #    career-chart, code-manifesto, latency-sim, builder,
+│   │                         #    architect-hud, cost-chart, cost-filter, cost-simulator)
+│   └── design-system/        # preview-only helpers (TokenGrid) for /design-system
+├── constants/                # content.ts (all copy), config.ts, routes.ts, design-tokens.ts,
+│                             #   design-system.ts, case-studies.ts, models.ts, og.ts,
+│                             #   structured-data.ts, voice-rules.ts, plus the guard tests
+├── stores/                   # theme.ts, scroll.ts (+ index.ts)
+├── types/                    # common.ts, cost-guard.ts, dashboard.ts (+ index.ts)
+├── utils/                    # pure helpers with colocated tests (+ index.ts)
+├── db.svelte.ts              # Cost-Guard PGlite + ElectricSQL sync (runes class)
+├── hud.svelte.ts             # Architect HUD telemetry state (runes class)
+└── simulator.svelte.ts       # cost what-if simulator state (runes class)
 ```
 
-**Component Hierarchy**:
+Utilities in `src/lib/utils/` today: `navigation`, `intersection-core`, `section-observer`,
+`cost-projection`, `cost-guard-display`, `feature-flags`, `note-excerpt`, `note-groups`.
+Check them before writing a helper.
 
-1. **UI Components** (`lib/components/ui/`) - Generic, reusable components with no business logic
-2. **Layout Components** (`lib/components/layout/`) - Site-wide layout elements (Navbar, Footer, ThemeToggle)
-3. **Feature Components** (`lib/components/features/` or `routes/[feature]/components/`) - Feature-specific components
-
-**Naming**:
-
-- Svelte components: PascalCase (e.g., `Welcome.svelte`, `BlogCard.svelte`)
-- Use barrel exports (`index.ts`) for clean imports
-
-**Import Patterns**:
-
-You can import components in two ways:
-
-1. **Category-specific imports** (recommended for clarity):
-
-```svelte
-<script lang="ts">
-  import { Navbar, ThemeToggle } from '$lib/components/layout';
-  import { SectionHeader } from '$lib/components/ui';
-</script>
-```
-
-2. **Main barrel export** (convenient for multiple categories):
-
-```svelte
-<script lang="ts">
-  import { Navbar, ThemeToggle, SectionHeader } from '$lib/components';
-</script>
-```
-
-3. **Feature components** (import directly from feature folder):
-
-```svelte
-<script lang="ts">
-  import { Hero } from '$lib/components/features/hero';
-  import { Skills } from '$lib/components/features/skills';
-</script>
-```
-
-**Example**:
-
-```svelte
-<!-- Using layout components -->
-<script lang="ts">
-  import { Navbar, ThemeToggle } from '$lib/components/layout';
-</script>
-
-<Navbar />
-<ThemeToggle />
-```
-
-### `src/routes/+layout.svelte`
-
-Root layout component that wraps all pages.
-
-**Structure**:
-
-```svelte
-<!-- src/routes/+layout.svelte -->
-<script lang="ts">
-  import '../app.css';
-  import { Navbar } from '$lib/components/layout';
-</script>
-
-<Navbar />
-
-<slot />
-```
-
-### `src/lib/stores/`
-
-Svelte stores for shared global state.
-
-**Structure**:
+## `src/routes/`
 
 ```
-lib/
-└── stores/
-    ├── theme.ts              # Theme store
-    └── index.ts              # Barrel exports
+routes/
+├── +layout.svelte            # imports app.css, font preload, skip link
+├── +layout.ts                # prerender = true for every route
+├── +error.svelte
+├── (main)/                   # Navbar + TelemetryFooter layout
+│   ├── +page.svelte          # /
+│   ├── blog/                 # /blog and /blog/[slug]
+│   ├── work/[slug]/          # /work/{slug} case studies
+│   └── models/               # /models
+├── (standalone)/             # own layout (StandaloneNavbar)
+│   └── ai-manifesto/         # /ai-manifesto
+├── infra/                    # /infra Cost-Guard dashboard (prerendered shell)
+├── design-system/            # /design-system and /design-system/[card] previews
+├── og/                       # og/[slug] card pages + og/cards.json, used by `pnpm og`
+├── sitemap.xml/              # prerendered +server.ts
+└── rss.xml/                  # prerendered +server.ts
 ```
 
-**Example**:
-
-```typescript
-// src/lib/stores/theme.ts
-import { writable } from 'svelte/store';
-
-export const theme = createThemeStore();
-```
-
-**Usage**:
-
-```typescript
-import { theme } from '$lib/stores';
-```
-
-### `src/lib/utils/`
-
-Utility functions and helpers (pure functions, no side effects).
-
-**Structure**:
-
-```
-lib/
-└── utils/
-    ├── date.ts               # Date formatting utilities
-    ├── format.ts             # General formatting utilities
-    ├── validation.ts         # Validation helpers
-    └── index.ts             # Barrel exports
-```
-
-**Example**:
-
-```typescript
-// src/lib/utils/date.ts
-export function formatDate(date: Date | string, format: 'short' | 'long' = 'short'): string {
-  // Implementation
-}
-```
-
-**Usage**:
-
-```typescript
-import { formatDate, getRelativeTime } from '$lib/utils';
-```
-
-### `src/lib/services/`
-
-API clients and external service integrations.
-
-**Structure**:
-
-```
-lib/
-└── services/
-    ├── api/
-    │   ├── client.ts         # Base API client
-    │   └── endpoints.ts      # API endpoint definitions
-    └── index.ts             # Barrel exports
-```
-
-**Example**:
-
-```typescript
-// src/lib/services/api/client.ts
-export class ApiClient {
-  async get<T>(endpoint: string): Promise<T> {
-    // Implementation
-  }
-}
-```
-
-**Usage**:
-
-```typescript
-import { apiClient } from '$lib/services';
-import { API_ENDPOINTS } from '$lib/services/api/endpoints';
-```
-
-### `src/lib/types/`
-
-TypeScript type definitions.
-
-**Structure**:
-
-```
-lib/
-└── types/
-    ├── api.ts               # API response types
-    ├── common.ts            # Common types (Theme, Route, etc.)
-    └── index.ts             # Barrel exports
-```
-
-**Example**:
-
-```typescript
-// src/lib/types/api.ts
-export interface ApiResponse<T = unknown> {
-  data?: T;
-  error?: string;
-}
-```
-
-**Usage**:
-
-```typescript
-import type { ApiResponse, Theme } from '$lib/types';
-```
-
-### `src/lib/constants/`
-
-Shared constants and configuration.
-
-**Structure**:
-
-```
-lib/
-└── constants/
-    ├── routes.ts            # Route path constants
-    ├── config.ts            # App configuration
-    └── index.ts             # Barrel exports
-```
-
-**Example**:
-
-```typescript
-// src/lib/constants/routes.ts
-export const ROUTES = {
-  HOME: '/',
-  ABOUT: '/about',
-  BLOG: '/blog',
-  API_DEMO: '/api-demo',
-  COMPARISON: '/comparison',
-} as const;
-```
-
-**Usage**:
-
-```typescript
-import { ROUTES } from '$lib/constants';
-import { APP_CONFIG } from '$lib/constants/config';
-```
-
-## Static Directory (`static/`)
-
-Static assets served as-is (not processed by SvelteKit).
-
-**Structure**:
-
-```
-static/
-├── favicon.svg
-├── robots.txt
-└── images/
-    └── og-image.jpg
-```
-
-**Usage**:
-
-```svelte
-<img src="/images/og-image.jpg" alt="OG Image" />
-```
-
-## File Naming Conventions
-
-### Components
-
-- **Svelte**: PascalCase (e.g., `Welcome.svelte`, `ProjectCard.svelte`)
-
-### Utilities
-
-- **camelCase** (e.g., `formatDate.ts`, `apiClient.ts`)
-
-### Routes
-
-- **kebab-case** directories (e.g., `about/`, `project-detail/`)
-- **+page.svelte** for pages
-- **+layout.svelte** for layouts
-- **+server.ts** for API endpoints
-- **+error.svelte** for error pages
-
-### Config Files
-
-- **kebab-case** (e.g., `svelte.config.js`, `vite.config.js`)
-
-## Import Paths
-
-### SvelteKit $lib Alias (Recommended)
-
-SvelteKit provides a `$lib` alias that maps to `src/lib/`:
-
-```typescript
-// Using barrel exports for clean imports
-import { formatDate } from '$lib/utils';
-import { theme } from '$lib/stores';
-// Components: category-specific (recommended)
-import { Navbar, ThemeToggle } from '$lib/components/layout';
-import { SectionHeader } from '$lib/components/ui';
-// Or use main barrel export (convenient for multiple categories)
-import { Navbar, ThemeToggle, SectionHeader } from '$lib/components';
-// Feature components: import directly from feature folder
-import { Hero } from '$lib/components/features/hero';
-import { ROUTES } from '$lib/constants';
-import { apiClient } from '$lib/services';
-import type { ApiResponse } from '$lib/types';
-```
-
-### Relative Imports
-
-```typescript
-// From a component within routes
-import Button from '../lib/components/ui/Button.svelte';
-import { formatDate } from '../../lib/utils/date';
-```
-
-## Best Practices
-
-1. **Feature-based organization** - Group routes, components, and API routes by feature
-2. **Co-locate related files** - Keep feature-specific components in feature directories
-3. **Use barrel exports** - Create `index.ts` files for clean imports
-4. **Separate concerns** - Keep UI components, layout components, and feature components separate
-5. **Centralize shared code** - Put reusable utilities, types, and constants in `lib/`
-6. **Use route constants** - Import route paths from `$lib/constants/routes` instead of hardcoding
-7. **Component hierarchy**:
-   - `lib/components/ui/` - Base UI components (Button, Card, etc.)
-   - `lib/components/layout/` - Layout components (Navbar, Footer, etc.)
-   - `lib/components/features/` - Feature-specific shared components
-   - `routes/[feature]/components/` - Page-specific components
-8. **Error handling** - Use `+error.svelte` for error boundaries at route level
-9. **Type safety** - Define types in `lib/types/` and use them throughout the app
-10. **API organization** - Group API routes by feature in `routes/api/[feature]/`
-
-## Locating Code
-
-Quick reference for finding code in the codebase. Use IDE search (`Cmd+Shift+F` / `Ctrl+Shift+F`) to find files and usage.
-
-### Quick Reference Table
-
-| What       | Where                       | Notes                                                                                 |
-| ---------- | --------------------------- | ------------------------------------------------------------------------------------- |
-| Pages      | `src/routes/*/+page.svelte` | File-based routing (dynamic: `[param]`)                                               |
-| Components | `src/lib/components/`       | UI: `ui/`, Layout: `layout/`, Features: `features/` or `routes/[feature]/components/` |
-| Layouts    | `src/routes/+layout.svelte` | Root or feature-specific                                                              |
-| Utilities  | `src/lib/utils/`            | **Check here first before writing new utilities**                                     |
-| Stores     | `src/lib/stores/`           | Svelte stores for shared state                                                        |
-| Services   | `src/lib/services/`         | API clients and endpoints                                                             |
-| Types      | `src/lib/types/`            | TypeScript type definitions                                                           |
-| Constants  | `src/lib/constants/`        | Routes, config, etc.                                                                  |
-| Styles     | `src/app.css`               | Global styles (component styles in `.svelte` files)                                   |
-| Assets     | `static/`                   | Images, fonts, etc. (reference with `/` path)                                         |
-
-### Common Locations
-
-- **Components**: `src/lib/components/` (reusable) or `src/routes/[feature]/components/` (page-specific)
-- **Pages**: `src/routes/[route]/+page.svelte` (dynamic routes use `[param]` syntax)
-- **API Routes**: `src/routes/api/[feature]/+server.ts`
-- **Utilities**: `src/lib/utils/` - Always check here first to avoid duplication
-- **Stores**: `src/lib/stores/` - Search for `writable`, `readable`, or `derived` usage
-
-For detailed examples and patterns, see [Patterns](PATTERNS.md).
+Parenthesised folders are layout groups and do not appear in URLs.
+
+## Imports
+
+- Always `$lib/...`; never relative `../../` paths across `src/lib`.
+- UI and layout components: from their category barrel (`$lib/components/ui`,
+  `$lib/components/layout`) or the top barrel (`$lib/components`).
+- Feature components: from their own folder (`$lib/components/features/hero`).
+- Utilities, stores, constants, types: from the module (`$lib/utils/section-observer`) or the
+  folder barrel (`$lib/stores`, `$lib/constants`, `$lib/types`).
+
+## Where to put new code
+
+| Adding                          | Goes in                                                                              |
+| ------------------------------- | ------------------------------------------------------------------------------------ |
+| A landing section or feature UI | `lib/components/features/<name>/` + `index.ts`                                       |
+| A reusable primitive            | `lib/components/ui/` + `ui/index.ts` + a card in `design-system.ts`                  |
+| A pure helper                   | `lib/utils/<name>.ts` + `<name>.test.ts` + `utils/index.ts`                          |
+| Copy                            | `lib/constants/content.ts`, via the `writer` skill                                   |
+| A token                         | `src/app.css` + `design-tokens.ts` (see [DESIGN_TOKENS.md](DESIGN_TOKENS.md))        |
+| A page                          | `routes/(main)/<path>/+page.svelte`, plus a `ROUTES` entry and the sitemap if public |

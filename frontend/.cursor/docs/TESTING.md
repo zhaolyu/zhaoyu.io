@@ -1,299 +1,80 @@
-# Testing Guide
+# Testing
 
-This guide provides comprehensive documentation for writing tests in the zhaoyu.io portfolio site.
+Last verified against the code on 2026-10-04. `CLAUDE.md` (repo root) is authoritative.
 
-## Testing Philosophy
+> This page replaces an older version that described Svelte Testing Library component tests,
+> MSW, and a `--coverage` workflow. None of those are installed or used here, and
+> `.svelte` files are deliberately not unit-tested.
 
-**Tests should focus on behavior and functionality, not just code coverage.** The primary goal is to catch regressions when code is updated, ensuring that existing functionality continues to work correctly.
+## Setup
 
-### Core Principles
+- Runner: Vitest (`vitest.config.ts`), `environment: 'jsdom'`, `globals: true`.
+- Included files: `src/**/*.{test,spec}.{js,ts}`. Tests are colocated next to their source.
+- Under Vitest the config loads the plain `svelte()` plugin (not `sveltekit()`) so runes in
+  `.svelte.ts` modules compile, and resolves with the `browser` condition so Svelte's client
+  runtime is used.
+- Aliases: `$lib` maps to `src/lib`. `$app/environment` is aliased to a stub, so tests that
+  need `browser` mock it: `vi.mock('$app/environment', () => ({ browser: true }))`.
+- No Testing Library, no MSW, no coverage provider package. `@vitest/ui` is installed for
+  `pnpm test:ui`.
 
-1. **Test behavior, not implementation**: Focus on what the code does, not how it does it
-2. **Test the function's contract**: Verify that functions do what they promise to do
-3. **Test real-world usage**: Test how functions are actually used in the codebase
-4. **Test regression prevention**: Write tests that would fail if someone breaks the function
-5. **Test integration points**: Verify functions work correctly with their dependencies
-6. **Test meaningful edge cases**: Focus on edge cases that could cause real bugs in production
-
-### What Makes a Good Test
-
-- **Would catch breaking changes**: If someone modifies the function incorrectly, the test should fail
-- **Tests realistic scenarios**: Test actual usage patterns from the codebase
-- **Tests the contract**: Verify the function delivers on its promises
-- **Tests integration**: Ensure functions work with dependencies (config, browser APIs, etc.)
-- **Tests edge cases that matter**: Focus on boundary conditions that could cause production bugs
-
-Coverage metrics are a byproduct of thorough behavior testing, not the primary goal. When writing tests, ask yourself: "Would this test catch a regression if someone breaks this function?"
-
-## Test Framework Setup
-
-**Note**: Test dependencies (Vitest, Svelte Testing Library) need to be installed before running tests. Install with:
+## Running
 
 ```bash
-npm install -D vitest @testing-library/svelte @testing-library/jest-dom @vitest/ui jsdom
+pnpm test                                          # svelte-kit sync + vitest run
+pnpm test:watch                                    # watch mode
+pnpm vitest run src/lib/utils/navigation.test.ts   # one file
+pnpm vitest run src/lib/constants                  # one folder (the guard suites)
 ```
 
-### Vitest Configuration
+The pre-commit hook and CI both run the full suite.
 
-The project uses Vitest as the test runner. Configuration is typically in `vitest.config.ts` or `package.json`:
+## What gets tested
 
-- **Test Environment**: `jsdom` (browser-like environment)
-- **Test Match**: `**/*.{test,spec}.{ts,js}`
-- **Coverage**: Enabled via `--coverage` flag
+| Kind                    | Where                         | Examples                                                                                                                      |
+| ----------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Pure utilities          | `src/lib/utils/*.test.ts`     | `cost-projection`, `note-groups`, `section-observer` (with a mocked `IntersectionObserver`)                                   |
+| Stores                  | `src/lib/stores/*.test.ts`    | `theme.test.ts` uses `vi.resetModules()` plus a dynamic import because the store reads `localStorage` at import time          |
+| Runes classes           | `src/lib/*.test.ts`           | `db.test.ts` mocks `@electric-sql/pglite`; `hud.test.ts` mocks `$lib/db.svelte` via `vi.hoisted`                              |
+| Route logic             | next to the route             | `sitemap.xml/sitemap.test.ts`, `rss.xml/rss.test.ts`, `(main)/blog/[slug]/page.test.ts` (calls `entries` and `load` directly) |
+| Content and site guards | `src/lib/constants/*.test.ts` | see below                                                                                                                     |
 
-### Svelte Testing Library
+Do not write tests for `.svelte` components. Put the logic in a util, store or runes class and
+test that.
 
-**Preferred** for Svelte component testing:
+### Guard suites in `src/lib/constants/`
 
-```typescript
-import { render, screen, fireEvent } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
-```
+These read source files, `app.css`, `static/` and config and fail the build on drift. They are
+the reason a token, copy or config change can break `pnpm test`.
 
-## Test File Conventions
+| Test                                                                                                 | Guards                                                                                                |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `design-tokens.test.ts`                                                                              | `design-tokens.ts` matches `app.css`; covered families fully registered                               |
+| `tokens-css.test.ts`                                                                                 | `static/tokens.css` matches what `pnpm tokens` would generate                                         |
+| `design-system-styles.test.ts`                                                                       | `.design-sync/conventions.md` names only real tokens and documents every family                       |
+| `font-metrics.test.ts`                                                                               | metric-matched fallback faces exist and carry derived overrides                                       |
+| `csp.test.ts`                                                                                        | the CSP in `svelte.config.js` stays in hash mode and free of escape hatches such as `'unsafe-inline'` |
+| `content.test.ts`, `content-voice.test.ts`, `positioning.test.ts`, `disclosure-guard.test.ts`        | site copy: sourced metrics, voice rules, retired phrasings, disclosure deny-list                      |
+| `case-studies.test.ts`                                                                               | case-study completeness (length, sources, related notes)                                              |
+| `og.test.ts`, `structured-data.test.ts`, `llms-links.test.ts`, `redirects.test.ts`, `models.test.ts` | OG cards, JSON-LD, `llms.txt` links, `_redirects`, the models registry                                |
 
-### Naming
+If one of these fails after your change, fix the change or the registry it points at. Do not
+loosen the guard to make it pass.
 
-- Use `*.test.ts`, `*.test.js`, or `*.spec.ts` extension
-- Co-locate tests with source files
-- Example: `Button.test.ts` for `Button.svelte`
+## Writing a test
 
-### Location
-
-Tests are **co-located** with their source files:
-
-```
-src/
-  lib/
-    components/
-      Button.svelte
-      Button.test.ts  ← Test file here
-```
-
-### Test Structure
-
-Organize tests using `describe` blocks:
-
-```typescript
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-
-describe('ComponentName', () => {
-  beforeEach(() => {
-    // Setup
-  });
-
-  afterEach(() => {
-    // Cleanup
-  });
-
-  describe('Rendering', () => {
-    it('should render correctly', () => {
-      // Test
-    });
-  });
-
-  describe('User Interactions', () => {
-    it('should handle click events', () => {
-      // Test
-    });
-  });
-});
-```
-
-## Testing Patterns by Code Type
-
-### Svelte Components
-
-**Preferred: Svelte Testing Library**
-
-Focus on testing user-visible behavior:
-
-```typescript
+```ts
 import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
-import Button from './Button.svelte';
+import { groupNotesByMonth } from '$lib/utils/note-groups';
 
-describe('Button', () => {
-  it('should render with label', () => {
-    render(Button, { props: { label: 'Click me' } });
-    expect(screen.getByText('Click me')).toBeInTheDocument();
-  });
-
-  it('should handle click events', async () => {
-    const handleClick = vi.fn();
-    render(Button, { props: { label: 'Click me', onClick: handleClick } });
-
-    await fireEvent.click(screen.getByText('Click me'));
-
-    expect(handleClick).toHaveBeenCalledTimes(1);
+describe('groupNotesByMonth', () => {
+  it('orders months newest first regardless of input order', () => {
+    // arrange real-shaped input, assert on the contract
   });
 });
 ```
 
-### Utilities
-
-Test pure functions with various inputs:
-
-```typescript
-import { describe, it, expect } from 'vitest';
-import { formatDate } from '$lib/utils/date';
-
-describe('formatDate', () => {
-  it('should format date correctly', () => {
-    const date = new Date('2024-01-01');
-    expect(formatDate(date, 'MM/DD/YYYY')).toBe('01/01/2024');
-  });
-
-  it('should handle invalid dates', () => {
-    expect(() => formatDate('invalid' as any, 'MM/DD/YYYY')).toThrow();
-  });
-});
-```
-
-### Stores
-
-Test Svelte stores by subscribing and checking values:
-
-```typescript
-import { describe, it, expect, beforeEach } from 'vitest';
-import { get } from 'svelte/store';
-import { count } from '$lib/stores/counter';
-
-describe('count store', () => {
-  beforeEach(() => {
-    count.set(0);
-  });
-
-  it('should increment', () => {
-    count.update((n) => n + 1);
-    expect(get(count)).toBe(1);
-  });
-});
-```
-
-## Mocking Strategies
-
-### Module Mocking
-
-Use `vi.mock()` for entire modules:
-
-```typescript
-import { vi } from 'vitest';
-
-vi.mock('$lib/utils/api', () => ({
-  fetchData: vi.fn(() => Promise.resolve({ data: 'test' })),
-}));
-```
-
-### API Mocking
-
-Use MSW (Mock Service Worker) for HTTP requests:
-
-```typescript
-import { setupServer } from 'msw/node';
-import { rest } from 'msw';
-
-const server = setupServer(
-  rest.get('/api/data', (req, res, ctx) => {
-    return res(ctx.json({ data: 'test' }));
-  }),
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
-```
-
-### localStorage Mocking
-
-```typescript
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
-
-global.localStorage = localStorageMock as any;
-```
-
-## Running Tests
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage
-npm test -- --coverage
-
-# Run specific test file
-npm test -- Button.test.ts
-```
-
-## Best Practices
-
-1. **Test behavior, not implementation** - Focus on what the code does, not how
-2. **Use semantic queries** - Prefer `getByRole`, `getByLabelText` over `getByTestId`
-3. **Test user interactions** - Test what users see and do
-4. **Keep tests simple** - One assertion per test when possible
-5. **Use descriptive test names** - Test names should clearly describe what they test
-6. **Clean up** - Always clean up mocks and state in `afterEach`
-7. **Test edge cases** - Cover error paths and boundary conditions
-
-## Coverage Requirements
-
-Aim for **at least 90% coverage** for:
-
-- Statements
-- Branches
-- Functions
-- Lines
-
-Check coverage:
-
-```bash
-npm test -- --coverage
-```
-
-## Common Patterns
-
-### Testing Async Operations
-
-```typescript
-it('should handle async operations', async () => {
-	render(<AsyncComponent />);
-
-	await waitFor(() => {
-		expect(screen.getByText('Loaded')).toBeInTheDocument();
-	});
-});
-```
-
-### Testing Form Inputs
-
-```typescript
-it('should update input value', () => {
-  render(Form);
-  const input = screen.getByLabelText('Name');
-
-  fireEvent.change(input, { target: { value: 'John' } });
-
-  expect(input).toHaveValue('John');
-});
-```
-
-### Testing Store Subscriptions
-
-```typescript
-it('should update when store changes', () => {
-  const { component } = render(Component);
-
-  theme.set('dark');
-
-  expect(screen.getByText('Dark mode')).toBeInTheDocument();
-});
-```
+- Test the contract and realistic inputs; a test should fail if someone breaks the behaviour.
+- Use ES module `import` only, never `require()`.
+- New utils need a colocated `*.test.ts`; aim for at least 90% coverage of new code (measured
+  by reading the branches, since no coverage provider is installed).

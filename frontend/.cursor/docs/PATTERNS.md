@@ -1,489 +1,149 @@
-# Common Patterns
+# Patterns
 
-This document outlines common code patterns and practices used throughout the zhaoyu.io portfolio site.
+Last verified against the code on 2026-10-04. `CLAUDE.md` (repo root) is authoritative.
 
-> **Note**: For AI agent rules and directives, see [.cursor/rules/component-patterns.mdc](../rules/component-patterns.mdc). This document provides comprehensive examples and detailed patterns.
+Each pattern names a real file to copy from. Earlier versions of this page showed `+server.ts`
+API routes, a `services/` client, client-side `fetch` and `$:` reactive statements; the site
+has none of these. It is fully static with no backend.
 
-## Svelte Component Pattern
+## Component
 
-### Basic Svelte Component
+Copy from `src/lib/components/ui/SectionHeader.svelte`.
 
 ```svelte
 <script lang="ts">
-  // Component script (TypeScript)
+  import type { Snippet } from 'svelte';
+
   interface Props {
-    title: string;
-    description?: string;
+    label: string;
+    children?: Snippet;
   }
 
-  let { title, description }: Props = $props();
+  let { label, children }: Props = $props();
 </script>
 
-<article class="card">
-  <h2>{title}</h2>
-  {#if description}
-    <p>{description}</p>
-  {/if}
-</article>
+<div class="thing">
+  <p class="thing-label">{label}</p>
+  {#if children}{@render children()}{/if}
+</div>
 
 <style>
-  .card {
-    padding: 1rem;
-    border: 1px solid #ccc;
+  .thing {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--surface-raised);
+  }
+
+  .thing-label {
+    font-size: var(--type-sm);
+    color: var(--text-muted);
   }
 </style>
 ```
 
-### Svelte Component with Data Fetching
+- A feature component lives in `src/lib/components/features/<name>/<Name>.svelte` with an
+  `index.ts` that re-exports it; import it from that folder
+  (`import { Hero } from '$lib/components/features/hero'`).
+- A reusable primitive goes in `ui/` and is added to `ui/index.ts`. If people will reuse it,
+  register a preview card in `src/lib/constants/design-system.ts`.
+
+## Landing section with a scroll reveal
+
+Copy from `src/lib/components/features/work/WorkSection.svelte` or `skills/Skills.svelte`.
 
 ```svelte
-<!-- src/routes/projects/+page.svelte -->
 <script lang="ts">
-  interface PageData {
-    projects: Project[];
-  }
+  import { onMount } from 'svelte';
+  import { observeSection } from '$lib/utils/section-observer';
 
-  let { data }: { data: PageData } = $props();
-  const { projects } = data;
+  let sectionVisible = $state(false);
+  let section: HTMLElement;
+
+  onMount(() =>
+    observeSection(section, { onVisible: () => (sectionVisible = true), threshold: 0.1 }),
+  );
 </script>
 
-<section>
-  {#each projects as project}
-    <article>
-      <h3>{project.title}</h3>
-      <p>{project.description}</p>
-    </article>
-  {/each}
+<section id="example" class="example" bind:this={section}>
+  <!-- Always rendered so the content prerenders; the reveal is animation-only. -->
+  <div class="reveal" class:revealed={sectionVisible}>...</div>
 </section>
-```
 
-```typescript
-// src/routes/projects/+page.ts
-export async function load() {
-  const projects = await fetchProjects();
-  return {
-    projects,
-  };
-}
-```
+<style>
+  .example {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--section-y) var(--section-x);
+  }
 
-## Store Pattern
-
-> **Note**: For AI agent rules, see [.cursor/rules/store-patterns.mdc](../rules/store-patterns.mdc). This section provides detailed examples.
-
-### Creating a Store
-
-```typescript
-// src/lib/stores/theme.ts
-import { writable } from 'svelte/store';
-
-function createTheme() {
-  const { subscribe, set, update } = writable<'light' | 'dark'>('light');
-
-  return {
-    subscribe,
-    init: () => {
-      if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
-        if (stored) {
-          set(stored);
-          document.documentElement.classList.toggle('dark', stored === 'dark');
-        }
-      }
-    },
-    toggle: () => {
-      update((current) => {
-        const next = current === 'light' ? 'dark' : 'light';
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('theme', next);
-          document.documentElement.classList.toggle('dark', next === 'dark');
-        }
-        return next;
-      });
-    },
-  };
-}
-
-export const theme = createTheme();
-```
-
-### Using a Store
-
-```svelte
-<script lang="ts">
-  import { theme } from '$lib/stores/theme';
-
-  // Auto-subscribe with $ prefix
-  $: isDark = $theme === 'dark';
-</script>
-
-<div class:dark={isDark}>Content</div>
-```
-
-## Data Fetching Pattern
-
-> **Note**: For route-specific patterns, see [.cursor/rules/route-patterns.mdc](../rules/route-patterns.mdc). This section provides detailed examples.
-
-### Fetching Data in Load Function (Server-Side)
-
-```typescript
-// src/routes/projects/+page.ts
-export async function load() {
-  const data = await fetch('https://api.example.com/projects')
-    .then((res) => res.json())
-    .catch(() => ({}));
-
-  return {
-    projects: data.projects || [],
-  };
-}
-```
-
-### Fetching Data in Component (Client-Side)
-
-```svelte
-<script lang="ts">
-  import { onMount } from 'svelte';
-
-  let data: any = null;
-  let loading = true;
-
-  onMount(async () => {
-    try {
-      const response = await fetch('/api/data');
-      data = await response.json();
-    } catch (error) {
-      console.error('Failed to fetch data', error);
-    } finally {
-      loading = false;
+  @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition:
+        opacity var(--duration-slow) var(--ease-out),
+        transform var(--duration-slow) var(--ease-out);
     }
-  });
-</script>
 
-{#if loading}
-  <div>Loading...</div>
-{:else if data}
-  <div>{data.title}</div>
-{:else}
-  <div>No data</div>
-{/if}
-```
-
-## Layout Pattern
-
-> **Note**: For route layout patterns, see [.cursor/rules/route-patterns.mdc](../rules/route-patterns.mdc). This section provides detailed examples.
-
-### Root Layout
-
-```svelte
-<!-- src/routes/+layout.svelte -->
-<script lang="ts">
-  import '../app.css';
-  import { theme } from '$lib/stores/theme';
-  import { onMount } from 'svelte';
-
-  let isDark = false;
-
-  onMount(() => {
-    theme.init();
-    const unsubscribe = theme.subscribe((value) => {
-      isDark = value === 'dark';
-    });
-    return unsubscribe;
-  });
-
-  function toggleTheme() {
-    theme.toggle();
-  }
-</script>
-
-<nav>
-  <a href="/">Home</a>
-  <a href="/about">About</a>
-  <a href="/projects">Projects</a>
-</nav>
-
-<main>
-  <slot />
-</main>
-
-<footer>
-  <p>&copy; 2024 zhaoyu.io</p>
-</footer>
-```
-
-### Using a Layout
-
-Layouts are automatically applied to all child routes. The root `+layout.svelte` wraps all pages.
-
-## Styling Patterns
-
-### Font Usage
-
-**All components MUST use the Geist font family.** Never hardcode fonts - always use CSS variables.
-
-#### Font Variables
-
-- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif (default for all text)
-- `--font-mono`: "Geist Mono", "Courier New", monospace (for code, badges, etc.)
-
-#### Using Fonts
-
-```svelte
-<style>
-  /* Regular text inherits Geist Sans automatically from body */
-  .card {
-    /* No font-family needed - inherits from global body style */
-  }
-
-  /* For monospace text (code blocks, badges, etc.) */
-  .code-block {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-  }
-
-  .badge {
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    .reveal.revealed {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>
 ```
 
-#### Tailwind Font Classes
+Never gate content with `{#if sectionVisible}`. Width follows the Layout rule in
+`.interface-design/system.md`: a self-padded section caps at `var(--content-max)`; an inner
+container inside a padded wrapper caps at `calc(var(--content-max) - 2 * var(--section-x))`.
+Then place the section in `src/routes/(main)/+page.svelte` (and the nav, if it is a
+destination).
 
-You can also use Tailwind classes:
+## Content-driven prerendered route
 
-- `font-sans` - Geist Sans (default)
-- `font-mono` - Geist Mono
+Copy from `src/routes/(main)/blog/[slug]/+page.ts`. Data comes from `$lib/constants`, not from
+a network call.
 
-```svelte
-<div class="font-sans">Regular text</div>
-<code class="font-mono">Monospace text</code>
-```
+```ts
+import { error } from '@sveltejs/kit';
+import { notesData } from '$lib/constants/content';
+import type { EntryGenerator, PageLoad } from './$types';
 
-### Theme Support (Light & Dark Mode)
+export const entries: EntryGenerator = () => notesData.notes.map((note) => ({ slug: note.slug }));
 
-**MANDATORY: All components MUST support both light and dark modes. This is MANDATORY for ALL code generation.**
-
-**Critical Requirements:**
-
-- ✅ **ALWAYS use CSS variables** - Never hardcode colors like `bg-white`, `text-black`, `dark:bg-neutral-950`
-- ✅ **Use CSS variables from `app.css`**: `--bg-primary`, `--text-primary`, `--text-secondary`, `--text-muted`, `--border-color`, `--bg-secondary`
-- ✅ **Always add transitions**: `transition: background-color 0.2s, color 0.2s, border-color 0.2s`
-- ❌ **NEVER hardcode colors** - Always use CSS variables for backgrounds, text, and borders
-- ❌ **NEVER use Tailwind color classes** like `bg-white dark:bg-neutral-950` - Use CSS variables instead
-
-**All components MUST use the Geist font family.** Use `var(--font-sans)` for regular text and `var(--font-mono)` for monospace text.
-
-#### Using CSS Variables
-
-```svelte
-<style>
-  .card {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    padding: 1rem;
-    border-radius: 8px;
-    transition:
-      background-color 0.2s,
-      color 0.2s,
-      border-color 0.2s;
-  }
-
-  .card:hover {
-    background: var(--bg-secondary);
-  }
-</style>
-```
-
-#### Theme-Specific Overrides
-
-```svelte
-<style>
-  .highlight {
-    background: rgba(59, 130, 246, 0.1);
-    color: #3b82f6;
-  }
-
-  :global(.dark) .highlight {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
-  }
-</style>
-```
-
-#### Available CSS Variables
-
-**Theme Variables:**
-
-- `--bg-primary`: Main background (white in light, dark gray in dark)
-- `--bg-secondary`: Secondary background
-- `--text-primary`: Main text color (black in light, white in dark)
-- `--text-secondary`: Secondary text color
-- `--text-muted`: Muted text color
-- `--border-color`: Border color (adapts to theme)
-
-**Font Variables:**
-
-- `--font-sans`: "Geist Sans", system-ui, -apple-system, sans-serif (default for all text)
-- `--font-mono`: "Geist Mono", "Courier New", monospace (for code, badges, etc.)
-
-#### Complete Theme-Aware Component Example
-
-```svelte
-<script lang="ts">
-  interface Props {
-    title: string;
-    description?: string;
-  }
-
-  let { title, description }: Props = $props();
-</script>
-
-<article class="card">
-  <h2 class="card-title">{title}</h2>
-  {#if description}
-    <p class="card-description">{description}</p>
-  {/if}
-</article>
-
-<style>
-  .card {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    transition:
-      background-color 0.2s,
-      color 0.2s,
-      border-color 0.2s;
-  }
-
-  .card:hover {
-    background: var(--bg-secondary);
-  }
-
-  .card-title {
-    color: var(--text-primary);
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-description {
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-</style>
-```
-
-### Tailwind CSS
-
-When using Tailwind, prefer theme-aware utilities or combine with CSS variables:
-
-```svelte
-<div
-  class="flex items-center justify-between p-4 rounded-lg"
-  style="background: var(--bg-primary); color: var(--text-primary);"
->
-  <h2 class="text-2xl font-bold">Title</h2>
-  <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"> Click me </button>
-</div>
-```
-
-### Scoped Styles (Svelte)
-
-```svelte
-<style>
-  .card {
-    padding: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    transition:
-      background-color 0.2s,
-      color 0.2s,
-      border-color 0.2s;
-  }
-
-  .card:hover {
-    background: var(--bg-secondary);
-  }
-</style>
-```
-
-> **Note**: For AI agent rules, see [.cursor/rules/api-route-patterns.mdc](../rules/api-route-patterns.mdc). This section provides detailed examples.
-
-## API Route Pattern
-
-### Creating an API Route
-
-```typescript
-// src/routes/api/test/+server.ts
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-
-export const GET: RequestHandler = async () => {
-  return json({ message: 'Hello' });
-};
-
-export const POST: RequestHandler = async ({ request }) => {
-  const data = await request.json();
-  return json({ received: data });
+export const load: PageLoad = ({ params }) => {
+  const note = notesData.notes.find((n) => n.slug === params.slug);
+  if (!note) error(404, 'Note not found');
+  return { note };
 };
 ```
 
-### Using an API Route
+`src/routes/+layout.ts` sets `export const prerender = true` for the whole site. Content that
+can be feature-flagged goes through `visibleItems` from `$lib/utils/feature-flags` in the
+page, the sitemap and `entries` alike (see `work/[slug]/+page.ts`).
 
-```svelte
-<script lang="ts">
-  let data: any = null;
+## Prerendered endpoint
 
-  async function fetchData() {
-    const response = await fetch('/api/test');
-    data = await response.json();
-  }
-</script>
+Copy from `src/routes/sitemap.xml/+server.ts`: `export const prerender = true` and a `GET`
+that returns a `Response` built from constants. These are build-time files, not APIs; test
+them by calling `GET()` directly (`sitemap.test.ts`).
 
-<button on:click={fetchData}>Fetch Data</button>
-{#if data}
-  <pre>{JSON.stringify(data, null, 2)}</pre>
-{/if}
-```
+## Shared state
 
-## Error Handling Pattern
+- **Store** (`src/lib/stores/theme.ts`): a `writable` wrapped in a factory that exposes
+  `subscribe` plus intent methods (`toggle`, `set`, `init`). Browser access is guarded with
+  `browser` from `$app/environment`. Consumers read it with `$theme`.
+- **Runes class** (`src/lib/hud.svelte.ts`, `db.svelte.ts`, `simulator.svelte.ts`): a class
+  with `$state` fields and methods, exported as a singleton. Lifecycle (start, stop) is
+  driven by the consuming component's `onMount` so nothing runs site-wide.
 
-### Error Page
+## Client-only work on a prerendered page
 
-```svelte
-<!-- src/routes/+error.svelte -->
-<script lang="ts">
-  interface ErrorProps {
-    error: Error;
-    status: number;
-  }
+`/infra` ships a prerendered shell; `costDB.start()` dynamically imports PGlite from
+`onMount`, so nothing browser-only runs at build time (`src/routes/infra/+page.ts`,
+`src/lib/db.svelte.ts`). Follow that shape for any browser-only dependency.
 
-  let { error, status }: ErrorProps = $props();
-</script>
+## Copy
 
-<div class="error">
-  <h1>{status}</h1>
-  <p>{error.message}</p>
-  <a href="/">Go home</a>
-</div>
-```
-
-## Best Practices
-
-1. **Use Svelte reactivity** - Leverage reactive statements and stores
-2. **Type safety** - Always use TypeScript interfaces
-3. **Component composition** - Compose smaller components into larger ones
-4. **Store management** - Use stores for shared state
-5. **Error handling** - Always handle errors gracefully
-6. **Accessibility** - Use semantic HTML and ARIA attributes
-7. **Theme support** - Always support both light and dark modes using CSS variables
-8. **Smooth transitions** - Add transitions for theme switching: `transition: background-color 0.2s, color 0.2s`
+All site copy lives in `src/lib/constants/content.ts` and is covered by guard tests. Edit it
+through the `writer` skill; components only render it.

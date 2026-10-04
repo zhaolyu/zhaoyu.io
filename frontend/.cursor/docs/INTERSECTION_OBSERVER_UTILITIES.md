@@ -1,618 +1,107 @@
 # Intersection Observer Utilities
 
-Comprehensive guide to scroll-triggered visibility and animation utilities in `src/lib/utils/`.
+Last verified against `src/lib/utils/intersection-core.ts` and `section-observer.ts` on
+2026-10-04.
 
-## Overview
+Two modules drive scroll-triggered behaviour:
 
-The intersection observer utilities are split into two files:
+| Module                 | Level | Use it for                                                                                     |
+| ---------------------- | ----- | ---------------------------------------------------------------------------------------------- |
+| `section-observer.ts`  | high  | `observeSection` (one-shot reveal) and `createSectionObserver` (re-trigger, scroll-past)       |
+| `intersection-core.ts` | low   | Building blocks: observer factory, mobile detection, scroll-past and initial-visibility checks |
 
-1. **`intersection-core.ts`** - Low-level building blocks
-2. **`section-observer.ts`** - High-level section observers
+## The rule that comes first
 
-## Quick Decision Guide
+Content always renders. The observer only flips a flag that a CSS class reads, and the
+animation itself is gated on
+`@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`. Never write
+`{#if visible}` around content: every route is prerendered, and gated content would be
+missing from the HTML. (Earlier versions of this page showed `{#if sectionVisible}` with
+`transition:fade`; do not copy that.)
 
-**Use `observeSection` when:**
+## `observeSection(element, options)`: one-shot reveal
 
-- You need simple show/hide functionality
-- Section should appear once when scrolled into view
-- No reanimation needed
+```ts
+observeSection(element: HTMLElement | null, options: ObserveSectionOptions): () => void
 
-**Use `createSectionObserver` when:**
-
-- You need reanimation when scrolling back into view
-- You need scroll-past detection
-- You're animating SVGs or complex components
-- You need conditional visibility callbacks
-
-**Use `intersection-core.ts` directly when:**
-
-- Building custom observer logic
-- Need fine-grained control over observer behavior
-- Creating specialized utilities
-
-## File Structure
-
-```
-src/lib/utils/
-├── intersection-core.ts    # Core utilities (low-level)
-└── section-observer.ts     # Section observers (high-level)
-```
-
----
-
-## Core Utilities (`intersection-core.ts`)
-
-Low-level building blocks for intersection observers.
-
-### `createIntersectionObserver(callback, options?)`
-
-Creates an IntersectionObserver with mobile-aware configuration and debouncing.
-
-**Parameters:**
-
-- `callback: IntersectionObserverCallback` - Function called when intersection changes
-- `options?: IntersectionObserverOptions` - Optional configuration
-
-**Returns:** `IntersectionObserver` instance
-
-**Options:**
-
-```typescript
-interface IntersectionObserverOptions {
-  threshold?: number; // 0-1 ratio (default: mobile/desktop from config)
-  rootMargin?: string; // CSS margin string (default: mobile/desktop from config)
-  debounceMs?: number; // Debounce delay (default: 150ms mobile, 50ms desktop)
-}
-```
-
-**Features:**
-
-- Automatic mobile/desktop detection
-- Debouncing to prevent flickering on mobile
-- State change detection (only fires on actual changes)
-
-**Example:**
-
-```typescript
-import { createIntersectionObserver } from '$lib/utils/intersection-core';
-
-const observer = createIntersectionObserver(
-  (entry, isIntersecting) => {
-    if (isIntersecting) {
-      console.log('Element is visible');
-    }
-  },
-  { threshold: 0.2 },
-);
-
-observer.observe(element);
-```
-
-### `isMobileViewport(forceCheck?)`
-
-Detects if viewport is mobile (< 768px) with caching.
-
-**Parameters:**
-
-- `forceCheck?: boolean` - Bypass cache and check again
-
-**Returns:** `boolean`
-
-**Features:**
-
-- Caches result to avoid repeated checks
-- Automatically invalidates cache on window resize
-
-**Example:**
-
-```typescript
-import { isMobileViewport } from '$lib/utils/intersection-core';
-
-if (isMobileViewport()) {
-  // Mobile-specific logic
-}
-```
-
-### `isScrolledPast(entry, threshold?)`
-
-Checks if element has been scrolled past a threshold.
-
-**Parameters:**
-
-- `entry: IntersectionObserverEntry` - Observer entry
-- `threshold?: number` - Pixels past viewport (default: from config)
-
-**Returns:** `boolean`
-
-**Example:**
-
-```typescript
-import { isScrolledPast } from '$lib/utils/intersection-core';
-
-const observer = createIntersectionObserver((entry, isIntersecting) => {
-  if (!isIntersecting && isScrolledPast(entry, 200)) {
-    console.log('Scrolled 200px past element');
-  }
-});
-```
-
-### `checkInitialVisibility(element, threshold, callback)`
-
-Checks if element is visible on mount and triggers callback.
-
-**Parameters:**
-
-- `element: HTMLElement` - Element to check
-- `threshold: number` - Visibility threshold (0-1 ratio)
-- `callback: () => void` - Function to call if visible
-
-**Features:**
-
-- Uses `requestAnimationFrame` for accurate timing
-- Calculates visible ratio based on threshold
-
-**Example:**
-
-```typescript
-import { checkInitialVisibility } from '$lib/utils/intersection-core';
-
-checkInitialVisibility(element, 0.2, () => {
-  console.log('Element is already 20% visible on mount');
-});
-```
-
----
-
-## Section Observers (`section-observer.ts`)
-
-High-level utilities for section visibility and animations.
-
-### `observeSection(element, options)`
-
-Simple utility for basic section visibility tracking.
-
-**When to use:**
-
-- Basic show/hide functionality
-- Sections that appear once when scrolled into view
-- No reanimation needed
-
-**Parameters:**
-
-- `element: HTMLElement | null` - Element to observe
-- `options: ObserveSectionOptions` - Configuration
-
-**Returns:** Cleanup function to disconnect observer
-
-**Options:**
-
-```typescript
 interface ObserveSectionOptions {
-  onVisible: () => void; // Required: Called when section becomes visible
-  threshold?: number; // 0-1 ratio (default: from config)
-  checkInitialVisibility?: boolean; // Check on mount (default: true)
+  onVisible: () => void;            // called when the element intersects
+  threshold?: number;               // 0 to 1; default from ANIMATION_CONFIG (mobile or desktop)
+  checkInitialVisibility?: boolean; // default true: fire on mount if already in view
 }
 ```
 
-**Example:**
+Returns a cleanup that disconnects the observer; a `null` element returns a no-op. Used by
+`WorkSection`, `EngineeringNotes`, `Skills`, `MentalModels` and `PersonaSection`.
 
 ```svelte
-<script>
+<script lang="ts">
+  import { onMount } from 'svelte';
   import { observeSection } from '$lib/utils/section-observer';
 
   let sectionVisible = $state(false);
-  let container: HTMLElement;
+  let section: HTMLElement;
 
-  onMount(() => {
-    return observeSection(container, {
-      onVisible: () => {
-        sectionVisible = true;
-      },
-      threshold: 0.1,
-    });
-  });
+  onMount(() =>
+    observeSection(section, { onVisible: () => (sectionVisible = true), threshold: 0.1 }),
+  );
 </script>
 
-<section bind:this={container}>
-  {#if sectionVisible}
-    <div transition:fade>Content appears when scrolled into view</div>
-  {/if}
+<section bind:this={section}>
+  <div class="reveal" class:revealed={sectionVisible}>Always in the HTML</div>
 </section>
 ```
 
-**Used by:**
+The `.reveal` / `.revealed` CSS lives in each component, inside the media query above (see
+`Skills.svelte` or [PATTERNS.md](PATTERNS.md)).
 
-- `WorkSection.svelte`
-- `EngineeringNotes.svelte`
+## `createSectionObserver(element, options?)`: re-trigger and scroll-past
 
----
+```ts
+createSectionObserver(element: HTMLElement | null, options?: SectionObserverOptions): () => void
 
-### `createSectionObserver(element, options?)`
-
-Advanced section observer with reanimation and scroll-past detection.
-
-**When to use:**
-
-- SVG animations that need to re-trigger
-- Sections that should reanimate when scrolled back into view
-- Need scroll-past detection
-- Complex visibility logic
-
-**Parameters:**
-
-- `element: HTMLElement | null` - Element to observe
-- `options?: SectionObserverOptions` - Configuration
-
-**Returns:** Cleanup function to disconnect observer
-
-**Options:**
-
-```typescript
 interface SectionObserverOptions extends IntersectionObserverOptions {
-  scrollPastThreshold?: number; // Pixels for scroll-past detection (default: from config)
-  enableReanimation?: boolean; // Enable reanimation (default: false)
-  onVisible?: () => void; // Called when section becomes visible
-  onHidden?: () => void; // Called when section becomes hidden
-  onScrolledPast?: () => void; // Called when scrolled past (requires enableReanimation)
+  scrollPastThreshold?: number; // px; default ANIMATION_CONFIG.scrollPastThreshold (200)
+  enableReanimation?: boolean;  // default false
+  onVisible?: () => void;
+  onHidden?: () => void;
+  onScrolledPast?: () => void;  // only called when enableReanimation is true
 }
 ```
 
-**Reanimation Behavior:**
+Behaviour:
 
-- When `enableReanimation: true`, `onVisible` is called:
-  - First time entering view
-  - Re-entering after being scrolled past
-- `onScrolledPast` is called when element is scrolled well past the threshold
-- Prevents flickering by keeping content visible if not scrolled far enough
+- With `enableReanimation`, `onVisible` fires on first entry and again on re-entry only after
+  the element was scrolled past by more than `scrollPastThreshold`; leaving the viewport by
+  less than that does not reset it (prevents flicker).
+- Without it, `onVisible` fires on every entry and `onHidden` only once scrolled well past.
+- It always checks initial visibility on mount (no option to turn that off).
 
-**Example 1: Basic Reanimation**
+Used by `LatencySim.svelte`, which restarts its simulation on re-entry and skips autoplay when
+`prefers-reduced-motion: reduce` is set. Any re-triggered animation must respect reduced
+motion the same way.
 
-```svelte
-<script>
-  import { createSectionObserver } from '$lib/utils/section-observer';
+## `intersection-core.ts`
 
-  let sectionVisible = $state(false);
-  let container: HTMLElement;
-
-  onMount(() => {
-    return createSectionObserver(container, {
-      enableReanimation: true,
-      onVisible: () => {
-        sectionVisible = true;
-      },
-      onScrolledPast: () => {
-        sectionVisible = false; // Reset for next animation
-      },
-    });
-  });
-</script>
-```
-
-**Example 2: SVG Animation with Counter Key Pattern (Recommended)**
-
-This is the recommended pattern used by `CareerChart.svelte` and `Skills.svelte`:
-
-```svelte
-<script>
-  import { createSectionObserver } from '$lib/utils/section-observer';
-  import { draw } from 'svelte/transition';
-
-  let sectionVisible = $state(false);
-  let animationKey = $state(0); // Counter for forcing transition re-trigger
-  let container: HTMLElement;
-
-  function triggerAnimation() {
-    sectionVisible = true;
-    animationKey++; // Increment key to force remount and re-trigger transition
-  }
-
-  onMount(() => {
-    return createSectionObserver(container, {
-      enableReanimation: true,
-      onVisible: () => {
-        triggerAnimation();
-      },
-      threshold: 0.2,
-    });
-  });
-</script>
-
-<section bind:this={container}>
-  {#if sectionVisible}
-    {#key animationKey}
-      <path d={pathD} in:draw={{ duration: 4000 }} />
-    {/key}
-  {/if}
-</section>
-```
-
-**Key Points:**
-
-- Use `createSectionObserver` with `enableReanimation: true`
-- Create a `triggerAnimation()` function that sets visibility and increments the key
-- The utility handles scroll-past detection internally - no manual state tracking needed
-- The `{#key}` block forces remount when the key changes, re-triggering transitions
-
-**Used by:**
-
-- `CareerChart.svelte` - SVG path animation
-- `LatencySim.svelte` - Simulation re-trigger
-- `Skills.svelte` - SVG polygon animations
-
----
-
-## Common Patterns
-
-> **Note:** The patterns below are based on production code from `CareerChart.svelte` and `Skills.svelte`. Use these as reference implementations for consistent reanimation behavior.
-
-### Pattern 1: Simple Show/Hide
-
-```svelte
-<script>
-  import { observeSection } from '$lib/utils/section-observer';
-
-  let visible = $state(false);
-  let element: HTMLElement;
-
-  onMount(() => {
-    return observeSection(element, {
-      onVisible: () => (visible = true),
-    });
-  });
-</script>
-
-<div bind:this={element}>
-  {#if visible}
-    <div transition:fade>Content</div>
-  {/if}
-</div>
-```
-
-### Pattern 2: SVG Animation Re-trigger (Recommended)
-
-**Used by:** `CareerChart.svelte`, `Skills.svelte`
-
-```svelte
-<script>
-  import { createSectionObserver } from '$lib/utils/section-observer';
-  import { draw } from 'svelte/transition';
-
-  let sectionVisible = $state(false);
-  let animationKey = $state(0);
-  let container: HTMLElement;
-
-  function triggerAnimation() {
-    sectionVisible = true;
-    animationKey++; // Increment key to force remount and re-trigger transition
-  }
-
-  onMount(() => {
-    return createSectionObserver(container, {
-      enableReanimation: true,
-      onVisible: () => {
-        triggerAnimation();
-      },
-      threshold: 0.2,
-    });
-  });
-</script>
-
-<section bind:this={container}>
-  {#if sectionVisible}
-    {#key animationKey}
-      <svg>
-        <path in:draw={{ duration: 4000 }} />
-      </svg>
-    {/key}
-  {/if}
-</section>
-```
-
-**Why this pattern:**
-
-- Simple and clean - no manual scroll-past tracking
-- The utility handles all reanimation logic internally
-- Works for both scroll down and scroll up scenarios
-- Consistent with production components
-
-### Pattern 3: Progress Animation with Tweened
-
-**Used by:** `Skills.svelte`
-
-```svelte
-<script>
-  import { createSectionObserver } from '$lib/utils/section-observer';
-  import { tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
-
-  let sectionVisible = $state(false);
-  let animationKey = $state(0);
-  let container: HTMLElement;
-
-  const progress = tweened(0, {
-    duration: 3000,
-    easing: cubicOut,
-  });
-
-  function triggerAnimation() {
-    sectionVisible = true;
-    animationKey++; // Increment key to force remount and re-trigger transitions
-    progress.set(0); // Reset progress
-    setTimeout(() => {
-      progress.set(1); // Animate to completion
-    }, 100);
-  }
-
-  onMount(() => {
-    return createSectionObserver(container, {
-      enableReanimation: true,
-      onVisible: () => {
-        triggerAnimation();
-      },
-      threshold: 0.1,
-    });
-  });
-</script>
-
-<section bind:this={container}>
-  {#if sectionVisible}
-    {#key animationKey}
-      <div style="width: {$progress * 100}%">Progress</div>
-    {/key}
-  {/if}
-</section>
-```
-
-**Key Points:**
-
-- Reset tweened values in `triggerAnimation()` before animating
-- Use `setTimeout` to ensure reset completes before starting animation
-- Same pattern as SVG animations - simple and consistent
-
----
+| Function                     | Signature                                                                                                                 | Notes                                                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `createIntersectionObserver` | `(callback: (entry, isIntersecting) => void, options?: { threshold?, rootMargin?, debounceMs? }) => IntersectionObserver` | Mobile-aware defaults; debounced (150ms mobile, 50ms desktop, `0` disables); callback fires only when the intersecting state changes |
+| `isMobileViewport`           | `(forceCheck = false) => boolean`                                                                                         | `window.innerWidth < 768`, cached per width; `false` on the server                                                                   |
+| `isScrolledPast`             | `(entry, threshold = ANIMATION_CONFIG.scrollPastThreshold) => boolean`                                                    | `entry.boundingClientRect.top < -threshold`                                                                                          |
+| `checkInitialVisibility`     | `(element, threshold, callback) => void`                                                                                  | In a `requestAnimationFrame`, calls `callback` if the visible ratio is at least `threshold`                                          |
 
 ## Configuration
 
-Utilities use `ANIMATION_CONFIG` from `$lib/constants/config`:
+Defaults come from `ANIMATION_CONFIG` in `src/lib/constants/config.ts`:
 
-```typescript
-// Default thresholds
-mobile: { threshold: 0.1, rootMargin: '0px' }
-desktop: { threshold: 0.2, rootMargin: '0px' }
+| Setting               | Desktop               | Mobile (< 768px)      |
+| --------------------- | --------------------- | --------------------- |
+| `threshold`           | `0.2`                 | `0.15`                |
+| `rootMargin`          | `'0px 0px -50px 0px'` | `'0px 0px -80px 0px'` |
+| `scrollPastThreshold` | `200` px              | `200` px              |
 
-// Scroll-past threshold
-scrollPastThreshold: 200 // pixels
-```
+## Tests
 
----
-
-## Best Practices
-
-1. **Always return cleanup function from `onMount`**
-
-   ```svelte
-   onMount(() => {
-     return observeSection(element, { onVisible: ... });
-   });
-   ```
-
-2. **Use counter keys for transition re-triggering**
-
-   ```svelte
-   let animationKey = $state(0);
-
-   function triggerAnimation() {
-     sectionVisible = true;
-     animationKey++; // Increment key to force remount
-   }
-
-   {#key animationKey}
-     <element in:transition />
-   {/key}
-   ```
-
-3. **Use `triggerAnimation()` function pattern**
-   - Keep animation logic in a dedicated function
-   - Set visibility, increment key, reset animation state
-   - Let the utility handle scroll-past detection - no manual tracking needed
-
-4. **Choose the right utility**
-   - Simple show/hide → `observeSection`
-   - Reanimation needed → `createSectionObserver`
-   - Custom logic → `intersection-core.ts` directly
-
-5. **Handle null elements gracefully**
-   - All utilities handle `null` elements
-   - Return no-op cleanup function if element is null
-
----
-
-## Troubleshooting
-
-### Animation doesn't re-trigger
-
-**Problem:** SVG or transition doesn't re-animate when scrolling back into view.
-
-**Solution:** Use the recommended pattern with `triggerAnimation()`:
-
-```svelte
-let sectionVisible = $state(false);
-let animationKey = $state(0);
-
-function triggerAnimation() {
-  sectionVisible = true;
-  animationKey++; // Force remount
-}
-
-onMount(() => {
-  return createSectionObserver(container, {
-    enableReanimation: true,
-    onVisible: () => triggerAnimation()
-  });
-});
-
-{#if sectionVisible}
-  {#key animationKey}
-    <element in:transition />
-  {/key}
-{/if}
-```
-
-**Reference implementations:**
-
-- `CareerChart.svelte` - SVG path animation
-- `Skills.svelte` - SVG polygon with tweened progress
-
-### Layout shifts on scroll
-
-**Problem:** Content unmounts/remounts causing layout jumps.
-
-**Solution:** Keep content rendered, use CSS opacity/visibility:
-
-```svelte
-<div class:invisible={!visible}>
-  <!-- Content stays in DOM -->
-</div>
-```
-
-### Observer not firing
-
-**Problem:** `onVisible` not called when element enters view.
-
-**Solution:**
-
-- Check element binding: `bind:this={element}`
-- Verify threshold is appropriate
-- Check if element is already visible on mount (use `checkInitialVisibility`)
-
----
-
-## API Reference Summary
-
-### `intersection-core.ts`
-
-| Function                                               | Purpose                                  | Returns                |
-| ------------------------------------------------------ | ---------------------------------------- | ---------------------- |
-| `createIntersectionObserver(callback, options?)`       | Create observer with mobile-aware config | `IntersectionObserver` |
-| `isMobileViewport(forceCheck?)`                        | Detect mobile viewport (cached)          | `boolean`              |
-| `isScrolledPast(entry, threshold?)`                    | Check if scrolled past threshold         | `boolean`              |
-| `checkInitialVisibility(element, threshold, callback)` | Check initial visibility on mount        | `void`                 |
-
-### `section-observer.ts`
-
-| Function                                   | Purpose                   | Returns                |
-| ------------------------------------------ | ------------------------- | ---------------------- |
-| `observeSection(element, options)`         | Simple section visibility | `() => void` (cleanup) |
-| `createSectionObserver(element, options?)` | Advanced with reanimation | `() => void` (cleanup) |
-
----
-
-## Related Documentation
-
-- [Patterns](PATTERNS.md) - Component patterns and examples
-- [File Organization](FILE_ORGANIZATION.md) - Project structure
-- [Coding Conventions](CODING_CONVENTIONS.md) - Code style guidelines
-
----
-
-**Last Updated**: Documentation for intersection observer utilities in zhaoyu.io portfolio site.
+`intersection-core.test.ts` and `section-observer.test.ts` mock `IntersectionObserver` and
+cover the debounce, state-change, scroll-past and initial-visibility paths. Extend them when
+you change either module.

@@ -1,222 +1,55 @@
-# zhaoyu.io Documentation
-
-Welcome to the zhaoyu.io portfolio site documentation. This directory contains comprehensive guides to help you understand, navigate, and develop the portfolio site with confidence.
-
-> **Project**: SvelteKit portfolio site for zhaoyu.io
-
-## For New AI Chats
-
-**Quick onboarding for AI assistants working on this codebase:**
-
-### Essential Rules (Always Applied)
-
-These rules are automatically applied to all code changes:
-
-1. **[Utilities Check Rule](.cursor/rules/utilities.mdc)** - **MANDATORY**: Always check `src/lib/utils/` before writing new utility functions to avoid duplication
-2. **[Code Quality](.cursor/rules/code-quality.mdc)** - **MANDATORY**: All code must pass tests and lint before completion
-3. **[Refactoring Standards](.cursor/rules/refactoring.mdc)** - **MANDATORY**: 90% test coverage and zero lint issues for refactoring
-
-### Key Documentation
-
-- **[Quick Reference](QUICK_REFERENCE.md)** - Common paths, commands, and patterns
-- **[File Organization](FILE_ORGANIZATION.md)** - Complete directory structure and navigation
-- **[Patterns](PATTERNS.md)** - Code examples for components, stores, routes, API endpoints
-- **[Coding Conventions](CODING_CONVENTIONS.md)** - Code style, naming, and structure standards
-
-### Project Structure Overview
-
-```
-src/
-├── lib/
-│   ├── components/    # Reusable components (ui/, layout/, features/)
-│   ├── stores/        # Svelte stores (theme, etc.)
-│   ├── utils/         # Utility functions (check here first!)
-│   ├── services/      # API clients and services
-│   ├── types/         # TypeScript type definitions
-│   └── constants/ # Shared constants (routes, config)
-└── routes/            # File-based routing (SvelteKit)
-    ├── +page.svelte   # Pages
-    ├── +layout.svelte # Layouts
-    └── api/           # API routes (+server.ts)
-```
-
-### Common Tasks
-
-- **Find code**: See [File Organization](FILE_ORGANIZATION.md) → "Locating Code" section
-- **Write component**: See [Patterns](PATTERNS.md) → "Svelte Component Pattern"
-- **Add utility**: Check [Utilities Rule](.cursor/rules/utilities.mdc) first, then see [Patterns](PATTERNS.md)
-- **Create API route**: See [Patterns](PATTERNS.md) → "API Route Pattern"
-- **Write tests**: See [Testing](TESTING.md) for patterns and [.cursor/rules/testing.mdc](.cursor/rules/testing.mdc) for standards
-
-### Workflow Checklist
-
-Before completing any code task:
-
-1. ✅ Check utilities first (DRY principle)
-2. ✅ Write tests if applicable (90% coverage required)
-3. ✅ Run tests: `npm run test`
-4. ✅ Run lint: `npm run lint` (fix all issues)
-5. ✅ Verify code follows [Coding Conventions](CODING_CONVENTIONS.md)
-6. ✅ Ensure theme support (light & dark modes) using CSS variables
-
----
-
-## Documentation Index
-
-### [File Organization](FILE_ORGANIZATION.md)
-
-Directory structure and organization patterns:
-
-- Complete directory tree
-- Purpose of each directory
-- File naming conventions
-- Component structure standards
-- Import path conventions
-- **Locating code** - Navigation guide for finding components, pages, utilities, and more
-
-**Start here if**: You need to find where code lives or understand the project structure.
-
-### [Coding Conventions](CODING_CONVENTIONS.md)
-
-Code style and conventions:
-
-- ESLint configuration and rules
-- Prettier formatting rules
-- TypeScript conventions
-- Naming conventions
-- Import conventions
-- Component structure
-- Comment guidelines
-
-**Start here if**: You're writing new code or reviewing code.
-
-### [Development Workflow](DEVELOPMENT_WORKFLOW.md)
-
-Setup and development process:
-
-- Prerequisites and installation
-- Environment configuration
-- Running the development server
-- Development scripts
-- Debugging
-- Common issues and solutions
-
-**Start here if**: You're setting up your development environment or need help with common tasks.
-
-### [Patterns](PATTERNS.md)
-
-Common code patterns and practices:
-
-- Svelte component pattern
-- Store pattern
-- Data fetching patterns
-- Layout pattern
-- Styling patterns (including theme support for light & dark modes)
-- API route patterns
-
-**Start here if**: You need examples of how to implement common functionality.
-
-### [Testing](TESTING.md)
-
-Comprehensive testing guide:
-
-- Test framework setup (Vitest, Svelte Testing Library)
-- Test file conventions and organization
-- Testing patterns for components, utilities, and stores
-- Mocking strategies
-- Best practices
-
-**Start here if**: You're writing tests or need to understand testing patterns.
-
-### [Quick Reference](QUICK_REFERENCE.md)
-
-Quick lookup guide:
-
-- Common file paths
-- Development commands
-- Links to detailed documentation
-
-**Start here if**: You need a quick lookup for paths, commands, or patterns.
-
-### [Intersection Observer Utilities](INTERSECTION_OBSERVER_UTILITIES.md)
-
-Comprehensive guide to scroll-triggered visibility and animation utilities:
-
-- Core utilities (`intersection-core.ts`)
-- Section observers (`section-observer.ts`)
-- When to use which utility
-- Common patterns and examples
-- API reference
-- Troubleshooting
-
-**Start here if**: You're working with scroll-triggered animations, section visibility, or SVG animations.
-
-## Quick Start Guide
-
-### For New Developers
-
-1. Read [Development Workflow](DEVELOPMENT_WORKFLOW.md) to set up your environment
-2. Read [File Organization](FILE_ORGANIZATION.md) to understand the structure and locate code
-3. Refer to [Patterns](PATTERNS.md) for implementation examples
-4. Follow [Coding Conventions](CODING_CONVENTIONS.md) when writing code
-5. Use [Testing](TESTING.md) guide when writing tests
-
-### For Code Reviewers
-
-1. Check [Coding Conventions](CODING_CONVENTIONS.md) for style compliance
-2. Verify patterns match [Patterns](PATTERNS.md) guide
-3. Ensure file organization follows [File Organization](FILE_ORGANIZATION.md) standards
-4. Review [Testing](TESTING.md) guide for test quality and patterns
-
-### For Finding Code
-
-1. Check [File Organization](FILE_ORGANIZATION.md) for directory structure and navigation guide
-2. Check [Quick Reference](QUICK_REFERENCE.md) for common paths and commands
-
-## Documentation Principles
-
-This documentation follows these principles:
-
-1. **Practical**: Focuses on actionable information
-2. **Accurate**: Based on actual codebase structure
-3. **Cross-referenced**: Documents link to each other
-4. **Maintainable**: Organized for easy updates
-5. **Comprehensive**: Covers all major aspects of the codebase
-
-## About This Directory (`.cursor/`)
-
-This `.cursor/` directory contains:
-
-- **`docs/`** - Human-readable documentation (`.md` files) for developers and AI assistants
-- **`rules/`** - AI agent rules (`.mdc` files) that guide code generation and quality
-- **`commands/`** - Cursor-specific command documentation
-  **⚠️ IMPORTANT**: These files can and should be updated as the project evolves. The AI agent can edit these files when explicitly requested. When updating:
-- **`.md` files**: Standard Markdown format
-- **`.mdc` files**: Markdown with frontmatter metadata (see `commands/generate-cursor-rules.md`)
-
-## Contributing to Documentation
-
-When updating documentation:
-
-1. **⚠️ MANDATORY**: Always ask for user acceptance before editing any markdown files (`.md` or `.mdc`) - present a summary of changes and wait for approval
-2. Keep it accurate - verify against actual code
-3. Update cross-references if structure changes
-4. Add examples where helpful
-5. Keep formatting consistent
-6. Update this README if adding new documents
-7. For `.mdc` rule files, preserve frontmatter metadata format
-
-See [Documentation Handling Rule](../rules/documentation-handling.mdc) for complete guidelines.
-
-## Getting Help
-
-If you can't find what you're looking for:
-
-1. Check the [Quick Reference](QUICK_REFERENCE.md) for common items
-2. Review [File Organization](FILE_ORGANIZATION.md) for navigation guidance
-3. Review [Patterns](PATTERNS.md) for implementation examples
-4. Check the main project README
-
----
-
-**Last Updated**: Documentation for zhaoyu.io portfolio site (SvelteKit).
+# zhaoyu.io developer docs (`frontend/.cursor/docs`)
+
+Last verified against the code on 2026-10-04.
+
+These pages are a convenience layer for editors that read `.cursor/`. They are not the source
+of truth. When anything here disagrees with one of the sources below, the source wins and this
+directory is the thing to fix.
+
+| Question                                                              | Source of truth                                                                       |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Conventions, commands, structure, security and disclosure rules       | `CLAUDE.md` (repo root)                                                               |
+| What the site should look like, and why                               | `.interface-design/brief.md`                                                          |
+| How the design system is applied (token families, type roles, layout) | `.interface-design/system.md`                                                         |
+| Token values                                                          | `frontend/src/app.css` (the only place they are defined)                              |
+| Token index for previews                                              | `frontend/src/lib/constants/design-tokens.ts`, kept honest by `design-tokens.test.ts` |
+| Component previews                                                    | `/design-system/{card}`, registered in `frontend/src/lib/constants/design-system.ts`  |
+| Site copy                                                             | `frontend/src/lib/constants/content.ts`, edited through the `writer` skill            |
+
+## Stack in one paragraph
+
+SvelteKit 2 with Svelte 5 runes, TypeScript (strict), Tailwind CSS v4 via `@tailwindcss/vite`,
+Vitest with jsdom, and `@sveltejs/adapter-static` (every route prerendered, `404.html` as the
+SPA fallback, deployed to Cloudflare Pages). There is no backend: the only `+server.ts` files
+(`sitemap.xml`, `rss.xml`, `og/cards.json`) are prerendered at build time. Commands run from
+`frontend/` with pnpm.
+
+## Pages in this directory
+
+| Page                                                                     | What it covers                                                     |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| [QUICK_REFERENCE.md](QUICK_REFERENCE.md)                                 | Paths, commands and routes on one screen                           |
+| [FILE_ORGANIZATION.md](FILE_ORGANIZATION.md)                             | Where code lives and how it is imported                            |
+| [CODING_CONVENTIONS.md](CODING_CONVENTIONS.md)                           | Lint, format, naming, Svelte 5 and styling rules                   |
+| [PATTERNS.md](PATTERNS.md)                                               | The patterns the codebase actually uses, with real file references |
+| [DESIGN_TOKENS.md](DESIGN_TOKENS.md)                                     | Token families and how to add one                                  |
+| [TESTING.md](TESTING.md)                                                 | What gets tested, where tests live, how to run them                |
+| [DEVELOPMENT_WORKFLOW.md](DEVELOPMENT_WORKFLOW.md)                       | Setup, hooks, CI and the done checklist                            |
+| [INTERSECTION_OBSERVER_UTILITIES.md](INTERSECTION_OBSERVER_UTILITIES.md) | `intersection-core.ts` and `section-observer.ts`                   |
+
+## Other folders under `.cursor/`
+
+- `rules/*.mdc`: Cursor rule files. They predate the current codebase in places (several
+  describe `src/lib/services/`, `routes/api/` endpoints, npm scripts and Testing Library
+  component tests, none of which exist). Treat `CLAUDE.md` as authoritative over them.
+- `commands/generate-cursor-rules.md`: how to write a `.mdc` rule file.
+- `scripts/check-browser-access.sh`: checks whether a local dev server is reachable on a
+  port (usage: `./check-browser-access.sh [port]`).
+
+## Keeping these pages honest
+
+1. Verify every claim against `frontend/` before writing it: paths, exports, token names and
+   values, scripts in `package.json`.
+2. Prefer a pointer to the source of truth over a copy of it. Copies of token values are the
+   part of these pages that rots first.
+3. Update the "Last verified" line when you re-check a page.

@@ -1,276 +1,97 @@
 # Coding Conventions
 
-This document outlines the coding standards and conventions used in the zhaoyu.io portfolio site.
+Last verified against the code on 2026-10-04. `CLAUDE.md` (repo root) is authoritative; this
+page records the configured tooling and the conventions the codebase actually follows.
 
-## ESLint Configuration
+## Tooling
 
-**Configuration File**: `.eslintrc.js` or `eslint.config.js` (if using flat config)
+### ESLint (`eslint.config.js`, flat config)
 
-### Base Configuration
+- Base: `@eslint/js` recommended plus `eslint-plugin-svelte` recommended presets.
+- Parsers: `@typescript-eslint/parser` for `.ts`, and inside `<script lang="ts">` and
+  `.svelte.ts` modules via `svelte-eslint-parser`.
+- Rules that matter day to day:
+  - `semi: ['error', 'always']` for `.js`/`.ts`.
+  - `no-console: 'warn'` (turned off for `scripts/**`, where console is the output channel).
+  - `@typescript-eslint/no-unused-vars: 'warn'` with `argsIgnorePattern` and
+    `varsIgnorePattern` of `^_`. Prefix an intentionally unused name with `_`.
+  - `svelte/no-at-html-tags: 'warn'`. Use `{@html}` only for trusted, repo-authored content.
+  - `svelte/no-navigation-without-resolve: 'off'` (the site is served at the domain root).
+- Ignored: `build/`, `.svelte-kit/`, `node_modules/`, `dist/`.
 
-- **Extends**: Project-specific ESLint config or SvelteKit recommended config
-- **Parser**: `@typescript-eslint/parser` for TypeScript files, `svelte-eslint-parser` for Svelte files
-- **Environments**: `browser`, `node`
+### Prettier (`.prettierrc`)
 
-### Key Rules
+`printWidth: 100`, `singleQuote: true`, `trailingComma: 'all'`, `tabWidth: 2`, spaces not
+tabs, `bracketSpacing: true`, with `prettier-plugin-svelte`. Run `pnpm format` before
+committing. `.prettierignore` excludes `build/`, `.svelte-kit/`, `/design-system/` and the
+generated `static/og/manifest.json`.
 
-- `no-console`: `warn` or `error` - Console statements should be avoided in production
-- `semi`: `['error', 'always']` - Requires semicolons
-- TypeScript strict mode enabled
+### TypeScript (`tsconfig.json`)
 
-## Prettier Configuration
+Extends `.svelte-kit/tsconfig.json`; `strict: true`, `checkJs: true`,
+`moduleResolution: 'bundler'`. `pnpm check` runs `svelte-kit sync` then `svelte-check`.
 
-**Configuration File**: `.prettierrc` or `prettier.config.js`
+## Naming
 
-### Settings
+| Thing                        | Convention                 | Examples                                                             |
+| ---------------------------- | -------------------------- | -------------------------------------------------------------------- |
+| Svelte components            | PascalCase file and import | `SectionHeader.svelte`, `NoteExcerptCard.svelte`                     |
+| Feature folders              | kebab-case                 | `features/cost-simulator/`, `features/latency-sim/`                  |
+| Utility and constant modules | kebab-case `.ts`           | `cost-guard-display.ts`, `note-excerpt.ts`, `design-tokens.ts`       |
+| Runes state modules          | `name.svelte.ts`           | `db.svelte.ts`, `hud.svelte.ts`                                      |
+| Functions and variables      | camelCase                  | `observeSection`, `visibleItems`                                     |
+| Constants                    | UPPER_SNAKE_CASE           | `ROUTES`, `FEATURE_FLAGS`, `ANIMATION_CONFIG`, `DESIGN_SYSTEM_CARDS` |
+| Types and interfaces         | PascalCase                 | `CostSnapshot`, `ObserveSectionOptions`                              |
 
-- `printWidth`: `100` - Maximum line length
-- `singleQuote`: `true` - Use single quotes
-- `trailingComma`: `'all'` - Trailing commas wherever possible
-- `bracketSpacing`: `true` - Spaces inside object literals
+## Imports
 
-### Usage
+Always use the `$lib` alias, never relative `../../` paths across `src/lib`:
 
-Run Prettier to format code:
-
-```bash
-npm run format  # or npm run lint:fix
+```ts
+import { observeSection } from '$lib/utils/section-observer';
+import { theme } from '$lib/stores';
+import { SectionHeader } from '$lib/components/ui';
+import { Hero } from '$lib/components/features/hero';
+import { ROUTES } from '$lib/constants/routes';
+import type { Theme } from '$lib/types';
 ```
 
-## TypeScript Configuration
+Relative imports appear only next to the file itself (barrel `index.ts` files, `./$types` in
+routes, and the root layout's `import '../app.css'`).
 
-**Configuration File**: `tsconfig.json`
+## Svelte 5
 
-- Strict mode enabled
-- Type checking for `.ts` and `.svelte` files
-- `$lib` alias configured for `src/lib/`
+- Runes only: `$state`, `$derived`, `$effect`, `$props`. No `export let`, no `$:` statements,
+  no `on:click` directive syntax (use `onclick={...}`); the codebase has none of these.
+- Props are typed with a local `interface Props` and destructured from `$props()`.
+- Composition uses snippets (`children?: Snippet`, `{@render children()}`), as in
+  `SectionHeader.svelte`.
+- Shared cross-component state: a store in `$lib/stores` (`theme`, `scroll`) or a runes class
+  in `src/lib/*.svelte.ts` exported as a singleton (`costDB`, `hud`, `simulator`).
+- Guard browser-only code with `browser` from `$app/environment` or keep it in `onMount`.
+  Every route is prerendered, so module scope must be safe at build time.
 
-## Naming Conventions
+## Styling
 
-### Components
+- Scoped `<style>` blocks plus Tailwind utilities for layout. Colours, sizes, radii, shadows,
+  durations, widths and spacing come from tokens in `src/app.css`, never literals. See
+  [DESIGN_TOKENS.md](DESIGN_TOKENS.md).
+- Dark mode is the `.dark` class on `<html>`; tokens swap values, so components rarely need a
+  `:global(.dark)` override.
+- Type hierarchy on cards: classification > measurement > description. Mono
+  (`--font-mono`) is for measured values and identifiers only; descriptive labels are sans.
+  The serif (`--font-serif`) is for note and case-study reading prose only.
+- Content always renders. Scroll reveals are animation-only, gated on
+  `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`. Never wrap
+  content in `{#if visible}`; it would not prerender.
 
-- **Svelte Components**: PascalCase (e.g., `Welcome.svelte`, `Layout.svelte`)
+## Comments
 
-### Functions and Variables
+Explain why, not what. Module and exported-function headers in this codebase use JSDoc and
+usually record the reason a rule exists or the incident that produced it (see the headers of
+`design-tokens.ts`, `tokens-css.test.ts`, `svelte.config.js`). Do not leave commented-out code.
 
-- **camelCase** for functions and variables: `fetchData`, `userName`, `isLoading`
+## Design principles
 
-### Constants
-
-- **UPPER_SNAKE_CASE** for constants: `API_BASE_URL`, `MAX_RETRIES`
-
-### Files and Directories
-
-- **PascalCase** for component files: `Welcome.svelte`, `Button.svelte`
-- **camelCase** for utility files: `formatDate.ts`, `apiClient.ts`
-- **kebab-case** for config files: `svelte.config.js`
-
-## Import Conventions
-
-### SvelteKit $lib Alias (Recommended)
-
-Use SvelteKit's `$lib` alias for imports from `src/lib/`:
-
-```typescript
-// Preferred
-import { formatDate } from '$lib/utils/date';
-import { theme } from '$lib/stores/theme';
-import Button from '$lib/components/Button.svelte';
-```
-
-### Relative Imports
-
-Use relative imports when appropriate:
-
-```typescript
-// Relative imports
-import Component from '../lib/components/Component.svelte';
-import { formatDate } from '../lib/utils/date';
-```
-
-### Import Order
-
-While not strictly enforced, typical order:
-
-1. Svelte imports (for `.svelte` files)
-2. Third-party libraries
-3. Application imports (components, utils, stores) using `$lib` alias
-4. Relative imports
-5. Styles
-
-```svelte
-<!-- Svelte component example -->
-<script lang="ts">
-  import { onMount } from 'svelte';
-  import { theme } from '$lib/stores/theme';
-  import Button from '$lib/components/Button.svelte';
-  import '../app.css';
-</script>
-```
-
-## Component Conventions
-
-### Svelte Components
-
-```svelte
-<script lang="ts">
-  // Component script (TypeScript)
-  interface Props {
-    title: string;
-    description?: string;
-  }
-
-  let { title, description }: Props = $props();
-</script>
-
-<article class="card">
-  <h2>{title}</h2>
-  {#if description}
-    <p>{description}</p>
-  {/if}
-</article>
-
-<style>
-  .card {
-    padding: 1rem;
-  }
-</style>
-```
-
-### Svelte Components with Reactivity
-
-```svelte
-<script lang="ts">
-  let count = $state(0);
-
-  function increment() {
-    count++;
-  }
-</script>
-
-<button on:click={increment} class="btn btn-primary">
-  Clicked {count} times
-</button>
-```
-
-## Code Style
-
-- 2 spaces indentation (tabs converted to spaces)
-- Single quotes for strings
-- Always use semicolons
-- Always use braces for if/for/while
-- Use TypeScript for type safety
-
-## Comments and Documentation
-
-**Minimize inline comments** - Write self-documenting code through clear naming and structure. Only add inline comments when the code's intent is genuinely unclear.
-
-**Use JSDoc/TSDoc for function/component documentation**:
-
-```typescript
-/**
- * Formats a date string according to the specified format pattern.
- * @param date - The date to format
- * @param format - Format pattern (e.g., 'MM/DD/YYYY')
- * @returns Formatted date string
- */
-const formatDate = (date: Date | string, format: string): string => {
-  // Implementation
-};
-```
-
-**Avoid:**
-
-- Redundant comments that restate what the code does
-- Commented-out code (remove it instead)
-- Excessive inline explanations for straightforward code
-
-**Prefer:**
-
-- Clear variable and function names
-- JSDoc/TSDoc for exported functions and components
-- Brief comments only for complex business logic or non-obvious behavior
-
-## SOLID Principles
-
-Follow SOLID principles for maintainable code:
-
-- **Single Responsibility**: Each function/component does one thing well
-- **Open/Closed**: Open for extension, closed for modification
-- **Liskov Substitution**: Subtypes must be substitutable for their base types
-- **Interface Segregation**: Clients shouldn't depend on interfaces they don't use
-- **Dependency Inversion**: Depend on abstractions, not concretions
-
-## Styling Conventions
-
-### Theme Support (MANDATORY)
-
-**CRITICAL**: All components MUST support both light and dark modes using CSS variables. Never hardcode colors.
-
-**Required CSS Variables**:
-
-- `var(--bg-primary)` - Main background
-- `var(--bg-secondary)` - Secondary background
-- `var(--text-primary)` - Main text color
-- `var(--text-secondary)` - Secondary text color
-- `var(--text-muted)` - Muted text color
-- `var(--border-color)` - Border color
-
-**Always add transitions**: `transition: background-color 0.2s, color 0.2s, border-color 0.2s`
-
-### Tailwind CSS
-
-Use Tailwind utility classes for layout and spacing, but **ALWAYS use CSS variables for colors**:
-
-```svelte
-<!-- ✅ CORRECT: Use Tailwind for layout, CSS variables for colors -->
-<div class="flex items-center justify-between p-4 rounded-lg shadow-md card">
-  <h2 class="text-2xl font-bold card-title">Title</h2>
-</div>
-
-<style>
-  .card {
-    background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    transition:
-      background-color 0.2s,
-      border-color 0.2s;
-  }
-
-  .card-title {
-    color: var(--text-primary);
-    transition: color 0.2s;
-  }
-</style>
-```
-
-```svelte
-<!-- ❌ INCORRECT: Hardcoded colors -->
-<div class="flex items-center justify-between p-4 bg-white dark:bg-neutral-950 rounded-lg">
-  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Title</h2>
-</div>
-```
-
-### Scoped Styles (Svelte)
-
-```svelte
-<style>
-  .card {
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-
-  .card:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-</style>
-```
-
-## Best Practices
-
-1. **Use Svelte reactivity** - Leverage Svelte's reactive statements and stores
-2. **Type safety** - Always use TypeScript interfaces for props and function parameters
-3. **Component composition** - Compose smaller components into larger ones
-4. **Store management** - Use Svelte stores for shared state
-5. **Progressive enhancement** - Start with static content, add interactivity where needed
+SRP, DRY (check `$lib/utils/` first), KISS, YAGNI, separation of data, UI and logic. Avoid god
+components, magic numbers and deep nesting. Full wording in `CLAUDE.md`.

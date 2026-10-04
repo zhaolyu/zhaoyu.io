@@ -1,171 +1,68 @@
 # Quick Reference
 
-Quick lookup guide for common paths, commands, and links to detailed documentation.
+Last verified against the code on 2026-10-04. `CLAUDE.md` (repo root) is authoritative.
 
-## Documentation Links
+All paths below are relative to `frontend/`, and every command runs from there.
 
-- [File Organization](FILE_ORGANIZATION.md) - Directory structure and locating code
-- [Coding Conventions](CODING_CONVENTIONS.md) - Code style and conventions
-- [Development Workflow](DEVELOPMENT_WORKFLOW.md) - Setup and development process
-- [Patterns](PATTERNS.md) - Common code patterns and examples
-- [Testing](TESTING.md) - Testing guide and patterns
-- [Intersection Observer Utilities](INTERSECTION_OBSERVER_UTILITIES.md) - Scroll-triggered visibility and animations
-
-## Common File Paths
-
-| Path                        | Purpose                     |
-| --------------------------- | --------------------------- |
-| `src/routes/`               | File-based routing (pages)  |
-| `src/lib/components/`       | Reusable components         |
-| `src/routes/+layout.svelte` | Root layout component       |
-| `src/app.css`               | Global styles               |
-| `static/`                   | Static public assets        |
-| `src/lib/utils/`            | Utility functions           |
-| `src/lib/stores/`           | Svelte stores               |
-| `src/lib/services/`         | API clients and services    |
-| `src/lib/types/`            | TypeScript type definitions |
-| `src/lib/constants/`        | Shared constants            |
-
-See [File Organization](FILE_ORGANIZATION.md) for complete directory structure and navigation guide.
-
-## Development Commands
-
-### Development
+## Commands (pnpm)
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
+pnpm dev             # dev server on http://localhost:5173
+pnpm build           # production build into build/ (prebuild runs `pnpm tokens`)
+pnpm preview         # serve the production build
+pnpm check           # svelte-kit sync + svelte-check (type check)
+pnpm lint            # ESLint
+pnpm lint:fix        # ESLint with autofix
+pnpm format          # Prettier
+pnpm test            # svelte-kit sync + vitest run (all tests)
+pnpm test:watch      # Vitest watch mode
+pnpm vitest run src/lib/utils/navigation.test.ts   # one file
+pnpm tokens          # regenerate static/tokens.css from src/app.css
+pnpm og              # after a build: regenerate OG cards (hero tagline, note titles and tags)
+pnpm design-system   # after `pnpm build`: write the design-system/ preview bundle (gitignored)
 ```
 
-### Code Quality
+## Common paths
 
-```bash
-npm run check        # Run type check
-npm run lint         # Run lint (MANDATORY - must pass before completing code)
-npm run lint:fix     # Fix linting issues
-npm run format       # Format code
-```
+| Path                                       | Purpose                                                                                                                             |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app.css`                              | Global styles and every design token (single source of truth)                                                                       |
+| `src/app.html`                             | HTML shell, including the inline theme-init script (its hash is in the CSP)                                                         |
+| `src/lib/components/{ui,layout,features}/` | Components; see [FILE_ORGANIZATION.md](FILE_ORGANIZATION.md)                                                                        |
+| `src/lib/constants/`                       | `content.ts` (site copy), `config.ts`, `routes.ts`, `design-tokens.ts`, `design-system.ts`, `case-studies.ts`, and most guard tests |
+| `src/lib/utils/`                           | Pure utilities with colocated tests. Check here before writing a helper                                                             |
+| `src/lib/stores/`                          | `theme.ts`, `scroll.ts`                                                                                                             |
+| `src/lib/types/`                           | `common.ts`, `cost-guard.ts`, `dashboard.ts`                                                                                        |
+| `src/lib/*.svelte.ts`                      | Runes classes: `db.svelte.ts`, `hud.svelte.ts`, `simulator.svelte.ts`                                                               |
+| `static/`                                  | `_headers`, `_redirects`, `llms.txt`, `robots.txt`, `tokens.css`, `og/`, favicon                                                    |
+| `svelte.config.js`                         | adapter-static and the CSP (`kit.csp`, hash mode)                                                                                   |
 
-### Testing
+## Routes
 
-```bash
-npm run test         # Run tests (MANDATORY - must pass before completing code)
-npm run test:watch   # Run tests in watch mode
-npm run test:ui       # Run tests in UI mode
-npm run test -- --coverage  # Run tests with coverage
-```
+| File                                                        | URL                                           |
+| ----------------------------------------------------------- | --------------------------------------------- |
+| `src/routes/(main)/+page.svelte`                            | `/`                                           |
+| `src/routes/(main)/blog/+page.svelte`                       | `/blog`                                       |
+| `src/routes/(main)/blog/[slug]/+page.svelte`                | `/blog/{slug}` (one per note in `content.ts`) |
+| `src/routes/(main)/work/[slug]/+page.svelte`                | `/work/{slug}` (one per visible case study)   |
+| `src/routes/(main)/models/+page.svelte`                     | `/models`                                     |
+| `src/routes/(standalone)/ai-manifesto/+page.svelte`         | `/ai-manifesto`                               |
+| `src/routes/infra/+page.svelte`                             | `/infra` (Cost-Guard dashboard)               |
+| `src/routes/design-system/[card]/+page.svelte`              | `/design-system/{card}` previews              |
+| `src/routes/og/[slug]/+page.svelte`                         | OG card render targets                        |
+| `src/routes/{sitemap.xml,rss.xml,og/cards.json}/+server.ts` | Prerendered endpoints                         |
 
-**⚠️ IMPORTANT**: Both `npm run test` and `npm run lint` MUST pass before marking any code task as complete. CI will fail otherwise.
+Route path constants live in `$lib/constants/routes` (`ROUTES.HOME`, `ROUTES.BLOG`, ...).
 
-See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for detailed setup and workflow information.
+## Styling in one breath
 
-## File-Based Routing
+Never hardcode a colour, size, radius, shadow, duration, width or spacing value. Use a token
+from `app.css` (`var(--text-primary)`, `var(--space-md)`, `var(--type-sm)`,
+`var(--radius-md)`, `var(--duration-base)`), and if none fits add one there and register it in
+`design-tokens.ts`. Dark mode is the `.dark` class on `<html>`, which swaps token values only.
+Details: [DESIGN_TOKENS.md](DESIGN_TOKENS.md) and `.interface-design/system.md`.
 
-| File                                  | Route          |
-| ------------------------------------- | -------------- |
-| `src/routes/+page.svelte`             | `/`            |
-| `src/routes/about/+page.svelte`       | `/about`       |
-| `src/routes/blog/[slug]/+page.svelte` | `/blog/[slug]` |
+## Before you call it done
 
-See [File Organization](FILE_ORGANIZATION.md) for complete routing information.
-
-## Common Patterns
-
-For complete code examples and patterns, see:
-
-- [Patterns](PATTERNS.md) - Svelte components, stores, data fetching, layouts, styling, API routes
-- [Coding Conventions](CODING_CONVENTIONS.md) - Component structure, naming, imports
-
-## Theme Support (Light & Dark Mode)
-
-**MANDATORY: All components MUST support both light and dark modes. This is MANDATORY for ALL code generation.**
-
-### Critical Rules
-
-- ✅ **ALWAYS use CSS variables** - Never hardcode colors
-- ✅ **Never use** `bg-white dark:bg-neutral-950` or similar hardcoded Tailwind color classes
-- ✅ **Always use** `var(--bg-primary)`, `var(--text-primary)`, `var(--border-color)`, etc.
-- ✅ **Always add transitions** for smooth theme switching
-
-### Quick Reference
-
-```svelte
-<style>
-  .component {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    transition:
-      background-color 0.2s,
-      color 0.2s,
-      border-color 0.2s;
-  }
-
-  .component:hover {
-    background: var(--bg-secondary);
-  }
-
-  :global(.dark) .component {
-    /* Theme-specific overrides only if absolutely necessary */
-  }
-</style>
-```
-
-### Anti-Pattern (DO NOT DO THIS)
-
-```svelte
-<!-- ❌ WRONG: Hardcoded colors -->
-<div class="bg-white dark:bg-neutral-950 text-black dark:text-white">Content</div>
-
-<!-- ✅ CORRECT: CSS variables -->
-<div class="component">Content</div>
-
-<style>
-  .component {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-  }
-</style>
-```
-
-### Available CSS Variables
-
-**Theme Variables:**
-
-- `--bg-primary`, `--bg-secondary`
-- `--text-primary`, `--text-secondary`, `--text-muted`
-- `--border-color`
-
-**Font Variables:**
-
-- `--font-sans`: Geist Sans (default for all text)
-- `--font-mono`: Geist Mono (for code, badges, etc.)
-
-See [Patterns](PATTERNS.md) for complete theme support and font usage examples.
-
-## Troubleshooting
-
-### Port Already in Use
-
-```bash
-npm run dev -- --port 3000
-```
-
-### Build Errors
-
-1. Check TypeScript: `npm run check`
-2. Check lint: `npm run lint` (must pass)
-3. Check tests: `npm run test` (must pass)
-4. Review error messages
-
-### Before Completing Code
-
-**MANDATORY**: Run these commands and ensure both pass:
-
-```bash
-npm run test  # Must pass
-npm run lint  # Must pass with zero errors
-```
-
-See [Development Workflow](DEVELOPMENT_WORKFLOW.md) for more troubleshooting tips.
+`pnpm test`, `pnpm lint`, `pnpm check`, `pnpm format`. The pre-commit hook runs the first
+three; CI runs check, lint, test and build.
