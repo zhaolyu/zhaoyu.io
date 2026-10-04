@@ -2,7 +2,7 @@
 
 > Senior Manager, Engineering @ Versant (CNBC Core), and the author of the
 > engineering notes on this site. The site leads with the writing: mental
-> models and production lessons on verification, agents, and reliability,
+> models and production lessons on agents, verification, and reliability,
 > each note naming its receipt. The role behind it: co-leads
 > the ~20-engineer next-generation rebuild of CNBC.com across 3 teams (web,
 > video, and market data),

@@ -80,11 +80,11 @@ export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
  */
 export const heroContent: HeroContent = {
   headline: {
-    primary: 'If a green check can lie to you, it eventually will.',
-    accent: 'Engineering notes with receipts on verification, agents, and reliability.',
+    primary: 'The machine can do more of the work. Deciding whether to trust it is the job.',
+    accent: 'Engineering notes with receipts on agents, verification, and reliability.',
   },
-  tagline: 'If a green check can lie to you, it eventually will.',
-  bio: 'The lie is quiet: a gate whose “did not run” reads as a pass, or a search that reported zero because it was looking in the wrong place. Each note names its receipt, the incident or source it came from. The Models section collects the rules that held up.',
+  tagline: 'The machine can do more of the work. Deciding whether to trust it is the job.',
+  bio: 'The green check is where I keep seeing trust misplaced: a gate whose “did not run” reads as a pass, or a search that reported zero because it looked in the wrong place. Each note names its receipt, the incident or source it came from. The Models section collects the rules that held up.',
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
@@ -724,7 +724,7 @@ export interface SocialDescriptions {
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
   meta: `${roleTitle}. 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.`,
-  twitter: `${roleTitle}. Engineering notes with receipts: verification, agents, reliability.`,
+  twitter: `${roleTitle}. Engineering notes with receipts: agents, verification, reliability.`,
 };
 
 export interface PersonaItem {
