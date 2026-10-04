@@ -2,7 +2,15 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { performanceMetrics, SOURCES, heroContent, footerManifesto, notesData } from './content';
+import {
+  performanceMetrics,
+  supportingFigures,
+  sourcedFigureValues,
+  SOURCES,
+  heroContent,
+  footerManifesto,
+  notesData,
+} from './content';
 
 /**
  * Metrics discipline: every headline number is public, cites its source, and
@@ -37,6 +45,22 @@ describe('performanceMetrics', () => {
     const lcp = performanceMetrics.find((m) => m.label === 'p75 LCP');
     expect(lcp?.source).toEqual(SOURCES.cruxCnbc);
     expect(lcp?.basis).toMatch(/Chrome UX Report/);
+  });
+});
+
+describe('supportingFigures', () => {
+  it('carries a basis and a public source for every figure, like the metrics', () => {
+    for (const figure of supportingFigures) {
+      expect(figure.basis, `${figure.label} has no basis`).toMatch(/\S/);
+      expect(figure.source.href, `${figure.label} has no source`).toMatch(/^https:\/\//);
+      expect(Object.values(SOURCES)).toContainEqual(figure.source);
+    }
+  });
+
+  it('is exactly what the disclosure guard exempts, with no duplicates', () => {
+    const expected = [...performanceMetrics, ...supportingFigures].map((f) => f.value);
+    expect(sourcedFigureValues).toEqual(expected);
+    expect(new Set(sourcedFigureValues).size).toBe(sourcedFigureValues.length);
   });
 });
 

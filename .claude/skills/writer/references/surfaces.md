@@ -14,6 +14,7 @@ Add a new figure to `SOURCES` (with its public citation) before using it in pros
 | Fact                                   | Value                                          | Source                                        |
 | -------------------------------------- | ---------------------------------------------- | --------------------------------------------- |
 | CNBC digital audience                  | ~47M monthly unique visitors (ComScore)        | Versant Investor Day deck, Dec 2025, slide 66 |
+| CNBC digital engagement                | ~394M monthly digital minutes (ComScore)       | Versant Investor Day deck, Dec 2025, slide 66 (source note slide 176); `supportingFigures` in `content.ts` |
 | CNBC.com field performance             | 1.7s p75 LCP, all devices, Jul 2026            | Chrome UX Report (public field data)          |
 | Direct team                            | 8 engineers + 2 QE, CNBC Core (Versant)        | LinkedIn / role of record                     |
 | Program scope                          | Co-leads the ~20-engineer CNBC.com rebuild across 3 teams | LinkedIn / role of record          |
@@ -28,8 +29,11 @@ and including numbers you find in old copy or git history.
 
 `disclosure-guard.test.ts` enforces this by matching the _shape_ of an employer
 claim — a subscriber count, an ARR figure, a cache-hit rate, a ranking
-superlative, a field-performance number — and failing unless the value traces to
-`performanceMetrics`. It deliberately does not name the figures it is protecting
+superlative, a field-performance number, an engagement volume (minutes, views,
+streams) — and failing unless the value traces to `performanceMetrics` (the
+Receipts cards) or `supportingFigures` (sourced figures used in copy). Both
+carry a basis and a `SOURCES` citation; adding a figure to either is how it
+joins the allowlist. It deliberately does not name the figures it is protecting
 against: a list of forbidden values is itself a disclosure, which is why this
 paragraph no longer contains one.
 

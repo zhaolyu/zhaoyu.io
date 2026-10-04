@@ -144,6 +144,28 @@ export const performanceMetrics: PerformanceMetric[] = [
   },
 ];
 
+/**
+ * Employer figures that are public and sourced but are not cards in the
+ * Receipts grid: they appear in copy (a project blurb, llms.txt) as context for
+ * a specific piece of work. Same contract as performanceMetrics, a basis plus a
+ * SOURCES citation, enforced by content.test.ts; the disclosure guard exempts
+ * exactly these values and the metric values, nothing else.
+ */
+export const supportingFigures: Array<Omit<PerformanceMetric, 'sublabel'>> = [
+  {
+    label: 'Monthly digital minutes',
+    value: '394M',
+    basis:
+      'CNBC U.S. average monthly digital minutes, ComScore, Sept 2024 to Aug 2025, as reported at Versant Investor Day (slide 66; source note on slide 176)',
+    source: SOURCES.versantInvestorDay2025,
+  },
+];
+
+/** Every employer figure a public source backs; the disclosure guard's allowlist. */
+export const sourcedFigureValues: string[] = [...performanceMetrics, ...supportingFigures].map(
+  (f) => f.value,
+);
+
 export interface Project {
   title: string;
   description: string;
