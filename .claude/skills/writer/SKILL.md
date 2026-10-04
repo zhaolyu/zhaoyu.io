@@ -150,8 +150,10 @@ machine-made even when every individual sentence is good.
    `sources`, `content`, and `format` for an essay) and run
    `node scripts/draft-lint.mjs <draft.json>` from `frontend/` (exit 0 clean, 1 findings,
    2 could not run). Give it the real `dateISO`: the word, title and `<strong>` rules only
-   apply from `VOICE_RULES_FROM` and the receipt schema only from `RECEIPT_SCHEMA_FROM`, so
-   a draft with no date skips both.
+   apply from `VOICE_RULES_FROM` and the receipt schema only from `RECEIPT_SCHEMA_FROM`. A
+   draft with no date, or a partial one, is reported as a `date` finding and linted as if
+   dated today (`lintDraft` in `voice-rules.ts`), so it can no longer come back clean
+   unchecked.
 5. **Get judged.** Run the `writer-judge` skill in a context that did not author the
    draft (the authoring session spawns a fresh subagent per draft; see the judge's own
    SKILL.md for the independence rules, the draft-file contents, and the verdict
