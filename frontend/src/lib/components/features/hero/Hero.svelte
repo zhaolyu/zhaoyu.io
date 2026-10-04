@@ -3,6 +3,10 @@
   import { handleAnchorNavigation } from '$lib/utils/navigation';
 
   const { identity } = heroContent;
+
+  // One line per sentence, so a two-sentence thesis never breaks mid-thought
+  // ("Done is a claim. The / receipt is…"). A one-sentence headline is a no-op.
+  const headlineLines = heroContent.headline.primary.split(/(?<=\.)\s+/);
 </script>
 
 <section
@@ -18,7 +22,11 @@
        Below-the-fold sections still use the observeSection reveal. -->
   <div class="hero-content relative z-10 text-center mx-auto">
     <h1 class="hero-headline">
-      {heroContent.headline.primary}
+      {#each headlineLines as line, i (i)}
+        <!-- The trailing space keeps the text content "claim. The", not
+             "claim.The", for screen readers and crawlers. -->
+        <span class="hero-headline-line">{line}{i < headlineLines.length - 1 ? ' ' : ''}</span>
+      {/each}
       <!-- A subhead, not a second headline: at display size these 15 words ran
            to three lines and pushed both CTAs past the fold on a 1280x720
            laptop. Kept inside the h1 so the outline and positioning.test.ts's
@@ -102,6 +110,10 @@
     letter-spacing: var(--tracking-tight);
     text-wrap: balance;
     transition: color var(--duration-base);
+  }
+
+  .hero-headline-line {
+    display: block;
   }
 
   /* One step below the headline and above the bio: classification, then

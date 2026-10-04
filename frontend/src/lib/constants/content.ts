@@ -80,11 +80,11 @@ export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
  */
 export const heroContent: HeroContent = {
   headline: {
-    primary: 'The machine can do more of the work. Deciding whether to trust it is the job.',
-    accent: 'Engineering notes with receipts on agents, verification, and reliability.',
+    primary: 'Done is a claim. The receipt is what you check.',
+    accent: 'Engineering notes on agents, verification, and reliability.',
   },
-  tagline: 'The machine can do more of the work. Deciding whether to trust it is the job.',
-  bio: 'The green check is where I keep seeing trust misplaced: a gate whose “did not run” reads as a pass, or a search that reported zero because it looked in the wrong place. Each note names its receipt, the incident or source it came from. The Models section collects the rules that held up.',
+  tagline: 'Done is a claim. The receipt is what you check.',
+  bio: 'Receipts can lie too: a gate whose “did not run” reads as a pass, or a search that reported zero because it looked in the wrong place. I write down where that happened. Every note names its receipt, and the Models section collects the rules that held up.',
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
