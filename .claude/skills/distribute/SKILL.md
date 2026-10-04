@@ -74,8 +74,8 @@ director who will not read 300 words on a feed.
 - No hashtag stacks. Two or three at most, or none.
 - No emoji bullets. No "🚀". No "Here's the thing:".
 - The banned list from [`../writer/references/voice.md`](../writer/references/voice.md)
-  applies unchanged, and so does the em-dash rationing — the tells that make prose read
-  machine-made are *more* visible in a short post, not less.
+  applies unchanged, and so does the em-dash ban (en dashes and double hyphens too). The
+  tells that make prose read machine-made are *more* visible in a short post, not less.
 - Never open with "I'm excited to share."
 
 ## Disclosure — identical boundaries, higher stakes

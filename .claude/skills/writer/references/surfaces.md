@@ -8,7 +8,7 @@ Everything below lives in `frontend/src/lib/constants/content.ts` unless noted.
 employer-related number on any surface must carry a public source from `SOURCES`
 in `content.ts`. `disclosure-guard.test.ts` walks every route and component —
 not a hand-picked list, which is how an unsourced figure once shipped inside an
-SVG — plus `og.ts`, `structured-data.ts` and `llms.txt`.
+SVG — plus `case-studies.ts`, `og.ts`, `structured-data.ts` and `llms.txt`.
 Add a new figure to `SOURCES` (with its public citation) before using it in prose.
 
 | Fact                                   | Value                                          | Source                                        |
@@ -69,66 +69,105 @@ announces the product.
 
 There is no positioning flag — `goLoudPositioning` was removed. Hero, narrative
 bio, social descriptions, JSON-LD, and `llms.txt` all tell the same story:
-loud on role and outcomes, quiet on internals. `positioning.test.ts` enforces
-the shared title/employer string, the 40-word headline cap, and the one-figure
-bio; run it after touching any of those surfaces. `FEATURE_FLAGS.showCnbcAiWork`
+loud on role and outcomes, quiet on internals. The role is spelled once, as
+`roleTitle` in `content.ts`, and every human-facing surface reads it: the hero
+identity line, `<title>`, the og/twitter titles, the meta description, and
+Connect. `roleLine` is the same role in the all-caps register of the OG card
+eyebrow. `positioning.test.ts` enforces the shared title/employer string, the
+40-word headline cap, the one-figure bio, and the scope phrasing; run it after
+touching any of those surfaces. `FEATURE_FLAGS.showCnbcAiWork`
 still exists, but nothing gated by it lives in the repo until CNBC announces —
 a flag hides a card, not the shipped bundle.
 
 ## Surface specs
 
 **Engineering notes** (`notesData.notes`) — see the main SKILL.md. Newest first; `date` is
-display ("Aug 14, 2026"), `dateISO` is a full `YYYY-MM-DD`, and every note carries at least
-one `sources` entry. RSS sorts defensively but the array is maintained newest-first.
+display text (both "Aug 14, 2026" and "Sep 2026" ship), `dateISO` is a full `YYYY-MM-DD`,
+and every note carries at least one `sources` entry. RSS sorts defensively but the array is maintained newest-first.
 
-**Hero** (`heroContent`) — `headline.primary` is the thesis: a short declarative sentence
-ending in a period, the largest text on the page, never the role. `headline.accent` names the
-standard and the subjects, one line. `bio` is one dense paragraph, 40–60 words, at most one
-figure (enforced by `positioning.test.ts`), ending on what the reader gets. `identity` is the
-one quiet line under the CTAs: name, `roleTitle`, location, at secondary weight. It states the
+**Hero** (`heroContent`) — `headline.primary` is the thesis: one or two short declarative
+sentences, each ending in a period, the largest text on the page, never the role.
+`Hero.svelte` sets each sentence on its own line. `headline.accent` names the subjects in one
+line and renders as a subhead inside the same `<h1>`. Together the two stay within 40 words,
+mention receipts and the subject matter (agents, edge or reliability), and carry no role or
+scope words (enforced by `positioning.test.ts`). `bio` is one dense paragraph, 40–60 words,
+at most one figure, must mention receipts and carries no résumé terms (enforced by
+`positioning.test.ts`; `content.test.ts` repeats the figure cap), ending on what the reader
+gets. `cta.primary` and `cta.secondary` are the two button labels. `identity` is the one
+quiet line under the CTAs: name, `roleTitle`, location, at secondary weight. It states the
 role of record and nothing more; team size and scope stay in About (enforced by
-`positioning.test.ts`). `tagline` is the OG card subtitle.
+`positioning.test.ts`). There is no badge or motto field. `tagline` is the OG card subtitle,
+and currently repeats `headline.primary`; changing it means regenerating the site card (see
+[publish.md](publish.md)). The visual rules for the hero live in
+`.interface-design/brief.md` and `.interface-design/system.md`.
 
 **Projects** (`projectsData.projects`) — `description` is one paragraph, 55–80 words,
 structured as: what was architected → the technical move → the measured result. Two `metrics`
 each, label in caps. 4 tags. Lead with the architecture decision, not the company.
+
+**Selected Work cards** (`builderProjects`, rendered in the same `#work` section):
+`title`, `category`, `description`, `stack`, `status`, optional `metrics` and `link`.
+`positioning.test.ts` requires the platform rebuild card first and pins the AI card to the
+publicly disclosed phrasing quoted above.
 
 **Narrative bio** (`narrativeBio`) — 3–4 paragraphs. Paragraph 1 is the career arc as a
 _deliberate_ sequence (the IC→EM→IC→EM path is the point, "a choice, not a detour").
 Paragraph 2 is AI governance. Final paragraph is the running/discipline close. Keep the
 through-line: player-coach by design.
 
-**Persona** (`personaData`) — 2 operating-principle cards rendered inside the
-"How I work" section, each `title` + 2 short paragraphs (35–55 words each). Each
+**Persona** (`personaData`) — 2 operating-principle cards rendered in the code-manifesto
+section ("Strong opinions, weakly held.") under "Platform-era foundations, still
+load-bearing", each `title` + 2 short paragraphs (35–55 words each). Each
 card ties an engineering principle to its business consequence.
 
 **Footer manifesto** (`footerManifesto`) — 4 items. `title` is 3–5 words, ideally an
-asymmetric comparison (`URL > Store`, `Server > Client`). `body` is one sentence, 20–30 words,
-stating the rule and its justification.
+asymmetric comparison (`Receipts > Done`, `Loop > Model`). `body` is one sentence, 20–30 words,
+stating the rule and its justification, with no digits (`content.test.ts`).
 
 **Social descriptions** (`socialDescriptions`, a plain constant) — `meta` caps at
-160 characters (enforced); `twitter` is shorter and drops the numbers.
+160 characters and opens with `roleTitle`; it must name the direct team as "8 engineers
+and 2 QE" and say co-lead (all enforced by `positioning.test.ts`). It is the
+`<meta name="description">`, the og:description, and the JSON-LD Person description
+(`structured-data.ts`), so one edit moves all three. `twitter` is shorter, also opens with
+`roleTitle`, and drops the numbers.
+
+**Agent-era models** (`agentEraModels`): one `title`, one-sentence `line` and the `slug` of
+the note that owns each model, rendered above the code standards. Reuse these names
+across notes.
+
+**Mental models** (`MENTAL_MODELS` in `src/lib/constants/models.ts`, page `/models`): a
+`rule`, a `mechanism`, receipts from at least two distinct domains, and a named `origin`.
+`models.test.ts` enforces the two domains, a rule of at most two sentences, no dashes, an
+https link on any linked origin, and that every linked note resolves.
+
+**Case studies** (`CASE_STUDIES` in `src/lib/constants/case-studies.ts`, page
+`/work/{slug}`): decision records, empty until one is public. `case-studies.test.ts`
+rejects a study with any empty section, an outcome without a basis, no https source,
+an unknown related note, or fewer than 1,200 words.
 
 **Code standards** (`codeStandards`) — `bad` / `good` snippet pairs with a `note`. The bad
 snippet must be a real trap someone would write, commented with why it fails; the good one
 must be the minimal correct version, not an idealized rewrite.
 
 **AI manifesto** (`src/routes/(standalone)/ai-manifesto/+page.svelte`) — longer form, its
-own layout. Same voice, but this is the one place where a thesis may run past two paragraphs.
+own layout. Same voice, and like the essay lane it is a place where a thesis may run past
+two paragraphs.
 Keep it consistent with whatever the notes currently argue; if a note contradicts the
 manifesto, one of them is out of date.
 
-**`static/llms.txt`** — hand-curated prose for agents. Plain text, no marketing register,
-no positioning flag. Every note link must resolve to a live slug and the newest note must
-appear (`llms-links.test.ts` enforces both).
+**`static/llms.txt`** — hand-curated prose for agents. Markdown (headings, link lists), no
+marketing register, no positioning flag. Every note link must resolve to a live slug and the
+newest note must appear (`llms-links.test.ts` enforces both). `positioning.test.ts` also
+holds it to the role of record, the "8 engineers and 2 QE" and co-lead phrasing, the
+disclosed AI wording, and the retired-claims scan; `disclosure-guard.test.ts` scans it for
+unsourced figures.
 
 ## Note tag vocabulary
 
 Reuse before inventing:
 
 `AI Engineering` · `Agent Architecture` · `Reliability` · `Verification` ·
-`Engineering Management` ·
-`Architecture` · `Distributed Systems` · `LLM Mechanics` · `System Prompt Architecture` ·
-`Specification` · `HCI` · `React Performance` · `State Management` · `API Design` ·
-`Backend` · `Edge Computing` · `Performance` · `Productivity` · `Career` · `SEO` ·
-`Structured Data` · `UX` · `Independence` · `Meta` · `60fps`
+`Architecture` · `Retrieval` · `Engineering Management` · `Distributed Systems` ·
+`LLM Mechanics` · `System Prompt Architecture` · `Specification` · `HCI` ·
+`React Performance` · `State Management` · `Productivity` · `Career` · `SEO` ·
+`Structured Data` · `Meta` · `60fps`

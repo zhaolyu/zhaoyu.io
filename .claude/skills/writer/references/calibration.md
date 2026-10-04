@@ -66,7 +66,7 @@ does not adopt. They stay rejected even when a draft would be easier to write wi
 
 | Move | Whose | Why not here |
 |---|---|---|
-| Aphorism density — most paragraphs end quotable | Koe | The measured top agent tell (see voice.md, Cadence). One aphorism per piece, at the end; the gate enforces it. |
+| Aphorism density — most paragraphs end quotable | Koe | The measured top agent tell (see voice.md, Cadence). One aphorism per piece, at the end; no test can count it, so the judge does. |
 | Second-person prescriptive register ("you need to…") | Koe | The reader is a skeptical senior peer, not an audience to motivate. First person, experience-grounded. |
 | Motivational abstraction — purpose, energy, vision vocabulary | Koe | Off-domain. Claims here stay mechanical: a system, a failure mode, a measurement. |
 | Big claims without receipts | Koe | Non-negotiables 2 and 3 govern. A reframe still needs an artifact under it. |
