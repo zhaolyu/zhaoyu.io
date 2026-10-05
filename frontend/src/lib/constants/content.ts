@@ -434,7 +434,7 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        "The genuinely new moment in AI-assisted engineering is not the chat answer; you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management, because that is what it is: supervising labor you did not perform. I manage a direct team of ten and co-lead a rebuild across three teams, and the skills that job demands (scoping delegation, setting a review bar, calibrating trust per worker) are now individual-contributor skills too.",
+        "The genuinely new moment in AI-assisted engineering is not the chat answer; you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management, because that is what it is: supervising labor you did not perform. I manage eight engineers and two QE directly and co-lead a rebuild across three teams, and the skills that job demands (scoping delegation, setting a review bar, calibrating trust per worker) are now individual-contributor skills too.",
         "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable: completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule: <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
       ],
     },
@@ -1004,7 +1004,7 @@ markComplete(task); // on its word`,
 const result = await agent.run(task);
 review({
   diff: result.diff,         // what changed
-  testRun: result.testLog,   // proof it ran
+  testRun: result.testLog,   // what ran, what skipped
   artifact: result.buildUrl, // the thing itself
 });
 // Accept or reject on evidence you can open,
