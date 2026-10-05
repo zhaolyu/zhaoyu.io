@@ -69,9 +69,9 @@
        whatever its widest unshrinkable child happens to be. */
     min-width: 0;
     margin: 0 auto;
-    padding: 8rem 1.5rem 6rem;
+    padding: var(--space-5xl) var(--space-lg) var(--space-4xl);
     color: var(--text-primary);
-    transition: color 0.2s;
+    transition: color var(--duration-base);
   }
 
   .back-link {
@@ -91,7 +91,7 @@
 
   @media (max-width: 768px) {
     .blog-post {
-      padding: 6rem 1.5rem 4rem;
+      padding: var(--space-4xl) var(--space-lg) var(--space-3xl);
     }
   }
 </style>

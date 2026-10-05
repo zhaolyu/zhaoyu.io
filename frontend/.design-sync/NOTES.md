@@ -2,9 +2,27 @@
 
 Read this before re-running `/design-sync`. `config.json` alongside pins the target project.
 
+## Current state (checked against the code 2026-10-04)
+
+- **Registry:** 20 cards in `src/lib/constants/design-system.ts`: 11 foundations
+  (`color, status, data-viz, surface, type, type-rhythm, spacing, radius, elevation, motion,
+layout`) and 9 components (`hero, system-card, note-card, model-card, section-header,
+stat-card, data-table, annotated-chart, segmented`).
+- **Last recorded sync:** re-sync 6 (2026-08-23), when the registry had 17 cards. Since then
+  `model-card` was added (`4475f87`, 2026-09-01), then `layout` and `hero`, with `app.css`
+  gaining `--content-max`, `--measure-prose`, `--font-serif` and the `Source Serif 4 Fallback`
+  face (`1746a27`, 2026-10-04).
+  No sync is recorded after that, so assume the Design project is behind: the next run
+  re-uploads every card (each one inlines `app.css`) and adds the three new ones.
+- **Fonts in the bundle:** `fonts/` ships every face the site loads (Geist Sans, Geist Mono,
+  Source Serif 4 at 400, 400 italic and 600: 5 files, 103 KB) and `styles.css` carries both
+  metric-matched fallbacks (`FONT_FILES` and `FALLBACK_FAMILIES` in
+  `scripts/design-system-styles.mjs`, guarded by `design-system-styles.test.ts`). The next
+  sync must re-upload `styles.css` and `fonts/**` so `--font-serif` resolves in designs.
+
 ## Shape: hand-authored preview bundle (off-script)
 
-This is a SvelteKit 5 site, not a React component library, so the design-sync
+This is a SvelteKit 2 / Svelte 5 site, not a React component library, so the design-sync
 converter (`package-build.mjs` / esbuild bundle / `_ds_bundle.js`) does not
 apply. The repo produces its own layout:
 
@@ -17,7 +35,8 @@ from `src/routes/design-system/[card]` (real components, compiled CSS inlined,
 hydration payload stripped) and stamps a first-line `@dsCard` marker. The card
 registry is `src/lib/constants/design-system.ts`.
 
-Bundle layout (as of 2026-08-19, 17 cards / 1611 KB):
+Bundle layout (historical snapshot, 2026-08-19, 17 cards / 1611 KB; the current registry is
+listed under Current state above, and `styles.css` + `fonts/` were added on 2026-08-23):
 
 ```
 design-system/
@@ -229,5 +248,8 @@ fonts/**, README.md, _ds_needs_recompile` (add new top-level groups if the
   `design-system-styles.test.ts` resolves every `var(--…)` it names against the
   generated sheet and fails on a token family the header never documents, so
   the header cannot quietly rot the way the deferral warned about.
+- **Source Serif 4 in the bundle: closed 2026-10-04.** `FONT_FILES` and
+  `FALLBACK_FAMILIES` now include the reading face; it reaches the Design project only
+  after the next sync re-uploads `styles.css` and `fonts/**`.
 - No `.d.ts` / `.prompt.md` per component — not applicable to Svelte
   components; the design agent gets previews + README + `styles.css`.

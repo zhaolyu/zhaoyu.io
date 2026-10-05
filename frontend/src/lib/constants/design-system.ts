@@ -93,6 +93,20 @@ export const DESIGN_SYSTEM_CARDS: DesignSystemCard[] = [
     viewport: { width: 1200, height: 500 },
   },
   {
+    slug: 'layout',
+    name: 'Layout widths',
+    group: 'Foundations',
+    subtitle: 'One section width, one reading measure',
+    viewport: { width: 1200, height: 400 },
+  },
+  {
+    slug: 'hero',
+    name: 'Hero',
+    group: 'Components',
+    subtitle: 'Thesis, standard, bio, CTAs and the quiet identity line; light and dark',
+    viewport: { width: 1280, height: 1600 },
+  },
+  {
     slug: 'system-card',
     name: 'System card',
     group: 'Components',

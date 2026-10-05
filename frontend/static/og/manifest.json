@@ -3,11 +3,23 @@
     "slug": "site",
     "kind": "profile",
     "eyebrow": "SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE",
-    "subtitle": "Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.",
+    "subtitle": "Done is a claim. The receipt is what you check.",
     "title": "Zhao Yu",
     "footnote": [
       "Agents",
-      "Edge Architecture",
+      "Verification",
+      "Reliability"
+    ]
+  },
+  "fan-out-multiplies-whatever-each-unit-pays-to-start": {
+    "slug": "fan-out-multiplies-whatever-each-unit-pays-to-start",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · OCT 2026",
+    "title": "Fan-Out Multiplies Whatever Each Unit Pays to Start",
+    "subtitle": "",
+    "footnote": [
+      "Distributed Systems",
+      "Performance",
       "Reliability"
     ]
   },

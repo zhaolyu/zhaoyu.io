@@ -52,32 +52,47 @@ export interface HeroContent {
     primary: string;
     secondary: string;
   };
+  /** The quiet identity line under the CTAs: a fact stated once, never a badge. */
+  identity: {
+    name: string;
+    role: string;
+    location: string;
+  };
 }
 
-/**
- * The role line, kept off the hero on purpose: it lives on the finding-aid
- * surfaces (OG card eyebrow, <title>, meta, JSON-LD, llms.txt) and in About.
- */
+/** The OG card eyebrow: the role of record in the card's all-caps register. */
 export const roleLine = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE';
 
 /**
- * Hero copy. Craft-first: the page leads with the writing and the standard it
- * holds itself to, not the résumé. Role and scope are stated once, in About,
- * and on the agent-facing surfaces. The headline (primary + accent) is held
- * to 40 words by positioning.test.ts; the bio carries at most one figure.
+ * The role of record in sentence case, spelled once for every human-facing
+ * surface: <title>, og/twitter titles, meta, the hero identity line, Connect.
+ * Title only; team size and program scope stay in About and the meta copy.
+ */
+export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
+
+/**
+ * Hero copy. Craft-first: the thesis leads and is the largest thing on the
+ * screen. Identity sits under the CTAs at secondary weight, so anyone looking
+ * for who wrote this finds it without it being what the page says first
+ * (PORTFOLIO-REVIEW-2026-09.md, P0.2). Scope is stated once, in About, and on
+ * the agent-facing surfaces. The headline (primary + accent) is held to 40
+ * words by positioning.test.ts; the bio carries at most one figure.
  */
 export const heroContent: HeroContent = {
   headline: {
-    primary: 'Engineering notes with receipts.',
-    accent:
-      'Mental models from ten years of building CNBC.com: agents, edge architecture, reliability.',
+    primary: 'Done is a claim. The receipt is what you check.',
+    accent: 'Engineering notes on agents, verification, and reliability.',
   },
-  tagline:
-    'Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.',
-  bio: "I'm an engineering manager who still ships, and this site is where I write down what production teaches me. Every claim carries a receipt: a number, a named system, or an incident I can point at. If a green check can lie to you, it eventually will; the notes start there.",
+  tagline: 'Done is a claim. The receipt is what you check.',
+  bio: 'Receipts can lie too: a gate whose “did not run” reads as a pass, or a search that reported zero because it looked in the wrong place. I write down where that happened. Every note names its receipt, and the Models section collects the rules that held up.',
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
+  },
+  identity: {
+    name: 'Zhao Yu',
+    role: roleTitle,
+    location: 'NYC',
   },
 };
 
@@ -128,6 +143,28 @@ export const performanceMetrics: PerformanceMetric[] = [
     source: SOURCES.linkedin,
   },
 ];
+
+/**
+ * Employer figures that are public and sourced but are not cards in the
+ * Receipts grid: they appear in copy (a project blurb, llms.txt) as context for
+ * a specific piece of work. Same contract as performanceMetrics, a basis plus a
+ * SOURCES citation, enforced by content.test.ts; the disclosure guard exempts
+ * exactly these values and the metric values, nothing else.
+ */
+export const supportingFigures: Array<Omit<PerformanceMetric, 'sublabel'>> = [
+  {
+    label: 'Monthly digital minutes',
+    value: '394M',
+    basis:
+      'CNBC U.S. average monthly digital minutes, ComScore, Sept 2024 to Aug 2025, as reported at Versant Investor Day (slide 66; source note on slide 176)',
+    source: SOURCES.versantInvestorDay2025,
+  },
+];
+
+/** Every employer figure a public source backs; the disclosure guard's allowlist. */
+export const sourcedFigureValues: string[] = [...performanceMetrics, ...supportingFigures].map(
+  (f) => f.value,
+);
 
 export interface Project {
   title: string;
@@ -207,6 +244,30 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'fan-out-multiplies-whatever-each-unit-pays-to-start',
+      title: 'Fan-Out Multiplies Whatever Each Unit Pays to Start',
+      date: 'Oct 2026',
+      dateISO: '2026-10-03',
+      tags: ['Distributed Systems', 'Performance', 'Reliability'],
+      sources: [
+        {
+          label: 'Cloudflare, “Eliminating cold starts 2: shard and conquer”, 26 Sep 2025',
+          href: 'https://blog.cloudflare.com/eliminating-cold-starts-2-shard-and-conquer/',
+        },
+        {
+          label:
+            'First-hand: dated model-evaluation log entry for a four-task parallel batch and its single-task follow-up in a delegation harness I run, read at the revision that recorded it',
+          ref: '162b214:docs/MODEL-NOTES.md:308; retry policy b891374; sandbox wrapper 9ce9196',
+          host: 'macOS (the incident); Windows 10, Git Bash (record and revisions read; incident not re-run)',
+          verified_on: '2026-10-03',
+        },
+      ],
+      content: [
+        "<p>Spreading work evenly across more units is the safe default, and it inverts the moment each unit pays a cost to start. Cloudflare documented it in September 2025. A visitor sending one request a minute into a data center of 300 servers, under even load balancing, leaves each server one request every five hours on average. In a busy enough data center, Cloudflare writes, that span can run long enough that the Worker is evicted to reclaim its resources, which makes effectively every request a cold start. Coalescing the same traffic onto one server gives that server one request a minute, dense enough that eviction becomes very unlikely. Even distribution is tuned for a resource whose cost is work done, while a resident instance costs its owner by sitting idle. Sharding touched only about 4% of enterprise traffic's requests, and took the enterprise cold start rate from 0.1% to 0.01% while cutting the global Worker eviction rate tenfold.</p>",
+        '<p>I hit what looks like a much smaller version of the same shape, and could not explain it. On 2026-07-09 I fanned four code-fix tasks out to parallel workers through a delegation harness I run, and all four returned zero edits and no summary on the first attempt, then completed cleanly on the second once the failure context was injected, at 34k to 69k tokens per task. The single follow-up task passed on attempt one. My log calls first-invocation session warm-up under parallel spawn a suspicion and leaves it there. The harness had already been retrying a failed or timed-out task once for a week, so the incident revised not the policy but the number I plan a batch around. <strong>Budget for the first attempt you will lose, rather than for the explanation you will never get.</strong></p>',
+      ],
+    },
+    {
       slug: 'nobody-declared-the-line-endings',
       title: 'Nobody Declared the Line Endings, and a Generator Never Converged',
       date: 'Sep 2026',
@@ -252,8 +313,7 @@ export const notesData: NotesData = {
           verified_on: '2026-09-15',
         },
         {
-          label:
-            'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
+          label: 'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
           ref: 'ba643ca5:ops/audits/script-consumer-audit-2026-09-01.md',
           host: 'Windows 10',
           verified_on: '2026-09-15',
@@ -709,9 +769,8 @@ export interface SocialDescriptions {
 
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
-  meta: 'Senior Manager, Engineering at Versant (CNBC Core). 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.',
-  twitter:
-    'Senior Manager, Engineering at Versant (CNBC Core). Engineering notes with receipts: agents, edge architecture, reliability.',
+  meta: `${roleTitle}. 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.`,
+  twitter: `${roleTitle}. Engineering notes with receipts: agents, verification, reliability.`,
 };
 
 export interface PersonaItem {

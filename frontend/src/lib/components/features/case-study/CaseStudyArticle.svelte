@@ -166,10 +166,14 @@
     margin-bottom: var(--space-md);
   }
 
+  /* Same reading treatment as a note (brief P1). */
   .case-study :global(.cs-paragraph) {
-    font-size: var(--type-base);
+    max-width: var(--measure-prose);
+    font-family: var(--font-serif);
+    font-size: var(--type-md);
+    font-weight: var(--weight-regular);
     line-height: var(--leading-relaxed);
-    color: var(--text-secondary);
+    color: var(--text-primary);
     margin-bottom: var(--space-md);
   }
 

@@ -2,10 +2,11 @@
 
 **Engineering Portfolio & R&D Playground.**
 
-This repository hosts the personal site of Zhao Yu — Senior Manager, Core Web at CNBC — a player-coach engineering leader specializing in high-scale media architecture, AI-augmented engineering, and local-first systems. It serves two purposes:
+This repository hosts the personal site of Zhao Yu, Senior Manager, Engineering at Versant (CNBC Core). The site leads with the writing:
 
-- **Portfolio:** A high-performance, Edge-rendered showcase of my work.
-- **R&D Sandbox:** A production implementation of the "Synthesis Strategy"—combining serverless ingestion with local-first state management.
+- **Notes:** engineering notes on agents, verification and reliability, each naming the incident or source it came from, and the mental models that held up across them.
+- **Selected work:** decision records for the systems behind the notes, with every employer figure tied to a public source.
+- **R&D sandbox:** `/infra`, a production implementation of serverless ingestion feeding local-first state.
 
 ---
 
@@ -75,8 +76,11 @@ The frontend deploys to Cloudflare Pages on push to `main`. The GCP backend (ing
 
 ## 📚 Documentation
 
-- **[Frontend README](frontend/README.md)** — structure, routes, scripts, deployment
-- **[CLAUDE.md](CLAUDE.md)** — coding conventions, testing rules, design principles
+- **[Frontend README](frontend/README.md)**: structure, routes, scripts, deployment
+- **[CLAUDE.md](CLAUDE.md)**: coding conventions, testing rules, disclosure and scope rules
+- **[PUBLISHING.md](PUBLISHING.md)**: the reviewer's checklist for content and visual changes
+- **[Visual brief](.interface-design/brief.md)** and **[design system](.interface-design/system.md)**: how the site should look and where each rule lives
+- **[Writer skill](.claude/skills/writer/SKILL.md)** and **[writer-judge](.claude/skills/writer-judge/SKILL.md)**: how prose is written and independently reviewed before it ships
 
 ---
 

@@ -42,8 +42,8 @@
 
 <style>
   .persona-section {
-    padding: 6rem 1.5rem;
-    max-width: 72rem;
+    padding: var(--section-y) var(--section-x);
+    max-width: var(--content-max);
     margin: 0 auto;
     background: var(--bg-primary);
     color: var(--text-primary);
@@ -117,7 +117,7 @@
 
   @media (max-width: 768px) {
     .persona-section {
-      padding: 4rem 1rem;
+      padding: var(--section-y-mobile) var(--section-x);
     }
   }
 </style>

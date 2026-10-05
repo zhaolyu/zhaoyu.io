@@ -38,6 +38,14 @@ export const METRIC_SHAPES: MetricShape[] = [
     kind: 'audience scale',
   },
   {
+    // Engagement volume had no shape at all, so a sourced minutes figure sat in
+    // a project blurb and llms.txt with nothing checking it. Written from that
+    // gap: the next unsourced one is caught whatever its value.
+    pattern:
+      /\b\d[\d,.]*\s?[MBK]\+?\s*(?:monthly\s+|daily\s+|weekly\s+)?(?:digital\s+|video\s+)?(?:minutes|views|pageviews|streams|plays|sessions|visits)\b/gi,
+    kind: 'engagement volume',
+  },
+  {
     pattern: /\b\d[\d,.]*\s?%\s*(?:cache|hit\b)|\bHIT:\s*\d/gi,
     kind: 'cache-hit rate',
   },

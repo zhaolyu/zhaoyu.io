@@ -15,6 +15,7 @@ import {
   isBlock,
   lintNote,
   lintReceipts,
+  lintDraft,
   receiptSchemaApplies,
 } from './voice-rules';
 
@@ -259,6 +260,43 @@ describe('draft-lint agrees with this gate', () => {
       sources: [{ label: 'Cloudflare, shard and conquer', href: 'https://example.com' }],
     });
     expect(linked).toEqual([]);
+  });
+});
+
+describe('draft-lint fails closed on an undated draft', () => {
+  // A first-hand source with no receipt fields: the receipt schema flags it,
+  // but only for a note dated on or after RECEIPT_SCHEMA_FROM.
+  const draft = {
+    title: 'A Draft With No Date Yet',
+    tags: ['Verification', 'Reliability', 'AI Engineering'],
+    content: ['One paragraph.', 'Two paragraphs.'],
+    sources: [{ label: 'First-hand: a check I ran last week' }],
+  };
+  const today = '2026-10-04';
+
+  it('skipped every gated rule before: the gap this closes', () => {
+    expect(receiptSchemaApplies(draft)).toBe(false);
+    expect(isGoverned(draft)).toBe(false);
+  });
+
+  it('reports the missing date and lints as if dated today', () => {
+    const findings = lintDraft(draft, today);
+    expect(findings[0].rule).toBe('date');
+    expect(findings.map((f) => f.rule)).toEqual(
+      expect.arrayContaining(['receipt-ref', 'receipt-host', 'receipt-date']),
+    );
+  });
+
+  it('treats a partial date like no date', () => {
+    const findings = lintDraft({ ...draft, dateISO: '2026-09' }, today);
+    expect(findings[0]).toMatchObject({ rule: 'date' });
+    expect(findings[0].detail).toContain('"2026-09"');
+    expect(findings.some((f) => f.rule === 'receipt-ref')).toBe(true);
+  });
+
+  it('leaves a properly dated draft to the date it carries', () => {
+    const old = lintDraft({ ...draft, dateISO: '2026-09-01' }, today);
+    expect(old.some((f) => f.rule === 'date' || f.rule === 'receipt-ref')).toBe(false);
   });
 });
 

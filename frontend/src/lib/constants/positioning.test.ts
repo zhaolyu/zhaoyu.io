@@ -5,6 +5,7 @@ import { resolve, dirname } from 'node:path';
 import {
   heroContent,
   roleLine,
+  roleTitle,
   socialDescriptions,
   narrativeBio,
   builderProjects,
@@ -32,15 +33,28 @@ describe('hero', () => {
   it('leads with the craft thesis in at most 40 words, with no résumé claims', () => {
     const headline = `${heroContent.headline.primary} ${heroContent.headline.accent}`;
     expect(words(headline)).toBeLessThanOrEqual(40);
-    // The hero names the standard (receipts) and the subject matter, grounded
-    // in the platform. The role and scope deliberately do not appear here:
-    // they live in About and on the finding-aid surfaces (meta, JSON-LD,
-    // llms.txt), asserted below. A résumé phrase reappearing in the hero is
-    // the regression this block exists to catch.
+    // The headline names the standard (receipts) and the subject matter. The
+    // role never appears in it: identity is one quiet line under the CTAs,
+    // asserted below, and scope lives in About and on the finding-aid
+    // surfaces (meta, JSON-LD, llms.txt). A résumé phrase reappearing in the
+    // headline is the regression this block exists to catch. The headline no
+    // longer has to name CNBC (owner decision, 2026-10-04): platform grounding
+    // moved to the identity line, where roleTitle carries CNBC Core.
     expect(headline).toMatch(/receipt/i);
     expect(headline).toMatch(/agents|edge|reliability/i);
-    expect(headline).toMatch(/CNBC/);
     expect(headline).not.toMatch(/senior manager|versant|QE|20-engineer|player-coach/i);
+  });
+
+  it('states identity once, as the role of record and nothing more', () => {
+    // PORTFOLIO-REVIEW-2026-09.md P0.2: a fact stated once, under the CTAs.
+    // Title only: team size and program scope never ride along into the hero.
+    const { identity } = heroContent;
+    expect(identity.role).toBe(roleTitle);
+    expect(roleTitle).toMatch(TITLE);
+    expect(roleTitle).toMatch(EMPLOYER);
+    expect(roleTitle).toMatch(SCOPE);
+    const line = `${identity.name} ${identity.role} ${identity.location}`;
+    expect(line).not.toMatch(/QE|20-engineer|player-coach|\b(leads|directs|runs)\b/i);
   });
 
   it('carries at most one figure in the bio', () => {
@@ -54,8 +68,8 @@ describe('hero', () => {
   });
 
   it('keeps the role line intact for the finding-aid surfaces', () => {
-    // The OG card eyebrow, <title>, meta and JSON-LD still state the role as
-    // fact; craft-first is about placement, not about hiding the job.
+    // The OG card eyebrow states the role as fact in its all-caps register;
+    // craft-first is about placement, not about hiding the job.
     expect(roleLine).toMatch(/SENIOR MANAGER, ENGINEERING/);
     expect(roleLine).toMatch(/VERSANT/);
     expect(roleLine).toMatch(/CNBC CORE/);

@@ -10,6 +10,7 @@
 :root {
   --font-sans: 'Geist Sans', 'Geist Sans Fallback', system-ui, -apple-system, sans-serif;
   --font-mono: 'Geist Mono', 'Courier New', monospace;
+  --font-serif: 'Source Serif 4', 'Source Serif 4 Fallback', Georgia, serif;
   --bg-primary: #ffffff;
   --bg-secondary: #f9fafb;
   --text-primary: #111827;
@@ -129,6 +130,8 @@
   --section-y-lg: var(--space-5xl);
   --section-y-mobile: var(--space-3xl);
   --section-x: var(--space-lg);
+  --content-max: 72rem;
+  --measure-prose: 65ch;
   --surface-raised: var(--bg-secondary);
   --scrim-subtle: rgba(0, 0, 0, 0.02);
   --scrim-soft: rgba(0, 0, 0, 0.03);

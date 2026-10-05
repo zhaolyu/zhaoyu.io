@@ -23,10 +23,15 @@ Self-review is self-attestation by the party most motivated to claim success. Th
 site's own line, applied to the site.
 
 - **If this session wrote or edited the draft, do not judge inline.** Spawn a fresh
-  subagent whose prompt contains only: the path to this SKILL.md, where the draft
-  lives, and which surface it is. No session history, no drafting rationale, no "the
-  author intended." The subagent reads the skill and the draft cold, exactly the way a
-  reader will.
+  subagent, one per draft, whose prompt contains only: the path to this SKILL.md, where
+  the draft lives, and which surface it is. No session history, no drafting rationale,
+  no "the author intended." The subagent reads the skill and the draft cold, exactly the
+  way a reader will.
+- **The draft file carries its own provenance.** Besides the prose, it lists any code or
+  gate change that ships with the draft, and one provenance line per assertion (the
+  source, commit, or `file:line` it rests on). Provenance is evidence for the judge to
+  check, not rationale to absorb: the judge opens each one and confirms it supports the
+  sentence. An assertion with no provenance line is unsourced.
 - **Tier**: the judge runs at or above the tier that authored the draft, never below.
 - **The judge never edits.** It returns findings; the author fixes and resubmits. A
   judge that rewrites is a second author, and the second author's prose is unjudged.
@@ -47,6 +52,9 @@ Findings are anchored, not vibes:
 
 The verdict and findings table go into the PR body, verbatim. That is the verdict's
 named consumer; a judgment recorded nowhere is coverage that only looks like coverage.
+Every advisory finding gets a disposition next to it: taken, overruled with a reason,
+owner decision, or follow-up. An edit made after a PASS is either disclosed in the PR
+body or re-judged; a verdict describes the text it read, not the text that shipped.
 
 ## Rubric: counts before impressions
 
@@ -112,6 +120,11 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
    could google back to the original is quotation wearing the author's voice. Blocking.
 6. **Shape** (advisory; the tests own it): lane conformance, title from the claim not
    the topic, exactly three tags.
+7. **Gate changes.** For every test or gate change the draft file lists, ask whether it
+   exists only to let this draft pass. That is widening, and it blocks: the fix is the
+   prose. The one exception is a recorded owner policy change (for example, the headline
+   no longer having to name CNBC, recorded in `positioning.test.ts` on 2026-10-04); the
+   draft file cites where it is recorded, and the judge checks that it is.
 
 ## The overrule path
 
@@ -124,8 +137,10 @@ it does not ship unverified work, and the judge is allowed to reach that conclus
 
 A judge that always passes is not a control; it is theater occupying the slot where
 review would report. Before trusting a judge context for the first time (new session,
-new model), run it against the known-dirty fixture below as draft #0. It must FAIL the
-fixture with findings covering at least: invented figures, stacked epigrams, marketing
+new model), run it against the known-dirty fixture below as draft #0. With one fresh
+subagent per draft, that means every judge context runs the fixture before the real
+draft. It must FAIL the fixture with findings covering at least: invented figures,
+stacked epigrams, marketing
 register, and a floor violation. The expected findings live in
 [references/expected-findings.md](references/expected-findings.md); the judge must not
 read that file, and the invoking author compares the judge's findings against it. A
