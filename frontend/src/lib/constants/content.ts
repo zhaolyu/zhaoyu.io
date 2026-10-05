@@ -244,6 +244,30 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'fan-out-multiplies-whatever-each-unit-pays-to-start',
+      title: 'Fan-Out Multiplies Whatever Each Unit Pays to Start',
+      date: 'Oct 2026',
+      dateISO: '2026-10-03',
+      tags: ['Distributed Systems', 'Performance', 'Reliability'],
+      sources: [
+        {
+          label: 'Cloudflare, “Eliminating cold starts 2: shard and conquer”, 26 Sep 2025',
+          href: 'https://blog.cloudflare.com/eliminating-cold-starts-2-shard-and-conquer/',
+        },
+        {
+          label:
+            'First-hand: dated model-evaluation log entry for a four-task parallel batch and its single-task follow-up in a delegation harness I run, read at the revision that recorded it',
+          ref: '162b214:docs/MODEL-NOTES.md:308; retry policy b891374; sandbox wrapper 9ce9196',
+          host: 'macOS (the incident); Windows 10, Git Bash (record and revisions read; incident not re-run)',
+          verified_on: '2026-10-03',
+        },
+      ],
+      content: [
+        "<p>Spreading work evenly across more units is the safe default, and it inverts the moment each unit pays a cost to start. Cloudflare documented it in September 2025. A visitor sending one request a minute into a data center of 300 servers, under even load balancing, leaves each server one request every five hours on average. In a busy enough data center, Cloudflare writes, that span can run long enough that the Worker is evicted to reclaim its resources, which makes effectively every request a cold start. Coalescing the same traffic onto one server gives that server one request a minute, dense enough that eviction becomes very unlikely. Even distribution is tuned for a resource whose cost is work done, while a resident instance costs its owner by sitting idle. Sharding touched only about 4% of enterprise traffic's requests, and took the enterprise cold start rate from 0.1% to 0.01% while cutting the global Worker eviction rate tenfold.</p>",
+        '<p>I hit what looks like the same shape much smaller, and could not explain it. On 2026-07-09 I fanned four code-fix tasks out to parallel workers through a delegation harness I run, and all four returned zero edits and no summary on the first attempt, then completed cleanly on the second once the failure context was injected, at 34k to 69k tokens per task. The single follow-up task passed on attempt one. My log calls first-invocation session warm-up under parallel spawn a suspicion and leaves it there. The harness had already been retrying a failed or timed-out task once for a week, so the incident revised not the policy but the number I plan a batch around. <strong>Budget for the first attempt you will lose, rather than for the explanation you will never get.</strong></p>',
+      ],
+    },
+    {
       slug: 'nobody-declared-the-line-endings',
       title: 'Nobody Declared the Line Endings, and a Generator Never Converged',
       date: 'Sep 2026',

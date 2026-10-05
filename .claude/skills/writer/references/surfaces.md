@@ -173,5 +173,5 @@ Reuse before inventing:
 `AI Engineering` · `Agent Architecture` · `Reliability` · `Verification` ·
 `Architecture` · `Retrieval` · `Engineering Management` · `Distributed Systems` ·
 `LLM Mechanics` · `System Prompt Architecture` · `Specification` · `HCI` ·
-`React Performance` · `State Management` · `Productivity` · `Career` · `SEO` ·
+`Performance` · `React Performance` · `State Management` · `Productivity` · `Career` · `SEO` ·
 `Structured Data` · `Meta` · `60fps`
