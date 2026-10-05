@@ -18,7 +18,10 @@ name: CI - Quality Checks and Build
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, ready_for_review]
+    # ready_for_review: the jobs below skip while a PR is a draft, so without
+    # this event a PR drafted to the end merges on a green "CI Success" that
+    # ran nothing.
     # Run CI on PRs targeting any branch (including feature/... branches)
     # Skip CI for documentation-only changes. Workflow changes deliberately
     # DO run CI — ignoring '.github/**' meant workflow edits got zero checks.
