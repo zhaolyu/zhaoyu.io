@@ -24,6 +24,22 @@ before shipping. The one-line version: describe the work, never sell the worker 
 a sentence that couldn't survive on lethain.com unedited is marketing, and marketing
 is the register this site does not ship.
 
+## What a note is for
+
+The site's owner, 2026-09-26: *"I want to create posts that show the lesson I'm learning
+from building agentic systems and the flows that drive impact to my learning and growing
+as an AI Engineer,"* and *"I treat these as insights for myself as well."*
+
+So a note has two readers. One is an engineer building agentic systems, who should leave
+able to do something differently. The other is the author, for whom the note is the
+record of an insight: what changed in practice, and why. A note that serves only the
+first reader is a tutorial, and one that serves only the second is a diary entry. The
+notes that belong here serve both. That is why a note shows the author's own before and
+after, not only an observation about how a system behaved; says whether the change is
+adopted (and where it is recorded) or still being learned; and names the agent-work
+context in its own words. `writer-judge` enforces this as its worth test, run first on
+every note and essay (surface copy has no lesson line and skips it).
+
 ## The six non-negotiables
 
 1. **Claim first.** Sentence one states the claim or the observed failure. No windup, no
