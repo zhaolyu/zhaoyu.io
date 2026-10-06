@@ -37,8 +37,8 @@ first reader is a tutorial, and one that serves only the second is a diary entry
 notes that belong here serve both. That is why a note shows the author's own before and
 after, not only an observation about how a system behaved; says whether the change is
 adopted (and where it is recorded) or still being learned; and names the agent-work
-context in its own words. `writer-judge` enforces this as its worth test, before
-anything else.
+context in its own words. `writer-judge` enforces this as its worth test, run first on
+every note and essay (surface copy has no lesson line and skips it).
 
 ## The six non-negotiables
 

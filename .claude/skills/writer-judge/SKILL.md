@@ -54,6 +54,8 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
 
 0. **Worth test** (from "What a note is for" in `../writer/SKILL.md`). Run it first:
    a draft that fails it is not worth the rest of the rubric, however well it is made.
+   Notes and essays only: skip it for the hero and other surface copy, `llms.txt` and the
+   AI manifesto, which have no lesson line to write, and start those at step 1.
    Four checks, each blocking:
    - **The author's own lesson, both halves.** Write the lesson line, one sentence
      taken from the draft: "The author now does (or believes) X instead of Y." Y is the
