@@ -61,6 +61,7 @@ const config = {
           'self',
           'https://ingestion-api-240dd81-538316597788.us-central1.run.app', // ElectricSQL sync
           'https://cloudflareinsights.com', // Web Analytics beacon POSTs its payload here
+          'https://ohnidsebeqjroypztfcs.supabase.co', // /fleet reads the public fleet record (Storage)
         ],
         'object-src': ['none'],
         'base-uri': ['self'],
