@@ -1,94 +1,36 @@
 {
   "schema": 1,
-  "generated_at": "2026-10-25T22:24:48.811Z",
-  "source": "sample built from the local ledger 2026-10-25",
-  "pricing_note": "API-equivalent value at Claude API list rates; the runs ran on a Max subscription",
+  "generated_at": "2026-10-25T22:35:00.347Z",
+  "source": "ledger.run, sessions that ended, closed days only, one machine, Claude Code only; overhead = validator, review and probe runs, plus rows with no transcript",
+  "pricing_note": "API-equivalent value at Claude API list rates (2026-10-08); the runs ran on a Max subscription",
   "window": {
-    "from": "2026-09-10",
+    "from": "2026-09-20",
     "to": "2026-10-24"
   },
   "totals": {
-    "days": 34,
-    "runs": 203,
-    "routine_runs": 178,
-    "interactive_runs": 25,
-    "edit_runs": 120,
-    "verified": 111,
-    "unverified": 9,
+    "days": 27,
+    "runs": 588,
+    "routine_runs": 173,
+    "interactive_runs": 15,
+    "overhead_runs": 400,
+    "edit_runs": 111,
+    "verified": 103,
+    "unverified": 8,
     "unaudited": 0,
-    "api_equivalent_usd": 2015.42
+    "api_equivalent_usd": 1038.8,
+    "unpriced_runs": 22
   },
   "days": [
-    {
-      "date": "2026-09-10",
-      "runs": 3,
-      "routine": 0,
-      "interactive": 3,
-      "edit_runs": 0,
-      "verified": 0,
-      "api_equivalent_usd": 130.42
-    },
-    {
-      "date": "2026-09-11",
-      "runs": 3,
-      "routine": 1,
-      "interactive": 2,
-      "edit_runs": 2,
-      "verified": 2,
-      "api_equivalent_usd": 221.04
-    },
-    {
-      "date": "2026-09-12",
-      "runs": 5,
-      "routine": 2,
-      "interactive": 3,
-      "edit_runs": 4,
-      "verified": 4,
-      "api_equivalent_usd": 519.24
-    },
-    {
-      "date": "2026-09-13",
-      "runs": 1,
-      "routine": 1,
-      "interactive": 0,
-      "edit_runs": 0,
-      "verified": 0,
-      "api_equivalent_usd": 0.7
-    },
-    {
-      "date": "2026-09-15",
-      "runs": 1,
-      "routine": 0,
-      "interactive": 1,
-      "edit_runs": 1,
-      "verified": 1,
-      "api_equivalent_usd": 47.59
-    },
-    {
-      "date": "2026-09-17",
-      "runs": 1,
-      "routine": 1,
-      "interactive": 0,
-      "edit_runs": 1,
-      "verified": 1,
-      "api_equivalent_usd": 6.19
-    },
-    {
-      "date": "2026-09-18",
-      "runs": 1,
-      "routine": 0,
-      "interactive": 1,
-      "edit_runs": 1,
-      "verified": 1,
-      "api_equivalent_usd": 135.64
-    },
     {
       "date": "2026-09-20",
       "runs": 1,
       "routine": 1,
       "interactive": 0,
+      "overhead": 0,
       "edit_runs": 0,
       "verified": 0,
+      "unverified": 0,
+      "unaudited": 0,
       "api_equivalent_usd": 0.85
     },
     {
@@ -96,234 +38,312 @@
       "runs": 1,
       "routine": 1,
       "interactive": 0,
+      "overhead": 0,
       "edit_runs": 1,
       "verified": 1,
+      "unverified": 0,
+      "unaudited": 0,
       "api_equivalent_usd": 6.9
     },
     {
       "date": "2026-09-26",
-      "runs": 10,
+      "runs": 12,
       "routine": 6,
       "interactive": 4,
+      "overhead": 2,
       "edit_runs": 4,
       "verified": 3,
+      "unverified": 1,
+      "unaudited": 0,
       "api_equivalent_usd": 180.49
     },
     {
       "date": "2026-09-27",
-      "runs": 7,
+      "runs": 39,
       "routine": 5,
       "interactive": 2,
+      "overhead": 32,
       "edit_runs": 2,
       "verified": 2,
-      "api_equivalent_usd": 9.19
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 29.62
     },
     {
       "date": "2026-09-28",
-      "runs": 2,
+      "runs": 3,
       "routine": 2,
       "interactive": 0,
+      "overhead": 1,
       "edit_runs": 2,
       "verified": 2,
-      "api_equivalent_usd": 6.27
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 6.55
     },
     {
       "date": "2026-10-03",
-      "runs": 10,
+      "runs": 47,
       "routine": 6,
       "interactive": 4,
+      "overhead": 37,
       "edit_runs": 9,
       "verified": 9,
-      "api_equivalent_usd": 390.9
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 388.63
     },
     {
       "date": "2026-10-04",
-      "runs": 10,
+      "runs": 139,
       "routine": 8,
       "interactive": 2,
+      "overhead": 129,
       "edit_runs": 5,
       "verified": 4,
-      "api_equivalent_usd": 68.44
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 90.61
     },
     {
       "date": "2026-10-05",
-      "runs": 8,
+      "runs": 11,
       "routine": 8,
       "interactive": 0,
+      "overhead": 3,
       "edit_runs": 5,
       "verified": 4,
-      "api_equivalent_usd": 14.5
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 14.87
     },
     {
       "date": "2026-10-06",
-      "runs": 9,
+      "runs": 17,
       "routine": 9,
       "interactive": 0,
+      "overhead": 8,
       "edit_runs": 5,
       "verified": 4,
-      "api_equivalent_usd": 17.7
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 19.22
     },
     {
       "date": "2026-10-07",
-      "runs": 6,
+      "runs": 8,
       "routine": 6,
       "interactive": 0,
+      "overhead": 2,
       "edit_runs": 3,
       "verified": 3,
-      "api_equivalent_usd": 7.42
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 7.9
     },
     {
       "date": "2026-10-08",
-      "runs": 9,
+      "runs": 17,
       "routine": 8,
       "interactive": 1,
+      "overhead": 8,
       "edit_runs": 6,
       "verified": 5,
-      "api_equivalent_usd": 16.36
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 18.38
     },
     {
       "date": "2026-10-09",
-      "runs": 8,
+      "runs": 12,
       "routine": 8,
       "interactive": 0,
+      "overhead": 4,
       "edit_runs": 6,
       "verified": 5,
-      "api_equivalent_usd": 26.5
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 27.57
     },
     {
       "date": "2026-10-10",
-      "runs": 6,
+      "runs": 10,
       "routine": 6,
       "interactive": 0,
+      "overhead": 4,
       "edit_runs": 4,
       "verified": 4,
-      "api_equivalent_usd": 17.44
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 18.44
     },
     {
       "date": "2026-10-11",
-      "runs": 7,
+      "runs": 32,
       "routine": 5,
       "interactive": 2,
+      "overhead": 25,
       "edit_runs": 2,
       "verified": 1,
-      "api_equivalent_usd": 18.94
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 21.89
     },
     {
       "date": "2026-10-12",
-      "runs": 9,
+      "runs": 15,
       "routine": 9,
       "interactive": 0,
+      "overhead": 6,
       "edit_runs": 5,
       "verified": 4,
-      "api_equivalent_usd": 15.5
+      "unverified": 1,
+      "unaudited": 0,
+      "api_equivalent_usd": 17.28
     },
     {
       "date": "2026-10-13",
-      "runs": 8,
+      "runs": 39,
       "routine": 8,
       "interactive": 0,
+      "overhead": 31,
       "edit_runs": 6,
       "verified": 6,
-      "api_equivalent_usd": 15.58
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 35.49
     },
     {
       "date": "2026-10-14",
-      "runs": 6,
+      "runs": 11,
       "routine": 6,
       "interactive": 0,
+      "overhead": 5,
       "edit_runs": 3,
       "verified": 3,
-      "api_equivalent_usd": 6.98
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 8
     },
     {
       "date": "2026-10-15",
-      "runs": 8,
+      "runs": 24,
       "routine": 8,
       "interactive": 0,
+      "overhead": 16,
       "edit_runs": 5,
       "verified": 5,
-      "api_equivalent_usd": 15.72
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 18.57
     },
     {
       "date": "2026-10-16",
-      "runs": 8,
+      "runs": 15,
       "routine": 8,
       "interactive": 0,
+      "overhead": 7,
       "edit_runs": 5,
       "verified": 5,
-      "api_equivalent_usd": 14.6
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 15.92
     },
     {
       "date": "2026-10-17",
-      "runs": 5,
+      "runs": 10,
       "routine": 5,
       "interactive": 0,
+      "overhead": 5,
       "edit_runs": 3,
       "verified": 3,
-      "api_equivalent_usd": 8.07
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 8.52
     },
     {
       "date": "2026-10-18",
-      "runs": 3,
+      "runs": 44,
       "routine": 3,
       "interactive": 0,
+      "overhead": 41,
       "edit_runs": 1,
       "verified": 1,
-      "api_equivalent_usd": 3.44
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 11.7
     },
     {
       "date": "2026-10-19",
-      "runs": 8,
+      "runs": 12,
       "routine": 8,
       "interactive": 0,
+      "overhead": 4,
       "edit_runs": 4,
       "verified": 4,
-      "api_equivalent_usd": 14.44
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 15.13
     },
     {
       "date": "2026-10-20",
-      "runs": 8,
+      "runs": 14,
       "routine": 8,
       "interactive": 0,
+      "overhead": 6,
       "edit_runs": 5,
       "verified": 5,
-      "api_equivalent_usd": 15.05
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 16.09
     },
     {
       "date": "2026-10-21",
-      "runs": 7,
+      "runs": 15,
       "routine": 7,
       "interactive": 0,
+      "overhead": 8,
       "edit_runs": 4,
       "verified": 4,
-      "api_equivalent_usd": 10.9
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 12.37
     },
     {
       "date": "2026-10-22",
-      "runs": 8,
+      "runs": 11,
       "routine": 8,
       "interactive": 0,
+      "overhead": 3,
       "edit_runs": 6,
       "verified": 6,
-      "api_equivalent_usd": 15.3
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 15.84
     },
     {
       "date": "2026-10-23",
-      "runs": 8,
+      "runs": 15,
       "routine": 8,
       "interactive": 0,
+      "overhead": 7,
       "edit_runs": 5,
-      "verified": 4,
-      "api_equivalent_usd": 21.2
+      "verified": 5,
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 15.31
     },
     {
       "date": "2026-10-24",
-      "runs": 8,
+      "runs": 14,
       "routine": 8,
       "interactive": 0,
+      "overhead": 6,
       "edit_runs": 5,
       "verified": 5,
-      "api_equivalent_usd": 15.91
+      "unverified": 0,
+      "unaudited": 0,
+      "api_equivalent_usd": 16.66
     }
   ],
   "routines": [
@@ -355,21 +375,21 @@
       "verified_share": 1
     },
     {
-      "name": "equity-discord-digest",
-      "cadence": "15 7 * * 1-5",
-      "runs": 18,
-      "first_run": "2026-09-28",
-      "last_run": "2026-10-23",
-      "median_usd": 1.4,
-      "verified_share": 1
-    },
-    {
       "name": "equity-broker-fills",
       "cadence": "5 7 * * 1-6",
       "runs": 18,
       "first_run": "2026-10-05",
       "last_run": "2026-10-24",
       "median_usd": 0.27,
+      "verified_share": 1
+    },
+    {
+      "name": "equity-discord-digest",
+      "cadence": "15 7 * * 1-5",
+      "runs": 18,
+      "first_run": "2026-09-28",
+      "last_run": "2026-10-23",
+      "median_usd": 1.4,
       "verified_share": 1
     },
     {
@@ -393,29 +413,29 @@
     {
       "name": "equity-loop-closer",
       "cadence": "0 8 * * 4",
-      "runs": 9,
-      "first_run": "2026-09-12",
+      "runs": 7,
+      "first_run": "2026-09-24",
       "last_run": "2026-10-24",
-      "median_usd": 4.43,
+      "median_usd": 4.32,
       "verified_share": 1
     },
     {
       "name": "fleet-weekly-review",
       "cadence": "30 8 * * 0",
-      "runs": 9,
-      "first_run": "2026-09-12",
+      "runs": 7,
+      "first_run": "2026-09-20",
       "last_run": "2026-10-18",
-      "median_usd": 0.85,
+      "median_usd": 0.99,
       "verified_share": 1
     },
     {
       "name": "zhaoyu-io-note-draft",
       "cadence": "13 7 * * 2,5",
-      "runs": 8,
-      "first_run": "2026-09-11",
+      "runs": 7,
+      "first_run": "2026-10-03",
       "last_run": "2026-10-23",
-      "median_usd": 9.09,
-      "verified_share": 0.88
+      "median_usd": 4.3,
+      "verified_share": 1
     },
     {
       "name": "weekly-executive-circle-pull",
@@ -425,6 +445,15 @@
       "last_run": "2026-10-24",
       "median_usd": 1.14,
       "verified_share": 1
+    },
+    {
+      "name": "check-exocortex-ideas-2026-10-04",
+      "cadence": null,
+      "runs": 3,
+      "first_run": "2026-09-27",
+      "last_run": "2026-10-04",
+      "median_usd": 0.36,
+      "verified_share": null
     },
     {
       "name": "equity-broker-capture-weekly",
@@ -445,12 +474,21 @@
       "verified_share": 1
     },
     {
-      "name": "exocortex-ideas-counter",
+      "name": "check-fleet-review-2026-10-11",
       "cadence": null,
       "runs": 2,
-      "first_run": "2026-09-26",
-      "last_run": "2026-09-26",
-      "median_usd": 1.31,
+      "first_run": "2026-10-06",
+      "last_run": "2026-10-11",
+      "median_usd": 1.28,
+      "verified_share": null
+    },
+    {
+      "name": "check-tripwire-4fc62b8e-2026-10-12",
+      "cadence": null,
+      "runs": 2,
+      "first_run": "2026-10-04",
+      "last_run": "2026-10-12",
+      "median_usd": 0.39,
       "verified_share": null
     },
     {
@@ -460,6 +498,24 @@
       "first_run": "2026-09-26",
       "last_run": "2026-09-26",
       "median_usd": 0.6,
+      "verified_share": null
+    },
+    {
+      "name": "exocortex-ideas-counter",
+      "cadence": null,
+      "runs": 2,
+      "first_run": "2026-09-26",
+      "last_run": "2026-09-26",
+      "median_usd": 1.31,
+      "verified_share": null
+    },
+    {
+      "name": "exocortex-daily-pull",
+      "cadence": null,
+      "runs": 1,
+      "first_run": "2026-10-24",
+      "last_run": "2026-10-24",
+      "median_usd": 0.46,
       "verified_share": null
     }
   ]

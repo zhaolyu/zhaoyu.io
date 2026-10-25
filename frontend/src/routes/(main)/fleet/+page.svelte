@@ -149,9 +149,7 @@
       <StatCard
         label="Runs"
         value={formatCount(totals.runs)}
-        caption="{formatCount(totals.routine_runs)} routine, {formatCount(
-          totals.interactive_runs,
-        )} interactive"
+        caption={`${formatCount(totals.routine_runs)} routine, ${formatCount(totals.interactive_runs)} interactive${totals.overhead_runs ? `, ${formatCount(totals.overhead_runs)} overhead` : ''}`}
       />
       <StatCard label="Routine share" value={formatShare(routineShare)} caption="of all runs" />
       <StatCard
@@ -230,8 +228,9 @@
     <p>
       Value is API-equivalent: the tokens each run used, priced at Claude API list rates. The runs
       ran on a Max subscription, so this is what the work would have cost at the meter, not what I
-      paid. Only closed days appear, never a day still in progress, and the record carries no
-      prompts, file paths or session minutes. <strong
+      paid. The window opens on 2026-09-19, the first day the ledger covered every session on the
+      machine; earlier days are not published. Only closed days appear, never a day still in
+      progress, and the record carries no prompts, file paths or session minutes. <strong
         >Done without an attached artifact is self-attestation, so the fleet publishes its own
         ledger.</strong
       >

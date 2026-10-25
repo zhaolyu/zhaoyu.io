@@ -32,11 +32,13 @@
   const MAX_BAR = 24; // a column is never thicker than this; the slot's leftover is air
   const RADIUS = 4; // rounded data-end, square at the baseline
 
+  const hasOverhead = $derived(days.some((d) => (d.overhead ?? 0) > 0));
   const legend = $derived<ChartLegendItem[]>(
     mode === 'runs'
       ? [
           { label: 'routine', color: 'var(--viz-series-1)' },
           { label: 'interactive', color: 'var(--viz-series-2)' },
+          ...(hasOverhead ? [{ label: 'overhead', color: 'var(--viz-series-3)' }] : []),
         ]
       : [],
   );
@@ -44,7 +46,7 @@
   const title = $derived(mode === 'runs' ? 'Runs per day' : 'API-equivalent value per day');
   const caption = $derived(
     mode === 'runs'
-      ? 'Closed days only. A routine run is a scheduled, unattended session; an interactive run is mine.'
+      ? 'Closed days only. A routine run is a scheduled, unattended session; an interactive run is mine; overhead is a validator, reviewer or probe run that checks the others.'
       : 'Tokens priced at Claude API list rates. The runs themselves ran on a subscription.',
   );
 
@@ -100,25 +102,28 @@
           color: 'var(--viz-series-1)',
         });
       } else {
-        // Interactive sits on the baseline, routine on top, with a surface gap
-        // between them when both exist.
-        const yi = py(d.interactive);
-        if (d.interactive > 0) {
+        // Stack from the baseline: interactive, routine, then overhead, with a
+        // surface gap between touching segments. The topmost segment present
+        // takes the rounded cap; a remainder the record does not split out is
+        // left as air, so a column never overstates a kind.
+        const parts = [
+          { n: d.interactive, color: 'var(--viz-series-2)' },
+          { n: d.routine, color: 'var(--viz-series-1)' },
+          { n: d.overhead ?? 0, color: 'var(--viz-series-3)' },
+        ].filter((p) => p.n > 0);
+        let acc = 0;
+        parts.forEach((p, k) => {
+          const y0 = py(acc);
+          const y1 = py(acc + p.n);
+          const last = k === parts.length - 1;
           segments.push({
-            path:
-              d.routine > 0
-                ? `M${x},${BASE} V${yi + GAP} H${x + bw} V${BASE} Z`
-                : roundedTop(x, yi, bw, BASE - yi, RADIUS),
-            color: 'var(--viz-series-2)',
+            path: last
+              ? roundedTop(x, y1, bw, y0 - y1, RADIUS)
+              : `M${x},${y0} V${y1 + GAP} H${x + bw} V${y0} Z`,
+            color: p.color,
           });
-        }
-        if (d.routine > 0) {
-          const bottom = d.interactive > 0 ? yi : BASE;
-          segments.push({
-            path: roundedTop(x, top, bw, bottom - top, RADIUS),
-            color: 'var(--viz-series-1)',
-          });
-        }
+          acc += p.n;
+        });
       }
       return { d, x, w: bw, cx: x + bw / 2, top, total, segments };
     });
@@ -142,7 +147,8 @@
     const d = c.d;
     const who = hovered === null ? `Peak day, ${shortDate(d.date)}` : shortDate(d.date);
     if (mode === 'runs') {
-      return `${who}: ${d.runs} runs, ${d.routine} routine and ${d.interactive} interactive; ${d.edit_runs} edited files and ${d.verified} of those were verified.`;
+      const overhead = d.overhead ? ` and ${d.overhead} overhead` : '';
+      return `${who}: ${d.runs} runs, ${d.routine} routine, ${d.interactive} interactive${overhead}; ${d.edit_runs} edited files and ${d.verified} of those were verified.`;
     }
     return `${who}: ${formatUsd(d.api_equivalent_usd)} across ${d.runs} runs.`;
   });

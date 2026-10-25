@@ -50,6 +50,16 @@ describe('parseFleetRecord', () => {
     expect(parseFleetRecord(rec)).toBeNull();
   });
 
+  it('accepts the optional overhead and unpriced counts, and rejects them when malformed', () => {
+    const rec = structuredClone(sample) as { totals: Record<string, unknown> };
+    expect(parseFleetRecord(rec)).not.toBeNull();
+    rec.totals.overhead_runs = 1.5;
+    expect(parseFleetRecord(rec)).toBeNull();
+    const rec2 = structuredClone(sample) as { days: Record<string, unknown>[] };
+    rec2.days[0].overhead = -2;
+    expect(parseFleetRecord(rec2)).toBeNull();
+  });
+
   it('rejects non-objects, nulls and arrays', () => {
     expect(parseFleetRecord(null)).toBeNull();
     expect(parseFleetRecord('{}')).toBeNull();

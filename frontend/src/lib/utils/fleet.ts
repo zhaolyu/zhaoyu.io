@@ -10,6 +10,7 @@ import type { FleetDay, FleetRecord, FleetRoutine, FleetTotals } from '$lib/type
 const isDate = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v);
 const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const isCount = (v: unknown): v is number => isNum(v) && v >= 0 && Number.isInteger(v);
+const isOptCount = (v: unknown): v is number | undefined => v === undefined || isCount(v);
 const isObj = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v);
 
@@ -25,7 +26,13 @@ const TOTAL_KEYS: (keyof FleetTotals)[] = [
 ];
 
 function isTotals(v: unknown): v is FleetTotals {
-  return isObj(v) && TOTAL_KEYS.every((k) => isCount(v[k])) && isNum(v.api_equivalent_usd);
+  return (
+    isObj(v) &&
+    TOTAL_KEYS.every((k) => isCount(v[k])) &&
+    isOptCount(v.overhead_runs) &&
+    isOptCount(v.unpriced_runs) &&
+    isNum(v.api_equivalent_usd)
+  );
 }
 
 function isDay(v: unknown): v is FleetDay {
@@ -35,6 +42,7 @@ function isDay(v: unknown): v is FleetDay {
     isCount(v.runs) &&
     isCount(v.routine) &&
     isCount(v.interactive) &&
+    isOptCount(v.overhead) &&
     isCount(v.edit_runs) &&
     isCount(v.verified) &&
     isNum(v.api_equivalent_usd)

@@ -20,6 +20,10 @@ export interface FleetTotals {
   runs: number;
   routine_runs: number;
   interactive_runs: number;
+  /** Validator, reviewer and probe runs: overhead the fleet pays to check itself. Optional. */
+  overhead_runs?: number;
+  /** Runs the publisher could not price (a model with no list rate). Optional. */
+  unpriced_runs?: number;
   /** Runs that edited at least one file; the process axis applies to these. */
   edit_runs: number;
   verified: number;
@@ -35,8 +39,12 @@ export interface FleetDay {
   runs: number;
   routine: number;
   interactive: number;
+  /** Validator, reviewer and probe runs that day. Optional. */
+  overhead?: number;
   edit_runs: number;
   verified: number;
+  unverified?: number;
+  unaudited?: number;
   api_equivalent_usd: number;
 }
 
