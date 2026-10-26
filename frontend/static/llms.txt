@@ -111,6 +111,10 @@
   operating principles for AI-augmented engineering: spec quality as the
   bottleneck, agent loops and receipts, deterministic interfaces around
   non-deterministic systems.
+- [Fleet Record](https://zhaoyu.io/fleet): the run ledger of his fleet of
+  scheduled Claude Code routines, read live: runs per day by kind, the share
+  of edit-runs a harness verified, and API-equivalent value at list rates.
+  Closed days only; the human outcome axis is deliberately not published.
 
 ## Selected notes
 

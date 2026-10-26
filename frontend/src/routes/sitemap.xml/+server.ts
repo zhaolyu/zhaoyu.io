@@ -29,6 +29,7 @@ export function GET() {
     urlEntry(ROUTES.BLOG, 'weekly', '0.8', newestNoteDate),
     urlEntry(ROUTES.MODELS, 'monthly', '0.8'),
     urlEntry(ROUTES.AI_MANIFESTO, 'monthly', '0.5'),
+    urlEntry(ROUTES.FLEET, 'weekly', '0.6'),
   ];
 
   // Case studies are full dates already; flag-gated studies stay out, matching

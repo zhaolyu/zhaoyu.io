@@ -59,6 +59,7 @@ const config = {
         'connect-src': [
           'self',
           'https://cloudflareinsights.com', // Web Analytics beacon POSTs its payload here
+          'https://ohnidsebeqjroypztfcs.supabase.co', // /fleet reads the public fleet record (Storage)
         ],
         'object-src': ['none'],
         'base-uri': ['self'],
