@@ -65,6 +65,16 @@ and unrelated cards can come back byte-different with no copy change: revert tho
 `git restore static/og/<slug>.png` rather than committing the churn. The run also copies
 `site.png` to `static/og-image.png`; commit that only when the site card itself changed.
 
+**On Windows, set `CHROMIUM_BIN` first.** The script's Playwright discovery looks only for
+a `chrome-linux/` directory, so on a Windows install (`chrome-win64/`,
+`chrome-headless-shell-win64/`) it aborts with "No Chromium binary found". Point it at the
+headless shell, not full Chrome: full Chrome writes the PNG and then exits non-zero, which
+fails the run. Measured on Windows 10 / Git Bash, 2026-10-03:
+
+```bash
+CHROMIUM_BIN="$LOCALAPPDATA/ms-playwright/chromium_headless_shell-<rev>/chrome-headless-shell-win64/chrome-headless-shell.exe" pnpm og
+```
+
 ## 4. Run the writer judge
 
 Invoke the `writer-judge` skill from a context that did not author the draft — the
