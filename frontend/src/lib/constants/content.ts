@@ -736,9 +736,9 @@ export const builderProjects: BuilderProject[] = [
     title: 'Cost-Guard: FinOps Platform',
     category: 'experiment',
     description:
-      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development, the same governed workflow I set for my org, proven on my own infrastructure.',
+      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development, the same governed workflow I set for my org, proven on my own infrastructure, and retired in October 2026.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
-    status: 'in-progress',
+    status: 'completed',
     metrics: [
       { label: 'Sync', value: 'Real-time' },
       { label: 'Storage', value: 'Local-first' },

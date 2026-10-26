@@ -172,7 +172,7 @@ tested rule); nothing hides content or competes with it.
 | Receipts               | The canonical form of P5; the same component the notes and work cards use.                                                         |
 | Connect                | Plain contact block; retire the fake `zsh` window.                                                                                 |
 | Nav                    | Plain words, not `/path` mono.                                                                                                     |
-| `/infra`               | Stays a hybrid dashboard surface; mono and chrome are legitimate there because it is literally a tool.                             |
+| `/infra`               | Retired 2026-10-25 with its GCP backend; the route is removed.                                                                     |
 
 ---
 

@@ -68,9 +68,4 @@ describe('sitemap.xml GET', () => {
     const homeEntry = body.slice(body.indexOf('<url>'), body.indexOf('</url>'));
     expect(homeEntry).toContain(`<lastmod>${newest}</lastmod>`);
   });
-
-  it('excludes /infra because that page is noindex', async () => {
-    const { body } = await fetchSitemap();
-    expect(body).not.toContain('/infra');
-  });
 });

@@ -83,15 +83,15 @@
    is engineered into the loop (boundaries, receipts, control planes), not
    summoned from the model.
 7. **Independent builder**: ships and operates real systems outside of
-   assigned work with the same production discipline. Current systems:
+   assigned work with the same production discipline. Systems:
    Cost-Guard (a local-first FinOps platform: PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
-   infrastructure) and OB1, the retrieval layer over a personal
-   exocortex of 1,700 atomic, cross-linked claims distilled from books,
-   engineering sources, and production lessons. The vault stays the
-   source of truth; OB1 projects it into Supabase and serves it over MCP,
-   so any client (Claude, ChatGPT, Cursor, phone) starts with
-   accumulated judgment rather than a blank context window.
+   infrastructure; retired in October 2026) and OB1, the retrieval layer
+   over a personal exocortex of 1,700 atomic, cross-linked claims
+   distilled from books, engineering sources, and production lessons.
+   The vault stays the source of truth; OB1 projects it into Supabase and
+   serves it over MCP, so any client (Claude, ChatGPT, Cursor, phone)
+   starts with accumulated judgment rather than a blank context window.
 
 ## Key pages
 
@@ -111,8 +111,6 @@
   operating principles for AI-augmented engineering: spec quality as the
   bottleneck, agent loops and receipts, deterministic interfaces around
   non-deterministic systems.
-- [Infra Dashboard](https://zhaoyu.io/infra): Cost-Guard, a local-first
-  infrastructure cost monitor (PGlite + ElectricSQL, real-time sync).
 
 ## Selected notes
 

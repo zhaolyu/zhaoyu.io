@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   // Under Vitest the full sveltekit() plugin can't run (no kit dev server),
   // but the plain svelte plugin is needed to compile runes ($state/$derived)
-  // in .svelte.ts modules like db.svelte.ts / simulator.svelte.ts.
+  // in any .svelte.ts module a test imports.
   plugins: process.env.VITEST ? [svelte()] : [sveltekit()],
   test: {
     include: ['src/**/*.{test,spec}.{js,ts}'],

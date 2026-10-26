@@ -124,7 +124,9 @@
   --accent-independent-10: rgba(154, 68, 5, 0.1);
   --accent-independent-20: rgba(154, 68, 5, 0.2);
 
-  /* Infra Accent — Cyan (used for /infra ops dashboard) */
+  /* Infra Accent — Cyan. Named for the retired /infra dashboard (removed
+     2026-10-25); the -10/-20 tints still fill the experiment badge, and
+     static/tokens.css exports the family to other repos. */
   --accent-infra: #06b6d4;
   --accent-infra-light: #22d3ee;
   --accent-infra-dark: #0891b2;

@@ -17,15 +17,11 @@ frontend/            ← all commands run from here
         ui/          # generic reusable primitives
       constants/     # content.ts (all site copy), config.ts, design-tokens.ts, design-system.ts, og.ts, models.ts, case-studies.ts …
       stores/        # scroll.ts, theme.ts
-      types/         # common.ts, cost-guard.ts, dashboard.ts
+      types/         # common.ts, dashboard.ts
       utils/         # pure utility functions
-      db.svelte.ts        # Cost-Guard PGlite + ElectricSQL sync engine (runes class)
-      hud.svelte.ts       # Architect HUD telemetry state (runes class)
-      simulator.svelte.ts # cost what-if simulator state (runes class)
     routes/
       (main)/        # main layout group: landing page, blog/[slug]/, work/[slug]/, models/
       (standalone)/  # ai-manifesto (own layout)
-      infra/         # Cost-Guard dashboard (prerendered shell; PGlite is imported on mount)
       design-system/ # one prerendered preview per registered card (Claude Design hand-off)
       og/            # OG card pages + cards.json, rendered by `pnpm og`
       sitemap.xml/   # prerendered +server.ts endpoints (sitemap.xml, rss.xml, og/cards.json)
@@ -172,8 +168,6 @@ the role, `roleLine` the all-caps OG eyebrow. A hero or tagline edit needs `pnpm
 - `navigation.ts` – routing/anchor-navigation helpers
 - `intersection-core.ts` – IntersectionObserver core logic
 - `section-observer.ts` – section visibility tracking
-- `cost-projection.ts` – Cost-Guard aggregation/projection math
-- `cost-guard-display.ts` – Cost-Guard snapshot display formatting
 - `feature-flags.ts` – filters content items by `FEATURE_FLAGS` (config.ts)
 - `note-excerpt.ts` – strips HTML and truncates a note for excerpt cards
 - `note-groups.ts` – groups notes by month for the archive's date headings
@@ -213,7 +207,6 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
   `positioning.test.ts` fails the build on each retired phrasing; `disclosure-guard.test.ts` catches the unsourced figures.
 
 - **Disclosure policy (employer facts).** Versant is a public company. Every employer-related number on any surface — copy, `<meta>`, JSON-LD, `llms.txt`, OG cards — carries a public source from `SOURCES` in `content.ts`; nothing Versant/CNBC has not disclosed publicly is stated anywhere. `disclosure-guard.test.ts` holds the deny-list and scans every surface; `content.test.ts` enforces basis + source on metrics. A feature flag is not an exemption: `content.ts` is bundled into client JS whether or not a card renders, so embargoed copy stays out of the repository entirely until it is public.
-- Ingestion signing secrets live only in GitHub Actions secrets (see `.github/workflows/cost-guard.yml`).
 - CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
 - GitHub Actions are pinned to commit SHAs; Dependabot keeps them and npm deps updated.
 - Error handling must not expose sensitive data.
