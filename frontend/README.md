@@ -35,14 +35,10 @@ frontend/
 │   │   ├── constants/        # content.ts (all copy), config.ts, design-tokens.ts, design-system.ts, og.ts, models.ts …
 │   │   ├── stores/           # scroll, theme
 │   │   ├── types/            # shared TypeScript types
-│   │   ├── utils/            # pure utilities (tested)
-│   │   ├── db.svelte.ts      # Cost-Guard PGlite + ElectricSQL sync
-│   │   ├── hud.svelte.ts     # Architect HUD telemetry state
-│   │   └── simulator.svelte.ts  # cost what-if simulator state
+│   │   └── utils/            # pure utilities (tested)
 │   ├── routes/
 │   │   ├── (main)/           # landing page, /blog, /blog/[slug], /work/[slug], /models
 │   │   ├── (standalone)/     # /ai-manifesto (own layout)
-│   │   ├── infra/            # Cost-Guard dashboard (ssr = false)
 │   │   ├── design-system/    # one preview page per registered card
 │   │   ├── og/               # OG card pages + cards.json, rendered by `pnpm og`
 │   │   ├── rss.xml/          # prerendered feed endpoint
@@ -60,7 +56,6 @@ frontend/
 - `/work/{slug}` — long-form case studies (decision records)
 - `/ai-manifesto` — working thesis on AI-augmented engineering
 - `/design-system/{card}` — component and token previews rendered from the real components
-- `/infra` — Cost-Guard, a local-first infra cost dashboard (PGlite + ElectricSQL; noindex)
 - `/sitemap.xml`, `/rss.xml`, `/robots.txt`, `/llms.txt` — crawler, feed and AI-agent surfaces
 
 ## Architecture Notes
@@ -70,8 +65,6 @@ frontend/
   `rss.xml`, `og/cards.json`) are generated at build time.
 - **Content lives in `src/lib/constants/content.ts`** — projects, notes, career
   history, and copy are typed data consumed by the components.
-- **Cost-Guard** boots an in-browser Postgres (PGlite/WASM) and syncs cost
-  snapshots from an ElectricSQL endpoint on Cloud Run (managed outside this repo).
 - **Security**: CSP is generated in `svelte.config.js` (hash mode); other
   headers ship via `static/_headers`.
 

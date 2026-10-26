@@ -48,7 +48,7 @@ export const colorTokens: TokenGroup = {
     { name: 'accent-primary-hover', value: '#2563eb', usage: 'Accent hover state' },
     { name: 'accent-primary-light', value: '#60a5fa', usage: 'Accent on dark grounds, links' },
     { name: 'accent-primary-dark', value: '#1d4ed8', usage: 'Accent pressed state' },
-    { name: 'accent-infra', value: '#06b6d4', usage: 'Infra dashboard accent' },
+    { name: 'accent-infra', value: '#06b6d4', usage: 'Infra accent, experiment badge tint' },
     {
       name: 'accent-professional',
       value: '#1d4ed8',

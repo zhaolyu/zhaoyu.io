@@ -12,12 +12,6 @@ importers:
 
   .:
     dependencies:
-      '@electric-sql/pglite':
-        specifier: ^0.5.5
-        version: 0.5.5
-      '@electric-sql/pglite-sync':
-        specifier: ^0.6.6
-        version: 0.6.6(@electric-sql/pglite@0.5.5)
       '@fontsource/dm-serif-display':
         specifier: ^5.3.0
         version: 5.3.0
@@ -167,23 +161,6 @@ packages:
     resolution: {integrity: sha512-QxULHAm7cNu72w97JUNCBFODFaXpbDg+dP8b/oWFAZ2MTRppA3U00Y2L1HqaS4J6yBqxwa/Y3nMBaxVKbB/NsA==}
     engines: {node: '>=20.19.0'}
 
-  '@electric-sql/client@1.5.26':
-    resolution: {integrity: sha512-tiEksNKSTqtetftz0wulFzGc7jTluCMmq1VWLR5UWmN8VWGAcsfqBSgeOUwWk0MLC7/dEjXqfsT8Blg1Yiyh0w==}
-    hasBin: true
-
-  '@electric-sql/experimental@1.0.14':
-    resolution: {integrity: sha512-Wpv9UC7r4JYnQO4GbtQve7SVIX/VcBwAP12Xx11ObK2TBI+NJHtDRimUEKKQorq9Kr6yTAJ3BYOKCINxFsbDIg==}
-    peerDependencies:
-      '@electric-sql/client': 1.0.14
-
-  '@electric-sql/pglite-sync@0.6.6':
-    resolution: {integrity: sha512-iOUYCx0l3lhpv0JgpqE2tS2LcgEWoZAZEGpcNe//N8D50OSLPjJcZLJNA392w7fJwocB3dYr19ujNTx9Sj9f+A==}
-    peerDependencies:
-      '@electric-sql/pglite': 0.5.5
-
-  '@electric-sql/pglite@0.5.5':
-    resolution: {integrity: sha512-QeZ+oB7QaU4EJj2awrB8hwFZ5TXxLRBQ9Gfq0dQauYDdWsRtuWRCERgtri35vRfL07KQHlVlc/4Qxvn7a5AXeA==}
-
   '@eslint-community/eslint-utils@4.10.1':
     resolution: {integrity: sha512-cuadcxVFE8sDK6iWJbs8Sn0av2Nrh2QSGQhVlBW9AaAHqHwjWsZHT8LJ4hFGPh7ASBV2deFdM7H/DPjulmh8rg==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
@@ -285,9 +262,6 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
-
-  '@microsoft/fetch-event-source@2.0.1':
-    resolution: {integrity: sha512-W6CLUJ2eBMw3Rec70qrsEW0jOm/3twwJv21mrmj2yORiaVmVYGS4sSS5yUwvQc1ZlDLYGPnClVWmUUMagKNsfA==}
 
   '@oxc-project/types@0.146.0':
     resolution: {integrity: sha512-XC0QsnnhVe7sLIWmYmdPw7x5P0h4W8vUU3Nv1ySgWXtvCz8NizoAEpGXA0sOYoJQV2Rl13LgURAHQ5cI5ILCSA==}
@@ -393,11 +367,6 @@ packages:
 
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
-
-  '@rollup/rollup-darwin-arm64@4.62.4':
-    resolution: {integrity: sha512-krw5uS2STmvJ02x0uTXHbqQNuz+9eZ1iw+qXk9dmW2gvV4jV7O2hEoOnuhFrpOPiel1mBFtqbxYZZtC46hXLOw==}
-    cpu: [arm64]
-    os: [darwin]
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -1610,26 +1579,6 @@ snapshots:
 
   '@csstools/css-tokenizer@4.0.0': {}
 
-  '@electric-sql/client@1.5.26':
-    dependencies:
-      '@microsoft/fetch-event-source': 2.0.1
-    optionalDependencies:
-      '@rollup/rollup-darwin-arm64': 4.62.4
-
-  '@electric-sql/experimental@1.0.14(@electric-sql/client@1.5.26)':
-    dependencies:
-      '@electric-sql/client': 1.5.26
-    optionalDependencies:
-      '@rollup/rollup-darwin-arm64': 4.62.4
-
-  '@electric-sql/pglite-sync@0.6.6(@electric-sql/pglite@0.5.5)':
-    dependencies:
-      '@electric-sql/client': 1.5.26
-      '@electric-sql/experimental': 1.0.14(@electric-sql/client@1.5.26)
-      '@electric-sql/pglite': 0.5.5
-
-  '@electric-sql/pglite@0.5.5': {}
-
   '@eslint-community/eslint-utils@4.10.1(eslint@10.8.1(jiti@2.7.0))':
     dependencies:
       eslint: 10.8.1(jiti@2.7.0)
@@ -1713,8 +1662,6 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@microsoft/fetch-event-source@2.0.1': {}
-
   '@oxc-project/types@0.146.0': {}
 
   '@polka/url@1.0.0-next.29': {}
@@ -1765,9 +1712,6 @@ snapshots:
     optional: true
 
   '@rolldown/pluginutils@1.0.1': {}
-
-  '@rollup/rollup-darwin-arm64@4.62.4':
-    optional: true
 
   '@standard-schema/spec@1.1.0': {}
 

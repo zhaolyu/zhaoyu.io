@@ -24,8 +24,6 @@ export function GET() {
     '',
   );
 
-  // /infra is deliberately excluded: the page sets <meta name="robots" content="noindex">,
-  // and a sitemap entry would contradict that signal.
   const staticEntries = [
     urlEntry(ROUTES.HOME, 'weekly', '1.0', newestNoteDate),
     urlEntry(ROUTES.BLOG, 'weekly', '0.8', newestNoteDate),

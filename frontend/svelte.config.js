@@ -50,7 +50,6 @@ const config = {
         'default-src': ['self'],
         'script-src': [
           'self',
-          'wasm-unsafe-eval', // PGlite (WASM Postgres) on /infra
           'sha256-OeL7jzJbFrONBWQFnrqtx6SxmNiAoG1JvmtdhwveVDw=', // app.html theme script
           'https://static.cloudflareinsights.com', // Web Analytics beacon (see note above)
         ],
@@ -59,7 +58,6 @@ const config = {
         'font-src': ['self', 'data:'], // Vite inlines small font subsets as data: URIs
         'connect-src': [
           'self',
-          'https://ingestion-api-240dd81-538316597788.us-central1.run.app', // ElectricSQL sync
           'https://cloudflareinsights.com', // Web Analytics beacon POSTs its payload here
         ],
         'object-src': ['none'],

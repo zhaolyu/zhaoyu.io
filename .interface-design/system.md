@@ -124,11 +124,8 @@ nudge, if a font or its subset changes.
 
 ---
 
-## `/infra` (Cost-Guard dashboard)
+## `/infra` (retired)
 
-A hybrid surface: it shares every structural token with the site but uses `--accent-infra`
-(cyan) instead of the primary accent, so it reads as an operations tool. Mono and dashboard
-chrome are legitimate there because it is literally a tool. Composition rules: a tight chrome
-zone (header and telemetry strip), a clear break before the working area, standard density
-between working cards; only the one value that matters at a glance (live status) takes the
-accent colour.
+The Cost-Guard dashboard was removed on 2026-10-25, when its GCP backend was deleted.
+`--accent-infra` stays in `app.css`: its tints still fill the experiment badge, and
+`static/tokens.css` exports the family to other repos.
