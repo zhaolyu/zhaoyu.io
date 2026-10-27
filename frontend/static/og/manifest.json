@@ -11,6 +11,18 @@
       "Reliability"
     ]
   },
+  "three-judges-cleared-it-and-all-three-had-the-same-host": {
+    "slug": "three-judges-cleared-it-and-all-three-had-the-same-host",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · OCT 2026",
+    "title": "Three Judges Cleared It, and All Three Had the Same Host",
+    "subtitle": "",
+    "footnote": [
+      "Verification",
+      "Reliability",
+      "AI Engineering"
+    ]
+  },
   "fan-out-multiplies-whatever-each-unit-pays-to-start": {
     "slug": "fan-out-multiplies-whatever-each-unit-pays-to-start",
     "kind": "note",

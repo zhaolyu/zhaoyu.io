@@ -244,6 +244,38 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'three-judges-cleared-it-and-all-three-had-the-same-host',
+      title: 'Three Judges Cleared It, and All Three Had the Same Host',
+      date: 'Oct 2026',
+      dateISO: '2026-10-26',
+      tags: ['Verification', 'Reliability', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            "First-hand: the pull request that recorded the incident in this site's writer references and judge rubric, the draft linter it relies on, the commit that shipped the corrected note with its judge history, and the workspace friction entry that corrected the mechanism per host, each read at its revision",
+          ref: '29cdbc2 (#80); 6184c88 (#79); b57790d (#85); forge b4cfe1d:docs/setup/friction.md',
+          host: 'windows, wsl: the two sides of one machine (Windows 10 19045, Git Bash MINGW64; WSL2 Ubuntu), GNU Awk 5.3.2 on both, the carriage-return behaviour re-run on each',
+          verified_on: '2026-10-26',
+        },
+        {
+          label:
+            'First-hand: the shipped note whose first-hand source carries a macOS incident host and a Windows verification host with the incident marked not re-run, read at the revision that landed it on main',
+          ref: 'da927f9:frontend/src/lib/constants/content.ts',
+          host: 'windows',
+          verified_on: '2026-10-26',
+        },
+        {
+          label:
+            "GNU Awk User's Guide, “Using gawk on PC Operating Systems”: end-of-line translation on MS-Windows and the BINMODE variable",
+          href: 'https://www.gnu.org/software/gawk/manual/html_node/PC-Using.html',
+        },
+      ],
+      content: [
+        "<p>Three independent judge passes cleared a mechanism that was false on the machine the incident ran on. In September a generator in my workspace rewrote its output on every run of a Windows checkout, and <a href='/blog/nobody-declared-the-line-endings'>the note explaining why</a> was verified in WSL on the same machine. There GNU Awk keeps the carriage return on a CRLF line, so a marker scan anchored on end of line never matches, the block extracts empty, and the rewrite appends another copy each run. The note said so, and three judge passes verified that mechanism in WSL and cleared it. Git for Windows ships the same Awk 5.3.2 built to open files in text mode and strip the return, so on the host that had the incident every scan matched, the block came out LF, and a byte-exact compare against a CRLF template failed instead. None of the three verifiers had run on that host.</p>",
+        "<p>The next revision described the compare, and its judge reproduced the stripping on Windows, where <code>printf 'hello\\r\\n' | awk '{print}' | od -c</code> prints no <code>\\r</code>. The note then sat unlanded for two weeks, and when it shipped its old verdict was not reused, with four fresh passes, two of them failing on receipts, and a fifth that passed. Every first-hand source now carries a commit, a host and a date, and the draft linter refuses a note without them. The judge verifies a mechanism on the host the source names, and a host it cannot reach makes the claim could-not-run rather than a pass. Three weeks later the rule fired in the shipping direction: a note about a batch that ran on macOS went out with its mechanism marked as not re-run, from a Windows host. <strong>A second check is only a second check if something that decides the answer differs between it and the first.</strong></p>",
+      ],
+    },
+    {
       slug: 'fan-out-multiplies-whatever-each-unit-pays-to-start',
       title: 'Fan-Out Multiplies Whatever Each Unit Pays to Start',
       date: 'Oct 2026',
