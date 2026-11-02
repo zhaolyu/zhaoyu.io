@@ -52,8 +52,12 @@ the newest note by `dateISO` appears there, and that every linked slug still exi
 ## 3. Regenerate OG cards
 
 ```bash
-pnpm build && pnpm og
+pnpm install --frozen-lockfile && pnpm build && pnpm og
 ```
+
+Install first. A checkout whose `node_modules` predates `origin/main` fails the build
+whenever main has added a package since: on 2026-10-26 the build failed on a font package
+main had added, and passed after the install.
 
 This writes `static/og/<slug>.png` and updates `static/og/manifest.json`. Commit both.
 `og.test.ts` compares the manifest against the current card definitions, so a title or tag
