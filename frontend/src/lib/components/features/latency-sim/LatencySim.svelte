@@ -193,8 +193,9 @@
       border-color 0.2s;
   }
 
+  /* No width of its own: it renders inside the manifesto container, which
+     already sets the shared content edge. */
   .sim-container {
-    max-width: 64rem;
     margin: 0 auto;
     position: relative;
     z-index: 10;

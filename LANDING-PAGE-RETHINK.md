@@ -14,6 +14,13 @@ against named writers (`.claude/skills/writer/references/calibration.md`) — La
 register, Koe for readability — and its register test ("would this sentence survive on
 lethain.com unedited?") is the same test this audit applies to the page.
 
+**Update, 2026-10-04 (PR #90).** The hero thesis moved on twice since Option A shipped:
+first to the verification line, then, at Zhao's direction, to "Done is a claim. The receipt
+is what you check." The role now appears in the hero once, as a quiet identity line under
+the CTAs (`heroContent.identity` = `roleTitle` + NYC), per `PORTFOLIO-REVIEW-2026-09.md`
+P0.2. The visual follow-through of this audit (one grid, a reading page, a serif for prose)
+is specified in `.interface-design/brief.md`; its first pass ships in the same PR.
+
 ## The diagnosis
 
 The page's problem is not the content — it is the information architecture and the

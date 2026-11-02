@@ -48,7 +48,7 @@ export const colorTokens: TokenGroup = {
     { name: 'accent-primary-hover', value: '#2563eb', usage: 'Accent hover state' },
     { name: 'accent-primary-light', value: '#60a5fa', usage: 'Accent on dark grounds, links' },
     { name: 'accent-primary-dark', value: '#1d4ed8', usage: 'Accent pressed state' },
-    { name: 'accent-infra', value: '#06b6d4', usage: 'Infra dashboard accent' },
+    { name: 'accent-infra', value: '#06b6d4', usage: 'Infra accent, experiment badge tint' },
     {
       name: 'accent-professional',
       value: '#1d4ed8',
@@ -298,6 +298,17 @@ export const spacingTokens: TokenGroup = {
   ],
 };
 
+export const layoutTokens: TokenGroup = {
+  id: 'layout',
+  title: 'Layout widths',
+  description:
+    'One outer width so every section shares one left edge, and one reading measure so long-form prose stays inside 60–75 characters a line.',
+  tokens: [
+    { name: 'content-max', value: '72rem', usage: 'Outer width of every landing section' },
+    { name: 'measure-prose', value: '65ch', usage: 'Line length of note and case-study prose' },
+  ],
+};
+
 export const typeTokens: TokenGroup = {
   id: 'type',
   title: 'Type scale',
@@ -404,6 +415,7 @@ export const tokenGroups: TokenGroup[] = [
   typeTokens,
   typeRhythmTokens,
   spacingTokens,
+  layoutTokens,
   radiusTokens,
   elevationTokens,
   motionTokens,
@@ -424,6 +436,8 @@ export const tokenGroups: TokenGroup[] = [
  */
 export const COVERED_PREFIXES = [
   'space-',
+  'content-',
+  'measure-',
   'type-',
   'leading-',
   'tracking-',

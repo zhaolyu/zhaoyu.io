@@ -58,7 +58,7 @@
 <style>
   .skills {
     width: 100%;
-    padding: 6rem 2rem;
+    padding: var(--section-y) var(--section-x);
     background: var(--bg-primary);
     transition: background-color 0.2s;
     border-bottom: 1px solid var(--border-color);
@@ -66,7 +66,9 @@
   }
 
   .skills-container {
-    max-width: 1200px;
+    /* Same content edge as the self-padded sections: the outer width less the
+       gutter this section already pads with. */
+    max-width: calc(var(--content-max) - 2 * var(--section-x));
     margin: 0 auto;
   }
 

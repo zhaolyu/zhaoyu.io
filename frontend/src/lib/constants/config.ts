@@ -37,43 +37,12 @@ export const ANIMATION_CONFIG = {
 } as const;
 
 /**
- * Cost-Guard ElectricSQL sync configuration
+ * Fleet record — the public JSON that /fleet renders. Published by the forge
+ * workspace's `bin/fleet-public` into a public Supabase Storage bucket; the
+ * page falls back to static/fleet.sample.json when the fetch fails or the
+ * shape is not schema 1. The origin is allowed in connect-src (svelte.config.js).
  */
-export const ELECTRIC_SYNC_URL = 'https://ingestion-api-240dd81-538316597788.us-central1.run.app';
-
-// v2: cost_items schema narrowed (resource_name/metadata no longer synced).
-// Bumping the dir gives visitors a clean local DB; stale versions are purged
-// by CostDB's init-time cleanup and data re-syncs from Electric.
-export const PGLITE_DATA_DIR = 'idb://zhaoyu-cost-guard-v2';
-
-/**
- * Cost Simulator configuration
- */
-import type { CostCategory } from '$lib/types';
-
-export const RESOURCE_TYPE_CATEGORY_MAP: Record<string, CostCategory> = {
-  // Compute
-  aws_instance: 'compute',
-  aws_lambda_function: 'compute',
-  google_compute_instance: 'compute',
-  google_cloud_run_service: 'compute',
-  google_cloud_run_v2_service: 'compute',
-  // Storage
-  aws_s3_bucket: 'storage',
-  aws_rds_cluster: 'storage',
-  google_storage_bucket: 'storage',
-  google_sql_database_instance: 'storage',
-  // Fixed
-  aws_route53_zone: 'fixed',
-  aws_cloudfront_distribution: 'fixed',
-  google_dns_managed_zone: 'fixed',
-};
-
-export const DEFAULT_COST_CATEGORY: CostCategory = 'compute';
-
-export const SIMULATOR_LIMITS = {
-  trafficMultiplier: { min: 1, max: 100, default: 1, step: 1 },
-  storageGrowthGB: { min: 0, max: 1000, default: 0, step: 10 },
-} as const;
-
-export const STORAGE_COST_PER_GB = 0.023;
+export const FLEET_JSON_URL =
+  'https://ohnidsebeqjroypztfcs.supabase.co/storage/v1/object/public/fleet/fleet.json';
+export const FLEET_SAMPLE_PATH = '/fleet.sample.json';
+export const FLEET_FETCH_TIMEOUT_MS = 8_000;

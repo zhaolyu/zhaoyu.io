@@ -40,9 +40,7 @@ describe('CSP configuration', () => {
 
   it("never allows 'unsafe-inline' or 'unsafe-eval' for script", () => {
     // Either one lets an injected <script> run and makes the rest of the policy
-    // decorative. 'wasm-unsafe-eval' is deliberately allowed and is not the
-    // same thing: it permits WASM compilation (PGlite on /infra), not eval of
-    // arbitrary strings.
+    // decorative.
     expect(scriptSrc).not.toContain('unsafe-inline');
     expect(scriptSrc).not.toContain('unsafe-eval');
   });
@@ -64,9 +62,11 @@ describe('CSP configuration', () => {
     expect(connectSrc).toContain('https://cloudflareinsights.com');
   });
 
-  it('keeps the ElectricSQL sync origin reachable', () => {
-    // Cost-Guard on /infra syncs from this origin; dropping it silently breaks
-    // the dashboard rather than failing the build.
-    expect(connectSrc.some((source) => source.includes('ingestion-api'))).toBe(true);
+  it('carries no allowance left over from the retired Cost-Guard dashboard', () => {
+    // /infra needed WASM compilation (PGlite) and a Cloud Run sync origin. The
+    // page and its GCP backend were retired on 2026-10-25, so neither may stay
+    // in the policy: an allowance with no user is attack surface.
+    expect(scriptSrc).not.toContain('wasm-unsafe-eval');
+    expect(connectSrc.some((source) => source.includes('run.app'))).toBe(false);
   });
 });

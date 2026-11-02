@@ -9,7 +9,6 @@ under `frontend/`) deployed to Cloudflare Pages.
 |----------|------|---------|---------|
 | CI - Quality Checks and Build | `ci.yml` | Pull requests | Quality gates + preview deployment |
 | Deploy to Cloudflare Pages | `cloudflare-pages.yml` | Push to `main`, manual | Production deployment |
-| Cost Guard - Report Infrastructure Costs | `cost-guard.yml` | Manual only | Cost snapshot ingestion for `/infra` |
 
 ```
 Pull request opened / updated
@@ -100,22 +99,6 @@ workflow fires on any push to `main`, and a direct push (bypassing the PR flow)
 would otherwise reach production having passed nothing. See
 [Design decisions](#design-decisions).
 
-## cost-guard.yml — Cost Snapshot Ingestion
-
-**Trigger:** `workflow_dispatch` only, with a required `total_monthly_estimate`
-input (USD).
-
-Sends an HMAC-SHA256-signed (`X-Hub-Signature-256`) JSON snapshot — org id,
-project id, commit hash, the supplied estimate, empty `costs` array — to the
-Cost-Guard ingestion API on Cloud Run, which feeds the site's `/infra`
-dashboard.
-
-It is manual-only because this repo has no Terraform, so there is no real cost
-data to compute in CI. It previously ran on every push and sent a hardcoded $0
-snapshot per commit, which flooded the `/infra` dashboard with empty "Estimate"
-rows. Trigger it manually with a real estimate to exercise the ingestion
-pipeline end to end.
-
 ## Shared conventions
 
 - **Toolchain:** Node `24.13.0`, pnpm via `pnpm/action-setup` (version read from
@@ -136,7 +119,6 @@ pipeline end to end.
 |--------|---------|---------|
 | `CLOUDFLARE_API_TOKEN` | `ci.yml`, `cloudflare-pages.yml` | Pages deploy (needs Pages edit permission) |
 | `CLOUDFLARE_ACCOUNT_ID` | `ci.yml`, `cloudflare-pages.yml` | Target Cloudflare account |
-| `COST_GUARD_SECRET` | `cost-guard.yml` | HMAC signing key for ingestion requests |
 
 The site is fully static — anything in `frontend/src/` or `frontend/static/`
 ships to the client, so secrets exist only here, in Actions.
@@ -156,7 +138,7 @@ Three of these were learned the hard way; the workflow comments record them too.
    through a PR.
 3. **No automated placeholder telemetry.** Cost-Guard went from per-push
    (hardcoded $0 snapshots that buried real data) to manual-only with a required
-   real estimate.
+   real estimate. The Cost-Guard stack and this workflow were retired on 2026-10-25.
 4. **No artifact passing between jobs.** The deploy jobs rebuild rather than
    download the CI build artifact. Duplicate build work is accepted in exchange
    for simpler workflows and no cross-job artifact permission issues; builds are
@@ -171,8 +153,6 @@ Three of these were learned the hard way; the workflow comments record them too.
   workflow → branch `main`. Do this after merging a docs-only PR if the change
   should ship (CI skips `**.md`, and merges of skipped PRs still trigger the
   push deploy — manual dispatch is for edge cases like re-runs).
-- **Send a cost snapshot:** Actions → *Cost Guard - Report Infrastructure
-  Costs* → Run workflow → enter a real monthly estimate.
 
 ## Troubleshooting
 

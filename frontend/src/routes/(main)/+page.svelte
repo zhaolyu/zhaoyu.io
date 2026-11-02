@@ -9,7 +9,7 @@
   import { LatencySim } from '$lib/components/features/latency-sim';
   import { PersonaSection } from '$lib/components/features/persona';
   import { Connect } from '$lib/components/features/connect';
-  import { socialDescriptions } from '$lib/constants/content';
+  import { socialDescriptions, roleTitle } from '$lib/constants/content';
   import {
     personJsonLd,
     jsonLdScript,
@@ -32,23 +32,17 @@
 </script>
 
 <svelte:head>
-  <title>Zhao Yu | Senior Manager, Engineering at Versant (CNBC Core)</title>
+  <title>Zhao Yu | {roleTitle}</title>
   <meta name="description" content={metaDescription} />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="{SITE_URL}/" />
-  <meta
-    property="og:title"
-    content="Zhao Yu · Senior Manager, Engineering at Versant (CNBC Core)"
-  />
+  <meta property="og:title" content="Zhao Yu · {roleTitle}" />
   <meta property="og:description" content={metaDescription} />
   <meta property="og:image" content={SITE_CARD_IMAGE} />
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:url" content="{SITE_URL}/" />
-  <meta
-    property="twitter:title"
-    content="Zhao Yu · Senior Manager, Engineering at Versant (CNBC Core)"
-  />
+  <meta property="twitter:title" content="Zhao Yu · {roleTitle}" />
   <meta property="twitter:description" content={twitterDescription} />
   <meta property="twitter:image" content={SITE_CARD_IMAGE} />
 
@@ -59,7 +53,8 @@
 </svelte:head>
 
 <!-- Craft-first order: the writing and the mental models lead; the résumé
-     material (About, then the sourced numbers) sits at the end, stated once.
+     material (About, then the sourced numbers) sits at the end. The hero's
+     one quiet identity line under the CTAs is the only role statement above it.
      Models sit directly under the writing, and the code standards follow them:
      the standards are the worked examples a model cashes out into, not peers
      of the models themselves. Two sections cannot both be "mental models," so

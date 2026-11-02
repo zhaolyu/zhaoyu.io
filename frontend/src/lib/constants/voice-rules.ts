@@ -241,3 +241,28 @@ export function lintReceipts(note: NoteLike): Finding[] {
 
 export const receiptSchemaApplies = (note: NoteLike): boolean =>
   (note.dateISO || '') >= RECEIPT_SCHEMA_FROM;
+
+/**
+ * Lint a draft that is not in content.ts yet. Both rule sets above are gated on
+ * `dateISO`, so a draft with no date (or a partial one like "2026-09") compares
+ * below both cutoffs and every gated rule silently skips: the linter reports
+ * clean on a draft it never checked. Shipped notes cannot hit this, because
+ * content.test.ts requires a full date; a draft can. So a missing or partial
+ * date is itself a finding, and the draft is linted as if dated `today`, the
+ * earliest date it could ship with.
+ */
+export function lintDraft(note: NoteLike, today: string): Finding[] {
+  const dated = DATE.test(note.dateISO ?? '');
+  const subject: NoteLike = dated ? note : { ...note, dateISO: today };
+  const findings = [
+    ...lintNote(subject),
+    ...(receiptSchemaApplies(subject) ? lintReceipts(subject) : []),
+  ];
+  if (!dated)
+    findings.unshift({
+      rule: 'date',
+      where: 'note',
+      detail: `${note.dateISO ? `dateISO "${note.dateISO}" is not` : 'no dateISO; need'} a full YYYY-MM-DD date. Linted as if dated ${today}`,
+    });
+  return findings;
+}

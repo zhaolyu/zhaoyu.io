@@ -52,32 +52,47 @@ export interface HeroContent {
     primary: string;
     secondary: string;
   };
+  /** The quiet identity line under the CTAs: a fact stated once, never a badge. */
+  identity: {
+    name: string;
+    role: string;
+    location: string;
+  };
 }
 
-/**
- * The role line, kept off the hero on purpose: it lives on the finding-aid
- * surfaces (OG card eyebrow, <title>, meta, JSON-LD, llms.txt) and in About.
- */
+/** The OG card eyebrow: the role of record in the card's all-caps register. */
 export const roleLine = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE';
 
 /**
- * Hero copy. Craft-first: the page leads with the writing and the standard it
- * holds itself to, not the résumé. Role and scope are stated once, in About,
- * and on the agent-facing surfaces. The headline (primary + accent) is held
- * to 40 words by positioning.test.ts; the bio carries at most one figure.
+ * The role of record in sentence case, spelled once for every human-facing
+ * surface: <title>, og/twitter titles, meta, the hero identity line, Connect.
+ * Title only; team size and program scope stay in About and the meta copy.
+ */
+export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
+
+/**
+ * Hero copy. Craft-first: the thesis leads and is the largest thing on the
+ * screen. Identity sits under the CTAs at secondary weight, so anyone looking
+ * for who wrote this finds it without it being what the page says first
+ * (PORTFOLIO-REVIEW-2026-09.md, P0.2). Scope is stated once, in About, and on
+ * the agent-facing surfaces. The headline (primary + accent) is held to 40
+ * words by positioning.test.ts; the bio carries at most one figure.
  */
 export const heroContent: HeroContent = {
   headline: {
-    primary: 'Engineering notes with receipts.',
-    accent:
-      'Mental models from ten years of building CNBC.com: agents, edge architecture, reliability.',
+    primary: 'Done is a claim. The receipt is what you check.',
+    accent: 'Engineering notes on agents, verification, and reliability.',
   },
-  tagline:
-    'Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.',
-  bio: "I'm an engineering manager who still ships, and this site is where I write down what production teaches me. Every claim carries a receipt: a number, a named system, or an incident I can point at. If a green check can lie to you, it eventually will; the notes start there.",
+  tagline: 'Done is a claim. The receipt is what you check.',
+  bio: 'Receipts can lie too: a gate whose “did not run” reads as a pass, or a search that reported zero because it looked in the wrong place. I write down where that happened. Every note names its receipt, and the Models section collects the rules that held up.',
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
+  },
+  identity: {
+    name: 'Zhao Yu',
+    role: roleTitle,
+    location: 'NYC',
   },
 };
 
@@ -128,6 +143,28 @@ export const performanceMetrics: PerformanceMetric[] = [
     source: SOURCES.linkedin,
   },
 ];
+
+/**
+ * Employer figures that are public and sourced but are not cards in the
+ * Receipts grid: they appear in copy (a project blurb, llms.txt) as context for
+ * a specific piece of work. Same contract as performanceMetrics, a basis plus a
+ * SOURCES citation, enforced by content.test.ts; the disclosure guard exempts
+ * exactly these values and the metric values, nothing else.
+ */
+export const supportingFigures: Array<Omit<PerformanceMetric, 'sublabel'>> = [
+  {
+    label: 'Monthly digital minutes',
+    value: '394M',
+    basis:
+      'CNBC U.S. average monthly digital minutes, ComScore, Sept 2024 to Aug 2025, as reported at Versant Investor Day (slide 66; source note on slide 176)',
+    source: SOURCES.versantInvestorDay2025,
+  },
+];
+
+/** Every employer figure a public source backs; the disclosure guard's allowlist. */
+export const sourcedFigureValues: string[] = [...performanceMetrics, ...supportingFigures].map(
+  (f) => f.value,
+);
 
 export interface Project {
   title: string;
@@ -207,6 +244,86 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'three-judges-cleared-it-and-all-three-had-the-same-host',
+      title: 'Three Judges Cleared It, and All Three Had the Same Host',
+      date: 'Oct 2026',
+      dateISO: '2026-10-26',
+      tags: ['Verification', 'Reliability', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            "First-hand: the pull request that recorded the incident in this site's writer references and judge rubric, the draft linter it relies on, the commit that shipped the corrected note with its judge history, and the workspace friction entry that corrected the mechanism per host, each read at its revision",
+          ref: '29cdbc2 (#80); 6184c88 (#79); b57790d (#85); forge b4cfe1d:docs/setup/friction.md',
+          host: 'windows, wsl: the two sides of one machine (Windows 10 19045, Git Bash MINGW64; WSL2 Ubuntu), GNU Awk 5.3.2 on both, the carriage-return behaviour re-run on each',
+          verified_on: '2026-10-26',
+        },
+        {
+          label:
+            'First-hand: the shipped note whose first-hand source carries a macOS incident host and a Windows verification host with the incident marked not re-run, read at the revision that landed it on main',
+          ref: 'da927f9:frontend/src/lib/constants/content.ts',
+          host: 'windows',
+          verified_on: '2026-10-26',
+        },
+        {
+          label:
+            "GNU Awk User's Guide, “Using gawk on PC Operating Systems”: end-of-line translation on MS-Windows and the BINMODE variable",
+          href: 'https://www.gnu.org/software/gawk/manual/html_node/PC-Using.html',
+        },
+      ],
+      content: [
+        "<p>Three independent judge passes cleared a mechanism that was false on the machine the incident ran on. In September a generator in my workspace rewrote its output on every run of a Windows checkout, and <a href='/blog/nobody-declared-the-line-endings'>the note explaining why</a> was verified in WSL on the same machine. There GNU Awk keeps the carriage return on a CRLF line, so a marker scan anchored on end of line never matches, the block extracts empty, and the rewrite appends another copy each run. The note said so, and three judge passes verified that mechanism in WSL and cleared it. Git for Windows ships the same Awk 5.3.2 built to open files in text mode and strip the return, so on the host that had the incident every scan matched, the block came out LF, and a byte-exact compare against a CRLF template failed instead. None of the three verifiers had run on that host.</p>",
+        "<p>The next revision described the compare, and its judge reproduced the stripping on Windows, where <code>printf 'hello\\r\\n' | awk '{print}' | od -c</code> prints no <code>\\r</code>. The note then sat unlanded for two weeks, and when it shipped its old verdict was not reused, with four fresh passes, two of them failing on receipts, and a fifth that passed. Every first-hand source now carries a commit, a host and a date, and the draft linter refuses a note without them. The judge verifies a mechanism on the host the source names, and a host it cannot reach makes the claim could-not-run rather than a pass. Three weeks later the rule fired in the shipping direction: a note about a batch that ran on macOS went out with its mechanism marked as not re-run, from a Windows host. <strong>A second check is only a second check if something that decides the answer differs between it and the first.</strong></p>",
+      ],
+    },
+    {
+      slug: 'fan-out-multiplies-whatever-each-unit-pays-to-start',
+      title: 'Fan-Out Multiplies Whatever Each Unit Pays to Start',
+      date: 'Oct 2026',
+      dateISO: '2026-10-03',
+      tags: ['Distributed Systems', 'Performance', 'Reliability'],
+      sources: [
+        {
+          label: 'Cloudflare, “Eliminating cold starts 2: shard and conquer”, 26 Sep 2025',
+          href: 'https://blog.cloudflare.com/eliminating-cold-starts-2-shard-and-conquer/',
+        },
+        {
+          label:
+            'First-hand: dated model-evaluation log entry for a four-task parallel batch and its single-task follow-up in a delegation harness I run, read at the revision that recorded it',
+          ref: '162b214:docs/MODEL-NOTES.md:308; retry policy b891374; sandbox wrapper 9ce9196',
+          host: 'macOS (the incident); Windows 10, Git Bash (record and revisions read; incident not re-run)',
+          verified_on: '2026-10-03',
+        },
+      ],
+      content: [
+        "<p>Spreading work evenly across more units is the safe default, and it inverts the moment each unit pays a cost to start. Cloudflare documented it in September 2025. A visitor sending one request a minute into a data center of 300 servers, under even load balancing, leaves each server one request every five hours on average. In a busy enough data center, Cloudflare writes, that span can run long enough that the Worker is evicted to reclaim its resources, which makes effectively every request a cold start. Coalescing the same traffic onto one server gives that server one request a minute, dense enough that eviction becomes very unlikely. Even distribution is tuned for a resource whose cost is work done, while a resident instance costs its owner by sitting idle. Sharding touched only about 4% of enterprise traffic's requests, and took the enterprise cold start rate from 0.1% to 0.01% while cutting the global Worker eviction rate tenfold.</p>",
+        '<p>I hit what looks like a much smaller version of the same shape, and could not explain it. On 2026-07-09 I fanned four code-fix tasks out to parallel workers through a delegation harness I run, and all four returned zero edits and no summary on the first attempt, then completed cleanly on the second once the failure context was injected, at 34k to 69k tokens per task. The single follow-up task passed on attempt one. My log calls first-invocation session warm-up under parallel spawn a suspicion and leaves it there. The harness had already been retrying a failed or timed-out task once for a week, so the incident revised not the policy but the number I plan a batch around. <strong>Budget for the first attempt you will lose, rather than for the explanation you will never get.</strong></p>',
+      ],
+    },
+    {
+      slug: 'nobody-declared-the-line-endings',
+      title: 'Nobody Declared the Line Endings, and a Generator Never Converged',
+      date: 'Sep 2026',
+      dateISO: '2026-09-26',
+      tags: ['Reliability', 'Verification', 'Architecture'],
+      sources: [
+        {
+          label:
+            'First-hand: workspace code generator that could not converge on a Windows checkout, the two attribute fixes, and the friction entry recording the mechanism per host',
+          ref: '7ae065e, 49ba0b5, b4cfe1d',
+          host: 'Windows 10, Git Bash (MSYS), GNU Awk 5.3.2',
+          verified_on: '2026-09-26',
+        },
+        {
+          label: 'Git documentation, gitattributes: the text and eol attributes',
+          href: 'https://git-scm.com/docs/gitattributes',
+        },
+      ],
+      content: [
+        '<p>A code generator in my workspace judged its own output stale on every run and rewrote it. The repository carried no <code>.gitattributes</code> at all, so every text file took its line endings from whatever <code>core.autocrlf</code> the clone had. Mine was a Windows clone that inherited <code>core.autocrlf=true</code> from the system config, and nearly every text file came out CRLF. The generator brackets its managed block with sentinel comments, extracts the current block with <code>awk</code>, and compares it byte for byte against its template with <code>cmp</code>. Git for Windows ships an <code>awk</code> that opens files in text mode and drops the carriage return, so the extracted block came out LF while the template it was measured against stayed CRLF. The two could never compare equal, every run judged the block stale, and the rewrite put back the same CRLF block for the next run to reject.</p>',
+        "<p>The fix was one file, and it changed no line of the generator. <a href='https://git-scm.com/docs/gitattributes' target='_blank' rel='noopener'>Git's documentation</a> is explicit that <code>core.autocrlf</code> and <code>core.eol</code> decide line endings only where the attributes do not, and no attribute covered the template. The first fix, half an hour earlier, had been for a different generator that baked a stray carriage return into its output. It pinned three paths: the one that broke, and two more pinned pre-emptively. The template this generator compared against was in none of them. The second fix put a repo-wide <code>* text=auto eol=lf</code> above that list and kept the three lines beneath it. None of the affected files had ever been committed carrying a carriage return, so the damage only existed on disk. <strong>A path list can only name what someone already had in mind, and the thing that breaks next is the one it could not have named.</strong></p>",
+      ],
+    },
+    {
       slug: 'two-checks-reported-zero-and-neither-was-looking',
       title: 'Two Checks Reported Zero and Neither Was Looking Where It Mattered',
       date: 'Sep 2026',
@@ -228,8 +345,7 @@ export const notesData: NotesData = {
           verified_on: '2026-09-15',
         },
         {
-          label:
-            'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
+          label: 'First-hand: weekly re-run row recording fifty scripts and zero without a caller',
           ref: 'ba643ca5:ops/audits/script-consumer-audit-2026-09-01.md',
           host: 'Windows 10',
           verified_on: '2026-09-15',
@@ -351,7 +467,7 @@ export const notesData: NotesData = {
         },
       ],
       content: [
-        "The genuinely new moment in AI-assisted engineering is not the chat answer; you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management, because that is what it is: supervising labor you did not perform. I manage a direct team of ten and co-lead a rebuild across three teams, and the skills that job demands (scoping delegation, setting a review bar, calibrating trust per worker) are now individual-contributor skills too.",
+        "The genuinely new moment in AI-assisted engineering is not the chat answer; you watched that get produced and judged it in real time. It's when an agent comes back with <em>finished work</em>: it read the folder, edited the files, ran the commands, and declares itself done. You did not do the work and did not watch every step, so you cannot know which assumptions it made or which shortcut it took because the shortcut made the output look cleaner. The only question left is: <strong>is it real?</strong> The first time this happens it feels like magic. The tenth time it feels like management, because that is what it is: supervising labor you did not perform. I manage eight engineers and two QE directly and co-lead a rebuild across three teams, and the skills that job demands (scoping delegation, setting a review bar, calibrating trust per worker) are now individual-contributor skills too.",
         "Management needs a unit of account, and session-level thinking is the wrong one. The right unit is the <strong>agent run</strong>: it begins at delegation, contains the tool calls, branches, and corrections, and ends in acceptance or rejection. That framing makes the work measurable: completion rate, correction rate, and whether your approval gates ever actually reject anything (a gate that always approves is not a control, it's theater). It also surfaces a free asset: every correction you make to agent output is a labeled evaluation you wrote by acting, the natural test set for the next run. This is the same discipline as my receipts rule: <code>done</code> without an attached artifact is self-attestation by the party most motivated to claim success. Getting the machine to do the work is the easy part now. <strong>Deciding the work is trustworthy is the job.</strong>",
       ],
     },
@@ -653,9 +769,9 @@ export const builderProjects: BuilderProject[] = [
     title: 'Cost-Guard: FinOps Platform',
     category: 'experiment',
     description:
-      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development, the same governed workflow I set for my org, proven on my own infrastructure.',
+      'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development, the same governed workflow I set for my org, proven on my own infrastructure, and retired in October 2026.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
-    status: 'in-progress',
+    status: 'completed',
     metrics: [
       { label: 'Sync', value: 'Real-time' },
       { label: 'Storage', value: 'Local-first' },
@@ -686,9 +802,8 @@ export interface SocialDescriptions {
 
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
-  meta: 'Senior Manager, Engineering at Versant (CNBC Core). 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.',
-  twitter:
-    'Senior Manager, Engineering at Versant (CNBC Core). Engineering notes with receipts: agents, edge architecture, reliability.',
+  meta: `${roleTitle}. 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.`,
+  twitter: `${roleTitle}. Engineering notes with receipts: agents, verification, reliability.`,
 };
 
 export interface PersonaItem {
@@ -922,7 +1037,7 @@ markComplete(task); // on its word`,
 const result = await agent.run(task);
 review({
   diff: result.diff,         // what changed
-  testRun: result.testLog,   // proof it ran
+  testRun: result.testLog,   // what ran, what skipped
   artifact: result.buildUrl, // the thing itself
 });
 // Accept or reject on evidence you can open,

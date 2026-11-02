@@ -2,16 +2,19 @@
 
 **Engineering Portfolio & R&D Playground.**
 
-This repository hosts the personal site of Zhao Yu — Senior Manager, Core Web at CNBC — a player-coach engineering leader specializing in high-scale media architecture, AI-augmented engineering, and local-first systems. It serves two purposes:
+This repository hosts the personal site of Zhao Yu, Senior Manager, Engineering at Versant (CNBC Core). The site leads with the writing:
 
-- **Portfolio:** A high-performance, Edge-rendered showcase of my work.
-- **R&D Sandbox:** A production implementation of the "Synthesis Strategy"—combining serverless ingestion with local-first state management.
+- **Notes:** engineering notes on agents, verification and reliability, each naming the incident or source it came from, and the mental models that held up across them.
+- **Selected work:** decision records for the systems behind the notes, with every employer figure tied to a public source.
+- **R&D sandbox (retired):** `/infra` was a production implementation of serverless ingestion feeding local-first state. It was retired in October 2026, when its GCP backend was deleted, and the route is removed.
 
 ---
 
 ## 🏗 System Architecture
 
-This is not just a static site. It is a **Hybrid Edge Application** that bridges the gap between global CDN performance and local-first interactivity.
+> **Retired October 2026.** The Cost-Guard stack below (Cloud Run ingestion, Cloud SQL, ElectricSQL, the `/infra` client) was shut down on 2026-10-25 and removed from this repo. The site is now fully static; this section is kept as a record of how the dashboard worked.
+
+Until then this was not just a static site. It was a **Hybrid Edge Application** that bridged the gap between global CDN performance and local-first interactivity.
 
 ### The Data Flow
 
@@ -29,22 +32,22 @@ This is not just a static site. It is a **Hybrid Edge Application** that bridges
 |-------|-----------|-----------|
 | Frontend | SvelteKit 2 (Svelte 5) | Runes provide fine-grained reactivity for high-frequency data updates. |
 | Edge Hosting | Cloudflare Pages | Zero-cold-start delivery for static portfolio pages via global CDN. |
-| Local Database | PGlite (WASM) | Runs a full Postgres instance in the browser for zero-latency queries. |
-| Sync Protocol | ElectricSQL | WAL-based replication that handles offline state and shape subscriptions. |
-| Backend | GCP Cloud Run | Scalable, containerized ingestion of infrastructure metrics (us-central1). |
-| CI/CD | GitHub Actions | HMAC-signed push to ingestion API on every qualifying commit. |
+| Local Database (retired 2026-10) | PGlite (WASM) | Ran a full Postgres instance in the browser for zero-latency queries. |
+| Sync Protocol (retired 2026-10) | ElectricSQL | WAL-based replication that handled offline state and shape subscriptions. |
+| Backend (retired 2026-10) | GCP Cloud Run | Scalable, containerized ingestion of infrastructure metrics (us-central1). |
+| CI/CD | GitHub Actions | Type-check, lint, test and build gates; deploys to Cloudflare Pages. Until 2026-10 it also sent an HMAC-signed push to the ingestion API. |
 
 ---
 
 ## ⚡ Key Features
 
-### Zero-Latency Infrastructure HUD (`/infra`)
+### Zero-Latency Infrastructure HUD (`/infra`, retired October 2026)
 
-A public-facing dashboard that tracks the real-time cost of this architecture.
+A public-facing dashboard that tracked the real-time cost of this architecture, until its GCP backend was deleted on 2026-10-25.
 
-- **Offline-Ready:** Works without a network connection thanks to IndexedDB persistence across sessions.
-- **Live Sync:** A "Pulse" indicator visualizes WAL events arriving from ElectricSQL in real-time.
-- **Local SQL Engine:** All filtering and aggregation runs as SQL directly against PGlite in the browser—no round-trips.
+- **Offline-Ready:** Worked without a network connection thanks to IndexedDB persistence across sessions.
+- **Live Sync:** A "Pulse" indicator visualized WAL events arriving from ElectricSQL in real-time.
+- **Local SQL Engine:** All filtering and aggregation ran as SQL directly against PGlite in the browser—no round-trips.
 
 ---
 
@@ -58,25 +61,26 @@ A public-facing dashboard that tracks the real-time cost of this architecture.
 ### Local Development
 
 ```bash
-# 1. Install dependencies (including WASM binaries)
+# 1. Install dependencies
 cd frontend && pnpm install
 
 # 2. Run the development server
 pnpm dev
 ```
 
-The `/infra` dashboard reads from a public sync endpoint configured in [`frontend/src/lib/constants/config.ts`](frontend/src/lib/constants/config.ts) (`ELECTRIC_SYNC_URL`). The HMAC signing secret lives only in GitHub Actions secrets on the ingestion side — nothing secret ships to the client.
-
 ### Deployment
 
-The frontend deploys to Cloudflare Pages on push to `main`. The GCP backend (ingestion + sync) runs on Cloud Run and is managed separately.
+The frontend deploys to Cloudflare Pages on push to `main`. The GCP backend (ingestion + sync) that fed `/infra` was deleted on 2026-10-25.
 
 ---
 
 ## 📚 Documentation
 
-- **[Frontend README](frontend/README.md)** — structure, routes, scripts, deployment
-- **[CLAUDE.md](CLAUDE.md)** — coding conventions, testing rules, design principles
+- **[Frontend README](frontend/README.md)**: structure, routes, scripts, deployment
+- **[CLAUDE.md](CLAUDE.md)**: coding conventions, testing rules, disclosure and scope rules
+- **[PUBLISHING.md](PUBLISHING.md)**: the reviewer's checklist for content and visual changes
+- **[Visual brief](.interface-design/brief.md)** and **[design system](.interface-design/system.md)**: how the site should look and where each rule lives
+- **[Writer skill](.claude/skills/writer/SKILL.md)** and **[writer-judge](.claude/skills/writer-judge/SKILL.md)**: how prose is written and independently reviewed before it ships
 
 ---
 

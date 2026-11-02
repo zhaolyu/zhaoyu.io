@@ -3,12 +3,48 @@
     "slug": "site",
     "kind": "profile",
     "eyebrow": "SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE",
-    "subtitle": "Engineering notes with receipts: agents, edge architecture, and the mental models that survive production.",
+    "subtitle": "Done is a claim. The receipt is what you check.",
     "title": "Zhao Yu",
     "footnote": [
       "Agents",
-      "Edge Architecture",
+      "Verification",
       "Reliability"
+    ]
+  },
+  "three-judges-cleared-it-and-all-three-had-the-same-host": {
+    "slug": "three-judges-cleared-it-and-all-three-had-the-same-host",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · OCT 2026",
+    "title": "Three Judges Cleared It, and All Three Had the Same Host",
+    "subtitle": "",
+    "footnote": [
+      "Verification",
+      "Reliability",
+      "AI Engineering"
+    ]
+  },
+  "fan-out-multiplies-whatever-each-unit-pays-to-start": {
+    "slug": "fan-out-multiplies-whatever-each-unit-pays-to-start",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · OCT 2026",
+    "title": "Fan-Out Multiplies Whatever Each Unit Pays to Start",
+    "subtitle": "",
+    "footnote": [
+      "Distributed Systems",
+      "Performance",
+      "Reliability"
+    ]
+  },
+  "nobody-declared-the-line-endings": {
+    "slug": "nobody-declared-the-line-endings",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · SEP 2026",
+    "title": "Nobody Declared the Line Endings, and a Generator Never Converged",
+    "subtitle": "",
+    "footnote": [
+      "Reliability",
+      "Verification",
+      "Architecture"
     ]
   },
   "two-checks-reported-zero-and-neither-was-looking": {

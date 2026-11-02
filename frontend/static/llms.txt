@@ -2,8 +2,8 @@
 
 > Senior Manager, Engineering @ Versant (CNBC Core), and the author of the
 > engineering notes on this site. The site leads with the writing: mental
-> models and production lessons on agents, edge architecture, and
-> reliability, every claim carrying a receipt. The role behind it: co-leads
+> models and production lessons on agents, verification, and reliability,
+> each note naming its receipt. The role behind it: co-leads
 > the ~20-engineer next-generation rebuild of CNBC.com across 3 teams (web,
 > video, and market data),
 > managing a direct team of 8 engineers and 2 QE, spanning edge
@@ -83,15 +83,15 @@
    is engineered into the loop (boundaries, receipts, control planes), not
    summoned from the model.
 7. **Independent builder**: ships and operates real systems outside of
-   assigned work with the same production discipline. Current systems:
+   assigned work with the same production discipline. Systems:
    Cost-Guard (a local-first FinOps platform: PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
-   infrastructure) and OB1, the retrieval layer over a personal
-   exocortex of 1,700 atomic, cross-linked claims distilled from books,
-   engineering sources, and production lessons. The vault stays the
-   source of truth; OB1 projects it into Supabase and serves it over MCP,
-   so any client (Claude, ChatGPT, Cursor, phone) starts with
-   accumulated judgment rather than a blank context window.
+   infrastructure; retired in October 2026) and OB1, the retrieval layer
+   over a personal exocortex of 1,700 atomic, cross-linked claims
+   distilled from books, engineering sources, and production lessons.
+   The vault stays the source of truth; OB1 projects it into Supabase and
+   serves it over MCP, so any client (Claude, ChatGPT, Cursor, phone)
+   starts with accumulated judgment rather than a blank context window.
 
 ## Key pages
 
@@ -111,13 +111,18 @@
   operating principles for AI-augmented engineering: spec quality as the
   bottleneck, agent loops and receipts, deterministic interfaces around
   non-deterministic systems.
-- [Infra Dashboard](https://zhaoyu.io/infra): Cost-Guard, a local-first
-  infrastructure cost monitor (PGlite + ElectricSQL, real-time sync).
+- [Fleet Record](https://zhaoyu.io/fleet): the run ledger of his fleet of
+  scheduled Claude Code routines, read live: runs per day by kind, the share
+  of edit-runs a harness verified, and API-equivalent value at list rates.
+  Closed days only; the human outcome axis is deliberately not published.
 
 ## Selected notes
 
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
+- [Three Judges Cleared It, and All Three Had the Same Host](https://zhaoyu.io/blog/three-judges-cleared-it-and-all-three-had-the-same-host)
+- [Fan-Out Multiplies Whatever Each Unit Pays to Start](https://zhaoyu.io/blog/fan-out-multiplies-whatever-each-unit-pays-to-start)
+- [Nobody Declared the Line Endings, and a Generator Never Converged](https://zhaoyu.io/blog/nobody-declared-the-line-endings)
 - [Two Checks Reported Zero and Neither Was Looking](https://zhaoyu.io/blog/two-checks-reported-zero-and-neither-was-looking)
 - [Your Checks Are Lying to You](https://zhaoyu.io/blog/your-checks-are-lying-to-you)
 - [Agents Re-Derive Judgment You Already Paid For](https://zhaoyu.io/blog/agents-re-derive-judgment-you-already-paid-for)

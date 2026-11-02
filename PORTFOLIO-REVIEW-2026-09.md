@@ -11,6 +11,18 @@ acceptance criteria, then the decisions only Zhao can make.
 
 ---
 
+**Status, 2026-10-04.** Checked against the code on `claude/admiring-thompson-nmg6ss`
+(PR #90); items not listed here were not re-audited.
+
+- **P0.2 identity strip: shipped in PR #90.** One line under the CTAs, in sans at
+  secondary weight: name, `roleTitle` and location (§6.2 answered: "NYC"). Contact is
+  reachable from the first viewport through the nav's `/contact` link.
+  `positioning.test.ts` gains an assertion that the line carries no scope claim.
+- **P0.1 case study: still blocked** on the four `[CONFIRM]` facts in
+  `CASE-STUDY-DRAFT-nextgen-migration.md`; `CASE_STUDIES` is empty.
+- **P1.1 Models surface: shipped** (`/models`, the landing teaser, `models.test.ts`).
+- The visual work this review implies is now specified in `.interface-design/brief.md`.
+
 ## 1. Health baseline (measured, not assumed)
 
 Everything below was run on this branch, this session:

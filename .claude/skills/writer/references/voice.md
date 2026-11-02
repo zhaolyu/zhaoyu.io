@@ -16,7 +16,7 @@ the way it works now"), while speculative pieces hedge openly ("I'm worried abou
 certainty is the only unacceptable option.
 
 **No credentialing.** The résumé is elsewhere on the page. Scope appears only when it is
-the evidence — "I manage a direct team of ten and co-lead a rebuild across three teams,
+the evidence — "I manage eight engineers and two QE directly and co-lead a rebuild across three teams,
 and the skills that job demands are now IC skills too" works because the headcount is the
 argument. State it the way the résumé does; see the scope-claim rule in
 [surfaces.md](surfaces.md), which `positioning.test.ts` enforces.
@@ -40,8 +40,8 @@ they need the mechanism and the receipt.
 
 ## Inline markup
 
-Note content is rendered as `{@html}` inside a `<p>`, so inline HTML is available and is
-part of the voice:
+Note content is rendered as `{@html}` inside a `<p>` (an essay's `<h2>`, `<ul>` and `<ol>`
+blocks render as-is), so inline HTML is available and is part of the voice:
 
 - `<strong>` — the load-bearing claim, typically once per paragraph and always on the
   closing rule. More than twice per paragraph and emphasis stops meaning anything.
@@ -52,12 +52,19 @@ part of the voice:
 Escape apostrophes correctly for the TypeScript string, and prefer double-quoted strings
 when the paragraph contains apostrophes (matches the existing file).
 
+Note bodies set in Source Serif 4 (`--font-serif`) at the `--measure-prose` reading width;
+`<code>` renders in mono, which the design system reserves for identifiers and measured
+values (`.interface-design/system.md`), so it is never a way to add emphasis.
+
 ## Banned and rationed
 
 **Banned outright:** the em dash (see below), "In today's fast-paced world," "let's dive
 in," "delve," "landscape" (figurative), "unlock," "game-changer," "seamless," "robust" as
 filler, "leverage" as a verb where "use" works, "supercharge," "at scale" without a number
-attached, exclamation points, rhetorical questions used as transitions.
+attached, exclamation points, rhetorical questions used as transitions. The gate's own list
+is `BANNED_PHRASES` in `frontend/src/lib/constants/voice-rules.ts`; it also catches
+"paradigm shift," "needless to say" and "when it comes to," and fails any exclamation
+point.
 
 ## No em dashes
 
@@ -153,6 +160,8 @@ These are checks you run, not impressions you form. From `frontend/`:
 pnpm vitest run src/lib/constants/content-voice.test.ts
 ```
 
-That gate covers the dash ban and the per-paragraph caps. It cannot see cadence, so read the draft's
+That gate covers the shape caps, the dash ban, the banned phrases, the X-not-Y cap and the
+receipt schema; `node scripts/draft-lint.mjs <draft.json>` runs the same rules on a draft
+that is not in `content.ts` yet. It cannot see cadence, so read the draft's
 paragraph-final sentences as a list — pull them out, stack them, and count how many are
 epigrams. More than one and the piece needs cutting, whatever the suite says.

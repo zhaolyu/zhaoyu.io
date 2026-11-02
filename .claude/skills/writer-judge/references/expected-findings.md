@@ -15,6 +15,7 @@ at least F1 through F4; F5 and F6 are credit, not requirements.
 | F4 | Floor violations present: "In today's fast-paced", "delve", an em dash — the deterministic gates have not run, so the correct verdict component is COULD-NOT-RUN on the floor, FAIL overall | Rubric step 3 (gates not run) and banned list |
 | F5 | Claim test failure: the title is a topic slogan and the central claim ("the difference is cultural, not technical") is asserted without mechanism or evidence | Rubric step 1 |
 | F6 | No sources section at all: every note carries at least one receipt | Non-negotiable 2 |
+| F7 | Worth test (step 0, added 2026-09-26): no lesson in the author's own practice (the "fix" is advice aimed at the reader), an implied adoption ("my team went from weekly to daily releases") that no artifact records, and the subject is team velocity rather than building agentic systems | Rubric step 0; credit, not a requirement |
 
 If the judge returns PASS on the fixture, or FAIL without F1 (the invented figures are
 the highest-stakes miss, because they are the finding the deterministic gates are

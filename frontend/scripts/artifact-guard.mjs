@@ -7,7 +7,7 @@
 //
 // Three checks, each with a single source elsewhere:
 //   1. employer-metric shapes, from src/lib/constants/disclosure-shapes.ts,
-//      exempting the values performanceMetrics in content.ts already sources;
+//      exempting the values content.ts already sources (sourcedFigureValues);
 //   2. private child-repo slugs, read from the Forge manifest; "never name the
 //      private child repo slugs" was a sentence in a prompt, now it is a scan
 //      (the public repo and this site are allowed by default);
@@ -17,7 +17,7 @@
 // Exit 0 clean, 1 findings, 2 could not run. Always prints the file it checked.
 import { readFileSync } from 'node:fs';
 import { findUnsourced, makeExempt } from '../src/lib/constants/disclosure-shapes.ts';
-import { performanceMetrics } from '../src/lib/constants/content.ts';
+import { sourcedFigureValues } from '../src/lib/constants/content.ts';
 
 const args = process.argv.slice(2);
 const asJson = args.includes('--json');
@@ -58,7 +58,7 @@ const lineOf = (needle) => {
 const findings = [];
 
 // 1. employer-metric shapes
-const exempt = makeExempt(performanceMetrics.map((m) => m.value));
+const exempt = makeExempt(sourcedFigureValues);
 for (const h of findUnsourced(prose, exempt)) {
   findings.push({ check: 'metric-shape', kind: h.kind, match: h.match, line: lineOf(h.match) });
 }

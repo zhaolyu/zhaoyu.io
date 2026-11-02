@@ -3,6 +3,7 @@
   import BuilderCard from '$lib/components/features/builder/BuilderCard.svelte';
   import { NoteExcerptCard } from '$lib/components/features/notes';
   import { ModelCard } from '$lib/components/features/models';
+  import { Hero } from '$lib/components/features/hero';
   import {
     SectionHeader,
     StatCard,
@@ -210,6 +211,17 @@
         <ModelCard model={MENTAL_MODELS[0]} />
         <ModelCard model={MENTAL_MODELS[2]} compact />
       </div>
+    </section>
+  {:else if data.card.slug === 'hero'}
+    <!-- The real hero, rendered from heroContent: the most-seen module on the
+         site, previewed so a hand-off can never drift from what ships. -->
+    <section class="ds-section">
+      <h2>Light</h2>
+      <Hero />
+    </section>
+    <section class="ds-section dark ds-dark-scope">
+      <h2>Dark</h2>
+      <Hero />
     </section>
   {:else if data.card.slug === 'section-header'}
     <section class="ds-section">

@@ -18,6 +18,13 @@ were followed.
       everywhere it appears (`content.ts`, `llms.txt`, README) in the same PR — numbers that
       drift across surfaces read as carelessness.
 - [ ] The piece is written for both audiences: a person scrolling and an AI agent summarizing.
+- [ ] A new note, essay, or surface rewrite (hero, bio, manifesto, `llms.txt`) has a
+      `writer-judge` verdict from a fresh context whose calibration fixture failed as
+      expected. The final verdict table is in the PR body verbatim, every advisory has a
+      disposition (taken, overruled with a reason, owner decision, or follow-up), and any
+      edit made after the verdict is disclosed or re-judged.
+- [ ] No test was loosened to let a draft pass. A gate change ships only as a recorded
+      owner policy change.
 
 ## Disclosure boundaries
 
@@ -35,6 +42,9 @@ the disclosure policy in [CLAUDE.md](CLAUDE.md).
 - [ ] No third-party private information (colleagues, partners, vendors).
 - [ ] Framing stays on generic engineering domains — architecture, performance, AI
       engineering — not employer-vertical specifics.
+- [ ] The role appears in the hero only as the identity line (`roleTitle`, no team size or
+      scope); scope is stated in About and the meta copy, never as "leads/directs/runs"
+      a 20-engineer organization (`positioning.test.ts`).
 
 ## Mechanics
 
@@ -46,14 +56,27 @@ the disclosure policy in [CLAUDE.md](CLAUDE.md).
       validity and that the newest note is listed).
 - [ ] **OG cards regenerated** — `pnpm build && pnpm og`, and both the PNG and
       `static/og/manifest.json` committed. `og.test.ts` fails without this, and a title or
-      tag edit to an _existing_ note needs it too.
+      tag edit to an _existing_ note needs it too, as does any change to the hero tagline
+      (the site card's subtitle). Revert note PNGs that re-render with no copy change.
 - [ ] Social preview verified (LinkedIn Post Inspector or opengraph.xyz) — title,
       description, and image render correctly.
 - [ ] `pnpm build` output spot-checked: the new URL is prerendered and present in
       `sitemap.xml`.
 
+## Visual changes
+
+- [ ] Tokens only: no hardcoded colour, size, width, radius, shadow, duration, or spacing.
+      New tokens are registered (`design-tokens.ts`, `.design-sync/conventions.md`) and
+      `static/tokens.css` is regenerated.
+- [ ] The change follows `.interface-design/brief.md` (principles P1–P9) and
+      `.interface-design/system.md`; a reused component has a `/design-system` card.
+- [ ] Before/after screenshots at 1440 and 390, light and dark, are in the PR, with the
+      measured values for any check the change touches (for example, characters per line
+      on a note page, or the section left edges).
+
 ## Gates
 
 ```bash
 cd frontend && pnpm check && pnpm lint && pnpm test && pnpm format
+pnpm build   # also regenerates static/tokens.css; then `pnpm og` if cards changed
 ```

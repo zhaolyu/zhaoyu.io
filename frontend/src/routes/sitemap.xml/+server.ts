@@ -24,13 +24,12 @@ export function GET() {
     '',
   );
 
-  // /infra is deliberately excluded: the page sets <meta name="robots" content="noindex">,
-  // and a sitemap entry would contradict that signal.
   const staticEntries = [
     urlEntry(ROUTES.HOME, 'weekly', '1.0', newestNoteDate),
     urlEntry(ROUTES.BLOG, 'weekly', '0.8', newestNoteDate),
     urlEntry(ROUTES.MODELS, 'monthly', '0.8'),
     urlEntry(ROUTES.AI_MANIFESTO, 'monthly', '0.5'),
+    urlEntry(ROUTES.FLEET, 'weekly', '0.6'),
   ];
 
   // Case studies are full dates already; flag-gated studies stay out, matching

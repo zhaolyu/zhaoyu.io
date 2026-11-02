@@ -56,8 +56,8 @@ the story, that is the signal to reread the source, not to keep it.**
 
 **6. A mechanism has a host. Name it, and test a cross-platform tool on the host the
 incident ran on.** Measured 2026-09-11 and 12. Same GNU Awk 5.3.2 on the two sides of one
-machine: Git for Windows opens files in text mode and strips ``, so a `$`-anchored pattern
-matches a CRLF line there; Linux gawk preserves ``, so the same pattern misses. A note
+machine: Git for Windows opens files in text mode and strips `\r`, so a `$`-anchored pattern
+matches a CRLF line there; Linux gawk preserves `\r`, so the same pattern misses. A note
 verified in WSL attributed the Linux mechanism to a Windows incident and cleared three judge
 passes, because all three judges verified in WSL. Its author then called the correct Windows
 record fabricated, on the strength of a Linux test. Two friction entries for one incident

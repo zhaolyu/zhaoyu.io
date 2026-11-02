@@ -24,6 +24,22 @@ before shipping. The one-line version: describe the work, never sell the worker 
 a sentence that couldn't survive on lethain.com unedited is marketing, and marketing
 is the register this site does not ship.
 
+## What a note is for
+
+The site's owner, 2026-09-26: *"I want to create posts that show the lesson I'm learning
+from building agentic systems and the flows that drive impact to my learning and growing
+as an AI Engineer,"* and *"I treat these as insights for myself as well."*
+
+So a note has two readers. One is an engineer building agentic systems, who should leave
+able to do something differently. The other is the author, for whom the note is the
+record of an insight: what changed in practice, and why. A note that serves only the
+first reader is a tutorial, and one that serves only the second is a diary entry. The
+notes that belong here serve both. That is why a note shows the author's own before and
+after, not only an observation about how a system behaved; says whether the change is
+adopted (and where it is recorded) or still being learned; and names the agent-work
+context in its own words. `writer-judge` enforces this as its worth test, run first on
+every note and essay (surface copy has no lesson line and skips it).
+
 ## The six non-negotiables
 
 1. **Claim first.** Sentence one states the claim or the observed failure. No windup, no
@@ -67,18 +83,24 @@ is the register this site does not ship.
 
 ## The measured shape of a note
 
-Parsed from all 12 existing notes:
+Parsed from the 13 shipped notes in the note lane (the essay is measured separately below).
+The gate column is `SHAPE` in `frontend/src/lib/constants/voice-rules.ts`, the one source
+both `content-voice.test.ts` and `scripts/draft-lint.mjs` import; never restate its numbers
+anywhere as a rule of their own.
 
-| | Range | Target for a new note |
-|---|---|---|
-| Paragraphs | 2 (all 12) | 2 |
-| Words / paragraph | 41–172 | 110–160 |
-| Words / note | 103–310 | 220–300 |
-| Title words | 4–14 | 6–12 |
-| Tags | 3 | 3 |
+| | Range | Gate (`SHAPE`) | Target for a new note |
+|---|---|---|---|
+| Paragraphs | 2 (all 13) | exactly 2 | 2 |
+| Words / paragraph | 103-173 | 105-172 | 110-160 |
+| Words / note | 226-308 | 220-312 | 220-300 |
+| Title words | 6-15 | 6-14 | 6-12 |
+| Tags | 3 | exactly 3 | 3 |
+| `<strong>` spans | | 1-4, one in the last paragraph | |
 
-The 2026 notes are the current voice; the 2025 ones are shorter and thinner. Match the
-recent ones.
+The word, title and `<strong>` gates apply to notes dated on or after `VOICE_RULES_FROM`
+(2026-08-24); older notes are grandfathered by date, which is why the measured range runs
+past the gate. Those recent notes are the current voice; the older ones run shorter and
+thinner. Match the recent ones.
 
 **Paragraph 1** — situation, complication, claim, mechanism. Name the failure mode
 concretely enough that a reader recognizes it from their own week, then say *why* it
@@ -106,10 +128,12 @@ The shape, measured from the corpus:
 | Em dashes | 0 (banned; non-negotiable 6) |
 | Paragraph-final aphorisms | 1, at the end |
 
-`content-voice.test.ts` enforces the block count, heading count, word range, whole-block
-markup, the closing `<strong>` rule, and the zero-dash ban across the whole corpus (the
-shipped notes were scrubbed on 2026-08-31, so there is no grandfathered set). **When a draft trips one of those,
-fix the prose — never widen the gate.** The first essay shipped with the cap set to 3
+`content-voice.test.ts` enforces a floor of 8 blocks and 2 `<h2>` sections, the 900 to 2,500
+word range, whole-block markup, the closing `<strong>` rule, and the zero-dash ban across the
+whole corpus (the shipped notes were scrubbed on 2026-08-31, so there is no grandfathered
+set); the targets above are the editorial bar on top of that floor. **When a draft trips one of those,
+fix the prose — never widen the gate.** A gate change ships only as a recorded owner
+policy change, never in the same breath as the draft it would let through. The first essay shipped with the cap set to 3
 because 3 was what the draft happened to need, and with list blocks skipped entirely, so
 the densest block in the piece went unmeasured. That is the same defect the essay itself
 warns about, committed by its own checker.
@@ -137,12 +161,21 @@ machine-made even when every individual sentence is good.
    "Agent Failures Are Loop Failures, Not Intelligence Failures" is the bar.
 4. **Write both paragraphs**, then run the line-level checks in
    [references/voice.md](references/voice.md) and the calibration checks in
-   [references/calibration.md](references/calibration.md).
+   [references/calibration.md](references/calibration.md). Lint the draft before it
+   touches `content.ts`: save it as a JSON note (`slug`, `title`, `dateISO`, `tags`,
+   `sources`, `content`, and `format` for an essay) and run
+   `node scripts/draft-lint.mjs <draft.json>` from `frontend/` (exit 0 clean, 1 findings,
+   2 could not run). Give it the real `dateISO`: the word, title and `<strong>` rules only
+   apply from `VOICE_RULES_FROM` and the receipt schema only from `RECEIPT_SCHEMA_FROM`. A
+   draft with no date, or a partial one, is reported as a `date` finding and linted as if
+   dated today (`lintDraft` in `voice-rules.ts`), so it can no longer come back clean
+   unchecked.
 5. **Get judged.** Run the `writer-judge` skill in a context that did not author the
-   draft (the authoring session spawns a fresh subagent; see the judge's own SKILL.md
-   for the independence rules and verdict contract). Blocking findings get fixed and
-   re-judged; the verdict goes in the PR body. Self-review is self-attestation — the
-   deterministic gates are the floor, the judge is the review.
+   draft (the authoring session spawns a fresh subagent per draft; see the judge's own
+   SKILL.md for the independence rules, the draft-file contents, and the verdict
+   contract). Blocking findings get fixed and re-judged; the verdict goes in the PR
+   body. Self-review is self-attestation — the deterministic gates are the floor, the
+   judge is the review.
 6. **Ship it** using [references/publish.md](references/publish.md) — content.ts, llms.txt,
    OG regeneration, tests. Skipping the OG step breaks `og.test.ts`.
 
@@ -160,8 +193,9 @@ subject.
 
 ## Everything that isn't a note
 
-Hero, bio, projects, persona, footer manifesto, meta/OG descriptions, llms.txt and the AI
-manifesto each have their own constraints — length caps, the `goLoudPositioning` flag,
+Hero, bio, projects, persona, footer manifesto, meta/OG descriptions, llms.txt, case
+studies, the mental models and the AI manifesto each have their own constraints: length
+caps, the single `roleTitle` spelling of the role, the OG card that tracks the hero,
 agent-facing vs human-facing register. Read
 [references/surfaces.md](references/surfaces.md) before touching any of them.
 

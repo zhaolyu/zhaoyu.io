@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname, sep } from 'node:path';
-import { performanceMetrics } from './content';
+import { sourcedFigureValues } from './content';
 import { METRIC_SHAPES, stripIllustrativeCode, stripUrls, makeExempt } from './disclosure-shapes';
 
 /**
@@ -63,10 +63,13 @@ const SURFACES = [
  * must catch and the personal or sourced figures it must leave alone.
  */
 
-/** Values a public source already backs, via performanceMetrics (basis + SOURCES). */
-const SOURCED_VALUES = performanceMetrics.map((m) => m.value.toLowerCase());
+/**
+ * Values a public source already backs: performanceMetrics plus
+ * supportingFigures, both held to basis + SOURCES by content.test.ts.
+ */
+const SOURCED_VALUES = sourcedFigureValues.map((v) => v.toLowerCase());
 
-const exempt = makeExempt(performanceMetrics.map((m) => m.value));
+const exempt = makeExempt(sourcedFigureValues);
 
 describe('disclosure guard (allowlist)', () => {
   for (const { rel, text } of SURFACES) {
@@ -78,7 +81,7 @@ describe('disclosure guard (allowlist)', () => {
           .filter((m) => !exempt(m));
         expect(
           unsourced,
-          `${rel} states a ${kind} with no entry in performanceMetrics: ${unsourced.join(' | ')}. ` +
+          `${rel} states a ${kind} with no entry in performanceMetrics or supportingFigures: ${unsourced.join(' | ')}. ` +
             'Add the figure with a basis and a SOURCES citation, or cut it.',
         ).toEqual([]);
       });
@@ -147,6 +150,8 @@ describe('the guard catches the shape, not a memorised value', () => {
     '31% fewer incidents',
     'Top 3%',
     '0.9s LCP',
+    '512M monthly digital minutes',
+    '80M+ monthly video views',
   ];
   for (const claim of wouldEvadeALiteralList) {
     it(`flags ${claim} — a deny-list of literals would not`, () =>
@@ -159,6 +164,7 @@ describe('the guard catches the shape, not a memorised value', () => {
     ["the browser's 16ms frame budget", 'a universal platform fact'],
     ['47M monthly uniques', 'the public ComScore figure, in performanceMetrics'],
     ['p75 LCP of 1.7s', 'CrUX field data, in performanceMetrics'],
+    ['~394M monthly digital minutes', 'the public ComScore figure, in supportingFigures'],
   ] as const;
   for (const [claim, why] of mustNotFlag) {
     it(`allows "${claim}" (${why})`, () => expect(catches(claim)).toBe(false));

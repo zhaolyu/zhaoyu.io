@@ -100,3 +100,66 @@ describe('metric-matched font fallback', () => {
     expect(size).toBeLessThan(115);
   });
 });
+
+/**
+ * The reading face gets the same guard. Source Serif 4's metrics come from the
+ * hhea table of the shipped woff (identical to OS/2 typo; USE_TYPO_METRICS is
+ * set). The width ratio is measured against Liberation Serif, which is
+ * metric-compatible with Times New Roman, over 28,832 characters of the notes'
+ * own prose at 18px — measured, for the same reason as the Geist ratio above.
+ */
+const SERIF_FALLBACK = 'Source Serif 4 Fallback';
+const SOURCE_SERIF = { unitsPerEm: 1000, ascent: 1036, descent: 335, lineGap: 0 };
+const SERIF_SIZE_ADJUST = 1.1801;
+
+const serifFace = (() => {
+  const start = appCss.indexOf(`font-family: '${SERIF_FALLBACK}'`);
+  if (start === -1) return null;
+  const end = appCss.indexOf('}', start);
+  return end === -1 ? null : appCss.slice(start, end);
+})();
+
+describe('metric-matched serif fallback', () => {
+  it('declares the fallback @font-face', () => {
+    expect(serifFace, `app.css must define an @font-face for ${SERIF_FALLBACK}`).not.toBeNull();
+  });
+
+  it('is reachable from the serif stack, ahead of the generic fallbacks', () => {
+    const stack = appCss.match(/--font-serif:\s*([^;]+);/)?.[1] ?? '';
+    expect(stack.indexOf("'Source Serif 4'"), 'real face comes first').toBe(0);
+    expect(stack.indexOf(SERIF_FALLBACK)).toBeGreaterThan(0);
+    expect(stack.indexOf(SERIF_FALLBACK)).toBeLessThan(stack.indexOf('serif', stack.length - 6));
+  });
+
+  it('resolves to Times New Roman or its metric-compatible Linux twin', () => {
+    expect(serifFace).toMatch(/local\(['"]?Times New Roman/);
+    expect(serifFace).toMatch(/Liberation Serif/);
+  });
+
+  it('carries all four overrides', () => {
+    for (const prop of [
+      'size-adjust',
+      'ascent-override',
+      'descent-override',
+      'line-gap-override',
+    ]) {
+      expect(pct(serifFace ?? '', prop), `${prop} must be set`).not.toBeNull();
+    }
+  });
+
+  it('derives the vertical overrides from the real font metrics and size-adjust', () => {
+    const adjustedEm = SOURCE_SERIF.unitsPerEm * SERIF_SIZE_ADJUST;
+    const expected = {
+      'ascent-override': (SOURCE_SERIF.ascent / adjustedEm) * 100,
+      'descent-override': (SOURCE_SERIF.descent / adjustedEm) * 100,
+      'line-gap-override': (SOURCE_SERIF.lineGap / adjustedEm) * 100,
+    };
+    for (const [prop, want] of Object.entries(expected)) {
+      expect(pct(serifFace ?? '', prop), prop).toBeCloseTo(want, 1);
+    }
+  });
+
+  it('keeps size-adjust at the measured ratio', () => {
+    expect(pct(serifFace ?? '', 'size-adjust')).toBeCloseTo(SERIF_SIZE_ADJUST * 100, 1);
+  });
+});

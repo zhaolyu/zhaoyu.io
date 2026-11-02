@@ -9,7 +9,7 @@
 // wrong shape). It always prints the file it checked, so an empty or wrong
 // argument is visible rather than silent.
 import { readFileSync } from 'node:fs';
-import { lintNote, lintReceipts, receiptSchemaApplies } from '../src/lib/constants/voice-rules.ts';
+import { lintDraft } from '../src/lib/constants/voice-rules.ts';
 
 const args = process.argv.slice(2);
 const asJson = args.includes('--json');
@@ -37,9 +37,10 @@ if (typeof note.title !== 'string' || !Array.isArray(note.content)) {
   process.exit(2);
 }
 
-const voice = lintNote(note);
-const receipts = receiptSchemaApplies(note) ? lintReceipts(note) : [];
-const findings = [...voice, ...receipts];
+// lintDraft fails closed on a missing or partial dateISO: it reports the date
+// and lints as if dated today, instead of letting the date-gated rules skip.
+const today = new Date().toISOString().slice(0, 10);
+const findings = lintDraft(note, today);
 const head = `draft-lint: checked ${file} (${note.slug || 'no slug'}, dateISO ${note.dateISO || 'unset'})`;
 
 if (findings.length === 0) {

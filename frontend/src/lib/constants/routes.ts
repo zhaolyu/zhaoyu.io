@@ -7,6 +7,6 @@ export const ROUTES = {
   BLOG: '/blog',
   MODELS: '/models',
   AI_MANIFESTO: '/ai-manifesto',
-  INFRA: '/infra',
+  FLEET: '/fleet',
   WORK: '/work',
 } as const;
