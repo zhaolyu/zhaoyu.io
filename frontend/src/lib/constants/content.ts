@@ -368,7 +368,7 @@ export const notesData: NotesData = {
       title: 'Your Checks Are Lying to You',
       date: 'Aug 30, 2026',
       dateISO: '2026-08-30',
-      dateModified: '2026-09-16',
+      dateModified: '2026-11-01',
       format: 'essay',
       tags: ['Reliability', 'Verification', 'AI Engineering'],
       sources: [

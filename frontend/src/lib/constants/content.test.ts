@@ -141,13 +141,23 @@ describe('note sources and dates (3.1)', () => {
     // A rotted internal link is the fail-open shape the corpus argues about:
     // the page still renders, so nothing reports that the target is gone.
     const slugs = new Set(notesData.notes.map((n) => n.slug));
+    const walked: string[] = [];
     for (const note of notesData.notes) {
       for (const block of note.content) {
-        for (const [, slug] of block.matchAll(/href=['"]\/blog\/([^'"#?]+)['"]/g)) {
+        for (const [, slug] of block.matchAll(
+          /href=['"](?:https:\/\/zhaoyu\.io)?\/blog\/([^'"#?/]+)\/?(?:[#?][^'"]*)?['"]/g,
+        )) {
+          walked.push(`${note.slug} -> ${slug}`);
           expect(slugs, `${note.slug} links to /blog/${slug}`).toContain(slug);
         }
       }
     }
+    // The walk's own scope (the field guide's rule 5): a link known to exist
+    // must be among the ones walked, so a pattern that stops matching fails
+    // closed instead of passing on zero links.
+    expect(walked).toContain(
+      'your-checks-are-lying-to-you -> two-checks-reported-zero-and-neither-was-looking',
+    );
   });
 
   it('does not reuse one source label twice within a note', () => {
