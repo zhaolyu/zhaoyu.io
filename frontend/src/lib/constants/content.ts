@@ -244,6 +244,119 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'merged-is-not-running',
+      title: 'Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force',
+      date: 'Nov 2026',
+      dateISO: '2026-11-06',
+      tags: ['Reliability', 'Agent Architecture', 'Verification'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's dated record of the scheduled-heal fix that landed on a Sunday and the incident that reopened fourteen minutes later, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-25t08-35-13-mcp-capture/2026-10-25T08-35-13-mcp-capture.md (names forge incident bfe148e95c and the heal cadence in .agents/expectations.json)',
+          host: 'windows (the fleet host the record names); record read on linux at that revision, forge revisions not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'First-hand: the outcome record that replayed the review proof-first change at its parent and at the fix, and counted the eighteen ledger rows written after it landed, two of them from a worktree whose branch did not contain the fix',
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-16-outcome-forge-review-proof-first-replayed-and-refused-in-the-field/2026-10-16-outcome-forge-review-proof-first-replayed-and-refused-in-the-field.md (names forge 8f44aca, parent 84420e2, worktree branch 86a0a9b)',
+          host: 'windows, DESKTOP-CKML7OI (the replay host the record names); record read on linux, forge revisions not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            "First-hand: the operator's record of the parked draft whose copy-the-file adopt step had drifted 453 lines from its target after nineteen days",
+          ref: "vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-24t08-21-50-mcp-capture/2026-10-24T08-21-50-mcp-capture.md (names the target's intervening commit 1b641fa)",
+          host: 'windows (the fleet host); record read on linux, target repository not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+      ],
+      content: [
+        '<p>A fix I merged on a Sunday at 04:27Z stayed out of force for 33 hours, and I had written the incident down as resolved. The fix lived inside a scheduled heal in the agent fleet I run, and the heal runs on weekdays at 13:30Z, so the first run that could execute the new code was Monday afternoon. Fourteen minutes after the merge the incident reopened, carrying the two rows I had predicted, because my prediction was conditioned on the fix landing, not on a run that contained it. I had been treating merge and effect as one event. For code on a request path they nearly are. For code that runs inside a scheduled job, a checkout, or a parked draft, nothing changes at merge time, and anything said about the fix before its next run describes code that has not run.</p>',
+        "<p>The same fleet showed the other two gaps. A review script was changed so every row records whether its proof was fresh. Of the eighteen rows written after it, sixteen carried the field and two did not; both came from a worktree cut before the fix, still running the old script into the shared ledger. A draft parked nineteen days with a copy-the-whole-file adopt step had drifted 453 lines from its target against a 95-line intended change; adopting it would have silently undone a commit landed in between. So far I have changed my reading, not my tooling: I write a closure as resolved once a named run has executed a named revision, and I sort a shared ledger's rows by the revision that wrote them before computing a rate. Stamping rows with their writing revision and shipping drafts as diffs against a base commit are written down, not landed. <strong>A fix is in force when the code that contains it has run, not when it merged.</strong></p>",
+      ],
+    },
+    {
+      slug: 'a-self-hosted-fleet-inherits-its-hosts-restart-window',
+      title: "A Self-Hosted Agent Fleet Inherits Its Host's Restart Window",
+      date: 'Nov 2026',
+      dateISO: '2026-11-06',
+      tags: ['Reliability', 'Agent Architecture', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's record of the 2026-10-14 restart, with the Windows System log events, the run's zero-byte output and its missing completion line, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-15t08-16-52-mcp-capture/2026-10-15T08-16-52-mcp-capture.md',
+          host: "windows (the machine the fleet runs on, where the event log was read); record read on linux at that revision, the host's event log not re-read from this session",
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'Microsoft Learn, Manage device restarts after updates: active hours, their default range, and the 18-hour maximum',
+          href: 'https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart',
+        },
+      ],
+      content: [
+        "<p>At 04:59:01 on 2026-10-14 my Windows machine began restarting to install an update, one second after the last tool result of a scheduled agent run that had started at 04:10. The run belongs to an agent fleet I operate on that machine, and it died with the host. Its output file was zero bytes, its wrapper never wrote its completion line, and its report stopped partway with placeholders in it. The next morning's brief could report only an opaque exit code for a terminated process. Nothing in the fleet's own logs named the cause. The OS event log did, in two entries. I had scheduled the runs before dawn so their output was ready when I sat down. Windows protects only its active hours, by default 08:00 to 17:00, so the window I chose for unattended work was exactly the window the OS treats as free for a restart.</p>",
+        "<p>I had read self-hosting as owing uptime for my own code and had not counted the host's defaults, set for a person at the keyboard. The class also has a structural blind spot. A job's evidence about its own failure is written by the job or its wrapper, and a host restart takes both down at once, so this failure arrives with no witness inside the fleet. I now treat the host's maintenance schedule as part of the fleet's schedule, and when a run ends without its completion line I read the OS event log before the run's own artifacts. The repairs on record, active hours widened to span every scheduled run within the 18 hours Windows allows and a host audit comparing the restart window with the job schedule, are written down and not yet verified as landed. <strong>Self-hosting an agent fleet means owning every scheduler on the box, including the one you did not write.</strong></p>",
+      ],
+    },
+    {
+      slug: 'alert-on-the-exit-path-not-the-missing-file',
+      title: "Alert on the Runner's Exit Path, Not on the Missing Output File",
+      date: 'Nov 2026',
+      dateISO: '2026-11-06',
+      tags: ['Reliability', 'AI Engineering', 'Architecture'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's record of the 2026-10-11 login expiry, the runner's alert, the replay of the real raw output through the unchanged and changed runner, and the test counts, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-12t08-51-20-mcp-capture/2026-10-12T08-51-20-mcp-capture.md (names forge runs.log 20261011T081002Z and 20261011T110002Z, branch operator/2026-10-12-routine-cause, tests/test-routine-run.sh)',
+          host: 'windows (the fleet host the record names); record read on linux at that revision, forge branch and tests not re-run from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label: 'This site: the fail-open field guide this note adds a member to',
+          href: 'https://zhaoyu.io/blog/your-checks-are-lying-to-you',
+        },
+      ],
+      content: [
+        "<p>On 2026-10-11 the stored login of the command-line agent behind my routine fleet expired, every scheduled routine failed within a tenth of a second, and that morning's alert said only that one routine had written no output. Every routine runs through one runner, and I had built its alert from the downstream artifact: did the declared output appear with an accepted status line. That design is uniform and unambiguous, and it can only describe an absence. The cause, an expired OAuth session that could not be refreshed, was one field away in the raw result the runner had just written, and the runner discarded it. Diagnosing a fault cured by one login command took me an interactive session. A shared credential made the volume lie too: one expiry became an alert per output file, none naming the shared cause.</p>",
+        "<p>The artifact check was opt-in per routine, each declaring its own status line, so coverage followed past trouble rather than importance. The morning brief, the one page I read every day, had never needed one, so on a signed-out weekday it would have raised nothing. I have written about <a href='/blog/your-checks-are-lying-to-you'>checks that pass without looking</a>; this one looked, fired, and still named the wrong thing, because it watched the artifact rather than the process. So I changed the runner on a branch that day: any non-zero exit alerts first, quoting the child's first line, a known cure ahead of the reason because notification surfaces truncate, and the output check kept as a second signal. Replaying the real raw output gave the old message on the unchanged code and the new one for both routines; the suite went from ten new checks red to 69 of 69 green. <strong>Build the first alert from what the process said as it died, and let the missing file be the second opinion.</strong></p>",
+      ],
+    },
+    {
+      slug: 'rational-retries-read-as-demand',
+      title: 'A Slow Shared Resource Turns Rational Retries Into Phantom Demand',
+      date: 'Nov 2026',
+      dateISO: '2026-11-06',
+      tags: ['Distributed Systems', 'Performance', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            'ByteByteGo, How OpenAI Scaled to 800 Million Users With Postgres, 16 Feb 2026 (newsletter post; the cache-miss storm loop and the single-fetch-per-key fix)',
+          href: 'https://blog.bytebytego.com/p/how-openai-scaled-to-800-million',
+        },
+        {
+          label:
+            'Compounding Dividends, Where Are We Now Part 3: Smoke, Mirrors, and Phantom Demand, 10 Oct 2026 (order books during a shortage)',
+          href: 'https://www.compoundingdividends.net/p/where-are-we-now-part-3-smoke-mirrors',
+        },
+        {
+          label:
+            'First-hand: four dated run records of concurrent writing agents starving one semantic index, the September reading that it was slow rather than dead, and the candidate repair on file, read at the vault revision that holds them',
+          ref: 'vault 4983aa9:ops/observations.md:3267 (2026-10-17), :3276 (2026-10-24), :3283 (2026-10-31), :3248 (2026-10-06), :2580 (2026-09-07 reading)',
+          host: 'windows (the host the run records name for the lanes); records read on linux at that revision, the runs not re-run from this session',
+          verified_on: '2026-11-06',
+        },
+      ],
+      content: [
+        "<p>A cache-miss storm and a chip order book in a shortage fail by the same arithmetic. In ByteByteGo's account of OpenAI's Postgres layer, a burst of misses hits the database directly, latency rises, requests time out, applications retry, and the retries amplify the load. Compounding Dividends described the supply-chain form in October: customers order more than they need to guarantee supply, manufacturers make more and strain their suppliers, and in 2000 duplicate orders built phantom order books that overstated demand until lead times fell and cancellations cascaded. Every caller behaves correctly for itself, and a slow shared resource makes asking twice the rational move, then counts the second ask as load, so it looks scarcer than it is. The repairs differ. OpenAI lets one request per key fetch while the rest wait, collapsing the duplicates at one point. A supply chain has no such point.</p>",
+        "<p>I met the small form four times in October in my own agent work. Several writing agents I run in parallel check their drafts for duplicates against one semantic index, and the checkers behind them probe the same claims again. With three or four concurrent callers a query that takes seconds alone took about ten minutes, probes were killed at 240 to 600 seconds, and on 2026-10-17 two lanes finished 2 of 14 and 3 of 17 probes. My September reading was patience and hardware: slow rather than dead, so wait, and a GPU bank would keep the backlog down. The fourth occurrence, on 2026-10-31, changed it. The index was asked the same questions by several callers with nowhere for the asks to collapse, and the repair on file, not yet built, is one serial pass running every lane's probes before verification. <strong>Before buying capacity for a resource that looks overloaded, find the point where duplicate asks could collapse, and check whether it exists.</strong></p>",
+      ],
+    },
+    {
       slug: 'three-judges-cleared-it-and-all-three-had-the-same-host',
       title: 'Three Judges Cleared It, and All Three Had the Same Host',
       date: 'Oct 2026',
