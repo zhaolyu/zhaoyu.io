@@ -65,7 +65,7 @@ frontend/
   `rss.xml`, `og/cards.json`) are generated at build time.
 - **Content lives in `src/lib/constants/content.ts`** — projects, notes, career
   history, and copy are typed data consumed by the components.
-- **Security**: CSP is generated in `svelte.config.js` (hash mode); other
+- **Security**: CSP is generated in `kit.config.js` (hash mode); other
   headers ship via `static/_headers`.
 
 ## Deployment

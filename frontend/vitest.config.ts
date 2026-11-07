@@ -22,7 +22,7 @@ export default defineConfig({
     conditions: ['browser'],
     alias: {
       $lib: path.resolve(__dirname, './src/lib'),
-      '$app/environment': path.resolve(__dirname, './src/app.d.ts'),
+      '$app/env': path.resolve(__dirname, './src/app.d.ts'),
     },
   },
 });

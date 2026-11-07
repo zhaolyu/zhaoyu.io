@@ -1,6 +1,6 @@
 # Security headers for every response (Cloudflare Pages).
 # The full Content-Security-Policy is injected per page as a <meta> tag by
-# SvelteKit (see csp in svelte.config.js) because its script-src hashes vary
+# SvelteKit (see csp in kit.config.js) because its script-src hashes vary
 # per page; frame-ancestors cannot be delivered via <meta>, so it lives here.
 /*
   X-Content-Type-Options: nosniff
