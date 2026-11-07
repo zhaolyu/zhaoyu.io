@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import config from '../../../svelte.config.js';
+import config from '../../../kit.config.js';
 
 /**
  * The CSP is the site's main defence against injected script, and it is easy to
@@ -11,7 +11,7 @@ import config from '../../../svelte.config.js';
  * policy decorative must stay out.
  */
 
-const csp = config.kit?.csp;
+const csp = config.csp;
 const directives = csp?.directives ?? {};
 
 const scriptSrc: readonly string[] = directives['script-src'] ?? [];

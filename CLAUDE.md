@@ -207,7 +207,7 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
   `positioning.test.ts` fails the build on each retired phrasing; `disclosure-guard.test.ts` catches the unsourced figures.
 
 - **Disclosure policy (employer facts).** Versant is a public company. Every employer-related number on any surface — copy, `<meta>`, JSON-LD, `llms.txt`, OG cards — carries a public source from `SOURCES` in `content.ts`; nothing Versant/CNBC has not disclosed publicly is stated anywhere. `disclosure-guard.test.ts` holds the deny-list and scans every surface; `content.test.ts` enforces basis + source on metrics. A feature flag is not an exemption: `content.ts` is bundled into client JS whether or not a card renders, so embargoed copy stays out of the repository entirely until it is public.
-- CSP is configured in `svelte.config.js` (`kit.csp`, hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
+- CSP is configured in `frontend/kit.config.js` (`csp`, passed to `sveltekit()` in `vite.config.js`; hash mode) and other security headers in `static/_headers`. If you change the inline theme script in `app.html`, recompute its sha256 in the CSP `script-src`. New external origins (fetch/fonts/images) must be added to the CSP directives.
 - GitHub Actions are pinned to commit SHAs; Dependabot keeps them and npm deps updated.
 - Error handling must not expose sensitive data.
 
