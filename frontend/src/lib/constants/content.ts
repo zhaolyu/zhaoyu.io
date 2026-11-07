@@ -244,6 +244,70 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'merged-is-not-running',
+      title: 'Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force',
+      date: 'Nov 2026',
+      dateISO: '2026-11-07',
+      tags: ['Reliability', 'Agent Architecture', 'Verification'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's dated record of the scheduled-heal fix that landed on a Sunday and the incident that reopened fourteen minutes later, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-25t08-35-13-mcp-capture/2026-10-25T08-35-13-mcp-capture.md (names forge incident bfe148e95c and the heal cadence in .agents/expectations.json)',
+          host: 'windows (the fleet host the record names); record read on linux at that revision, forge revisions not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'First-hand: the outcome record that replayed the review proof-first change at its parent and at the fix, and counted the eighteen ledger rows written after it landed, two of them from a worktree whose branch did not contain the fix',
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-16-outcome-forge-review-proof-first-replayed-and-refused-in-the-field/2026-10-16-outcome-forge-review-proof-first-replayed-and-refused-in-the-field.md (names forge 8f44aca, parent 84420e2, worktree branch 86a0a9b)',
+          host: 'windows, DESKTOP-CKML7OI (the replay host the record names); record read on linux, forge revisions not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            "First-hand: the operator's record of the parked draft whose copy-the-file adopt step had drifted 453 lines from its target after nineteen days",
+          ref: "vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-24t08-21-50-mcp-capture/2026-10-24T08-21-50-mcp-capture.md (names the target's intervening commit 1b641fa)",
+          host: 'windows (the fleet host); record read on linux, target repository not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'Git documentation, git-apply: --check verifies that a patch applies, and the context lines a patch carries are what it checks against',
+          href: 'https://git-scm.com/docs/git-apply',
+        },
+      ],
+      content: [
+        "<p>A fix my fleet landed on a Sunday at 04:27Z was 33 hours from the first run that could execute it, and the prediction on file had treated the merge as the moment it took effect. The fix lived inside a scheduled heal in the agent fleet I run, and the heal runs on weekdays at 13:30Z, so the first run able to execute the new code was Monday's. Fourteen minutes after the merge the incident reopened, carrying the two predicted rows; the prediction had failed because it was conditioned on the fix landing rather than on a run that contained it. I had been treating merge and effect as one event, which is nearly true for code on a request path and false for anything that waits on a schedule, sits in an older checkout, or is parked as a draft.</p>",
+        "<p>Two more gaps turned up that month, one in the fleet, one in a draft of mine. A review change ran the declared proof before the reviewer and stamped each row fresh or not; of eighteen later rows, two lacked the stamp, both from a worktree whose branch lacked the fix. A draft parked nineteen days with a copy-the-whole-file adopt step had drifted 453 lines from its target against a roughly 95-line change; adopting it would have silently undone a commit landed meanwhile, where a diff against a base commit would have refused to apply. So far the change is in how I read, not in tooling: the rule in my notes is that a closure names the run and the revision it executed, and the stray rows were classified once by the branch that wrote them before a rate was trusted. Revision stamps and diff-shipped drafts are written down, not landed. <strong>A closure names the run and the revision; the merge date is a prediction, <a href='/blog/the-agent-run-is-the-new-unit-of-work'>not a receipt</a>.</strong></p>",
+      ],
+    },
+    {
+      slug: 'a-self-hosted-fleet-inherits-its-hosts-restart-window',
+      title: "A Self-Hosted Agent Fleet Inherits Its Host's Restart Window",
+      date: 'Nov 2026',
+      dateISO: '2026-11-07',
+      tags: ['Reliability', 'Agent Architecture', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's record of the 2026-10-14 restart, with the Windows System log events, the run's zero-byte output and its missing completion line, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-15t08-16-52-mcp-capture/2026-10-15T08-16-52-mcp-capture.md',
+          host: "windows (the machine the fleet runs on, where the event log was read); record read on linux at that revision, the host's event log not re-read from this session",
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'Microsoft Learn, Manage device restarts after updates: active hours, their default range, and the 18-hour maximum',
+          href: 'https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart',
+        },
+      ],
+      content: [
+        "<p>At 04:59:01 on 2026-10-14 my Windows machine began restarting to install an update, one second after the last tool result of a scheduled agent run that had started at 04:10. The run belongs to an agent fleet I operate on that machine, and it died with the host. Its output file was zero bytes, its wrapper never wrote its completion line, and its report stopped partway with placeholders. The morning brief could report only an opaque exit code for a terminated process. Nothing in the fleet's logs named the cause. The OS event log did, in two entries. I had scheduled the runs before dawn so their output was ready when I sat down. Windows protects only its active hours, by default 08:00 to 17:00, so the window I chose for unattended work was the window the OS treats as free for a restart.</p>",
+        "<p>I had read self-hosting as owing availability against outages and my own failures, and had not counted the host's defaults, set for a person at the keyboard. The class has a structural blind spot. A job's evidence about its own failure is written by the job or its wrapper, and a host restart takes both down at once, so this failure arrives with no witness inside the fleet. I now treat the host's maintenance schedule as part of <a href='/blog/merged-is-not-running'>the fleet's schedule</a>, and the rule I wrote down for a run that ends without its completion line is to read the OS event log before the run's own artifacts. The repairs on record, active hours widened to span every scheduled run within the 18 hours Windows allows and a host audit comparing the restart window with the job schedule, are written down and not yet verified as landed. <strong>Self-hosting an agent fleet means owning every scheduler on the box, including the one you did not write.</strong></p>",
+      ],
+    },
+    {
       slug: 'three-judges-cleared-it-and-all-three-had-the-same-host',
       title: 'Three Judges Cleared It, and All Three Had the Same Host',
       date: 'Oct 2026',

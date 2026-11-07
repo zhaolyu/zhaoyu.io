@@ -11,6 +11,30 @@
       "Reliability"
     ]
   },
+  "merged-is-not-running": {
+    "slug": "merged-is-not-running",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · NOV 2026",
+    "title": "Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force",
+    "subtitle": "",
+    "footnote": [
+      "Reliability",
+      "Agent Architecture",
+      "Verification"
+    ]
+  },
+  "a-self-hosted-fleet-inherits-its-hosts-restart-window": {
+    "slug": "a-self-hosted-fleet-inherits-its-hosts-restart-window",
+    "kind": "note",
+    "eyebrow": "ENGINEERING NOTE · NOV 2026",
+    "title": "A Self-Hosted Agent Fleet Inherits Its Host's Restart Window",
+    "subtitle": "",
+    "footnote": [
+      "Reliability",
+      "Agent Architecture",
+      "AI Engineering"
+    ]
+  },
   "three-judges-cleared-it-and-all-three-had-the-same-host": {
     "slug": "three-judges-cleared-it-and-all-three-had-the-same-host",
     "kind": "note",
