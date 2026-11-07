@@ -244,6 +244,70 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'seventeen-judge-passes-for-two-notes',
+      title: 'Seventeen Judge Passes for Two Notes: What the Loop Caught and Cost',
+      date: 'Nov 2026',
+      dateISO: '2026-11-07',
+      format: 'essay',
+      tags: ['Verification', 'AI Engineering', 'Reliability'],
+      sources: [
+        {
+          label:
+            'First-hand: the per-pass ledger of the seventeen judge passes (verdict, blocking findings by class, tokens and minutes per pass), written from the subagent hand-backs of the session that ran them',
+          ref: 'vault c2a641e:ops/health/2026-11-07-judge-rounds.md',
+          host: 'linux (the cloud session that authored the drafts and spawned every judge); the judges ran on the same host',
+          verified_on: '2026-11-07',
+        },
+        {
+          label:
+            'First-hand: the September baseline, two independent checkers over the same 43 vault notes, verdict agreement and the shared FAIL set',
+          ref: 'vault 4983aa9:ops/health/2026-09-01-checker-disagreement.md (raw results in 2026-09-01-checker-A.json and -B.json)',
+          host: 'linux (read at revision); the checkers ran on 2026-09-01 in cloud sessions',
+          verified_on: '2026-11-07',
+        },
+        {
+          label:
+            'This site: the merged pull request whose body carries the final verdict tables and dispositions for the two notes',
+          href: 'https://github.com/zhaolyu/zhaoyu.io/pull/106',
+        },
+        {
+          label:
+            'Zheng et al., Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena, NeurIPS 2023 Datasets and Benchmarks (arXiv 2306.05685)',
+          href: 'https://arxiv.org/abs/2306.05685',
+        },
+        {
+          label:
+            'Wang et al., Large Language Models are not Fair Evaluators, 2023 (arXiv 2305.17926)',
+          href: 'https://arxiv.org/abs/2305.17926',
+        },
+        {
+          label:
+            'Panickssery, Bowman and Feng, LLM Evaluators Recognize and Favor Their Own Generations, 2024 (arXiv 2404.13076)',
+          href: 'https://arxiv.org/abs/2404.13076',
+        },
+      ],
+      content: [
+        "Two notes went live on this site this week after seventeen independent judge passes. The judges raised fourteen blocking findings, and every one was a sentence that a dated record did not support: a figure no record measured, a host the session log contradicted, a commit date read as a landing. None was a sentence the deterministic gates could have caught; the linter was clean on every pass. Each pass cost about 167,000 tokens and six minutes, and five of the ten failures were one-clause fixes that each bought a full pass. This is the first measurement of the control I built after <a href='/blog/your-checks-are-lying-to-you'>the fail-open essay</a>, and it says the control earns its keep on exactly one kind of sentence.",
+        "The loop is simple. A draft goes to a judge that did not write it, running in a fresh context with only the rubric, the draft and its provenance table. The judge first fails a known-dirty fixture, so a judge that passes anything is caught before it passes something real. It returns a verdict and an anchored findings table; I fix blocking findings in prose and send the draft back to a new judge, because an edit after a verdict is text the verdict never read. The final table goes into the pull request verbatim, with a disposition for every advisory. The rule underneath is the one <a href='/blog/three-judges-cleared-it-and-all-three-had-the-same-host'>three judges taught me in September</a>: self-review is self-attestation, and the judge is never the author.",
+        '<h2>What the judges caught</h2>',
+        'Fourteen blocking findings across ten failed passes. Five were receipts: a figure, a host or a prior belief the record did not support. Four were sequence: a date or an order the record states differently. Two were cadence, one was a mechanism stated larger than its record, one was an adoption claim without an artifact, and one was attribution. The four that would have embarrassed me most in print:',
+        '<ul><li>A note said a search that takes seconds alone took ten minutes under load. No record measured seconds. The only recorded solo timing was one to five minutes, and the contrast the paragraph turned on was invented.</li><li>A first-hand receipt named Windows as the host of four runs. My own session log, one directory away from the record I cited, said three of the four were cloud Linux containers. The judge opened both.</li><li>A note said a nightly check landed a day after an incident. The record dated its first commit a day after; it gave no merge date at all. I had written a commit date as a landing, in the same batch as a note arguing that merged is not running.</li><li>A note said one routine failed that morning. The outcome record, which I had not cited, showed two runs and two notices.</li></ul>',
+        "Each of these is plausible, fluent, and wrong by a detail that only the record at its revision could settle. That is the class the judge exists for. In September, ten judge passes over two drafts failed every one on this class with the deterministic gates green throughout, which is why the rubric now carries a tense tripwire and a causal-direction check. This week's ledger says the tripwire is where the yield is: the judges spent their blocking findings on the relation between a sentence and a dated artifact, and not on anything the linter already covers.",
+        '<h2>What they disagreed about</h2>',
+        "The judges contradicted each other once, and the contradiction is in the rubric. The third judge on one note asked, as an advisory, that a practice be owned in the first person: say <em>I now write</em>, not <em>a closure now names</em>, because the worth test wants the author's own before and after. The fifth judge on the same note failed, as blocking, every first-person act in it: the fix was landed by a scheduled routine, the prediction was the routine's, the ledger rows were classified by an outcome record another routine wrote. The receipts rule wants the record's actor. Both judges cited the skill correctly. I resolved it as an owner decision recorded in the pull request: the fleet's routines act as my agents, concrete acts are stated at the record's size, and the lesson stays in first person.",
+        'Some disagreement is the expected cost of independent judges, and I now have two numbers for it. Zheng and colleagues, in the paper that named LLM-as-a-judge, report that a strong model agrees with human preferences over 80 percent of the time, which they describe as the same level of agreement between humans. My own September baseline ran two independent checkers over the same 43 vault notes: they agreed on 32 verdicts, and on the single FAIL they converged on the same note, the same defect and the same repair. The pattern held this week in a weaker form. The blocking findings were reproducible in kind; the advisories varied with the judge.',
+        "The biases the literature names are the reason for the loop's structure, and one of them the loop does not control. Zheng and colleagues list position, verbosity and self-enhancement bias. Wang and colleagues showed that swapping the order of two candidate answers can flip the verdict, with one model beating a stronger one on 66 of 80 queries once the evaluator was gamed. Panickssery, Bowman and Feng found that evaluators score their own outputs higher than humans do, and that the effect grows linearly with how well the model recognises its own text. A judge that never sees two candidates has no order to be biased by, and a judge that is not the author cannot favour its own draft. But every judge this week was the same model as the author, and self-preference is a property of the model, not the context. The fresh context removes the drafting rationale. Whether the shared model also inflated the pass rate is something this ledger cannot say.",
+        '<h2>What it cost</h2>',
+        'Seventeen passes consumed 2.84 million tokens and 104 minutes of judge time, a mean of 167,000 tokens and six minutes per pass, with the fixture included. The cost is per pass, not per finding. A pass that found three defects and a pass that found one wrong preposition cost the same, because the contract says a blocking fix is re-judged by a judge that did not author it, and a fresh context has to reread the rubric, the draft and every record. Five of the ten failures were one-clause fixes. Scoping those re-judges to the changed claim would have saved roughly a third of the spend. The contract does not provide for it, and I have not changed the contract.',
+        'The fixture never discriminated. Seventeen of seventeen judges failed it, each with findings covering the four classes the answer key requires. That is the designed outcome, and it also means the fixture has not yet told me anything a pass over the real draft did not. I keep it because the judge it would catch, one that passes a draft with invented figures and stacked aphorisms, is the one failure of this loop I could not see any other way, and because a fixture costs a fraction of a pass.',
+        "The loop also has a floor it cannot lower. Every first-hand receipt in the two notes names a revision in a repository the cloud session could not reach. Each judge verified those mechanisms against the vault's dated records and marked the artifacts themselves could-not-run, on every pass, correctly. The notes shipped on record-level receipts with that status disclosed in every source field, which is the precedent three earlier notes set. It is also the standard the notes argue against. From the cloud, the loop could confirm that each story matched its record, and nothing about the record itself.",
+        '<h2>What I would change</h2>',
+        "<ol><li>Price a re-judge by the size of the fix. A one-clause fix should get a scoped pass over the changed claim and its provenance line, by a fresh judge, with the full pass reserved for a rewrite. The contract's reason for a full pass, that the judge is never the author, survives the scoping.</li><li>Put the actor in the provenance table. Every first-person verb in a draft gets a row naming who the record says did it. The attribution question is then answered before the judge opens the record, and the rubric tension above cannot re-fire.</li><li>Record owner decisions as standing rules, not per-PR dispositions. The decision that routines act as my agents was taken once this week and will be re-asked on every forge-sourced note until it lives in the skill.</li><li>Measure judge agreement on a fixed draft, periodically, the way the September baseline did. Successive judges over a changing draft cannot give an agreement rate; two judges over the same text can.</li></ol>",
+        'None of the four is landed. The ledger is in my notes, the contract is as it was, and the two notes are live under the old rules. The honest status is that I now know what the loop costs and what it catches, and have not yet spent the judgment on whether the first is worth the second at this cadence. For two notes a week it is. For the four-note batch I started with, it was not, and two of those notes are parked partly because of it.',
+        '<strong>A judge pays for itself on one kind of sentence, the plausible one no record supports. Price every pass against that sentence, and nothing else.</strong>',
+      ],
+    },
+    {
       slug: 'merged-is-not-running',
       title: 'Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force',
       date: 'Nov 2026',
