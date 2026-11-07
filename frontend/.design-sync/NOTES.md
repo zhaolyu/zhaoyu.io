@@ -2,23 +2,21 @@
 
 Read this before re-running `/design-sync`. `config.json` alongside pins the target project.
 
-## Current state (checked against the code 2026-10-04)
+## Current state (checked against the code 2026-10-26)
 
 - **Registry:** 20 cards in `src/lib/constants/design-system.ts`: 11 foundations
   (`color, status, data-viz, surface, type, type-rhythm, spacing, radius, elevation, motion,
 layout`) and 9 components (`hero, system-card, note-card, model-card, section-header,
 stat-card, data-table, annotated-chart, segmented`).
-- **Last recorded sync:** re-sync 6 (2026-08-23), when the registry had 17 cards. Since then
-  `model-card` was added (`4475f87`, 2026-09-01), then `layout` and `hero`, with `app.css`
-  gaining `--content-max`, `--measure-prose`, `--font-serif` and the `Source Serif 4 Fallback`
-  face (`1746a27`, 2026-10-04).
-  No sync is recorded after that, so assume the Design project is behind: the next run
-  re-uploads every card (each one inlines `app.css`) and adds the three new ones.
+- **Last recorded sync:** re-sync 7 (2026-10-26) from `main@e1bb2f5`, all 20 cards. The
+  Design project matches that build; a later `app.css` change means a full re-upload again.
 - **Fonts in the bundle:** `fonts/` ships every face the site loads (Geist Sans, Geist Mono,
   Source Serif 4 at 400, 400 italic and 600: 5 files, 103 KB) and `styles.css` carries both
   metric-matched fallbacks (`FONT_FILES` and `FALLBACK_FAMILIES` in
-  `scripts/design-system-styles.mjs`, guarded by `design-system-styles.test.ts`). The next
-  sync must re-upload `styles.css` and `fonts/**` so `--font-serif` resolves in designs.
+  `scripts/design-system-styles.mjs`, guarded by `design-system-styles.test.ts`). Uploaded
+  in re-sync 7, so `--font-serif` resolves in designs.
+- **The cards themselves render in the fallback faces, not Geist** (see re-sync 7). Designs
+  are unaffected; only the human-facing previews are.
 
 ## Shape: hand-authored preview bundle (off-script)
 
@@ -209,6 +207,45 @@ _ds_needs_recompile` and `deletes: []`, then sentinel → styles.css → 2 fonts
   have resolved to nothing in a rendered design.
 - Bundle is now 17 cards + `styles.css` (8 KB) + `fonts/` (2 files, 42 KB).
 
+## Re-sync 7 — 2026-10-26, hero + layout + model-card (17 → 20 cards, all re-uploaded)
+
+- Source: `main@e1bb2f5`, built in a detached worktree
+  (`.claude/worktrees/design-sync-2026-10-05`) because the shared checkout sat on a docs
+  branch. Pre-flight: `pnpm install --frozen-lockfile`, `pnpm test` (997 passed; the drop
+  from 1085 is the cost-guard retirement, #96, deleting 5 test files), the disclosure guard
+  and `design-system-styles` run on their own (724 passed), build, bundle, and the
+  `[redacted]` grep empty.
+- **Login first.** `DesignSync` refused every call until `/design-login` was run from an
+  interactive Claude Code terminal on the PC. A session driven from the phone (Remote
+  Control) counts as non-interactive and cannot run it; once it has been run on the machine,
+  the phone session reuses it.
+- Pre-upload `list_files`: 17 cards, 2 fonts, `styles.css`, README, no sentinel (consumed
+  again). Every remote card and font path still existed on disk, so `deletes: []`.
+- **Render check, scripted this time.** The Playwright headless shell at
+  `%LOCALAPPDATA%/ms-playwright/chromium_headless_shell-1208/` driven over CDP (Node's
+  global `WebSocket`, no Playwright package needed) loaded every card at its `@dsCard`
+  viewport and reported content height, loaded font faces, failed requests and console
+  errors; a full-page capture covered the dark halves of the three new cards. No script
+  errors on any card. Two pre-existing findings, neither introduced by this build:
+  - **Cards never load the real fonts.** The inlined `app.css` points its `@font-face` rules
+    at `/_app/immutable/assets/<face>.<hash>.woff2`, a path that exists on the live site and
+    nowhere in the bundle or the Design project, so every card renders in the metric-matched
+    `Geist Sans Fallback`. Designs are unaffected: `styles.css` → `fonts/` resolves (re-sync
+    6 proved it). Fix belongs in `build-design-system.mjs`: rewrite those URLs to
+    `../fonts/<face>.woff2` (unhashed names) while inlining.
+  - **12 of 20 cards are taller than their declared `height`.** Worst: `system-card` +1495,
+    `hero` +1450 (its `min-height: 85vh` grows with whatever frame it is given, so the dark
+    variant always sits below the fold), `model-card` +936, `annotated-chart` +832. Both
+    themes render correctly once scrolled; the declared heights only set the first view.
+  - Cosmetic: the compact `model-card` stretches to the height of the full card beside it,
+    leaving an empty panel.
+- Atomic path, one `finalize_plan` (writes `foundations/**, components/**, styles.css,
+fonts/**, README.md, _ds_needs_recompile`; `deletes: []`), one file per `write_files`:
+  sentinel → `styles.css` → 5 fonts → README → 11 foundations → 9 components → sentinel
+  re-arm. 29 calls, all `written: 1`. Post-upload `list_files` = 20 cards + 5 fonts +
+  `styles.css` + README + sentinel, matching disk; the Design-side files were untouched.
+- Bundle: 20 cards, 2039 KB, plus `styles.css` (9 KB) and `fonts/` (5 files, 103 KB).
+
 ## Re-sync procedure
 
 0. `git fetch && git status` — the checkout must be **clean and at
@@ -222,7 +259,10 @@ _ds_needs_recompile` and `deletes: []`, then sentinel → styles.css → 2 fonts
    `grep -rl '\[redacted\]' design-system/` must come back empty (the
    placeholder is not a leak, but it is not a card either).
 2. `DesignSync(list_files)` on the pinned project → project is non-empty and
-   pinned before the run → **atomic path**.
+   pinned before the run → **atomic path**. An authorization refusal here means
+   `/design-login` has not been run on this machine; it needs an interactive terminal,
+   not a phone-driven session (see re-sync 7). Before planning the upload, render-check
+   the cards the way re-sync 7 did.
 3. Diff `list_files` against `design-system/`: any remote path under
    `foundations/` or `components/` that disk no longer has goes into the plan's
    `deletes` explicitly.
@@ -249,7 +289,12 @@ fonts/**, README.md, _ds_needs_recompile` (add new top-level groups if the
   generated sheet and fails on a token family the header never documents, so
   the header cannot quietly rot the way the deferral warned about.
 - **Source Serif 4 in the bundle: closed 2026-10-04.** `FONT_FILES` and
-  `FALLBACK_FAMILIES` now include the reading face; it reaches the Design project only
-  after the next sync re-uploads `styles.css` and `fonts/**`.
+  `FALLBACK_FAMILIES` now include the reading face; uploaded in re-sync 7.
+- **Cards render in fallback fonts** (found 2026-10-26, open): their inlined `@font-face`
+  URLs point at `/_app/immutable/assets/`, which the bundle does not ship. Rewrite them to
+  `../fonts/` in `build-design-system.mjs`. Details under re-sync 7.
+- **`@dsCard` heights under-declared on 12 of 20 cards** (found 2026-10-26, open): the
+  first view of `hero`, `model-card` and others shows the light variant only. Measure
+  `scrollHeight` per card and declare it, or lay the two themes side by side.
 - No `.d.ts` / `.prompt.md` per component — not applicable to Svelte
   components; the design agent gets previews + README + `styles.css`.
