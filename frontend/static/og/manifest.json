@@ -35,30 +35,6 @@
       "AI Engineering"
     ]
   },
-  "alert-on-the-exit-path-not-the-missing-file": {
-    "slug": "alert-on-the-exit-path-not-the-missing-file",
-    "kind": "note",
-    "eyebrow": "ENGINEERING NOTE · NOV 2026",
-    "title": "Alert on the Runner's Exit Path, Not on the Missing Output File",
-    "subtitle": "",
-    "footnote": [
-      "Reliability",
-      "AI Engineering",
-      "Architecture"
-    ]
-  },
-  "rational-retries-read-as-demand": {
-    "slug": "rational-retries-read-as-demand",
-    "kind": "note",
-    "eyebrow": "ENGINEERING NOTE · NOV 2026",
-    "title": "A Slow Shared Resource Turns Rational Retries Into Phantom Demand",
-    "subtitle": "",
-    "footnote": [
-      "Distributed Systems",
-      "Performance",
-      "AI Engineering"
-    ]
-  },
   "three-judges-cleared-it-and-all-three-had-the-same-host": {
     "slug": "three-judges-cleared-it-and-all-three-had-the-same-host",
     "kind": "note",
