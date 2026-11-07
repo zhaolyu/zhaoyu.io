@@ -120,7 +120,7 @@
 
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
-- [Seventeen Judge Passes for Four Drafts: What the Loop Caught and Cost](https://zhaoyu.io/blog/seventeen-judge-passes-for-two-notes)
+- [Seventeen Judge Passes for Four Drafts: What the Loop Caught and Cost](https://zhaoyu.io/blog/seventeen-judge-passes-for-four-drafts)
 - [Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force](https://zhaoyu.io/blog/merged-is-not-running)
 - [A Self-Hosted Agent Fleet Inherits Its Host's Restart Window](https://zhaoyu.io/blog/a-self-hosted-fleet-inherits-its-hosts-restart-window)
 - [Three Judges Cleared It, and All Three Had the Same Host](https://zhaoyu.io/blog/three-judges-cleared-it-and-all-three-had-the-same-host)
