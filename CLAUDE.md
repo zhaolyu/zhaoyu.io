@@ -1,6 +1,6 @@
 # zhaoyu.io – Claude Instructions
 
-SvelteKit 2 · Svelte 5 · TypeScript · Tailwind CSS v4 · Vitest · adapter-static (SPA + prerender)
+SvelteKit 3 · Svelte 5 · TypeScript · Tailwind CSS v4 · Vitest · adapter-static (SPA + prerender)
 
 ---
 
@@ -229,8 +229,8 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
 - Colocate test files as `*.test.ts` or `*.spec.ts` next to source.
 - Use ES module `import`; no `require()`.
 - Test utils, stores, and the `sitemap.xml` server route. Do not test `.svelte` files.
-- `$app/environment` is stubbed in tests; code that reads `browser` mocks it:
-  `vi.mock('$app/environment', () => ({ browser: true }))`.
+- `$app/env` is stubbed in tests; code that reads `browser` mocks it:
+  `vi.mock('$app/env', () => ({ browser: true }))`.
 - Git hooks (`frontend/.husky/`, installed by `pnpm install`): pre-commit runs
   lint-staged, `check`, `lint` and `test`; pre-push refuses a direct push to `main`.
 
