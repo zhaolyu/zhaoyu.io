@@ -245,9 +245,9 @@ export const notesData: NotesData = {
   notes: [
     {
       slug: 'seventeen-judge-passes-for-four-drafts',
-      title: 'Seventeen Judge Passes for Four Drafts: What the Loop Caught and Cost',
+      title: 'A Judge Pays for Itself on One Kind of Sentence',
       date: 'Nov 2026',
-      dateISO: '2026-11-07',
+      dateISO: '2026-11-08',
       format: 'essay',
       tags: ['Verification', 'AI Engineering', 'Reliability'],
       sources: [
