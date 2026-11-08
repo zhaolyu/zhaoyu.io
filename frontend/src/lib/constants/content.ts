@@ -255,7 +255,7 @@ export const notesData: NotesData = {
           label:
             'First-hand: the per-pass ledger of the seventeen judge passes (verdict, blocking findings by class, tokens and minutes per pass), written from the subagent hand-backs of the session that ran them',
           ref: 'vault c2a641e:ops/health/2026-11-07-judge-rounds.md',
-          host: 'linux (the cloud session that authored the drafts and spawned every judge); the judges ran on the same host; the ledger is on vault branch claude/modest-bell-qov3c1, not yet on main',
+          host: 'linux (the cloud session that authored the drafts and spawned every judge); the judges ran on the same host; the ledger landed on vault main at 64d52a3 on 2026-11-08',
           verified_on: '2026-11-07',
         },
         {
