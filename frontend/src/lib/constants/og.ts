@@ -30,7 +30,7 @@ function siteCard(): OgCard {
     eyebrow: roleLine,
     subtitle: heroContent.tagline,
     title: 'Zhao Yu',
-    footnote: ['Agents', 'Verification', 'Reliability'],
+    footnote: ['Architecture', 'Standards', 'Team practices'],
   };
 }
 

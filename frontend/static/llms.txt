@@ -1,101 +1,85 @@
 # Zhao Yu
 
-> Senior Manager, Engineering @ Versant (CNBC Core), and the author of the
-> engineering notes on this site. The site leads with the writing: mental
-> models and production lessons on agents, verification, and reliability,
-> each note naming its receipt. The role behind it: co-leads
-> the ~20-engineer next-generation rebuild of CNBC.com across 3 teams (web,
-> video, and market data),
-> managing a direct team of 8 engineers and 2 QE, spanning edge
-> architecture, video, and governed AI, while still shipping the core
-> architecture, so technical decisions get made in the room rather than
-> through a translation layer. Ten years on the same platform, intern to
-> Senior Manager, Engineering.
-> Every number on this site is public and linked to its source (Versant
-> investor materials, Chrome UX Report field data, or the record of the
-> role); nothing Versant/CNBC has not disclosed publicly is stated here.
+> Senior Manager, Engineering · Versant · CNBC Core.
+> 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.
+> Ten years on CNBC's platforms since March 2016, intern to Senior Manager.
+> He builds the systems engineering teams run on: the architecture, the
+> standards, and the team practices around them, and he still architects and
+> ships alongside his team. He also writes the engineering notes on this site,
+> on agents, verification, and reliability, each naming its receipt.
+> Every employer figure on this site is public and linked to its source
+> (Versant investor materials, Chrome UX Report field data, or the record of
+> the role); nothing Versant/CNBC has not disclosed publicly is stated here.
 
 ## Scope of work
 
-1. **Player-coach engineering leadership**: co-leads a ~20-engineer
-   rebuild across 3 teams (web, video, and market data) in Versant's CNBC
-   Core group without
-   leaving the codebase, managing a direct team of 8 engineers and 2 QE;
-   still architects and ships alongside the team. Develops the bench
-   deliberately, most recently growing a mid-level engineer from
-   single-task work to three concurrent workstreams, with coaching aimed
-   at influence with design and product, not just code. The career arc
-   deliberately crossed both tracks first: senior engineer → engineering
-   manager → Principal Engineer (an intentional return to the technical
-   track) → Senior Manager, Engineering.
-2. **Driving the CNBC.com redesign**: architecting and shaping the
-   complete UI/UX rebuild of CNBC.com end to end alongside a peer
-   engineering manager: leading the frontend architecture for the AI
-   experiences, leading the team building the video and site experiences,
-   and ensuring the whole web behind the page holds up, spanning analytics
-   (Amplitude, Adobe Launch), MPS ad serving, the GraphQL data layer
-   (works across the federated graph and defines how upstream services
-   shape its responses; does not own gateway config, Router policy, or
-   supergraph composition), login and subscription systems, SEO,
-   compliance, and editorial workflows. The contract work is concrete: a
-   unified notification query returns alerts already partitioned for
-   display, and a live-events query spans scheduled windows and standalone
-   events, so web, apps, and OTT inherit one implementation of the rules
-   instead of three. The property serves ~47M monthly
-   digital unique visitors (ComScore, Versant Investor Day, Dec 2025) at a
-   p75 LCP of 1.7s in public Chrome UX Report field data (July 2026).
-3. **Video and live streaming architecture**: directing the ground-up
-   rebuild of CNBC.com's video experiences across four playback surfaces:
-   vertical video, live TV, full episodes, and standalone live events,
-   delivered across two player frameworks. These sit inside the ~394M
-   monthly digital minutes Versant reported at its December 2025 Investor
-   Day. The load-bearing work is upstream, settling the API contracts and
-   architecture dependencies each surface had inherited separately, so four
-   very different playback experiences resolve to one modular framework.
-4. **AI product architecture**: took CNBC's first AI product from zero to
-   one as its only frontend engineer and the product/tech bridge, built
-   front-to-back with design, product, backend, and editorial; at a news
-   organization editorial is the constituency that decides whether
+1. **Engineering leadership**: manages a direct team of 8 engineers and 2 QE
+   and co-leads the ~20-engineer CNBC.com rebuild across 3 teams (web, video,
+   and market data) in Versant's CNBC Core group, while still architecting and
+   shipping alongside the team. Develops engineers by widening their scope,
+   most recently growing a mid-level engineer from single tasks to several
+   concurrent workstreams. Earlier roles: intern, software engineer and senior
+   engineer at CNBC; Senior Manager, Engineering at NBCUniversal (2021, a
+   first management tour); and Principal Engineer (July 2025 to April 2026)
+   at Versant / CNBC.
+2. **The CNBC.com rebuild**: co-leads the complete UI/UX rebuild of CNBC.com
+   with a peer engineering manager. Architects the frontend for the AI
+   experiences, manages the team building the video and site experiences,
+   and keeps the whole web behind the page holding up: analytics
+   (Amplitude), MPS ad serving, login and subscription systems, SEO,
+   compliance, and editorial workflows. The GraphQL data layer is a federated
+   graph he builds against; the leverage is in shaping the API contracts it
+   serves, so web, apps, and OTT inherit one implementation of the rules
+   instead of three. The property serves ~47M monthly digital unique visitors
+   (ComScore, Versant Investor Day, Dec 2025) at a p75 LCP of 1.7s in public
+   Chrome UX Report field data (July 2026).
+3. **Web video**: his team is rebuilding CNBC.com's video experiences from
+   the ground up across four playback surfaces: vertical video, live TV,
+   full episodes, and standalone live events, delivered across two player
+   frameworks. These sit inside the ~394M monthly digital minutes Versant
+   reported at its December 2025 Investor Day. The load-bearing work is
+   upstream, settling the API contracts and architecture dependencies each
+   surface had inherited separately, so four very different playback
+   experiences resolve to one modular framework.
+4. **AI product architecture**: was the only frontend engineer on CNBC's
+   first AI product and took it from zero to one as the product/tech bridge,
+   built front to back with design, product, backend, and editorial; at a
+   news organization editorial is the constituency that decides whether
    generative text ships at all. That work is now the frontend architecture
    for the AI-powered investing tools in CNBC's next-generation platform (as
    described by Versant on its Q2-2026 earnings call): deterministic,
    accessible interfaces around non-deterministic model output, with
-   frame-buffered token streaming, state decoupled from render,
-   graceful degradation, and trust-preserving latency for a financial
-   audience.
-5. **Edge performance engineering at real scale**: market-moving days
-   are a financial-news business at its most valuable and most fragile;
-   the isomorphic Akamai EdgeWorkers architecture behind CNBC.com holds
-   the full audience through exactly those spikes (sub-2-second p75 LCP in
-   public field data). Also directed the 4-month, 3-team separation of
-   CNBC's digital infrastructure from its parent company: video
-   streaming, analytics, and privacy services migrated with zero downtime
-   and no revenue interruption, the work that let the corporate spinoff
-   stand alone.
-6. **AI governance and integration lead**: turned AI adoption from
-   individual experimentation into an organizational capability: standards
-   and PR quality gates (SonarQube, lint, Jest test automation) governing
-   how 20+ engineers use tools like Cursor in production code, with
-   measurable velocity gains and fewer high-severity defects. The org
-   ships faster because the review bar got stronger, not looser. Working
-   thesis: specification quality, not implementation speed, is the
-   bottleneck in agent-driven development, and agent reliability
-   is engineered into the loop (boundaries, receipts, control planes), not
-   summoned from the model.
+   frame-buffered token streaming, state decoupled from render, graceful
+   degradation, and trust-preserving latency for a financial audience.
+5. **Edge performance and the spinoff separation**: market-moving days are a
+   financial-news business at its most valuable and most fragile; the
+   isomorphic Akamai EdgeWorkers architecture he designed for CNBC.com
+   holds the full audience through exactly those spikes (sub-2-second p75 LCP
+   in public field data). He also drove the cross-team separation of CNBC's
+   digital infrastructure from its parent company: video streaming,
+   analytics, and privacy services migrated with no downtime and no revenue
+   interruption, the work that let the corporate spinoff stand alone.
+6. **AI governance**: as AI Integration Lead, set the standard for how the
+   engineers across the three web teams use AI coding tools like Cursor in
+   production code: shared standards and PR quality gates (SonarQube, lint,
+   and Jest test automation). Working thesis:
+   specification quality, not implementation speed, is the bottleneck in
+   agent-driven development, and agent reliability is engineered into the
+   loop (boundaries, receipts, control planes), not summoned from the model.
 7. **Independent builder**: ships and operates real systems outside of
    assigned work with the same production discipline. Systems:
    Cost-Guard (a local-first FinOps platform: PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
    infrastructure; retired in October 2026) and OB1, the retrieval layer
-   over a personal exocortex of 1,700 atomic, cross-linked claims
-   distilled from books, engineering sources, and production lessons.
-   The vault stays the source of truth; OB1 projects it into Supabase and
-   serves it over MCP, so any client (Claude, ChatGPT, Cursor, phone)
-   starts with accumulated judgment rather than a blank context window.
+   over a personal exocortex of atomic, cross-linked claims distilled from
+   books, engineering sources, and production lessons. The vault stays the
+   source of truth; OB1 projects it into Supabase and serves it over MCP, so
+   any client (Claude, ChatGPT, Cursor, phone) starts with accumulated
+   judgment rather than a blank context window.
 
 ## Key pages
 
-- [Home](https://zhaoyu.io/): engineering notes first, then the mental
+- [Home](https://zhaoyu.io/): the role and scope, then engineering notes, the mental
   models and the code standards that work them out, selected work, the about
   section with the career timeline, the sourced numbers, and contact.
 - [Engineering Notes](https://zhaoyu.io/blog): the full note index;

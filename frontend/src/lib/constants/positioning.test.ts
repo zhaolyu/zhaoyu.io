@@ -6,6 +6,8 @@ import {
   heroContent,
   roleLine,
   roleTitle,
+  scopeLine,
+  tenureLine,
   socialDescriptions,
   narrativeBio,
   builderProjects,
@@ -29,50 +31,56 @@ const TITLE = 'Senior Manager, Engineering';
 const EMPLOYER = 'Versant';
 const SCOPE = /CNBC Core/;
 
+/**
+ * The canon, owner decision 2026-11-09: one title, one scope line and one
+ * tenure line, word for word on every surface that states the role. Spelled
+ * out here as literals, not imported, so an edit to the constants in
+ * content.ts has to be made twice to get through.
+ */
+const CANON_TITLE = 'Senior Manager, Engineering · Versant · CNBC Core';
+const CANON_SCOPE =
+  '8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.';
+const CANON_TENURE = "Ten years on CNBC's platforms since March 2016, intern to Senior Manager.";
+
 describe('hero', () => {
-  it('leads with the craft thesis in at most 40 words, with no résumé claims', () => {
+  it('states the work in at most 40 words, with the role kept out of the headline', () => {
+    // Owner decision, 2026-11-09, superseding the craft-first hero (2026-09-01,
+    // and the headline rule of 2026-10-04): the headline says what Zhao builds,
+    // and the role and scope sit on their own lines beneath it. Title and
+    // headcount never ride inside the headline itself.
     const headline = `${heroContent.headline.primary} ${heroContent.headline.accent}`;
     expect(words(headline)).toBeLessThanOrEqual(40);
-    // The headline names the standard (receipts) and the subject matter. The
-    // role never appears in it: identity is one quiet line under the CTAs,
-    // asserted below, and scope lives in About and on the finding-aid
-    // surfaces (meta, JSON-LD, llms.txt). A résumé phrase reappearing in the
-    // headline is the regression this block exists to catch. The headline no
-    // longer has to name CNBC (owner decision, 2026-10-04): platform grounding
-    // moved to the identity line, where roleTitle carries CNBC Core.
-    expect(headline).toMatch(/receipt/i);
-    expect(headline).toMatch(/agents|edge|reliability/i);
     expect(headline).not.toMatch(/senior manager|versant|QE|20-engineer|player-coach/i);
+    expect(headline).not.toMatch(/\b(leads|directs|runs)\b/i);
   });
 
-  it('states identity once, as the role of record and nothing more', () => {
-    // Owner decision, 2026-09-01: a fact stated once, under the CTAs.
-    // Title only: team size and program scope never ride along into the hero.
+  it('puts the canon scope line directly under the headline, verbatim', () => {
+    expect(scopeLine).toBe(CANON_SCOPE);
+    expect(heroContent.scope).toBe(CANON_SCOPE);
+  });
+
+  it('states identity as the role of record and nothing more', () => {
     const { identity } = heroContent;
+    expect(roleTitle).toBe(CANON_TITLE);
     expect(identity.role).toBe(roleTitle);
-    expect(roleTitle).toMatch(TITLE);
-    expect(roleTitle).toMatch(EMPLOYER);
-    expect(roleTitle).toMatch(SCOPE);
     const line = `${identity.name} ${identity.role} ${identity.location}`;
     expect(line).not.toMatch(/QE|20-engineer|player-coach|\b(leads|directs|runs)\b/i);
   });
 
-  it('carries at most one figure in the bio', () => {
+  it('opens the bio on the canon tenure line and carries at most one figure', () => {
+    expect(tenureLine).toBe(CANON_TENURE);
+    expect(heroContent.bio.startsWith(CANON_TENURE)).toBe(true);
     const figures = heroContent.bio.match(/\d[\d.,]*[KM%]?/g) ?? [];
     expect(figures.length).toBeLessThanOrEqual(1);
   });
 
-  it('keeps the bio on the craft, not the résumé', () => {
-    expect(heroContent.bio).toMatch(/receipt/);
-    expect(heroContent.bio).not.toMatch(/senior manager|versant|QE|20-engineer/i);
+  it('keeps the OG tagline in step with the headline', () => {
+    expect(heroContent.tagline).toBe(heroContent.headline.primary);
   });
 
   it('keeps the role line intact for the finding-aid surfaces', () => {
-    // The OG card eyebrow states the role as fact in its all-caps register;
-    // craft-first is about placement, not about hiding the job.
-    expect(roleLine).toMatch(/SENIOR MANAGER, ENGINEERING/);
-    expect(roleLine).toMatch(/VERSANT/);
-    expect(roleLine).toMatch(/CNBC CORE/);
+    // The OG card eyebrow states the role as fact in its all-caps register.
+    expect(roleLine).toBe(CANON_TITLE.toUpperCase());
   });
 });
 
@@ -89,9 +97,9 @@ describe('one story on every surface', () => {
     // Scope claims are load-bearing and constrained: a direct team of 8
     // engineers and 2 QE, co-leading a ~20-engineer rebuild across 3 teams.
     // Both halves are asserted, because dropping either one is how the claim
-    // drifts back into "runs a 20-engineer org". The hero no longer carries
-    // the claim (craft-first restructure, 2026-08-31): on-page it is stated
-    // once, in About, and the agent-facing surfaces keep it verbatim.
+    // drifts back into "runs a 20-engineer org". Since 2026-11-09 the hero
+    // carries it too (asserted above); About and the agent-facing surfaces
+    // keep it verbatim.
     const surfaces: Array<[string, string]> = [
       ['narrative bio', narrativeBio.paragraphs[0]],
       ['meta description', socialDescriptions.meta],
@@ -101,6 +109,22 @@ describe('one story on every surface', () => {
       expect(text, `${name} must name the direct team`).toMatch(/8 engineers and 2 QE/);
       expect(text, `${name} must say co-lead, not direct or run`).toMatch(/co-lead/i);
     }
+  });
+
+  it('states the same title, scope line and tenure word for word on every surface', () => {
+    const surfaces: Array<[string, string]> = [
+      ['About', narrativeBio.paragraphs.join(' ')],
+      ['llms.txt', llms],
+    ];
+    expect(narrativeBio.title).toBe(CANON_TITLE);
+    expect(llms).toContain(CANON_TITLE);
+    for (const [name, text] of surfaces) {
+      expect(text, `${name} must carry the scope line verbatim`).toContain(CANON_SCOPE);
+      expect(text, `${name} must carry the tenure line verbatim`).toContain(CANON_TENURE);
+    }
+    expect(socialDescriptions.meta).toBe(`${CANON_TITLE}. ${CANON_SCOPE}`);
+    expect(personJsonLd().description).toBe(socialDescriptions.meta);
+    expect(personJsonLd().worksFor.name).toBe(EMPLOYER);
   });
 
   it('tells the same story in llms.txt and the JSON-LD Person', () => {
@@ -164,6 +188,17 @@ const RETIRED_CLAIMS: Array<{ pattern: RegExp; why: string }> = [
     why: 'the title is Senior Manager, Engineering',
   },
   { pattern: /\bnine years\b/gi, why: 'tenure is ten years — intern since March 2016' },
+  {
+    pattern: /both tracks|player-coach/gi,
+    why: 'the role is engineering leadership, not a choice between two tracks',
+  },
+  {
+    // A dated past role is fine: the timeline entry (its year sits beside it)
+    // or "Principal Engineer (July 2025 to April 2026)". Undated, it reads as
+    // the current title.
+    pattern: /Principal Engineer(?!\s+\(July 2025 to\s+April 2026\))(?!',\s*company)/g,
+    why: 'Principal Engineer appears only as a dated past role',
+  },
   {
     // The negated form is the *correct* copy ("does not own gateway config"),
     // so only an affirmative ownership claim may trip this.

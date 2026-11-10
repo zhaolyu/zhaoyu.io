@@ -1,4 +1,4 @@
-# Permanent redirects for note slugs retired by a merge (Cloudflare Pages).
+# Permanent forwards for note slugs retired by a merge (Cloudflare Pages).
 # Evaluated before static assets are served, so the old canonical URLs keep
 # resolving. PUBLISHING.md: a published slug is never deleted, only forwarded.
 #
