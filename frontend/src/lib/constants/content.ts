@@ -244,6 +244,134 @@ export interface NotesData {
 export const notesData: NotesData = {
   notes: [
     {
+      slug: 'seventeen-judge-passes-for-four-drafts',
+      title: 'A Judge Pays for Itself on One Kind of Sentence',
+      date: 'Nov 2026',
+      dateISO: '2026-11-08',
+      format: 'essay',
+      tags: ['Verification', 'AI Engineering', 'Reliability'],
+      sources: [
+        {
+          label:
+            'First-hand: the per-pass ledger of the seventeen judge passes (verdict, blocking findings by class, tokens and minutes per pass), written from the subagent hand-backs of the session that ran them',
+          ref: 'vault c2a641e:ops/health/2026-11-07-judge-rounds.md',
+          host: 'linux (the cloud session that authored the drafts and spawned every judge); the judges ran on the same host; the ledger landed on vault main at 64d52a3 on 2026-11-08',
+          verified_on: '2026-11-07',
+        },
+        {
+          label:
+            'First-hand: the September baseline, two independent checkers over the same 43 vault notes, verdict agreement and the shared FAIL set',
+          ref: 'vault 4983aa9:ops/health/2026-09-01-checker-disagreement.md (raw results in 2026-09-01-checker-A.json and -B.json)',
+          host: 'linux (read at revision); the checkers ran on 2026-09-01 in cloud sessions',
+          verified_on: '2026-11-07',
+        },
+        {
+          label:
+            'This site: the merged pull request whose body carries the final verdict tables and dispositions for the two notes',
+          href: 'https://github.com/zhaolyu/zhaoyu.io/pull/106',
+        },
+        {
+          label:
+            'Zheng et al., Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena, NeurIPS 2023 Datasets and Benchmarks (arXiv 2306.05685)',
+          href: 'https://arxiv.org/abs/2306.05685',
+        },
+        {
+          label:
+            'Wang et al., Large Language Models are not Fair Evaluators, 2023 (arXiv 2305.17926)',
+          href: 'https://arxiv.org/abs/2305.17926',
+        },
+        {
+          label:
+            'Panickssery, Bowman and Feng, LLM Evaluators Recognize and Favor Their Own Generations, 2024 (arXiv 2404.13076)',
+          href: 'https://arxiv.org/abs/2404.13076',
+        },
+      ],
+      content: [
+        "Four note drafts went through seventeen independent judge passes this week, and two of them went live on this site. The judges raised fourteen blocking findings. Twelve were sentences that a dated record did not support: a figure no record measured, a host the session log contradicted, a commit date read as a landing. Two were cadence. None was a sentence the deterministic gates could have caught; the linter was clean on every pass. Each pass cost about 167,000 tokens and six minutes, and five of the ten failures were one-clause fixes that each bought a full pass. This is the first measurement of the control I built after <a href='/blog/your-checks-are-lying-to-you'>the fail-open essay</a>, and it says the control earns its keep on one kind of sentence.",
+        "A draft goes to a judge that did not write it, running in a fresh context with only the rubric, the draft and its provenance table. The judge first fails a known-dirty fixture, so a judge that would pass the fixture is caught before it passes something real. It returns a verdict and an anchored findings table; I fix blocking findings in prose and send the draft back to a new judge, because an edit after a verdict is text the verdict never read. The rule underneath, that the judge is never the author because self-review is self-attestation, was in the skill from the day I wrote it. What <a href='/blog/three-judges-cleared-it-and-all-three-had-the-same-host'>three judges taught me in September</a> was narrower: a second check counts only if something that decides the answer differs from the first.",
+        '<h2>What the judges caught</h2>',
+        'Fourteen blocking findings across ten failed passes. Five were receipts: a figure, a host or a prior belief the record did not support. Four were sequence: a date or an order the record states differently. Two were cadence, one was a mechanism stated larger than its record, one was an adoption claim without an artifact, and one was attribution. All four below came from drafts that were later parked, and each would have embarrassed me in print.',
+        '<ul><li>A note said a search that takes seconds alone took ten minutes under load. No measurement recorded seconds. The only timed solo runs were one to five minutes, and the contrast the paragraph turned on was invented.</li><li>A first-hand receipt named Windows as the host of four runs. My own session log, in the same vault as the record I cited, recorded three of the four as scheduled cloud runs, not the desktop. The judge opened both.</li><li>A note said a nightly check landed a day after an incident. The record dated its first commit a day after; it gave no merge date at all. I had written a commit date as a landing, in the same batch as a note arguing that merged is not running.</li><li>A note said one routine failed that morning. The outcome record, which I had not cited, showed two runs and two notices.</li></ul>',
+        "Each of these is plausible, fluent, and wrong by a detail that only the record at its revision could settle. That is the class the judge exists for. In September, ten judge passes over two drafts came back with none clean, almost every failure a fabricated mechanism, with the deterministic gates green throughout, which is why the rubric now carries a tense tripwire and a causal-direction check. This week's ledger says the tripwire is where the yield is: the judges spent twelve of fourteen blocking findings on the relation between a sentence and a dated artifact, and none on anything the linter already covers.",
+        '<h2>What they disagreed about</h2>',
+        "The judges contradicted each other once, and the contradiction is in the rubric. The third judge on one note asked, as an advisory, that a practice be owned in the first person: with \u201cI now write\u201d as the suggested form, because the worth test wants the author's own before and after. The fourth judge on the same note failed, as blocking, the first-person acts in it: the fix branch, the prediction and the draft all belonged to scheduled routines in the fleet. The receipts rule wants the record's actor. Both judges cited the skill correctly. I resolved it as an owner decision recorded in the pull request: the fleet's routines act as my agents, concrete acts are stated at the record's size, and the lesson stays in first person.",
+        'Some disagreement is the expected cost of independent judges. Zheng and colleagues, in the paper that named LLM-as-a-judge, report that a strong model agrees with human preferences over 80 percent of the time, which in their words is \u201cthe same level of agreement between humans.\u201d My own September baseline ran two independent checkers over the same 43 vault notes: they agreed on 32 verdicts and converged on the single FAIL, the same note, defect and repair. The pattern held this week in a weaker form. The blocking findings were reproducible in kind; the advisories varied with the judge.',
+        "The biases the literature names are the reason for the loop's structure, and one of them the loop does not control. Zheng and colleagues list position, verbosity and self-enhancement bias. Wang and colleagues showed that swapping the order of two candidate answers can flip the verdict, with one model beating a stronger one on 66 of 80 queries once the evaluator was gamed. Panickssery, Bowman and Feng found that evaluators score their own outputs above other models' outputs that human annotators rate as equal, and that when they fine-tuned models to recognise their own text, the bias grew in step with the recognition. A judge that never sees two candidates has no order to be biased by, and a judge that is not the author cannot favour its own draft. But every judge this week ran on the author's model, since I did not override the harness default, and self-preference is a property of the model, not the context. The fresh context removes the drafting rationale. Whether the shared model also inflated the pass rate is something this ledger cannot say.",
+        '<h2>What it cost</h2>',
+        'Seventeen passes consumed 2.84 million tokens and 104 minutes of judge time, fixture included: a mean of 167,000 tokens and six minutes per pass. The cost is per pass, not per finding. A pass that found three defects and a pass that found one wrong date cost the same, because a blocking fix is re-judged by a judge that did not author it, and a fresh context rereads the rubric, the draft and every record. Five of the ten failures were one-clause fixes. Scoping those re-judges to the changed claim would have saved about a third of the spend, on a projection rather than a measurement. The contract does not provide for it, and I have not changed the contract.',
+        'The fixture never discriminated. Seventeen of seventeen judges failed it, each with findings covering the four classes the answer key requires. That is the designed outcome, and it means the fixture has not yet told me anything a real pass did not. I keep it because the judge it would catch, one that passes a draft with invented figures and stacked aphorisms, is the one failure of this loop I could not see any other way, and because a fixture costs a fraction of a pass.',
+        "The loop also has a floor it cannot lower. Every first-hand receipt in the two shipped notes rests on a forge revision or on the Windows machine the fleet runs on, and the cloud session could reach neither. Each judge verified those mechanisms against the vault's dated records and marked the artifacts themselves could-not-run, on every pass, correctly. The notes shipped on record-level receipts with that status disclosed in every source field, a precedent two earlier notes had set. It is also the standard the notes argue against: from the cloud, the loop confirmed that each story matched its record, and the artifacts behind the records stayed unopened.",
+        '<h2>What I would change</h2>',
+        "<ol><li>Price a re-judge by the size of the fix. A one-clause fix should get a scoped pass over the changed claim and its provenance line, by a fresh judge, with the full pass reserved for a rewrite. The contract's reason for a full pass, that the judge is never the author, survives the scoping.</li><li>Put the actor in the provenance table. Every first-person verb in a draft gets a row naming who the record says did it. The attribution question is then answered before the judge opens the record, and the rubric tension above cannot re-fire.</li><li>Record owner decisions as standing rules, not per-PR dispositions. The decision that routines act as my agents was taken once this week and will be re-asked on every forge-sourced note until it lives in the skill.</li><li>Measure judge agreement on a fixed draft, periodically, the way the September baseline did. Successive judges over a changing draft cannot give an agreement rate; two judges over the same text can.</li></ol>",
+        'None of the four is landed. The ledger is in my notes, the contract is as it was, and the two notes are live under the old rules. I now know what the loop costs and what it catches, and have not yet decided whether the first is worth the second at this cadence. For two notes a week it is. For the four-draft batch I started with it was not: thirteen passes to bring four drafts to a verdict, before any decision about shipping.',
+        '<strong>A judge pays for itself on one kind of sentence, the plausible one no record supports. Price every pass against that sentence, and nothing else.</strong>',
+      ],
+    },
+    {
+      slug: 'merged-is-not-running',
+      title: 'Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force',
+      date: 'Nov 2026',
+      dateISO: '2026-11-07',
+      tags: ['Reliability', 'Agent Architecture', 'Verification'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's dated record of the scheduled-heal fix that landed on a Sunday and the incident that reopened fourteen minutes later, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-25t08-35-13-mcp-capture/2026-10-25T08-35-13-mcp-capture.md (names forge incident bfe148e95c and the heal cadence in .agents/expectations.json)',
+          host: 'windows (the fleet host the record names); record read on linux at that revision, forge revisions not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'First-hand: the outcome record that replayed the review proof-first change at its parent and at the fix, and counted the eighteen ledger rows written after it landed, two of them from a worktree whose branch did not contain the fix',
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-16-outcome-forge-review-proof-first-replayed-and-refused-in-the-field/2026-10-16-outcome-forge-review-proof-first-replayed-and-refused-in-the-field.md (names forge 8f44aca, parent 84420e2, worktree branch 86a0a9b)',
+          host: 'windows, DESKTOP-CKML7OI (the replay host the record names); record read on linux, forge revisions not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            "First-hand: the operator's record of the parked draft whose copy-the-file adopt step had drifted 453 lines from its target after nineteen days",
+          ref: "vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-24t08-21-50-mcp-capture/2026-10-24T08-21-50-mcp-capture.md (names the target's intervening commit 1b641fa)",
+          host: 'windows (the fleet host); record read on linux, target repository not re-read from this session',
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'Git documentation, git-apply: --check verifies that a patch applies, and the context lines a patch carries are what it checks against',
+          href: 'https://git-scm.com/docs/git-apply',
+        },
+      ],
+      content: [
+        "<p>A fix my fleet landed on a Sunday at 04:27Z was 33 hours from the first run that could execute it, and the prediction on file had treated the merge as the moment it took effect. The fix lived inside a scheduled heal in the agent fleet I run, and the heal runs on weekdays at 13:30Z, so the first run able to execute the new code was Monday's. Fourteen minutes after the merge the incident reopened, carrying the two predicted rows; the prediction had failed because it was conditioned on the fix landing rather than on a run that contained it. I had been treating merge and effect as one event, which is nearly true for code on a request path and false for anything that waits on a schedule, sits in an older checkout, or is parked as a draft.</p>",
+        "<p>Two more gaps turned up that month, one in the fleet, one in a draft of mine. A review change ran the declared proof before the reviewer and stamped each row fresh or not; of eighteen later rows, two lacked the stamp, both from a worktree whose branch lacked the fix. A draft parked nineteen days with a copy-the-whole-file adopt step had drifted 453 lines from its target against a roughly 95-line change; adopting it would have silently undone a commit landed meanwhile, where a diff against a base commit would have refused to apply. So far the change is in how I read, not in tooling: the rule in my notes is that a closure names the run and the revision it executed, and the stray rows were classified once by the branch that wrote them before a rate was trusted. Revision stamps and diff-shipped drafts are written down, not landed. <strong>A closure names the run and the revision; the merge date is a prediction, <a href='/blog/the-agent-run-is-the-new-unit-of-work'>not a receipt</a>.</strong></p>",
+      ],
+    },
+    {
+      slug: 'a-self-hosted-fleet-inherits-its-hosts-restart-window',
+      title: "A Self-Hosted Agent Fleet Inherits Its Host's Restart Window",
+      date: 'Nov 2026',
+      dateISO: '2026-11-07',
+      tags: ['Reliability', 'Agent Architecture', 'AI Engineering'],
+      sources: [
+        {
+          label:
+            "First-hand: the fleet operator's record of the 2026-10-14 restart, with the Windows System log events, the run's zero-byte output and its missing completion line, read at the vault revision that archived it",
+          ref: 'vault 45aeda7:ops/queue/archive/2026-10-25-2026-10-15t08-16-52-mcp-capture/2026-10-15T08-16-52-mcp-capture.md',
+          host: "windows (the machine the fleet runs on, where the event log was read); record read on linux at that revision, the host's event log not re-read from this session",
+          verified_on: '2026-11-06',
+        },
+        {
+          label:
+            'Microsoft Learn, Manage device restarts after updates: active hours, their default range, and the 18-hour maximum',
+          href: 'https://learn.microsoft.com/en-us/windows/deployment/update/waas-restart',
+        },
+      ],
+      content: [
+        "<p>At 04:59:01 on 2026-10-14 my Windows machine began restarting to install an update, one second after the last tool result of a scheduled agent run that had started at 04:10. The run belongs to an agent fleet I operate on that machine, and it died with the host. Its output file was zero bytes, its wrapper never wrote its completion line, and its report stopped partway with placeholders. The morning brief could report only an opaque exit code for a terminated process. Nothing in the fleet's logs named the cause. The OS event log did, in two entries. I had scheduled the runs before dawn so their output was ready when I sat down. Windows protects only its active hours, by default 08:00 to 17:00, so the window I chose for unattended work was the window the OS treats as free for a restart.</p>",
+        "<p>I had read self-hosting as owing availability against outages and my own failures, and had not counted the host's defaults, set for a person at the keyboard. The class has a structural blind spot. A job's evidence about its own failure is written by the job or its wrapper, and a host restart takes both down at once, so this failure arrives with no witness inside the fleet. I now treat the host's maintenance schedule as part of <a href='/blog/merged-is-not-running'>the fleet's schedule</a>, and the rule I wrote down for a run that ends without its completion line is to read the OS event log before the run's own artifacts. The repairs on record, active hours widened to span every scheduled run within the 18 hours Windows allows and a host audit comparing the restart window with the job schedule, are written down and not yet verified as landed. <strong>Self-hosting an agent fleet means owning every scheduler on the box, including the one you did not write.</strong></p>",
+      ],
+    },
+    {
       slug: 'three-judges-cleared-it-and-all-three-had-the-same-host',
       title: 'Three Judges Cleared It, and All Three Had the Same Host',
       date: 'Oct 2026',

@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { handleAnchorNavigation, scrollToTop } from './navigation';
 
-// Mock $app/environment
-vi.mock('$app/environment', () => ({
+// Mock $app/env
+vi.mock('$app/env', () => ({
   browser: true,
 }));
 

@@ -2,7 +2,7 @@
  * Navigation utilities for handling anchor links and smooth scrolling
  */
 
-import { browser } from '$app/environment';
+import { browser } from '$app/env';
 
 /**
  * Handles anchor link navigation with smooth scrolling

@@ -91,7 +91,7 @@ nudge, if a font or its subset changes.
   `@media (scripting: enabled) and (prefers-reduced-motion: no-preference)`. Never hide
   content behind `{#if visible}`: it will not prerender.
 - `csp.test.ts`: fonts are self-hosted through `@fontsource`, so no new origin is needed. Any
-  new external origin goes into `svelte.config.js`.
+  new external origin goes into `frontend/kit.config.js`.
 
 ---
 

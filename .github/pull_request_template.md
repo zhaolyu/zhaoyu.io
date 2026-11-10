@@ -14,6 +14,6 @@
 - [ ] New utils/stores/services carry a colocated `*.test.ts`
 - [ ] No hardcoded colour, size, radius, shadow, duration, or spacing — tokens from
       `app.css` only
-- [ ] Any new external origin (fetch/fonts/images) added to the CSP in `svelte.config.js`;
+- [ ] Any new external origin (fetch/fonts/images) added to the CSP in `frontend/kit.config.js`;
       `csp.test.ts` still passes
 - [ ] If `app.html`'s inline theme script changed, its sha256 in the CSP was recomputed

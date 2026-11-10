@@ -120,6 +120,9 @@
 
 The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 
+- [A Judge Pays for Itself on One Kind of Sentence](https://zhaoyu.io/blog/seventeen-judge-passes-for-four-drafts)
+- [Merged Is Not Running: Three Ways a Landed Fix Stays Out of Force](https://zhaoyu.io/blog/merged-is-not-running)
+- [A Self-Hosted Agent Fleet Inherits Its Host's Restart Window](https://zhaoyu.io/blog/a-self-hosted-fleet-inherits-its-hosts-restart-window)
 - [Three Judges Cleared It, and All Three Had the Same Host](https://zhaoyu.io/blog/three-judges-cleared-it-and-all-three-had-the-same-host)
 - [Fan-Out Multiplies Whatever Each Unit Pays to Start](https://zhaoyu.io/blog/fan-out-multiplies-whatever-each-unit-pays-to-start)
 - [Nobody Declared the Line Endings, and a Generator Never Converged](https://zhaoyu.io/blog/nobody-declared-the-line-endings)
