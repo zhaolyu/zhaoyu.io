@@ -23,7 +23,7 @@ like evidence, not like a pitch.
 1. **A senior engineer or EM who has hit the problem** (the reader `voice.md` writes for).
    Arrives on a note from a link, reads one, decides whether to read a second. Needs: a
    comfortable article, the receipt visibly attached to the claim, a clear next note.
-2. **A hiring manager or exec.** Arrives on the home page from LinkedIn or a search.
+2. **A reader looking up the author.** Arrives on the home page from LinkedIn or a search.
    Needs, in ten seconds: what this person argues, that the work is real, who they are
    (the quiet identity line, PR #90), how to reach them.
 

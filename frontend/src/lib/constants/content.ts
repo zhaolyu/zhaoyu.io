@@ -74,7 +74,7 @@ export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
  * Hero copy. Craft-first: the thesis leads and is the largest thing on the
  * screen. Identity sits under the CTAs at secondary weight, so anyone looking
  * for who wrote this finds it without it being what the page says first
- * (PORTFOLIO-REVIEW-2026-09.md, P0.2). Scope is stated once, in About, and on
+ * (owner decision, 2026-09-01). Scope is stated once, in About, and on
  * the agent-facing surfaces. The headline (primary + accent) is held to 40
  * words by positioning.test.ts; the bio carries at most one figure.
  */

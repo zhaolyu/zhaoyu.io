@@ -46,7 +46,7 @@ describe('hero', () => {
   });
 
   it('states identity once, as the role of record and nothing more', () => {
-    // PORTFOLIO-REVIEW-2026-09.md P0.2: a fact stated once, under the CTAs.
+    // Owner decision, 2026-09-01: a fact stated once, under the CTAs.
     // Title only: team size and program scope never ride along into the hero.
     const { identity } = heroContent;
     expect(identity.role).toBe(roleTitle);
@@ -134,7 +134,7 @@ describe('one story on every surface', () => {
  * 20-engineer organization" and had spent "nine years" going "intern to
  * Principal Engineer to running the web org". The résumé the site links to
  * says something narrower: a direct team of 8 engineers and 2 QE, co-leading a
- * ~20-engineer rebuild across three teams, ten years in. A recruiter reading
+ * ~20-engineer rebuild across three teams, ten years in. Anyone reading
  * both could name the discrepancy — on a site whose llms.txt advertises that
  * every number is sourced.
  *
