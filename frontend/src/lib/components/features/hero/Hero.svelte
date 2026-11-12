@@ -36,6 +36,10 @@
       </span>
     </h1>
 
+    <!-- The canon scope line, directly under the headline: the first thing a
+         reader checks after what the work is. -->
+    <p class="hero-scope mx-auto">{heroContent.scope}</p>
+
     <p class="hero-bio mx-auto">{heroContent.bio}</p>
 
     <div class="hero-actions flex flex-col md:flex-row justify-center items-center">
@@ -55,9 +59,7 @@
       </a>
     </div>
 
-    <!-- Identity, stated once and quietly: under the CTAs, at secondary weight,
-         so the thesis is what the page says first and the role is there for
-         anyone who looks for it. -->
+    <!-- Identity under the CTAs: name, the role of record, location. -->
     <p class="hero-identity">
       {identity.name} · {identity.role} · {identity.location}
     </p>
@@ -108,12 +110,14 @@
     font-weight: var(--weight-bold);
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
-    text-wrap: balance;
     transition: color var(--duration-base);
   }
 
+  /* Balanced so a one-sentence headline never strands its last word on a
+     narrow screen ("…teams run / on."). */
   .hero-headline-line {
     display: block;
+    text-wrap: balance;
   }
 
   /* One step below the headline and above the bio: classification, then
@@ -126,6 +130,16 @@
     font-size: var(--type-lg);
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-normal);
+    transition: color var(--duration-base);
+  }
+
+  .hero-scope {
+    max-width: var(--content-max);
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+    font-size: var(--type-base);
+    font-weight: var(--weight-medium);
+    line-height: var(--leading-relaxed);
     transition: color var(--duration-base);
   }
 

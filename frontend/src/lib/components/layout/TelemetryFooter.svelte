@@ -32,7 +32,7 @@
       <div class="status-group">
         <div class="status-item">
           <span class="s-label">OFF_CLOCK</span>
-          <span class="s-value accent">Marathon 3:07 · 50K finisher</span>
+          <span class="s-value accent">Marathon and ultra</span>
         </div>
       </div>
     </div>

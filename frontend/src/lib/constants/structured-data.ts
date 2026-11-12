@@ -40,10 +40,9 @@ export function personJsonLd() {
     ...PERSON,
     jobTitle: 'Senior Manager, Engineering',
     sameAs: [...SAME_AS],
-    worksFor: { '@type': 'Organization', name: 'Versant Media / CNBC' },
-    // Role, scope and the receipts standard, no internal specifics (see the
-    // content.ts header). The hero bio is not appended: it leans on the page
-    // around it (its antecedent is the h1, and it names the Models section).
+    worksFor: { '@type': 'Organization', name: 'Versant' },
+    // Role and the canon scope line, the hero's identity and sub-line, with
+    // no internal specifics (see the content.ts header).
     description: socialDescriptions.meta,
     knowsAbout: [...KNOWS_ABOUT],
     image: SITE_CARD_IMAGE,

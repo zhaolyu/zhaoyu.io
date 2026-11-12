@@ -27,7 +27,7 @@ export const METRIC_SHAPES: MetricShape[] = [
   },
   {
     // The qualifier slot is why this is not a two-word match: an
-    // "<n>-subscriber *production* beta" reads as the same disclosure and
+    // "<n>-subscriber *production* trial" reads as the same disclosure and
     // slipped straight through the tighter pattern this replaces.
     pattern:
       /\b\d[\d,.]*\s?[- ]?(?:subscriber|user|customer)\s+(?:\w+\s+){0,2}?(?:beta|pilot|cohort|trial)/gi,

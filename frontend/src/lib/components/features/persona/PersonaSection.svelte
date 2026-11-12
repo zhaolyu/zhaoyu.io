@@ -21,8 +21,8 @@
 
 <section id="about" class="persona-section" bind:this={section}>
   <SectionHeader badge="About">
-    Both tracks.<br />
-    <span class="headline-accent">On purpose.</span>
+    What I lead,<br />
+    <span class="headline-accent">and how.</span>
   </SectionHeader>
 
   <!-- Always rendered so the bio and timeline prerender; the reveal is animation-only. -->
