@@ -60,7 +60,7 @@
    analytics, and privacy services migrated with no downtime and no revenue
    interruption, the work that let the corporate spinoff stand alone.
 6. **AI governance**: as AI Integration Lead, set the standard for how the
-   engineers across the three web teams use AI coding tools like Cursor in
+   engineers across the three teams use AI coding tools like Cursor in
    production code: shared standards and PR quality gates (SonarQube, lint,
    and Jest test automation). Working thesis:
    specification quality, not implementation speed, is the bottleneck in
