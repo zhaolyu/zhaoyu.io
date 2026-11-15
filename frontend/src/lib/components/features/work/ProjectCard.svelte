@@ -1,10 +1,12 @@
 <script lang="ts">
   import { BrowserMock, TokenStream } from '$lib/components/ui';
 
+  import type { Source } from '$lib/constants/content';
+
   interface Props {
     title: string;
     description: string;
-    metrics: Array<{ label: string; value: string }>;
+    metrics: Array<{ label: string; value: string; source?: Source }>;
     tags: string[];
     diagram?: string;
   }
@@ -41,6 +43,11 @@
             <div class="metric-item">
               <div class="metric-value">{metric.value}</div>
               <div class="metric-label">{metric.label}</div>
+              {#if metric.source}
+                <a class="metric-source" href={metric.source.href} target="_blank" rel="noopener">
+                  Source: {metric.source.label}
+                </a>
+              {/if}
             </div>
           {/each}
         </div>
@@ -367,6 +374,18 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: var(--tracking-wider);
+  }
+
+  .metric-source {
+    margin-top: var(--space-2xs);
+    font-size: var(--type-2xs);
+    color: var(--accent-primary-text);
+    text-decoration: none;
+  }
+
+  .metric-source:hover,
+  .metric-source:focus-visible {
+    text-decoration: underline;
   }
 
   .card-footer {

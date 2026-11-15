@@ -49,7 +49,7 @@
         <div class="status-row">
           <span class="status-key">Thinking about:</span>
           <span class="status-value"
-            >Fail-open checks, agent verification loops, and sub-1:25 half-marathon splits.</span
+            >Fail-open checks, agent verification loops, and the next long run.</span
           >
         </div>
       </div>

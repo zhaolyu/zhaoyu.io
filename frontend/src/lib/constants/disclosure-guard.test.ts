@@ -126,7 +126,7 @@ describe('the guard catches the shape, not a memorised value', () => {
   const shapesThatOnceShipped = [
     '$88-92M ARR',
     '310K+ subscribers',
-    '640-subscriber beta pilot',
+    '1,234-subscriber trial',
     '73M+ monthly uniques',
     'HIT: 88.6%',
     '44% velocity increase',
@@ -142,9 +142,10 @@ describe('the guard catches the shape, not a memorised value', () => {
   const wouldEvadeALiteralList = [
     '$72M ARR',
     '185K+ subscribers',
-    '450-subscriber beta cohort',
-    '450-subscriber production beta',
-    '450-user limited access pilot',
+    '5,678-subscriber trial cohort',
+    '5,678-customer beta',
+    '5,678-subscriber production trial',
+    '5,678-user limited access pilot',
     '62M monthly uniques',
     'HIT: 91.2%',
     '31% fewer incidents',

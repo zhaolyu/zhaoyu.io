@@ -19,11 +19,11 @@ credentials.
 1. **The note must already be live.** Confirm the slug exists in
    `frontend/src/lib/constants/content.ts` and has shipped. Distributing an unpublished
    draft leaks a draft; if the note is not live yet, say so and stop.
-2. **Ask about stealth before drafting for a public channel.** The vault holds an
-   unresolved tension: visibility compounding argues for posting now, while employment
-   stealth argues for deferring external positioning, *because discoverability is
-   symmetric*. LinkedIn is the highest-discoverability surface there is. If the user has
-   not already settled this in the current session, ask once — do not assume either way.
+2. **Ask before drafting for a public channel.** Whether a note goes out now, later, or
+   not at all is the user's call, and it is not always "now": LinkedIn is the most
+   discoverable surface there is, and what it surfaces it surfaces to everyone. If the
+   user has not already settled this in the current session, ask once — do not assume
+   either way.
 
 ## The core rule
 

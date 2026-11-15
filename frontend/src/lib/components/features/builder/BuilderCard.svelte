@@ -18,7 +18,6 @@
     'in-progress': 'IN PROGRESS',
     exploring: 'EXPLORING',
     active: 'ACTIVE',
-    'beta-pilot': 'BETA PILOT',
     completed: 'COMPLETED',
   };
 </script>
@@ -36,6 +35,11 @@
 
   <h3 class="card-title">{project.title}</h3>
   <p class="card-description">{project.description}</p>
+  {#if project.source}
+    <a class="card-source" href={project.source.href} target="_blank" rel="noopener">
+      Source: {project.source.label}
+    </a>
+  {/if}
 
   {#if project.metrics}
     <div class="card-metrics">
@@ -90,6 +94,17 @@
     border-color: var(--accent-primary-20);
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
+  }
+
+  .card-source {
+    font-size: var(--type-xs);
+    color: var(--accent-primary-text);
+    text-decoration: none;
+  }
+
+  .card-source:hover,
+  .card-source:focus-visible {
+    text-decoration: underline;
   }
 
   .card-link {
@@ -180,8 +195,7 @@
     animation: pulse-dot 2s ease-in-out infinite;
   }
 
-  .dot-exploring,
-  .dot-beta-pilot {
+  .dot-exploring {
     background: var(--status-warning);
   }
 

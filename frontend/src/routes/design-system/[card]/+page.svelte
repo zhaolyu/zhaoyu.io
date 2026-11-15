@@ -29,7 +29,6 @@
   const leadProject = builderProjects[0];
   const STATUSES: BuilderProject['status'][] = [
     'active',
-    'beta-pilot',
     'completed',
     'shipped',
     'in-progress',
