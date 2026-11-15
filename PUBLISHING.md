@@ -42,9 +42,9 @@ the disclosure policy in [CLAUDE.md](CLAUDE.md).
 - [ ] No third-party private information (colleagues, partners, vendors).
 - [ ] Framing stays on generic engineering domains — architecture, performance, AI
       engineering — not employer-vertical specifics.
-- [ ] The role appears in the hero only as the identity line (`roleTitle`, no team size or
-      scope); scope is stated in About and the meta copy, never as "leads/directs/runs"
-      a 20-engineer organization (`positioning.test.ts`).
+- [ ] Title, scope and tenure use the canon constants (`roleTitle`, `scopeLine`,
+      `tenureLine`) word for word, and never "leads/directs/runs" a 20-engineer
+      organization (`positioning.test.ts`).
 
 ## Mechanics
 

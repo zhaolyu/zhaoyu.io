@@ -24,7 +24,7 @@ you would trust, with its sources attached. The full argument, the eight measure
 sites and the moves adopted and rejected from each are in [`brief.md`](brief.md).
 
 **Readers:** first, a senior engineer or EM who arrives on a note and decides whether to read
-a second; second, a hiring manager who arrives on the home page and needs the argument, the
+a second; second, a reader looking up the author, who arrives on the home page and needs the argument, the
 evidence and the author's identity within ten seconds.
 
 ---

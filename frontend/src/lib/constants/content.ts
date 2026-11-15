@@ -47,6 +47,8 @@ export interface HeroContent {
   };
   /** One-line version of the headline for the OG card and other tight slots. */
   tagline: string;
+  /** The sub-line under the headline: the canon scope line, verbatim. */
+  scope: string;
   bio: string;
   cta: {
     primary: string;
@@ -64,27 +66,38 @@ export interface HeroContent {
 export const roleLine = 'SENIOR MANAGER, ENGINEERING · VERSANT · CNBC CORE';
 
 /**
- * The role of record in sentence case, spelled once for every human-facing
- * surface: <title>, og/twitter titles, meta, the hero identity line, Connect.
- * Title only; team size and program scope stay in About and the meta copy.
+ * The role of record, spelled once for every human-facing surface: <title>,
+ * og/twitter titles, meta, the hero identity line, About, Connect.
  */
-export const roleTitle = 'Senior Manager, Engineering at Versant (CNBC Core)';
+export const roleTitle = 'Senior Manager, Engineering · Versant · CNBC Core';
 
 /**
- * Hero copy. Craft-first: the thesis leads and is the largest thing on the
- * screen. Identity sits under the CTAs at secondary weight, so anyone looking
- * for who wrote this finds it without it being what the page says first
- * (PORTFOLIO-REVIEW-2026-09.md, P0.2). Scope is stated once, in About, and on
- * the agent-facing surfaces. The headline (primary + accent) is held to 40
- * words by positioning.test.ts; the bio carries at most one figure.
+ * The canon scope line. Stated verbatim in the hero, About, the meta
+ * description (and so the JSON-LD Person) and llms.txt; positioning.test.ts
+ * holds every one of those surfaces to this exact string.
+ */
+export const scopeLine =
+  '8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.';
+
+/** The canon tenure line, verbatim on the same surfaces as scopeLine. */
+export const tenureLine =
+  "Ten years on CNBC's platforms since March 2016, intern to Senior Manager.";
+
+/**
+ * Hero copy (owner decision, 2026-11-09, superseding the craft-first hero of
+ * 2026-09-01): the headline states the work, the scope line sits directly
+ * under it, and the bio opens on the tenure line. The headline (primary +
+ * accent) is held to 40 words by positioning.test.ts; the bio carries at most
+ * one figure.
  */
 export const heroContent: HeroContent = {
   headline: {
-    primary: 'Done is a claim. The receipt is what you check.',
-    accent: 'Engineering notes on agents, verification, and reliability.',
+    primary: 'I build the systems engineering teams run on.',
+    accent: 'The architecture, the standards, and the team practices around them.',
   },
-  tagline: 'Done is a claim. The receipt is what you check.',
-  bio: 'Receipts can lie too: a gate whose “did not run” reads as a pass, or a search that reported zero because it looked in the wrong place. I write down where that happened. Every note names its receipt, and the Models section collects the rules that held up.',
+  tagline: 'I build the systems engineering teams run on.',
+  scope: scopeLine,
+  bio: `${tenureLine} I was the only frontend engineer on CNBC's first AI product. The notes below are what building with agents has taught me, and each one names its receipt.`,
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
@@ -169,7 +182,8 @@ export const sourcedFigureValues: string[] = [...performanceMetrics, ...supporti
 export interface Project {
   title: string;
   description: string;
-  metrics: Array<{ label: string; value: string }>;
+  /** A metric that states a number carries its public source. */
+  metrics: Array<{ label: string; value: string; source?: Source }>;
   tags: string[];
   diagram?: string;
   /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
@@ -188,8 +202,8 @@ export const projectsData: ProjectsData = {
         'Market-moving days are a financial-news business at its most valuable and most fragile. I architected CNBC.com’s migration from a legacy client-side monolith to an isomorphic Akamai Edge architecture, moving business and rendering logic to the network edge, so the platform holds its full audience through exactly those spikes: sub-2-second p75 LCP in public field data, and zero downtime through the cutover.',
       tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
       metrics: [
-        { label: 'P75 LCP (CRUX)', value: '1.7s' },
-        { label: 'MONTHLY UNIQUES', value: '47M' },
+        { label: 'P75 LCP (CRUX)', value: '1.7s', source: SOURCES.cruxCnbc },
+        { label: 'MONTHLY UNIQUES', value: '47M', source: SOURCES.versantInvestorDay2025 },
       ],
       diagram: 'migration-arch',
     },
@@ -796,7 +810,7 @@ export const careerHistory: CareerHistory = {
       year: 2026,
       role: 'Senior Manager, Engineering',
       company: 'Versant / CNBC',
-      note: 'The synthesis: a player-coach role spanning both tracks, still hands-on in core architecture.',
+      note: 'Co-leading the CNBC.com rebuild across 3 teams, still hands-on in core architecture.',
     },
   ],
 };
@@ -806,8 +820,10 @@ export interface BuilderProject {
   category: 'professional' | 'independent' | 'experiment';
   description: string;
   stack: string[];
-  status: 'shipped' | 'in-progress' | 'exploring' | 'active' | 'beta-pilot' | 'completed';
+  status: 'shipped' | 'in-progress' | 'exploring' | 'active' | 'completed';
   metrics?: Array<{ label: string; value: string }>;
+  /** The public source for a figure the description states. */
+  source?: Source;
   /** Optional deep-link to a note that documents the work in more depth. */
   link?: { label: string; href: string };
   /** Only shown when the named flag is enabled in FEATURE_FLAGS. */
@@ -825,7 +841,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Driving the complete redesign of CNBC.com, architecting the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and keep the whole web behind the page holding up: analytics (Amplitude, Adobe Launch), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream, in shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation.',
+      'Driving the complete redesign of CNBC.com, architecting the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and keep the whole web behind the page holding up: analytics (Amplitude), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream, in shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation.',
     stack: [
       'Isomorphic React',
       'Akamai EdgeWorkers',
@@ -847,6 +863,7 @@ export const builderProjects: BuilderProject[] = [
       'Four playback surfaces (vertical video, live TV, full episodes, and standalone live events) rebuilt from the ground up across two player frameworks, inside the ~394M monthly digital minutes Versant reported at its December 2025 Investor Day. The hard part was never the player. It was upstream: settling the API contracts and architecture dependencies each surface had inherited separately, so four experiences resolve to one modular framework instead of forking into four.',
     stack: ['Server-Sent Events', 'Live Streaming', 'Player Architecture', 'GraphQL'],
     status: 'active',
+    source: SOURCES.versantInvestorDay2025,
     metrics: [
       { label: 'Surfaces', value: 'Vertical · Live TV · Episodes · Events' },
       { label: 'Sync', value: 'Server-Sent Events' },
@@ -860,7 +877,7 @@ export const builderProjects: BuilderProject[] = [
     stack: ['Streaming UI', 'SSE', 'React', 'HCI'],
     status: 'active',
     metrics: [
-      { label: 'Token rendering', value: '60 fps' },
+      { label: 'Token rendering', value: 'Frame-buffered' },
       { label: 'Interface', value: 'Deterministic' },
     ],
     link: {
@@ -872,23 +889,23 @@ export const builderProjects: BuilderProject[] = [
     title: 'Infrastructure & Privacy Separation',
     category: 'professional',
     description:
-      'When the corporate spinoff needed CNBC’s digital business to stand alone, I directed the 4-month, 3-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company with zero downtime, compliance obligations met, no revenue interruption, no user-visible seam.',
+      'When the corporate spinoff needed CNBC’s digital business to stand alone, I drove the cross-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company with no downtime, compliance obligations met, no revenue interruption, no user-visible seam.',
     stack: ['GCP', 'Zero Downtime', 'GDPR/CCPA Compliance', 'Cloud Architecture'],
     status: 'completed',
     metrics: [
-      { label: 'Teams Coordinated', value: '3' },
-      { label: 'Downtime', value: 'Zero' },
+      { label: 'Services', value: 'Video · Analytics · Privacy' },
+      { label: 'Cutover', value: 'No downtime' },
     ],
   },
   {
     title: 'OB1: Exocortex Retrieval Layer',
     category: 'independent',
     description:
-      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into 1,700 atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window.',
+      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window.',
     stack: ['MCP', 'Supabase', 'pgvector', 'TypeScript'],
     status: 'shipped',
     metrics: [
-      { label: 'Atomic Claims', value: '1,700' },
+      { label: 'Source of truth', value: 'The vault' },
       { label: 'Agent Access', value: 'MCP' },
     ],
   },
@@ -912,12 +929,13 @@ export interface NarrativeBio {
 }
 
 export const narrativeBio: NarrativeBio = {
-  title: 'Player-coach by design',
+  title: roleTitle,
   paragraphs: [
-    'What the business gets from me is both tracks at once. Over ten years at CNBC I deliberately crossed the line most engineers pick a side of: senior engineer, then engineering manager, then back to Principal Engineer to keep my architecture judgment current, now Senior Manager, Engineering for CNBC Core. I manage a direct team of 8 engineers and 2 QE and co-lead the ~20-engineer rebuild of CNBC.com across 3 teams (web, video, and market data), and because I still architect and ship alongside them, technical decisions get made in the room. No translation layer between strategy and the codebase, no architecture that drifts from what the teams can actually deliver.',
-    'As AI Integration Lead I turned AI adoption from individual experimentation into an organizational capability: standards and PR quality gates (SonarQube, lint, Jest test automation) governing how 20+ engineers use tools like Cursor in production code, with measurable velocity gains and fewer high-severity defects, inside the security and compliance guardrails a financial-media business actually has to honor. The org ships faster because the review bar got stronger, not looser.',
-    'The coach half is just as deliberate. I recently expanded a mid-level engineer’s scope from single tasks to three concurrent workstreams (video, search, and free preview), and the coaching that mattered was not technical: they were losing rooms they were right in, so we worked on how the work gets presented to design and product until their influence caught up with their judgment. Engineers who can carry a whole surface are how a player-coach scales.',
-    'Outside the codebase I am a long-distance runner, with a 3:07 marathon and a 50K ultra, and the same discipline carries into multi-year technical transformations.',
+    `${scopeLine} The three teams are web, video, and market data, and I still architect and ship alongside them, so technical decisions get made in the room rather than through a translation layer. ${tenureLine}`,
+    'As AI Integration Lead I set the standard for how the engineers across the three teams use AI coding tools like Cursor in production code: shared standards and PR quality gates (SonarQube, lint, and Jest test automation), inside the security and compliance guardrails a financial-media business has to honor. The standard exists so the review bar holds as the tools get faster.',
+    "I was the only frontend engineer on CNBC's first AI product and took it from zero to one, built front to back with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform.",
+    "My own team builds CNBC.com's web video experiences: live TV, full episodes, vertical video, and standalone live events.",
+    'I grow engineers by widening their scope. A mid-level engineer on my team went from single tasks to several concurrent workstreams, and the coaching that mattered was not technical: they were losing rooms they were right in, so we worked on how the work gets presented to design and product until their influence caught up with their judgment.',
   ],
 };
 
@@ -929,7 +947,7 @@ export interface SocialDescriptions {
 
 /** Human-facing social/meta copy; the agent layer (JSON-LD, llms.txt) tells the same story. */
 export const socialDescriptions: SocialDescriptions = {
-  meta: `${roleTitle}. 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild. Notes with receipts.`,
+  meta: `${roleTitle}. ${scopeLine}`,
   twitter: `${roleTitle}. Engineering notes with receipts: agents, verification, reliability.`,
 };
 

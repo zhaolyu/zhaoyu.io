@@ -20,7 +20,6 @@ Add a new figure to `SOURCES` (with its public citation) before using it in pros
 | Program scope                          | Co-leads the ~20-engineer CNBC.com rebuild across 3 teams | LinkedIn / role of record          |
 | Production years                       | 10+ (intern Mar 2016 → Senior Manager Apr 2026) | Career timeline                              |
 | Next-gen platform + AI investing tools | Public cover: Versant Q2-2026 earnings call    | Lazarus quote, 6 Aug 2026                     |
-| Running                                | 3:07 marathon, 50K ultra finish; a sub-1:25 half is the stated goal, never claimed as achieved | Personal record |
 
 **The rule is an allowlist, not a list of forbidden strings.** A number about
 the employer ships only if it is in the table above, with a basis and a public
@@ -54,8 +53,8 @@ or supergraph composition. Use "works across" or "builds against". Do not
 characterize the graph's federation depth or claim cross-entity federation
 across it, and do not name subgraph counts or the service inventory.
 
-The AI assistant is a limited production beta plus org-wide AI governance,
-never a site-wide production surface. Its cohort size, rollout dates, pipeline
+The AI product's release stage is never stated, and it is never described as a
+site-wide production surface. Its cohort size, rollout dates, pipeline
 internals and **evaluation suite** are in-person material only: they never go
 on any surface of this site, in any phrasing, however good the detail is.
 Describe the work only at the level Versant has disclosed publicly, which
@@ -89,21 +88,18 @@ a flag hides a card, not the shipped bundle.
 display text (both "Aug 14, 2026" and "Sep 2026" ship), `dateISO` is a full `YYYY-MM-DD`,
 and every note carries at least one `sources` entry. RSS sorts defensively but the array is maintained newest-first.
 
-**Hero** (`heroContent`) — `headline.primary` is the thesis: one or two short declarative
-sentences, each ending in a period, the largest text on the page, never the role.
-`Hero.svelte` sets each sentence on its own line. `headline.accent` names the subjects in one
-line and renders as a subhead inside the same `<h1>`. Together the two stay within 40 words,
-mention receipts and the subject matter (agents, edge or reliability), and carry no role or
-scope words (enforced by `positioning.test.ts`). `bio` is one dense paragraph, 40–60 words,
-at most one figure, must mention receipts and carries no résumé terms (enforced by
-`positioning.test.ts`; `content.test.ts` repeats the figure cap), ending on what the reader
-gets. `cta.primary` and `cta.secondary` are the two button labels. `identity` is the one
-quiet line under the CTAs: name, `roleTitle`, location, at secondary weight. It states the
-role of record and nothing more; team size and scope stay in About (enforced by
-`positioning.test.ts`). There is no badge or motto field. `tagline` is the OG card subtitle,
-and currently repeats `headline.primary`; changing it means regenerating the site card (see
-[publish.md](publish.md)). The visual rules for the hero live in
-`.interface-design/brief.md` and `.interface-design/system.md`.
+**Hero** (`heroContent`) — `headline.primary` states the work in one short declarative
+sentence: what Zhao builds, never the role. `headline.accent` names its parts in one line and
+renders as a subhead inside the same `<h1>`. Together they stay within 40 words and carry no
+title or headcount (enforced by `positioning.test.ts`). `scope` is the canon scope line
+(`scopeLine`), verbatim, directly under the headline. `bio` opens on the canon tenure line
+(`tenureLine`), carries at most one figure, and ends on what the reader gets. `cta.primary`
+and `cta.secondary` are the two button labels. `identity` is the line under the CTAs: name,
+`roleTitle`, location. `tagline` is the OG card subtitle and repeats `headline.primary`;
+changing it means regenerating the site card (see [publish.md](publish.md)). The canon was
+set by owner decision on 2026-11-09 and replaced the craft-first hero of 2026-09-01. The
+visual rules for the hero live in `.interface-design/brief.md` and
+`.interface-design/system.md`.
 
 **Projects** (`projectsData.projects`) — `description` is one paragraph, 55–80 words,
 structured as: what was architected → the technical move → the measured result. Two `metrics`
@@ -114,10 +110,12 @@ each, label in caps. 4 tags. Lead with the architecture decision, not the compan
 `positioning.test.ts` requires the platform rebuild card first and pins the AI card to the
 publicly disclosed phrasing quoted above.
 
-**Narrative bio** (`narrativeBio`) — 3–4 paragraphs. Paragraph 1 is the career arc as a
-_deliberate_ sequence (the IC→EM→IC→EM path is the point, "a choice, not a detour").
-Paragraph 2 is AI governance. Final paragraph is the running/discipline close. Keep the
-through-line: player-coach by design.
+**Narrative bio** (`narrativeBio`, the About section) — `title` is `roleTitle`. The
+paragraphs run in the order a reader checks them: what he leads (opening on `scopeLine`
+verbatim, with `tenureLine` in the same paragraph), how he leads (the AI coding-tools
+standard and its CI/CD gates, described as a standard with no outcome numbers), what he built
+0→1 (CNBC's first AI product, as its only frontend engineer), what his team builds (web
+video), and how he grows engineers. No two-track framing: `positioning.test.ts` retires it.
 
 **Persona** (`personaData`) — 2 operating-principle cards rendered in the code-manifesto
 section ("Strong opinions, weakly held.") under "Platform-era foundations, still
@@ -128,9 +126,8 @@ card ties an engineering principle to its business consequence.
 asymmetric comparison (`Receipts > Done`, `Loop > Model`). `body` is one sentence, 20–30 words,
 stating the rule and its justification, with no digits (`content.test.ts`).
 
-**Social descriptions** (`socialDescriptions`, a plain constant) — `meta` caps at
-160 characters and opens with `roleTitle`; it must name the direct team as "8 engineers
-and 2 QE" and say co-lead (all enforced by `positioning.test.ts`). It is the
+**Social descriptions** (`socialDescriptions`, a plain constant) — `meta` is exactly
+`roleTitle` + ". " + `scopeLine`, within 160 characters (enforced by `positioning.test.ts`). It is the
 `<meta name="description">`, the og:description, and the JSON-LD Person description
 (`structured-data.ts`), so one edit moves all three. `twitter` is shorter, also opens with
 `roleTitle`, and drops the numbers.

@@ -154,10 +154,12 @@ How that runs in practice:
   advisory (taken, overruled with a reason, owner decision, or follow-up). Disclose any
   edit made after the verdict, or re-judge it.
 
-**The hero** leads with the thesis (`heroContent.headline.primary`). The role appears in
-the hero only as the quiet identity line under the CTAs (`heroContent.identity`, which must
-equal `roleTitle` and carry no scope claim); `roleTitle` is the one human-facing spelling of
-the role, `roleLine` the all-caps OG eyebrow. A hero or tagline edit needs `pnpm og`.
+**The hero** states the work (`heroContent.headline.primary`), then the canon scope line
+(`heroContent.scope` = `scopeLine`), then a bio that opens on `tenureLine`; the identity
+line under the CTAs equals `roleTitle`. `roleTitle`, `scopeLine` and `tenureLine` in
+`content.ts` are the canon, word for word in the hero, About, the meta description (and so the
+JSON-LD Person) and `llms.txt` (owner decision 2026-11-09, enforced by `positioning.test.ts`).
+`roleLine` is the all-caps OG eyebrow. A hero or tagline edit needs `pnpm og`.
 
 ---
 
@@ -200,7 +202,7 @@ New utils require a colocated `*.test.ts` with ≥90% coverage.
   1. Zhao manages a direct team of 8 engineers and 2 QE and _co-leads_ a ~20-engineer rebuild across three teams. Never write "directs," "leads," or "runs" a 20-engineer organization, in page copy or in `llms.txt`.
   2. Architecture he can describe is not architecture he owns. He works _across_ the Apollo Federation supergraph and defines how upstream services shape its responses; he does not own gateway config, Router policy, or supergraph composition. Use "works across" or "builds against."
   3. Do not characterize the graph's federation depth or claim cross-entity federation across it. One subgraph is entity-aware; most contribute independent root fields. Do not name subgraph counts, the entity-aware subgraph, or the service inventory — internal architecture topology is not public.
-  4. The AI assistant is a limited production beta plus org-wide AI governance, never a site-wide production surface. Its cohort size, rollout dates, pipeline internals, and evaluation suite are **in-person material only** — they do not go on any surface of this site, in any phrasing, however impressive they are. Describe the work only at the level Versant has disclosed publicly. What ships publicly is the 0→1 role, the cross-functional scope including editorial, and the interface architecture.
+  4. The AI product's release stage is never stated, and it is never described as a site-wide production surface. Its cohort size, rollout dates, pipeline internals, and evaluation suite are **in-person material only** — they do not go on any surface of this site, in any phrasing, however impressive they are. Describe the work only at the level Versant has disclosed publicly. What ships publicly is the 0→1 role, the cross-functional scope including editorial, and the interface architecture.
   5. Do not attribute the observability instrumentation or the evaluation criteria to him — the instrumentation is the backend team's and the criteria came from editorial. Describe what the system ships with, and do not name the vendors.
   6. Every number stays sourced inline, per the site's own stated standard.
 
