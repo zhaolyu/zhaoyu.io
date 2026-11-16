@@ -114,7 +114,8 @@ publicly disclosed phrasing quoted above.
 paragraphs run in the order a reader checks them: what he leads (opening on `scopeLine`
 verbatim, with `tenureLine` in the same paragraph), how he leads (the AI coding-tools
 standard and its CI/CD gates, described as a standard with no outcome numbers), what he built
-0→1 (CNBC's first AI product, as its only frontend engineer), what his team builds (web
+0→1 (the frontend of CNBC's first AI product; "only frontend engineer" appears once, on the AI
+work card, owner decision 2026-11-16), what his team builds (web
 video), and how he grows engineers. No two-track framing: `positioning.test.ts` retires it.
 
 **Persona** (`personaData`) — 2 operating-principle cards rendered in the code-manifesto
