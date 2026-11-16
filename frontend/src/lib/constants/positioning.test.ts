@@ -189,6 +189,12 @@ const RETIRED_CLAIMS: Array<{ pattern: RegExp; why: string }> = [
   },
   { pattern: /\bnine years\b/gi, why: 'tenure is ten years — intern since March 2016' },
   {
+    // Owner rule, 2026-11-09: CNBC work is named by the change itself (the edge
+    // migration, the separation, the rebuild), never by the corporate label.
+    pattern: /digital transformation/gi,
+    why: 'CNBC work is named by the actual change, not by the transformation label',
+  },
+  {
     pattern: /both tracks|player-coach/gi,
     why: 'the role is engineering leadership, not a choice between two tracks',
   },

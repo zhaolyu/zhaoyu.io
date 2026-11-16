@@ -154,7 +154,8 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
    - **Employer-safe.** No criticism of any employer, its decisions, its leaders or
      colleagues. No colleague named or identifiable. Nothing about the employer that is
      not publicly disclosed (the CLAUDE.md disclosure policy). For the rebuild in progress,
-     no stage, timing, release status or internals. For a leadership note, run the four
+     no stage, timing, release status or internals. No CNBC work framed with the
+     "digital transformation" label, in any wording that carries the same framing. For a leadership note, run the four
      rules under "Leadership notes" in `../writer/SKILL.md`.
    - **Attributed.** The provenance table gives every first-person act ("I decided", "I
      wrote", "we shipped") a row naming who the record says did it. An act the record gives

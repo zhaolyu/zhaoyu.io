@@ -56,7 +56,9 @@ employer-internal. Four rules make it publishable:
 1. **Completed work first.** The edge migration, the spinoff separation, the 0→1 AI product
    and the AI coding-tools standard are told at the level the site already states. The
    rebuild in progress gets scope only (what he co-leads), never its stage, timing or
-   internals.
+   internals. No CNBC work is ever framed as a "digital transformation": name the actual
+   change (the move to the edge, the separation, the rebuild). `positioning.test.ts`
+   fails the build on the label.
 2. **The receipt is the role of record plus a public anchor.** Cite it as a source whose label
    begins "Role of record:" with the public link it rests on (LinkedIn for scope, a Versant
    disclosure or field data for any figure). Every figure still comes from `SOURCES`. A
