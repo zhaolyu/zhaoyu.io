@@ -171,4 +171,4 @@ Reuse before inventing:
 `Architecture` · `Retrieval` · `Engineering Management` · `Distributed Systems` ·
 `LLM Mechanics` · `System Prompt Architecture` · `Specification` · `HCI` ·
 `Performance` · `React Performance` · `State Management` · `Productivity` · `Career` · `SEO` ·
-`Structured Data` · `Meta` · `60fps`
+`Structured Data` · `Meta` · `60fps` · `Engineering Leadership` · `Standards` · `Delegation`

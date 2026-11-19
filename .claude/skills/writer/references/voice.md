@@ -21,8 +21,8 @@ and the skills that job demands are now IC skills too" works because the headcou
 argument. State it the way the résumé does; see the scope-claim rule in
 [surfaces.md](surfaces.md), which `positioning.test.ts` enforces.
 
-**Write for one reader**: a senior engineer or EM who has hit this exact problem and is
-skeptical. Not a recruiter, not a beginner. That reader doesn't need the concept defined;
+**Write for one reader**: a senior engineer, an EM, or a director running engineering
+through the same shift, who has hit this exact problem and is skeptical. Not a recruiter, not a beginner. That reader doesn't need the concept defined;
 they need the mechanism and the receipt.
 
 ## Sentence rules

@@ -83,15 +83,21 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
      conclusion ("So a check needs…") with no adoption status either way counts as
      implying adoption. A source that is only a label, with no commit or file behind it,
      is not reachable. FAIL when the draft implies an adoption the record does not show,
-     or when the "now" it states is not what the artifact did.
+     or when the "now" it states is not what the artifact did. One exception, for a
+     leadership note under "Leadership notes" in `../writer/SKILL.md`: a practice
+     adopted at work may stand as **adopted, record employer-internal** when the draft says
+     so plainly and claims no measured outcome.
      (Missing `ref`, `host` or `verified_on` fields are step 2's finding, not this one.)
-   - **Visibly from building agentic systems.** The incident or the lesson comes from
-     building agentic systems or the flows around them: the harness, delegation,
-     verification and evaluation, routines, the tooling an AI engineer runs. The draft
-     names that context in its own words, for example what the system does in the
-     author's agent work ("the generator that writes the baseline instructions my coding
-     agents read"). Cues a reader has to decode do not count, and neither does a link
-     that is visible only in the commits.
+   - **Visibly from the author's work.** The incident or the lesson comes from one of the
+     three places "What a note is for" names. (1) Building agentic systems or the flows
+     around them: the harness, delegation, verification and evaluation, routines, the
+     tooling an AI engineer runs. (2) Running the agent fleet the way an organization is
+     run. (3) Leading engineering teams at CNBC, at the disclosed level (widened by owner
+     decision, 2026-11-16). The draft names that context in its own words, for example what
+     the system does in the author's agent work ("the generator that writes the baseline
+     instructions my coding agents read") or which team and role the lesson came from.
+     Cues a reader has to decode do not count, and neither does a link that is visible
+     only in the commits.
    - **Not already said.** Search `notesData` in `frontend/src/lib/constants/content.ts`
      for a shipped note or essay that teaches the same lesson or spends the same
      receipts. The same rule counts as the same lesson even when the draft adds a nuance,
@@ -99,8 +105,10 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
      what it adds and links to it rather than retelling it; otherwise FAIL, naming the
      note.
 
-   The verdict opens with the lesson line and its status: **adopted**, with the artifact
-   that records it, or **in progress**, as the draft states it. Both go into the PR body
+   The verdict opens with the lesson line, its status (**adopted**, with the artifact that
+   records it; **adopted, record employer-internal**; or **in progress**, as the draft
+   states it), and its **altitude**: the level the lesson operates at, either code, team or
+   organization. Altitude is recorded, not graded. The owner reviews the mix across notes. Both go into the PR body
    with the rest of the verdict, so the merged PRs double as the author's record of what
    was learned and what has actually changed, which is the second reader the note is for.
 1. **Claim test.** State the draft's claim in one sentence after one read. If you
@@ -142,6 +150,20 @@ Run in order. Every finding must quote its evidence or show its arithmetic.
    the source names, not the host the judge happens to be on; when they differ and the
    judge cannot reach the named host, the finding is COULD-NOT-RUN for that claim, never
    a pass. The verdict states the host every mechanism was checked on.
+2b. **Employer-safe, attributed, and about the work.** Three checks, each blocking:
+   - **Employer-safe.** No criticism of any employer, its decisions, its leaders or
+     colleagues. No colleague named or identifiable. Nothing about the employer that is
+     not publicly disclosed (the CLAUDE.md disclosure policy). For the rebuild in progress,
+     no stage, timing, release status or internals. No CNBC work framed with the
+     "digital transformation" label, in any wording that carries the same framing. For a leadership note, run the four
+     rules under "Leadership notes" in `../writer/SKILL.md`.
+   - **Attributed.** The provenance table gives every first-person act ("I decided", "I
+     wrote", "we shipped") a row naming who the record says did it. An act the record gives
+     to a team, a routine or another person is stated that way. A claim of sole authorship
+     the record does not support blocks.
+   - **About the work.** The site describes the work. A sentence about the author's next
+     role, the job market, availability, or reasons to leave a role blocks, however it is
+     phrased.
 3. **Cadence arithmetic** (from `../writer/references/voice.md`):
    - Extract every paragraph-final sentence as a list. Count the epigrams. More than
      one per piece blocks.

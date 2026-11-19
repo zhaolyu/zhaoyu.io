@@ -30,15 +30,49 @@ The site's owner, 2026-09-26: *"I want to create posts that show the lesson I'm 
 from building agentic systems and the flows that drive impact to my learning and growing
 as an AI Engineer,"* and *"I treat these as insights for myself as well."*
 
-So a note has two readers. One is an engineer building agentic systems, who should leave
-able to do something differently. The other is the author, for whom the note is the
+The owner widened that on 2026-11-16 (a recorded owner policy change): the notes also carry
+engineering leadership, meaning the strategy and the lessons from ten years
+on CNBC's platforms, including the platform work he was part of, and the agent fleet he runs
+as an organization of its own. So a lesson can come from three places: building agentic
+systems; running the fleet the way an organization is run (delegation, review, standards,
+incidents); or leading teams at CNBC, told at the level Versant has disclosed. The third has
+its own receipt rules, under [Leadership notes](#leadership-notes).
+
+So a note has two readers. One is an engineer or engineering leader working through the same
+shift, who should leave able to do something differently. The other is the author, for whom the note is the
 record of an insight: what changed in practice, and why. A note that serves only the
 first reader is a tutorial, and one that serves only the second is a diary entry. The
 notes that belong here serve both. That is why a note shows the author's own before and
 after, not only an observation about how a system behaved; says whether the change is
 adopted (and where it is recorded) or still being learned; and names the agent-work
-context in its own words. `writer-judge` enforces this as its worth test, run first on
-every note and essay (surface copy has no lesson line and skips it).
+or leadership context in its own words. `writer-judge` enforces this as its worth test,
+run first on every note and essay (surface copy has no lesson line and skips it).
+
+## Leadership notes
+
+A lesson from leading teams at CNBC is first-hand, and its record is almost always
+employer-internal. Four rules make it publishable:
+
+1. **Completed work first.** The edge migration, the spinoff separation, the 0→1 AI product
+   and the AI coding-tools standard are told at the level the site already states. The
+   rebuild in progress gets scope only (what he co-leads), never its stage, timing or
+   internals. No CNBC work is ever framed as a "digital transformation": name the actual
+   change (the move to the edge, the separation, the rebuild). `positioning.test.ts`
+   fails the build on the label.
+2. **The receipt is the role of record plus a public anchor.** Cite it as a source whose label
+   begins "Role of record:" with the public link it rests on (LinkedIn for scope, a Versant
+   disclosure or field data for any figure). Every figure still comes from `SOURCES`. A
+   leadership note never cites a vault capture of employer-internal material:
+   `ops/publication-policy.md` in the vault makes those red-line.
+3. **Adoption is stated honestly.** When the practice changed at work, the note says it is
+   adopted in his practice and that the record is not public, and claims no measured
+   outcome. The PR records the status as "adopted, record employer-internal".
+4. **People stay unnamed and uncriticized.** Colleagues appear as roles ("a mid-level
+   engineer", "the backend team"), never as names. The note criticizes no decision,
+   organization or leader, at CNBC or anywhere else. A lesson that needs a villain is not
+   publishable here.
+
+`writer-judge` checks all four (rubric step 2b).
 
 ## The six non-negotiables
 
