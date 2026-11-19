@@ -24,8 +24,8 @@
 
 <section id="work" class="work-section" bind:this={workSection}>
   <SectionHeader badge="Selected Work & Systems">
-    Systems I've architected,<br />
-    <span class="headline-accent">from CNBC to architectural sandboxes.</span>
+    Work at CNBC,<br />
+    <span class="headline-accent">and the sandboxes where I test ideas.</span>
   </SectionHeader>
 
   <!-- Always rendered so the project cards prerender; the reveal is animation-only. -->

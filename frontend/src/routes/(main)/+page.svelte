@@ -52,22 +52,22 @@
   {@html personScript}
 </svelte:head>
 
-<!-- Craft-first order: the writing and the mental models lead; the résumé
-     material (About, then the sourced numbers) sits at the end. The hero's
-     one quiet identity line under the CTAs is the only role statement above it.
-     Models sit directly under the writing, and the code standards follow them:
-     the standards are the worked examples a model cashes out into, not peers
-     of the models themselves. Two sections cannot both be "mental models," so
-     the manifesto badge names what it actually shows. -->
+<!-- About follows the hero, so the role and how the work is led are read
+     before the writing; the landing page shows the five newest notes and
+     links the rest. Models sit directly under the writing, and the code
+     standards follow them: the standards are the worked examples a model
+     cashes out into, not peers of the models themselves. Two sections cannot
+     both be "mental models," so the manifesto badge names what it actually
+     shows. The sourced numbers stay at the end. -->
 <main id="main" class="main-container">
   <Hero />
+  <PersonaSection />
   <EngineeringNotes />
   <MentalModels />
   <CodeManifesto>
     <LatencySim />
   </CodeManifesto>
   <WorkSection />
-  <PersonaSection />
   <Skills />
   <Connect />
 </main>

@@ -10,12 +10,12 @@
   let menuEl = $state<HTMLElement | null>(null);
   let hamburgerEl = $state<HTMLElement | null>(null);
 
-  // Writing is one click from anywhere; sections in page order.
+  // Sections in page order: About follows the hero, then the writing.
   const navLinks = [
+    { name: '/about', href: '/#about' },
     { name: '/writing', href: '/blog' },
     { name: '/models', href: '/models' },
     { name: '/work', href: '/#work' },
-    { name: '/about', href: '/#about' },
     { name: '/ai-thesis', href: '/ai-manifesto' },
     { name: '/contact', href: '/#connect' },
   ];

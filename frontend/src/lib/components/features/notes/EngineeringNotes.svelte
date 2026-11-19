@@ -31,13 +31,13 @@
        bodies live there, not on the landing page. -->
   <div class="notes-container reveal" class:revealed={sectionVisible}>
     <ul class="notes-grid">
-      {#each notesData.notes as note (note.slug)}
+      {#each notesData.notes.slice(0, 5) as note (note.slug)}
         <li>
           <NoteExcerptCard {note} />
         </li>
       {/each}
     </ul>
-    <a href="/blog" class="all-notes-link">All notes, individually addressable &rarr;</a>
+    <a href="/blog" class="all-notes-link">All {notesData.notes.length} notes &rarr;</a>
   </div>
 </section>
 

@@ -97,7 +97,7 @@ export const heroContent: HeroContent = {
   },
   tagline: 'I build the systems engineering teams run on.',
   scope: scopeLine,
-  bio: `${tenureLine} I was the only frontend engineer on CNBC's first AI product. The notes below are what building with agents has taught me, and each one names its receipt.`,
+  bio: `${tenureLine} The notes on this page are what building with agents has taught me, and each one names its receipt.`,
   cta: {
     primary: 'Read the Notes',
     secondary: 'View Selected Work',
@@ -842,7 +842,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'CNBC.com Next-Gen Rebuild',
     category: 'professional',
     description:
-      'Driving the complete redesign of CNBC.com, architecting the new UI/UX end to end with a peer engineering manager. I lead the frontend architecture for the AI experiences, lead the team building the video and site experiences, and keep the whole web behind the page holding up: analytics (Amplitude), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream, in shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation.',
+      'Co-leading the rebuild of CNBC.com with a peer engineering manager. I lead the frontend architecture for the AI experiences, my team builds the web video experiences, and I keep the whole web behind the page holding up: analytics (Amplitude), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream, in shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation.',
     stack: [
       'Isomorphic React',
       'Akamai EdgeWorkers',
@@ -902,7 +902,7 @@ export const builderProjects: BuilderProject[] = [
     title: 'OB1: Exocortex Retrieval Layer',
     category: 'independent',
     description:
-      'The leverage behind everything else I ship: books, engineering sources, and production lessons distilled into atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window.',
+      'The retrieval layer over a personal knowledge vault of atomic, cross-linked claims. The vault stays the source of truth; OB1 projects it into Supabase and serves it over MCP, so an agent in any client starts with my accumulated judgment instead of a blank context window.',
     stack: ['MCP', 'Supabase', 'pgvector', 'TypeScript'],
     status: 'shipped',
     metrics: [
@@ -934,9 +934,9 @@ export const narrativeBio: NarrativeBio = {
   paragraphs: [
     `${scopeLine} The three teams are web, video, and market data, and I still architect and ship alongside them, so technical decisions get made in the room rather than through a translation layer. ${tenureLine}`,
     'As AI Integration Lead I set the standard for how the engineers across the three teams use AI coding tools like Cursor in production code: shared standards and PR quality gates (SonarQube, lint, and Jest test automation), inside the security and compliance guardrails a financial-media business has to honor. The standard exists so the review bar holds as the tools get faster.',
-    "I was the only frontend engineer on CNBC's first AI product and took it from zero to one, built front to back with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform.",
+    "I built the frontend of CNBC's first AI product from zero to one, working with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform.",
     "My own team builds CNBC.com's web video experiences: live TV, full episodes, vertical video, and standalone live events.",
-    'I grow engineers by widening their scope. A mid-level engineer on my team went from single tasks to several concurrent workstreams, and the coaching that mattered was not technical: they were losing rooms they were right in, so we worked on how the work gets presented to design and product until their influence caught up with their judgment.',
+    'I grow engineers by widening their scope, and much of the coaching is not technical. An engineer can be right and still lose the room, so we work on how a decision gets presented to design and product, until their influence catches up with their judgment.',
   ],
 };
 
@@ -970,7 +970,7 @@ export const personaData: PersonaItem[] = [
     title: 'The Bridge',
     body: [
       "I operate at the intersection of Product and Engineering. I don't build to spec; I partner with product leaders to define what is technically possible at scale.",
-      'I translate edge configuration into business value, connect latency improvements to revenue impact, and push back when the roadmap is wrong. Engineering earns its seat by speaking the business’s language.',
+      'I translate edge configuration into business value, connect latency improvements to revenue impact, and name a technical cost early, while the roadmap can still absorb it. Engineering earns its seat by speaking the business’s language.',
     ],
   },
 ];
