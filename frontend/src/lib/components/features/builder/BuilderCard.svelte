@@ -19,6 +19,7 @@
     exploring: 'EXPLORING',
     active: 'ACTIVE',
     completed: 'COMPLETED',
+    retired: 'RETIRED',
   };
 </script>
 
@@ -197,6 +198,10 @@
 
   .dot-exploring {
     background: var(--status-warning);
+  }
+
+  .dot-retired {
+    background: var(--text-muted);
   }
 
   @keyframes pulse-dot {

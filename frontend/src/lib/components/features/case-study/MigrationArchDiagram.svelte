@@ -6,7 +6,7 @@
 <svg
   viewBox="0 0 720 300"
   role="img"
-  aria-label="Before: every request travels to the origin monolith, which renders and serves. After: Akamai EdgeWorkers render and serve at the network edge; the origin is contacted only for data."
+  aria-label="Before: every request travels to the origin monolith, which renders and serves. After: edge compute renders and serves at the network edge; the origin is contacted only for data."
   class="diagram"
 >
   <!-- BEFORE row -->
@@ -51,7 +51,7 @@
   </g>
   <g class="node accent-node">
     <rect x="330" y="184" width="180" height="72" rx="8" />
-    <text x="420" y="206" text-anchor="middle" class="node-title">Akamai EdgeWorkers</text>
+    <text x="420" y="206" text-anchor="middle" class="node-title">Edge compute</text>
     <text x="420" y="222" text-anchor="middle" class="node-sub">isomorphic render + logic</text>
     <text x="420" y="238" text-anchor="middle" class="node-sub">cache close to the reader</text>
   </g>

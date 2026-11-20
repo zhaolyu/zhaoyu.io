@@ -33,6 +33,7 @@
     'shipped',
     'in-progress',
     'exploring',
+    'retired',
   ];
 
   const statusMatrix: BuilderProject[] = STATUSES.map((status) => ({

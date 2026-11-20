@@ -117,6 +117,8 @@ standard and its CI/CD gates, described as a standard with no outcome numbers), 
 0→1 (the frontend of CNBC's first AI product; "only frontend engineer" appears once, on the AI
 work card, owner decision 2026-11-16), what his team builds (web
 video), and how he grows engineers. No two-track framing: `positioning.test.ts` retires it.
+Keep the through-line: builds the systems teams run on. The IC→EM→IC→EM path was deliberate;
+the destination is org leadership.
 
 **Persona** (`personaData`) — 2 operating-principle cards rendered in the code-manifesto
 section ("Strong opinions, weakly held.") under "Platform-era foundations, still

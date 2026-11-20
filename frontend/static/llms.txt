@@ -50,22 +50,26 @@
    accessible interfaces around non-deterministic model output, with
    frame-buffered token streaming, state decoupled from render, graceful
    degradation, and trust-preserving latency for a financial audience.
-5. **Edge performance and the spinoff separation**: market-moving days are a
-   financial-news business at its most valuable and most fragile; the
-   isomorphic Akamai EdgeWorkers architecture he designed for CNBC.com
-   holds the full audience through exactly those spikes (sub-2-second p75 LCP
-   in public field data). He also drove the cross-team separation of CNBC's
+5. **Edge performance and the spinoff separation**: worked with the platform
+   team on CNBC.com's move from a client-side monolith to edge rendering, and
+   designed the next version of its edge caching and content-access flow.
+   Market-moving days are a financial-news business at its most valuable and
+   most fragile, and the edge-rendered site holds its audience through those
+   spikes (sub-2-second p75 LCP in public field data). He also drove the cross-team separation of CNBC's
    digital infrastructure from its parent company: video streaming,
    analytics, and privacy services migrated with no downtime and no revenue
    interruption, the work that let the corporate spinoff stand alone.
-6. **AI governance**: as AI Integration Lead, set the standard for how the
+6. **Kalshi partnership**: built CNBC's reader experience for its Kalshi
+   partnership: an editorial workflow on existing CMS tools, aligned across
+   brand partnerships, editorial, and legal.
+7. **AI governance**: as AI Integration Lead, set the standard for how the
    engineers across the three teams use AI coding tools like Cursor in
    production code: shared standards and PR quality gates (SonarQube, lint,
    and Jest test automation). Working thesis:
    specification quality, not implementation speed, is the bottleneck in
    agent-driven development, and agent reliability is engineered into the
    loop (boundaries, receipts, control planes), not summoned from the model.
-7. **Independent builder**: ships and operates real systems outside of
+8. **Independent builder**: ships and operates real systems outside of
    assigned work with the same production discipline. Systems:
    Cost-Guard (a local-first FinOps platform: PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
@@ -130,6 +134,8 @@ The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 - "Next-generation digital platform … AI-powered investing tools": Versant
   Q2-2026 earnings call, 6 Aug 2026:
   https://www.investing.com/news/transcripts/earnings-call-transcript-versant-media-lifts-2026-outlook-in-q2-2026-93CH-4842245
+- CNBC and Kalshi multi-year exclusive partnership, announced 4 Dec 2025:
+  https://www.cnbc.com/2025/12/04/cnbc-and-kalshi-strike-exclusive-partnership.html
 - Role and scope: https://linkedin.com/in/zhaolyu
 
 ## Contact

@@ -34,6 +34,10 @@ export const SOURCES = {
     label: 'Chrome UX Report · origin www.cnbc.com · Jul 2026 (via treo.sh)',
     href: 'https://treo.sh/sitespeed/www.cnbc.com',
   },
+  cnbcKalshi2025: {
+    label: 'CNBC and Kalshi multi-year exclusive partnership, announced 4 Dec 2025',
+    href: 'https://www.cnbc.com/2025/12/04/cnbc-and-kalshi-strike-exclusive-partnership.html',
+  },
   linkedin: {
     label: 'LinkedIn · role and scope',
     href: 'https://linkedin.com/in/zhaolyu',
@@ -199,8 +203,8 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC.com Next-Gen Migration',
       description:
-        'Market-moving days are a financial-news business at its most valuable and most fragile. I architected CNBC.com’s migration from a legacy client-side monolith to an isomorphic Akamai Edge architecture, moving business and rendering logic to the network edge, so the platform holds its full audience through exactly those spikes: sub-2-second p75 LCP in public field data, and zero downtime through the cutover.',
-      tags: ['Isomorphic React', 'Akamai EdgeWorkers', 'High Scale', 'Performance'],
+        "CNBC.com renders at the network edge rather than in the reader's browser, because market-moving days are when a financial-news site is most valuable and most fragile. I worked with the platform team on the move off the legacy client-side monolith, then designed the next version of the site's edge caching and content-access flow with them and our edge partner. The site holds its audience through those spikes: sub-2-second p75 LCP in public field data.",
+      tags: ['Isomorphic React', 'Edge Compute', 'High Scale', 'Performance'],
       metrics: [
         { label: 'P75 LCP (CRUX)', value: '1.7s', source: SOURCES.cruxCnbc },
         { label: 'MONTHLY UNIQUES', value: '47M', source: SOURCES.versantInvestorDay2025 },
@@ -821,7 +825,7 @@ export interface BuilderProject {
   category: 'professional' | 'independent' | 'experiment';
   description: string;
   stack: string[];
-  status: 'shipped' | 'in-progress' | 'exploring' | 'active' | 'completed';
+  status: 'shipped' | 'in-progress' | 'exploring' | 'active' | 'completed' | 'retired';
   metrics?: Array<{ label: string; value: string }>;
   /** The public source for a figure the description states. */
   source?: Source;
@@ -845,7 +849,7 @@ export const builderProjects: BuilderProject[] = [
       'Co-leading the rebuild of CNBC.com with a peer engineering manager. I lead the frontend architecture for the AI experiences, my team builds the web video experiences, and I keep the whole web behind the page holding up: analytics (Amplitude), MPS ad serving, the federated GraphQL layer we build against, login and subscriptions, SEO, compliance, and editorial workflows. The leverage is upstream, in shaping API contracts so one query carries the rules and web, apps, and OTT inherit a single implementation.',
     stack: [
       'Isomorphic React',
-      'Akamai EdgeWorkers',
+      'Edge Compute',
       'GraphQL',
       'Micro-Frontends',
       'Amplitude',
@@ -916,7 +920,7 @@ export const builderProjects: BuilderProject[] = [
     description:
       'Cost discipline as a shipped system, not a spreadsheet: local-first cloud cost monitoring (PGlite + ElectricSQL) with zero-latency reads, real-time sync, and what-if simulations for infrastructure spend, fed by a signed ingestion API on GCP Cloud Run. Built end to end with AI-assisted development, the same governed workflow I set for my org, proven on my own infrastructure, and retired in October 2026.',
     stack: ['SvelteKit', 'PGlite', 'ElectricSQL', 'GCP Cloud Run', 'Pulumi'],
-    status: 'completed',
+    status: 'retired',
     metrics: [
       { label: 'Sync', value: 'Real-time' },
       { label: 'Storage', value: 'Local-first' },
@@ -932,10 +936,10 @@ export interface NarrativeBio {
 export const narrativeBio: NarrativeBio = {
   title: roleTitle,
   paragraphs: [
-    `${scopeLine} The three teams are web, video, and market data, and I still architect and ship alongside them, so technical decisions get made in the room rather than through a translation layer. ${tenureLine}`,
+    `${scopeLine} The three teams are web, video, and market data. This year the work was making a three-team rebuild's delivery predictable: milestone gates a team can demonstrate, evidence over status, and explicit ownership from code to release. ${tenureLine}`,
     'As AI Integration Lead I set the standard for how the engineers across the three teams use AI coding tools like Cursor in production code: shared standards and PR quality gates (SonarQube, lint, and Jest test automation), inside the security and compliance guardrails a financial-media business has to honor. The standard exists so the review bar holds as the tools get faster.',
     "I built the frontend of CNBC's first AI product from zero to one, working with design, product, backend, and editorial, which at a news organization is the constituency that decides whether generative text ships at all. That work is now the frontend architecture for the AI-powered investing tools in CNBC's next-generation platform.",
-    "My own team builds CNBC.com's web video experiences: live TV, full episodes, vertical video, and standalone live events.",
+    "My own team builds CNBC.com's web video experiences: live TV, full episodes, vertical video, and standalone live events. I also built CNBC's reader experience for its Kalshi partnership: an editorial workflow on existing CMS tools, aligned across brand partnerships, editorial, and legal.",
     'I grow engineers by widening their scope, and much of the coaching is not technical. An engineer can be right and still lose the room, so we work on how a decision gets presented to design and product, until their influence catches up with their judgment.',
   ],
 };
