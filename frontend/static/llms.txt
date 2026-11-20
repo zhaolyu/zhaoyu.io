@@ -57,9 +57,8 @@
    its most valuable and most fragile; public field data shows a sub-2-second
    p75 LCP for CNBC.com. He also
    drove the cross-team separation of CNBC's digital infrastructure from its
-   parent company: video streaming, analytics, and privacy services migrated
-   with no revenue interruption, the work that let the corporate spinoff
-   stand alone.
+   parent company: video streaming, analytics, and privacy services migrated,
+   the work that let the corporate spinoff stand alone.
 6. **Partnership reader experience**: built CNBC's reader experience for its
    Kalshi partnership: an editorial workflow on existing CMS tools, aligned
    across brand partnerships, editorial, and legal.
