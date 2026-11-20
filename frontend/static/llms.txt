@@ -54,7 +54,7 @@
    team on CNBC.com's move from a client-side monolith to edge rendering, and
    helped design the next version of its edge caching and content-access flow.
    Speed matters most on market-moving days, when a financial-news site is at
-   its most valuable and most fragile; public field data shows a sub-2-second
+   its most valuable and most fragile. Public field data shows a sub-2-second
    p75 LCP for CNBC.com. He also
    drove the cross-team separation of CNBC's digital infrastructure from its
    parent company: video streaming, analytics, and privacy services migrated,
