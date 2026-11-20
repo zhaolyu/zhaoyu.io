@@ -4,9 +4,9 @@
 > 8 engineers and 2 QE direct, co-leading the ~20-engineer CNBC.com rebuild across 3 teams.
 > Ten years on CNBC's platforms since March 2016, intern to Senior Manager.
 > He builds the systems engineering teams run on: the architecture, the
-> standards, and the team practices around them, and he still architects and
-> ships alongside his team. He also writes the engineering notes on this site,
-> on agents, verification, and reliability, each naming its receipt.
+> standards, and the team practices around them. He also writes the
+> engineering notes on this site, on agents, verification, and reliability,
+> each naming its receipt.
 > Every employer figure on this site is public and linked to its source
 > (Versant investor materials, Chrome UX Report field data, or the record of
 > the role); nothing Versant/CNBC has not disclosed publicly is stated here.
@@ -15,8 +15,8 @@
 
 1. **Engineering leadership**: manages a direct team of 8 engineers and 2 QE
    and co-leads the ~20-engineer CNBC.com rebuild across 3 teams (web, video,
-   and market data) in Versant's CNBC Core group, while still architecting and
-   shipping alongside the team. Develops engineers by widening their scope.
+   and market data) in Versant's CNBC Core group. Develops engineers by
+   widening their scope.
    Earlier roles: intern, software engineer and senior
    engineer at CNBC; Senior Manager, Engineering at NBCUniversal (2021, a
    first management tour); and Principal Engineer (July 2025 to April 2026)
@@ -50,22 +50,26 @@
    accessible interfaces around non-deterministic model output, with
    frame-buffered token streaming, state decoupled from render, graceful
    degradation, and trust-preserving latency for a financial audience.
-5. **Edge performance and the spinoff separation**: market-moving days are a
-   financial-news business at its most valuable and most fragile; the
-   isomorphic Akamai EdgeWorkers architecture he designed for CNBC.com
-   holds the full audience through exactly those spikes (sub-2-second p75 LCP
-   in public field data). He also drove the cross-team separation of CNBC's
-   digital infrastructure from its parent company: video streaming,
-   analytics, and privacy services migrated with no downtime and no revenue
-   interruption, the work that let the corporate spinoff stand alone.
-6. **AI governance**: as AI Integration Lead, set the standard for how the
+5. **Edge performance and the spinoff separation**: worked with the platform
+   team on CNBC.com's move from a client-side monolith to edge rendering, and
+   helped design the next version of its edge caching and content-access flow.
+   Speed matters most on market-moving days, when a financial-news site is at
+   its most valuable and most fragile. Public field data shows a sub-2-second
+   p75 LCP for CNBC.com. He also
+   drove the cross-team separation of CNBC's digital infrastructure from its
+   parent company: video streaming, analytics, and privacy services migrated,
+   the work that let the corporate spinoff stand alone.
+6. **Partnership reader experience**: built CNBC's reader experience for its
+   Kalshi partnership: an editorial workflow on existing CMS tools, aligned
+   across brand partnerships, editorial, and legal.
+7. **AI governance**: as AI Integration Lead, set the standard for how the
    engineers across the three teams use AI coding tools like Cursor in
    production code: shared standards and PR quality gates (SonarQube, lint,
    and Jest test automation). Working thesis:
    specification quality, not implementation speed, is the bottleneck in
    agent-driven development, and agent reliability is engineered into the
    loop (boundaries, receipts, control planes), not summoned from the model.
-7. **Independent builder**: ships and operates real systems outside of
+8. **Independent builder**: ships and operates real systems outside of
    assigned work with the same production discipline. Systems:
    Cost-Guard (a local-first FinOps platform: PGlite + ElectricSQL on the
    client, a signed ingestion API on GCP Cloud Run with Pulumi-managed
@@ -130,6 +134,8 @@ The full, always-current index lives at https://zhaoyu.io/blog. Highlights:
 - "Next-generation digital platform … AI-powered investing tools": Versant
   Q2-2026 earnings call, 6 Aug 2026:
   https://www.investing.com/news/transcripts/earnings-call-transcript-versant-media-lifts-2026-outlook-in-q2-2026-93CH-4842245
+- CNBC and Kalshi multi-year exclusive partnership, announced 4 Dec 2025:
+  https://www.cnbc.com/2025/12/04/cnbc-and-kalshi-strike-exclusive-partnership.html
 - Role and scope: https://linkedin.com/in/zhaolyu
 
 ## Contact

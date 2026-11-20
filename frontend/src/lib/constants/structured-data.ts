@@ -25,7 +25,6 @@ export const KNOWS_ABOUT = [
   'System Prompt Architecture',
   'Video Platforms',
   'Edge Computing',
-  'Akamai EdgeWorkers',
   'Isomorphic React',
   'SvelteKit',
   'AI-Assisted Software Engineering',
