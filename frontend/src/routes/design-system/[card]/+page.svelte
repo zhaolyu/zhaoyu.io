@@ -24,7 +24,7 @@
   /**
    * Component previews use real site content so a card can never show a
    * component styled for data the site doesn't actually have. The status matrix
-   * is synthesised from one real card, since no single page shows all six.
+   * is synthesised from one real card, since no single page shows every status.
    */
   const leadProject = builderProjects[0];
   const STATUSES: BuilderProject['status'][] = [
