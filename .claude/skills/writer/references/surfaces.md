@@ -118,7 +118,8 @@ standard and its CI/CD gates, described as a standard with no outcome numbers), 
 work card, owner decision 2026-11-16), what his team builds (web
 video), and how he grows engineers. No two-track framing: `positioning.test.ts` retires it.
 Keep the through-line: builds the systems teams run on. The IC→EM→IC→EM path was deliberate;
-the destination is org leadership.
+the destination is org leadership. (Writer context only: never stated on the site. A sentence
+about his next role blocks in `writer-judge`.)
 
 **Persona** (`personaData`) — 2 operating-principle cards rendered in the code-manifesto
 section ("Strong opinions, weakly held.") under "Platform-era foundations, still

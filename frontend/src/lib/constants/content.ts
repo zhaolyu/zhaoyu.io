@@ -203,7 +203,7 @@ export const projectsData: ProjectsData = {
     {
       title: 'CNBC.com Next-Gen Migration',
       description:
-        "I worked with the platform team on CNBC.com's move from a legacy client-side monolith to rendering at the network edge, then designed the next version of the site's edge caching and content-access flow with them and our edge partner. Speed matters most on market-moving days, when a financial-news site is at its most valuable and most fragile. Public field data shows a sub-2-second p75 LCP for the site.",
+        "I worked with the platform team on CNBC.com's move from a client-side monolith to edge rendering, and helped design the next version of its edge caching and content-access flow. Speed matters most on market-moving days, when a financial-news site is at its most valuable and most fragile. Public field data shows a sub-2-second p75 LCP for the site.",
       tags: ['Isomorphic React', 'Edge Compute', 'High Scale', 'Performance'],
       metrics: [
         { label: 'P75 LCP (CRUX)', value: '1.7s', source: SOURCES.cruxCnbc },
