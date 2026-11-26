@@ -897,10 +897,7 @@ export const builderProjects: BuilderProject[] = [
       'When the corporate spinoff needed CNBC’s digital business to stand alone, I drove the cross-team sprint that made it real: video streaming, analytics, and privacy services migrated off the parent company, compliance obligations met.',
     stack: ['GCP', 'GDPR/CCPA Compliance', 'Cloud Architecture'],
     status: 'completed',
-    metrics: [
-      { label: 'Services', value: 'Video · Analytics · Privacy' },
-      { label: 'Scope', value: 'Cross-team' },
-    ],
+    metrics: [{ label: 'Services', value: 'Video · Analytics · Privacy' }],
   },
   {
     title: 'OB1: Exocortex Retrieval Layer',
